@@ -40,7 +40,7 @@ def main() -> None:
         "",
         f"**Frozen at:** {datetime.now(timezone.utc).isoformat()}",
         f"**Protocol hash (sha256(PROTOCOL.md)):** `{proto_hash}`",
-        f"**Confirmatory seed derivation:** `int.from_bytes(sha256(f'{proto_hash[:16]}:confirmatory:{i}')[:4],'big')` for i = 0..N_c-1",
+        "**Confirmatory seed derivation:** `int.from_bytes(sha256(f'" + proto_hash[:16] + ":confirmatory:{i}')[:4],'big')` for i = 0..N_c-1",
         "",
         "## Gate evidence (must pass before freeze)",
         "",
@@ -70,7 +70,7 @@ def main() -> None:
         "Predictive value only, conditional on the frozen instrument, generator, class, and threshold δ = 0.01 nats. Not localization. Not novelty. All outcomes terminal.",
         "",
     ]
-    (ROOT / "FREEZE.md").write_text("\n".join(lines))
+    (ROOT / "FREEZE.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"FREEZE.md written; protocol hash {proto_hash[:16]}...")
 
 
