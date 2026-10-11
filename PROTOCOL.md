@@ -1,11 +1,14 @@
 # Failure-Concentration Predictive Value Study
-## Pre-Registered Protocol (DRAFT v1 — not yet frozen)
+## Pre-Registered Protocol (DRAFT v2 — not yet frozen)
 
-**Status:** DRAFT. Freeze requires: (1) Foued's ratification of the five open choices in §16,
-(2) `FREEZE.md` recording sha256 hashes of this file and the instrument/prompt specs,
-(3) a `v0.1-freeze` tag. Freeze must occur BEFORE any confirmatory solver or confirmatory
-instance is generated. No protocol amendments after freeze; any deviation is recorded and
-forces an INCONCLUSIVE outcome.
+**Status:** DRAFT v2. GPT's freeze-blocker amendments (2026-10-11) are recorded below. Freeze
+requires: (1) Foued's authorization, (2) gates G1–G3 executed and passed on the built
+instrument, recorded in `FREEZE.md` with sha256 hashes of this file, the instrument spec, and
+the generator spec, (3) a `v0.1-freeze` tag. Freeze must occur BEFORE any confirmatory solver
+or confirmatory instance is generated. No protocol amendments after freeze; any deviation is
+recorded and forces an INCONCLUSIVE outcome. Instrument implementation bugs discovered before
+confirmatory generation may be fixed only if the frozen specs (predicates, probe rules,
+features, thresholds) are unchanged; any spec change requires a new DRAFT and re-ratification.
 
 **Lineage:** This protocol answers one question left open by the terminated Doctor/C_genuine
 work: does family concentration carry predictive information beyond failure count? It imports
@@ -42,9 +45,10 @@ input predicates (§3).
 
 ## 3. Taxonomy (design time, from the problem specification)
 
-Six families. Each has a written defining property and a decidable input predicate. Families
-were derived from the problem specification alone. **No probe was ever checked against solver
-behavior.** No historical family label is reused.
+Six families, each with a written defining property and an executable decidable predicate.
+Families were derived from the problem specification alone. **No probe was ever checked
+against solver behavior.** No historical family label is reused. Exact predicate code and the
+probe-to-family construction rules live in the instrument spec, hashed at freeze (§16).
 
 | ID | Family | Defining property (predicate) |
 |----|--------|-------------------------------|
@@ -55,51 +59,76 @@ behavior.** No historical family label is reused.
 | F5 | tie_multiplicity | ≥ 2 distinct s–t paths attain the minimum weight |
 | F6 | weight_plateau | ≥ 3 edges share a single weight value |
 
-**Isolation interpretation (GPT qualification, binding):** the instrument's automated
-partition check verifies only that the constructed probes satisfy exactly one declared
-predicate each. It verifies a declared partition property. It does **not** establish that the
-families isolate distinct computational properties, and no report may claim otherwise.
+**Isolation interpretation (GPT qualification, binding):** the automated partition check
+verifies only that each constructed probe satisfies exactly one declared predicate. It
+verifies a declared partition property. It does not establish that the families isolate
+distinct computational operations, and no report may claim otherwise.
+
+**Overlap rule:** if the partition check (G1) finds any probe satisfying zero or ≥ 2
+predicates, the instrument fails. G1 must pass before freeze. Post-freeze G1 re-runs must
+pass on every instance; a failure forces INCONCLUSIVE.
 
 ## 4. Probes (diagnostic, observable)
 
-Per instance: 30 probes = 5 per family, constructed by deterministic seeded rules specified in
-the instrument spec (hashed with this protocol). Probe graphs are built to satisfy exactly
-their assigned family predicate and violate the other five. Probe expected outputs are computed
-by the reference implementation (§6) and cross-checked by brute-force enumeration on small
-graphs (Gate G3). Probes are run against solvers before any hidden-oracle exposure.
-
-Per (solver, instance): k = failed probe count; f_j = failures in family j;
-**C = max_j f_j / k** (the single primary feature). Eligibility: k ≥ 2.
+Per instance: 30 probes = 5 per family, constructed by deterministic seeded rules specified
+in the instrument spec. Probe graphs are built to satisfy exactly their assigned family
+predicate and violate the other five. Probe expected outputs are computed by the reference
+implementation (§6) and cross-checked by brute-force enumeration on small graphs (G3).
+Probes are run against solvers before any hidden-oracle exposure.
 
 ## 5. Solver generation
 
-A single solver population of N = 40 LLM-generated Python SSSP implementations (frozen
-generator: model identifier, prompt template, sampling parameters — recorded in the prompt
-spec hashed at freeze). Every solver is evaluated on every instance. Solvers are never
-selected, edited, or discarded after generation except format failures, handled by the
-pre-specified rule: unparseable or non-running submissions are excluded from the primary
-analysis, counted and reported; if format-failure rate exceeds 20 % of the pack, the study
-terminates as INCONCLUSIVE.
+A single solver population of N_s = 40 LLM-generated Python SSSP implementations. Every
+solver is evaluated on every instance.
 
-A separate pilot solver pack (N = 20, same generator protocol) is used for pipeline shakedown
+**Generator spec (frozen at freeze):** provider, immutable model snapshot identifier if the
+provider exposes one (otherwise that limitation is recorded and exact reproducibility is not
+claimed), complete generation prompt including system instructions where controllable,
+sampling parameters (temperature, top-p, seed handling), and the output I/O contract for
+solvers.
+
+**Retention rule:** every generated submission is retained in generation order; no post-hoc
+selection, editing, deduplication-by-quality, or best-of filtering. Unparseable or
+non-running submissions are format failures: excluded from the primary analysis, counted and
+reported; if format-failure rate exceeds 20 % of the pack, the study terminates as
+INCONCLUSIVE.
+
+A separate pilot solver pack (N_s = 20, same generator spec) is used for pipeline shakedown
 only (§11) and never enters the confirmatory analysis.
 
-## 6. Oracle and hidden suite (Y)
+## 6. Oracle, hidden suite, and observational unit (frozen definitions)
 
 **Reference implementation:** a trusted SSSP solver, validated against brute-force path
-enumeration on ≥ 50 tiny random graphs (Gate G3).
+enumeration on ≥ 50 tiny random graphs (G3).
 
 **Hidden suite:** per instance, M = 20 hidden inputs from an independent generator (different
 seed stream, different construction code path from the probes), containing random graphs plus
 edge cases not built from probe construction rules. The hidden suite never touches family
 labels, probe definitions, or features.
 
-**Target:** Y = 1 iff the solver matches the reference output on all M hidden inputs of the
-instance. Observations are (solver, instance) pairs.
+**Observational unit:**
+
+- One *solver* = one generated Python SSSP implementation, never edited after generation.
+- One *instance* = one (G, s, t) triple from the frozen instance generator.
+- One *observation* = one (solver, instance) pair. Feature vector (k, C) computed from that
+  instance's 30 diagnostic probes. Label Y ∈ {0,1}. Observations sharing a solver are
+  correlated; observations sharing an instance are correlated.
+- *Correctness label:* Y = 1 iff the solver returns the reference-correct distance on **all
+  M = 20** hidden inputs of that instance; a crash or wrong output on any hidden input gives
+  Y = 0. The hidden suite contributes to one pair-level binary label; it does not create 20
+  independent observations. Per-input labels are not used in the primary analysis: the
+  feature is pair-level, so per-input rows would duplicate the feature and pseudo-replicate.
+
+**Inference axis:** instances. Models are scored per held-out instance; Δ is the
+equal-weighted mean of per-instance loss differences; uncertainty bootstraps instances (§8).
+The solver pack is fixed across all instances and part of the declared scope: the claim
+generalizes to unseen **instances** for this pack and generator, not to unseen solvers. No
+solver identity enters the feature set.
 
 ## 7. Models
 
-Fit on eligible (solver, instance) observations, evaluated held-out by instance:
+Fit on eligible (solver, instance) observations (§11 for eligibility), evaluated held-out by
+instance:
 
 - **Model A (baseline):** Y ~ restricted cubic spline on log(1 + k), knots fixed in the
   analysis spec. Flexible form prevents baseline misspecification from gifting concentration
@@ -112,18 +141,23 @@ Fit on eligible (solver, instance) observations, evaluated held-out by instance:
 
 ## 8. Primary analysis
 
-- **Estimand:** Δ = L_A − L_B, where L is mean held-out log-loss; per-instance losses are
-  averaged first so every instance carries equal weight.
-- **Evaluation:** locked confirmatory instance set. Pre-specified fallback if the locked set
-  cannot be scored as a unit: leave-instances-out grouped CV (instances, never solvers, are
-  the grouping unit).
-- **Uncertainty:** nonparametric bootstrap over instances, 10 000 resamples, 95 % CI.
-  Never over solvers.
-- **Threshold (pre-registered):** δ = 0.01 nats per eligible prediction. Justification: at
-  eligibility base rates in the 0.2–0.8 band, 0.01 nats shifts the posterior correctness
-  probability of a borderline case by roughly one percentage point — the smallest shift that
-  changes a symmetric-cost accept/reject decision for a non-negligible share of submissions.
-  Effects below δ are practically null regardless of statistical detectability.
+- **Estimand:** Δ = L_A − L_B, where L is mean held-out log-loss on eligible observations;
+  per-instance losses are averaged first so every instance carries equal weight.
+- **Evaluation (frozen):** the confirmatory instance set is locked before generation (seeds
+  derived deterministically from the freeze hash; G4). Evaluation is leave-one-instance-out
+  grouped CV across the locked set: for instance i, models A and B are fitted on all eligible
+  observations from the other confirmatory instances and scored on instance i's eligible
+  observations. No observation from instance i appears in its training fold. The same
+  solvers appearing in train and test folds is intentional — the claim is instance
+  generalization for a fixed pack — and is not record-level leakage, because instance i's
+  probes, hidden inputs, and labels are entirely unseen during its training fold.
+- **Uncertainty:** nonparametric bootstrap over instances, 10 000 resamples, 95 % CI. Never
+  over solvers.
+- **Threshold (pre-registered; GPT amendment adopted):** δ = 0.01 nats per eligible
+  prediction, adopted as a **protocol choice**: the minimum mean held-out log-loss improvement
+  this study will count as meeting its threshold. It is not derived from an operational
+  decision rule or cost model; no equivalence to a decision-shift or percentage-point change
+  is claimed. It is fixed here and cannot change after any confirmatory outcome is observed.
 - **Control comparison:** the positive outcome additionally requires Δ_real to exceed the
   95th percentile of the 100 relabeling Δ values.
 - **Cost function:** symmetric loss (λ = 1) is the only decision cost in the primary analysis.
@@ -137,43 +171,58 @@ Fit on eligible (solver, instance) observations, evaluated held-out by instance:
 | CI lower bound above δ, and Δ_real beats the relabel control | Incremental predictive value specific to this partition, generator, and class | Report and stop |
 | CI excludes improvements ≥ δ | Meaningful predictive gain ruled out in the stated scope | Report and stop |
 | Δ apparent but does not beat the relabel control | Gain not attributable to the family structure | Report as ambiguous and stop |
-| Too few eligible submissions, failed chain checks, format-failure rate > 20 %, or precision unattainable within resources | Study cannot answer the question reliably | Report as inconclusive and stop |
+| Too few eligible observations, failed chain checks, format-failure rate > 20 %, or precision unattainable within resources | Study cannot answer the question reliably | Report as inconclusive and stop |
 
 No result authorizes new features, new partitions, alternate thresholds, or new branches.
 
 ## 10. Gates
 
-- **G1 partition check:** automated evaluation of all probe predicates; instrument passes iff
-  every probe satisfies exactly its assigned family predicate. Interpretation limited to the
+- **G1 partition check:** automated evaluation of all probe predicates on every instance's
+  probe set; passes iff every probe satisfies exactly its assigned family predicate. Must
+  pass before freeze and on every confirmatory instance. Interpretation limited to the
   declared partition (§3).
-- **G2 measurement chain:** hand-computed toy cases confirm the intended feature and the
-  eligibility rule are what the code computes; output-identity check between feature
+- **G2 measurement chain:** hand-computed toy cases confirm the intended feature, eligibility
+  rule, and Y label are what the code computes; output-identity check between feature
   computation paths (LC79 lesson).
 - **G3 oracle chain:** reference implementation vs brute-force enumeration on ≥ 50 tiny
-  random graphs; zero mismatches required.
+  random graphs; zero mismatches required. Must pass before freeze.
 - **G4 freeze integrity:** sha256 of this protocol, the instrument spec, and the generator
-  prompt spec recorded in `FREEZE.md` before confirmatory generation; confirmatory instance
-  seeds derived deterministically from the freeze hash; no post-unblinding additions.
+  spec recorded in `FREEZE.md` together with G1–G3 pass evidence, before confirmatory
+  generation; confirmatory instance seeds derived from the freeze hash; no post-unblinding
+  additions.
 
 ## 11. Pilot (3 instances, excluded from confirmatory)
 
 Pilot instances use fixed seeds 101, 102, 103 and never enter the confirmatory set. Purposes:
-(a) pipeline shakedown across instrument, oracle, generator, analysis; (b) eligible-solver
-yield; (c) between-instance variance for the sample-size calculation.
+(a) pipeline shakedown across instrument, oracle, generator, analysis; (b) eligible-observation
+yield; (c) between-instance variance input for the sample-size rule.
 
-**Pilot decision gate:** proceed to confirmatory generation only if every pilot instance
-yields ≥ 15 eligible (solver, instance) observations and the required instance count from §12
-is within the committed resource budget. Otherwise the study terminates as INFEASIBLE — a
-valid terminal outcome, not a failure.
+**Eligible observation (frozen definition):** a (solver, instance) pair with (a) k ≥ 2
+failures on the frozen 30-probe diagnostic suite and (b) a completed hidden-suite evaluation
+producing a defined Y. Crashes on hidden inputs count as Y = 0 completions, not missing
+labels; a solver that cannot load or run at all is a format failure (§5) and never forms a
+pair. Eligibility counts distinct (solver, instance) pairs, never individual probe results.
 
-Three instances cannot establish between-problem variability on their own; the pilot variance
-estimate enters §12 with that caveat, and the confirmatory CI remains the inference.
+**Pilot gate:** each of the three pilot instances must yield ≥ 15 eligible pairs. Passing
+establishes **feasibility only** (pipeline integrity plus sufficient yield to attempt the §12
+precision analysis). It does not establish statistical adequacy or power. Failing the gate
+on any pilot instance: stop, report INFEASIBLE — a valid terminal outcome.
 
-## 12. Sample size
+## 12. Sample size (frozen rule)
 
-Confirmatory instance count N is the smallest count whose expected 95 % CI half-width (from
-pilot between-instance variance) is ≤ δ. Planning guess 10–15 instances; the guess is not
-binding — N is fixed from the pilot analysis and recorded before confirmatory generation.
+After the pilot and before any confirmatory generation:
+
+1. Estimate the between-instance variance of the per-instance held-out loss difference from
+   pilot data, using the upper 80 % confidence bound of that estimate (three instances give
+   a weak variance estimate; the rule is deliberately conservative).
+2. Required N_c = the smallest instance count whose expected 95 % CI half-width under that
+   variance, at the per-instance eligible yield observed in the pilot, is ≤ δ.
+3. If N_c exceeds the resource ceiling committed at freeze (default: 20 instances), report
+   INFEASIBLE and stop.
+
+The pack size N_s = 40 is a generator-budget choice, not a precision guarantee. Precision is
+driven by N_c instances × eligible yield. Do not assume 40 solvers are sufficient; the pilot
+determines whether the prespecified precision is achievable.
 
 ## 13. Process
 
@@ -196,12 +245,17 @@ ambiguous, or pilot-infeasible is plausible (prior: compressibility finding — 
 prior, not a result). Novelty: unverified and unclaimed. This study answers one falsifiable
 question; it is not a rescue of C_genuine.
 
-## 16. Open choices requiring Foued's ratification before freeze
+## 16. Ratification state
 
-1. **Problem class:** SSSP on directed non-negative weighted graphs (§2). Veto here means
-   redesign before freeze.
-2. **Threshold:** δ = 0.01 nats (§8).
-3. **Generator:** single LLM pack of 40 solvers, model identifier and prompt frozen at
-   freeze time (§5). Alternative: scripted mutation generator — a veto of LLM generation.
-4. **Confirmatory pack size:** N = 40 solvers, M = 20 hidden inputs per instance (§§5–6).
-5. **Pilot gate:** ≥ 15 eligible observations per pilot instance (§11).
+GPT's five decisions (2026-10-11) and their resolution in this draft:
+
+| Choice | GPT decision | Resolution in v2 |
+|---|---|---|
+| 1. SSSP + six families | Approve with conditions | Executable predicates + probe mapping frozen in instrument spec (§3); overlap stops the study (G1); exclusivity-only interpretation binding (§3) |
+| 2. δ = 0.01 nats | Amend | Retained as pre-registered protocol choice; percentage-point analogy removed; no practical-value equivalence claimed (§8) |
+| 3. Single LLM generator | Approve with conditions | Full generator spec frozen: model id or recorded snapshot limitation, complete prompt, sampling params, retention rule, no best-of selection (§5) |
+| 4. 40 solvers / 20 hidden inputs | Not yet approved as adequate | Observational unit and correctness label frozen (§6); N_c determined by frozen pilot-based precision rule; 40 is budget not adequacy (§12) |
+| 5. Pilot gate ≥ 15 | Amend | Eligible observation defined operationally; per-instance gate; feasibility-only meaning (§11) |
+
+Remaining step: Foued authorizes freeze → gates G1–G3 built and passed → `FREEZE.md` +
+`v0.1-freeze` → pilot.
