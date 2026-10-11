@@ -1,0 +1,48 @@
+{
+  "protocol_version": "DRAFT_v2",
+  "domain": "SSSP directed non-negative integer weights",
+  "solver_io": {
+    "signature": "solve(n: int, edges: list[tuple[int,int,int]], s: int, t: int) -> int",
+    "unreachable_return": -1
+  },
+  "families": [
+    {"id": "F1", "name": "unreachable_target", "predicate": "no directed path s->t"},
+    {"id": "F2", "name": "zero_weight_edge", "predicate": "at least one edge has w=0"},
+    {"id": "F3", "name": "parallel_edges", "predicate": "some ordered pair (u,v) carries >=2 edge entries"},
+    {"id": "F4", "name": "self_loop", "predicate": "some edge (v,v) exists"},
+    {"id": "F5", "name": "tie_multiplicity", "predicate": "d(s,t) finite and >=2 distinct simple edge-sequences attain the minimum weight"},
+    {"id": "F6", "name": "weight_plateau", "predicate": "some weight value occurs on >=3 edges"}
+  ],
+  "probes": {
+    "per_family": 5,
+    "total_per_instance": 30,
+    "family_major_order": true,
+    "seed_rule": "int(sha256(f'{instance_seed}:probe:{family_id}:{variant}')[:4])",
+    "construction": "each probe satisfies exactly its assigned family predicate and violates the other five (G1 enforced)"
+  },
+  "hidden_suite": {
+    "M": 20,
+    "seed_rule": "int(sha256(f'{instance_seed}:hidden')[:4])",
+    "construction": "independent generator code path: 15 random graphs (n 5..8, m~1.8n, weights 0..9) + 5 seed-varied fixed edge-case templates; no family forcing"
+  },
+  "instances": {
+    "anchor_n_range": [8, 13],
+    "edge_factor": 2.2,
+    "weight_range": [1, 9],
+    "pilot_seeds": [101, 102, 103],
+    "confirmatory_seed_rule": "int.from_bytes(sha256(f'{protocol_freeze_hash16}:confirmatory:{i}')[:4],'big') for i in 0..N_c-1; protocol_freeze_hash16 = first 16 hex chars of sha256(PROTOCOL.md bytes)"
+  },
+  "analysis": {
+    "eligibility_k_min": 2,
+    "delta_nats": 0.01,
+    "rcs": {
+      "formula": "basis = [x, d2, d3, d4] with x=log(1+k); d_j = (x-tj)_+^3 - (x-tk)_+^3 - ((tk-tj)/(tk-t1))*((x-t1)_+^3 - (x-tk)_+^3), scaled by (tk-t1)^2; t1..t5 = boundary+internal knots",
+      "knots": [1.0986122886681098, 1.6094379124341003, 2.302585092994046, 2.995732273553991, 3.4339872044851463],
+      "knot_note": "ln(3), ln(5), ln(10), ln(20), ln(31): fixed boundaries k in [2,30]"
+    },
+    "logistic": {"ridge": 1e-6, "max_iter": 50},
+    "relabel": {"R": 100, "seed_rule": "int(sha256(f'{instance_seed}:relabel:{r}')[:4])", "note": "random balanced partition of 30 probes into 6 groups of 5, applied per instance, consistent across solvers"},
+    "bootstrap": {"n_boot": 10000, "seed": 99, "ci": 0.95},
+    "pilot": {"min_eligible_per_instance": 15, "chi2_upper_80_df2": 0.44628710813971216, "resource_ceiling_instances": 20}
+  }
+}

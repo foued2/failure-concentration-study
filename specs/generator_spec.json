@@ -1,0 +1,20 @@
+{
+  "generator_id": "mimo-pilot-pack-2026-10-11",
+  "model": "opencode/mimo-v2.6-flash-free",
+  "session": "single generation session by executor (MIMO), 2026-10-11; each submission written once, retained in order, no revision, no best-of selection",
+  "snapshot_limitation": "provider exposes no immutable model snapshot; exact reproducibility not claimed (recorded per PROTOCOL.md 5)",
+  "sampling": {"temperature": "model default", "top_p": "model default", "procedure": "20 single-shot generations in one session"},
+  "prompt": "Write a Python function solve(n, edges, s, t) computing the shortest path distance from node s to node t in a directed graph with non-negative integer weights. n nodes are 0..n-1. edges is a list of (u, v, w) tuples; parallel edges and self-loops may appear. Return the minimum total weight of any directed s->t path as an int, or -1 if t is unreachable from s. The function must be self-contained (standard library only), must not read files or print, and must handle the input contract exactly. Do not include example usage or tests. Vary the algorithmic strategy across generations (Dijkstra variants, Bellman-Ford, BFS-only heuristics, dynamic programming, graph search, matrix methods). Write the first solution that comes to mind; do not self-review or fix.",
+  "approach_directives": [
+    "Dijkstra with heapq", "Bellman-Ford relaxation", "Dijkstra with dict distances",
+    "BFS assuming unit weights", "DP over topological order", "brute-force path enumeration",
+    "Dijkstra with greedy visited-set shortcut", "A*-style heuristic search", "Floyd-Warshall all-pairs",
+    "Dijkstra with early-exit queue bug", "BFS counting weight as hop count", "Bellman-Ford with reduced iterations",
+    "Dial-style bucket approach", "Dijkstra with plain list scan", "SPFA / queue-based relaxation",
+    "BFS layered expansion with weight sum", "DFS with memoization", "Dijkstra with adjacency-matrix rebuild",
+    "Relaxation loop with parent tracking", "Binary-heap Dijkstra with decrease-key simulation"
+  ],
+  "io_contract": "def solve(n: int, edges: list[tuple[int, int, int]], s: int, t: int) -> int  # -1 if unreachable",
+  "retention": "generation/pilot_pack/solver_01.py .. solver_20.py in order; format failures excluded and counted per PROTOCOL.md 5",
+  "pilot_pack_size": 20
+}

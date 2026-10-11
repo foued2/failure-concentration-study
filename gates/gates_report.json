@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-10-11T11:17:09.494176+00:00",
+  "G1": {
+    "name": "G1",
+    "seeds": [
+      101,
+      102,
+      103,
+      201,
+      202,
+      203,
+      204,
+      205
+    ],
+    "total": 240,
+    "exact_one": 240,
+    "violations": [],
+    "pass": true
+  },
+  "G2": {
+    "name": "G2",
+    "checks": [
+      {
+        "case": "k_C_hand",
+        "got": {
+          "k": 3,
+          "C": 0.6666666666666666,
+          "counts": {
+            "F1": 2,
+            "F2": 0,
+            "F3": 1,
+            "F4": 0,
+            "F5": 0,
+            "F6": 0
+          }
+        },
+        "want": {
+          "k": 3,
+          "C": 0.6666666666666666,
+          "counts_F1": 2,
+          "counts_F3": 1
+        },
+        "pass": true
+      },
+      {
+        "case": "eligibility_k1",
+        "k": 1,
+        "pass": true
+      },
+      {
+        "case": "eligibility_k2",
+        "k": 2,
+        "pass": true
+      },
+      {
+        "case": "Y_hand",
+        "y_right": 1,
+        "y_wrong": 0,
+        "pass": true
+      },
+      {
+        "case": "crash_is_failure",
+        "k": 30,
+        "pass": true
+      },
+      {
+        "case": "output_identity",
+        "c1": 0.2,
+        "c2": 0.2,
+        "pass": true
+      }
+    ],
+    "pass": true
+  },
+  "G3": {
+    "name": "G3",
+    "cases": 60,
+    "mismatches": [],
+    "pass": true
+  },
+  "all_pass": true
+}
