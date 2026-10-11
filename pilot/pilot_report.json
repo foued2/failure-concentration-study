@@ -1,0 +1,476 @@
+{
+  "instances": {
+    "101": {
+      "anchor": {
+        "n": 10,
+        "m": 22
+      },
+      "eligible": 4,
+      "total": 20,
+      "rows": [
+        {
+          "solver": "solver_01",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_02",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_03",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_04",
+          "k": 25,
+          "C": 0.2,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_05",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_06",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_07",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_08",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_09",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_10",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_11",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_12",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_13",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_14",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_15",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_16",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_17",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_18",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_19",
+          "k": 10,
+          "C": 0.5,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_20",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        }
+      ]
+    },
+    "102": {
+      "anchor": {
+        "n": 8,
+        "m": 17
+      },
+      "eligible": 4,
+      "total": 20,
+      "rows": [
+        {
+          "solver": "solver_01",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_02",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_03",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_04",
+          "k": 25,
+          "C": 0.2,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_05",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_06",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_07",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_08",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_09",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_10",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_11",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_12",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_13",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_14",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_15",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_16",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_17",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_18",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_19",
+          "k": 10,
+          "C": 0.5,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_20",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        }
+      ]
+    },
+    "103": {
+      "anchor": {
+        "n": 9,
+        "m": 19
+      },
+      "eligible": 4,
+      "total": 20,
+      "rows": [
+        {
+          "solver": "solver_01",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_02",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_03",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_04",
+          "k": 25,
+          "C": 0.2,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_05",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_06",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_07",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_08",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_09",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_10",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_11",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_12",
+          "k": 0,
+          "C": 0.0,
+          "Y": 0,
+          "eligible": false
+        },
+        {
+          "solver": "solver_13",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_14",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_15",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_16",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_17",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_18",
+          "k": 0,
+          "C": 0.0,
+          "Y": 1,
+          "eligible": false
+        },
+        {
+          "solver": "solver_19",
+          "k": 10,
+          "C": 0.5,
+          "Y": 0,
+          "eligible": true
+        },
+        {
+          "solver": "solver_20",
+          "k": 5,
+          "C": 1.0,
+          "Y": 0,
+          "eligible": true
+        }
+      ]
+    }
+  },
+  "format_failures": [],
+  "format_rate": 0.0,
+  "timestamp": "2026-10-11T11:23:48.268435+00:00",
+  "gate_pass": false,
+  "format_ok": true,
+  "delta_i_pilot": [
+    7.516202959029842e-08,
+    7.516202959029842e-08,
+    7.516202959029842e-08
+  ],
+  "delta_mean_pilot": 7.516202959029842e-08,
+  "bootstrap_ci_pilot": [
+    7.516202959029842e-08,
+    7.516202959029842e-08
+  ],
+  "between_instance_var": 0.0,
+  "var_upper80": 0.0,
+  "N_c_required": 1,
+  "resource_ceiling": 20,
+  "relabel_delta_mean": 9.215629458215235e-09,
+  "relabel_p95": 1.5998267929718432e-08,
+  "decision": "INFEASIBLE \u2014 stop"
+}
