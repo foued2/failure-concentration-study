@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from models_v02 import bootstrap_ci, build_pairs, classify, loo_delta_pairs, relabel_control
-from study.features import _norm_ref, load_solver
+from study.features import _norm_ref, concentration, load_solver, run_probes
 from study.instances import make_hidden_suite, make_instance
 from study.probes import make_probe_suite
 from study.sssp import dijkstra_ref
@@ -57,8 +57,8 @@ def main() -> None:
     obs = []
     for si, seed in enumerate(seeds):
         probes, hidden = make_probe_suite(seed), make_hidden_suite(seed)
-        for name, fn in solvers:
-            from study.features import concentration, run_probes
+        for p, fn in zip(pack, solvers):
+            name = p.stem
             fails = run_probes(fn, probes)
             k, c = concentration(fails)
             if k < 2:
@@ -66,6 +66,7 @@ def main() -> None:
             succ = 0
             for h in hidden:
                 exp = _norm_ref(dijkstra_ref(h["n"], h["edges"], h["s"], h["t"]))
+                ok = False
                 try:
                     out = fn(h["n"], h["edges"], h["s"], h["t"])
                     ok = not isinstance(out, bool) and isinstance(out, int) and out == exp
