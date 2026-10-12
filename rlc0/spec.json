@@ -1,0 +1,132 @@
+{
+  "status": "DRAFT",
+  "study": "RLC-0",
+  "purpose": "Determine whether formal behavioral localization is technically feasible and operationally stable, using CBMC on six LeetCode 704 C++17 seed solvers with frozen family structure, bounds, and success criteria.",
+  "problem": {
+    "source": "https://leetcode.com/problems/binary-search/description/",
+    "name": "Binary Search",
+    "language": "C++17",
+    "entry_point": "Solution::search(std::vector<int>& nums, int target) -> int",
+    "official_bounds_confirmed": "1 <= nums.length <= 10^4; -10^4 < nums[i], target < 10^4; all integers unique; sorted in ascending order; return index or -1"
+  },
+  "domain": {
+    "length": {"min": 1, "max": 10000},
+    "element": {"min_exclusive": -10000, "max_exclusive": 10000},
+    "target": {"min_exclusive": -10000, "max_exclusive": 10000},
+    "distinct": true,
+    "sorted_ascending": true,
+    "symbol": "D"
+  },
+  "family": {
+    "name": "target_present",
+    "symbol": "F",
+    "predicate": "exists i in [0, n): nums[i] == target",
+    "complement": "D minus F: target absent; every solver must return -1 there",
+    "expected_return_on_complement": -1
+  },
+  "failure": {
+    "definition": "An input is a verified failure for a solver if and only if, when executed under the frozen harness, exactly one of the following occurs: (a) the returned int differs from the specification-correct answer (index of target if present, else -1); (b) the process crashes; (c) a memory-safety violation occurs (out-of-bounds access, invalid pointer, undefined behavior instrumented by CBMC bounds/pointer checks); (d) execution exceeds the per-input timeout or does not terminate; (e) output is malformed.",
+    "per_input_timeout_ms": 1000,
+    "timeout_fixed_before_any_seed_run": true
+  },
+  "labels": ["NO_FAILURE", "REFUTED", "CERTIFIED_LOCALIZED", "CANDIDATE_ONLY", "UNKNOWN"],
+  "label_definitions": {
+    "REFUTED": "At least one verified failure outside F (in D minus F).",
+    "CERTIFIED_LOCALIZED": "At least one verified failure inside F, plus a complete formal proof of correctness over all of D minus F (including safety and termination) for that solver.",
+    "NO_FAILURE": "A complete formal proof of correctness over all of D.",
+    "CANDIDATE_ONLY": "Verified failure inside F, no verified failure outside F found, and no complete proof of correctness over D minus F.",
+    "UNKNOWN": "Anything else: timeouts, incomplete unwinding, missing proof obligations, or tool/harness failure."
+  },
+  "label_priority": ["NO_FAILURE", "REFUTED", "CERTIFIED_LOCALIZED", "CANDIDATE_ONLY", "UNKNOWN"],
+  "evidence_flags": {
+    "in_f_failure_verified": "true only when a concrete in-F input has been machine-checked as failing (wrong answer, crash, safety violation, timeout, or nontermination).",
+    "outside_f_failure_verified": "true only when a concrete in-D-minus-F input has been machine-checked as failing.",
+    "d_f_proof": "\"complete\" only when the formal proof obligation over D minus F completed with no violated unwinding assertions, all checks passed, within the frozen budget; \"incomplete\" otherwise.",
+    "full_d_proof": "\"complete\" only when both the in-F exhaustive search completed with no failure found AND d_f_proof is \"complete\"; \"incomplete\" otherwise."
+  },
+  "immediate_stop_rules": [
+    "If seed 4, seed 5, or seed 6 receives label CERTIFIED_LOCALIZED, stop the entire study and report the contradiction; do not continue.",
+    "If seed 1 receives label UNKNOWN, certification claims for seeds 2 and 3 are also void; record that outcome as a legitimate end state, do not change tools, bounds, or seeds.",
+    "If the observed outcome for any seed is UNKNOWN, report it; do not modify tools, bounds, seeds, budgets, or timeouts.",
+    "If an independent checker disagrees with classifier.py on any seed, stop and report the disagreement."
+  ],
+  "success_rule": "RLC-0 succeeds only if every one of the six seeds receives its expected outcome from expected.json, every CERTIFIED_LOCALIZED or NO_FAILURE label is backed by a complete proof under the frozen completeness criteria, and the independent checker agrees with classifier.py on all six labels.",
+  "complexity_claim": "NONE. The study does not verify O(log n), loop-iteration bounds, or any other complexity property; it certifies functional behavior, memory safety, and termination only. This limitation must appear prominently in REPORT.md.",
+  "tiers": {
+    "tier1_exhaustive_small": {
+      "lengths": [1, 2, 3, 4, 5, 6],
+      "value_range_inclusive": [-3, 3],
+      "target_range_inclusive": [-4, 4],
+      "construction": "All strictly-increasing distinct arrays of each length over the value range, crossed with every target in the target range.",
+      "closed_form_count": "sum over L in 1..6 of C(7, L) times 9 = 126 times 9 = 1134",
+      "expected_case_count": 1134,
+      "count_mismatch_action": "stop and report"
+    },
+    "tier2_adversarial": {
+      "frozen_witnesses": [
+        {"nums": [1], "target": 1},
+        {"nums": [0, 1, 2, 3, 4, 5, 6, 7], "target": 8},
+        {"nums": [0], "target": 1},
+        {"nums": [0, 2], "target": 1}
+      ],
+      "boundary_lengths": [1, 2, 3, 7, 8, 9, 15, 16, 17, 9999, 10000],
+      "boundary_case_construction": "For each boundary length L: one ascending case [0, 1, ..., L-1] with target L (absent, above max) and one with target 0 (present). For L=10000 the values remain within the domain element range.",
+      "random_cases": {
+        "count": 200,
+        "generator": "python3 random.Random(20261012); for each case: L = rng.randint(1, 10000); nums = sorted(rng.sample(range(-9999, 10000), L)); target = rng.randrange(-9999, 10000) if rng.random() < 0.5 else rng.choice(nums)",
+        "seed": 20261012,
+        "reproducibility": "Exact algorithm frozen; any deviation is a protocol violation."
+      },
+      "purpose": "Refutation only. Tier 2 can produce verified failures but can never produce a certificate."
+    },
+    "tier3_cbmc": {
+      "unwind": 64,
+      "flags": ["--bounds-check", "--pointer-check", "--unwind", "64", "--unwinding-assertions"],
+      "budget_wall_seconds_per_invocation": 1800,
+      "budget_memory_gb": 8,
+      "properties_per_seed": [
+        "in_f_failure_search: assume F, assert the specification-correct return value; a counterexample is a verified in-F failure and its trace is the witness.",
+        "d_f_proof: assume D minus F, assert return == -1 plus safety; SUCCESS with no violated unwinding assertions is a complete D-minus-F proof.",
+        "full_d_proof: additionally assume F and assert the correct return across the whole domain; used for seed 1's NO_FAILURE claim."
+      ],
+      "harness_model": {
+        "array": "fixed capacity 10000 with symbolic length n constrained to [1, 10000]",
+        "elements": "symbolic ints; for all i < j < n: nums[i] < nums[j]; for all i < n: -10000 < nums[i] < 10000",
+        "target": "symbolic int constrained to -10000 < target < 10000",
+        "assumption_encoding": "domain constraints applied via __CPROVER_assume; family membership encoded as a dedicated assume for the F and D-minus-F properties"
+      },
+      "completeness_criteria": [
+        "cbmc exit status SUCCESS for the proof obligation",
+        "no violated unwinding assertions",
+        "all bounds, pointer, and undefined-behavior checks passed",
+        "domain assumptions exactly encode D (or D minus F) as specified above",
+        "the property is actually asserted (not vacuous by construction)",
+        "completed within the frozen wall-clock and memory budget"
+      ],
+      "incomplete_action": "Any failed criterion yields UNKNOWN for that obligation; never a certificate."
+    }
+  },
+  "toolchain": {
+    "cbmc": {
+      "version": "6.11.0",
+      "release_tag": "cbmc-6.11.0",
+      "msi_sha256": "8dcb29c2e91329898ecde5b79198dad2f4b5ebc5cb6b7d15e892c4fe26c6ea53",
+      "install_path": "C:\\Users\\pakla\\AppData\\Local\\Programs\\cbmc\\bin",
+      "compile_driver": "goto-cl.exe"
+    },
+    "msvc": {
+      "package": "Microsoft.VisualStudio.BuildTools",
+      "workload": "Microsoft.VisualStudio.Workload.VCTools",
+      "cl_version": "PENDING_INSTALL",
+      "cl_path": "PENDING_INSTALL",
+      "stl": "PENDING_INSTALL"
+    },
+    "sdk": "PENDING_INSTALL",
+    "not_in_frozen_toolchain": "llvm-mingw clang++ 23.1.1 was installed during toolchain inventory and verified working for native C++17 compilation; it is NOT part of the frozen RLC-0 toolchain. All native Tier 1/2 executions use cl.exe."
+  },
+  "authorization": {
+    "freeze_gate": "No seed may be compiled, executed, or submitted to CBMC until rlc0/FREEZE.md records SHA-256 hashes of every frozen file, the exact tool versions, and the git commit; the rlc0-freeze tag exists; and the tag commit hash is recorded.",
+    "execution": "Phase C (single execution over the six seeds) is authorized only after the freeze gate.",
+    "follow_up": "None. The report must end with: RLC-0 is complete. No follow-up is authorized."
+  }
+}

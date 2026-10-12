@@ -1,0 +1,43 @@
+{
+  "status": "DRAFT",
+  "study": "RLC-0",
+  "note": "Expected outcomes and frozen witnesses per the GPT-ratified RLC-0 instructions. SHA-256 hashes of these files are recorded in FREEZE.md at freeze time.",
+  "seeds": [
+    {
+      "id": 1,
+      "file": "seeds/seed1.cpp",
+      "expected_outcome": "NO_FAILURE",
+      "witness": null
+    },
+    {
+      "id": 2,
+      "file": "seeds/seed2.cpp",
+      "expected_outcome": "CERTIFIED_LOCALIZED",
+      "witness": {"nums": [1], "target": 1}
+    },
+    {
+      "id": 3,
+      "file": "seeds/seed3.cpp",
+      "expected_outcome": "CERTIFIED_LOCALIZED",
+      "witness": {"nums": [1], "target": 1}
+    },
+    {
+      "id": 4,
+      "file": "seeds/seed4.cpp",
+      "expected_outcome": "REFUTED",
+      "witness": {"nums": [0, 1, 2, 3, 4, 5, 6, 7], "target": 8}
+    },
+    {
+      "id": 5,
+      "file": "seeds/seed5.cpp",
+      "expected_outcome": "REFUTED",
+      "witness": {"nums": [0], "target": 1}
+    },
+    {
+      "id": 6,
+      "file": "seeds/seed6.cpp",
+      "expected_outcome": "REFUTED",
+      "witness": {"nums": [0, 2], "target": 1}
+    }
+  ]
+}
