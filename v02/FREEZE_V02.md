@@ -19,6 +19,8 @@
 - `v02/run_gates_v02.py`: `34f6270352a54adc5c1da46aab5fa806f81e7803a095af8d5125a13d8e8ce304`
 - `v02/run_pilot_v02.py`: `737b3440a641741932a40a36939e34543ad604cc1d898a314650271fa41346af`
 - `v02/run_confirmatory_v02.py`: `19c4104759038dcc5bcd6977baca6e73412f3b08f9f14565c23620e48953845e`
+- `v02/generate_pack.py` (added by addendum before any pack emission; body frozen): `d7c3f86fbdd9cb162b8c619f3e358f6fad87765e877e6158b22973e084f8a907`
+- `generation_v02/pack/` (120 single-shot submissions; ordered SHA256-of-SHA256 manifest): `cc695487c9e31c00424ae283b493ae2ded584eaf087a1bfa63458364a3ff828e`
 
 ## Reused v0.1 instrument hashes (imported unchanged)
 
