@@ -83,3 +83,14 @@ Phase A (this contract, seeds, expected outcomes, classifier, procedure) may be 
 - Flag 2 (seed 4 trigger): the triggering input is named in the frozen files — witness nums [0,1,2,3,4,5,6,7], target 8 (section 6, expected.json, spec.json tier2.frozen_witnesses). Defect path: size >= 8 and target > nums.back() returns size()-1 = 7 instead of -1.
 - Flag 3 (seed 1 gate): seed 1 is the certification gate. Its NO_FAILURE label requires a complete full-D proof under the frozen completeness criteria (spec.json tier3_cbmc.completeness_criteria); if seed 1 is UNKNOWN, certification claims for seeds 2 and 3 are void (section 7). The full_d_proof property is executed for all six seeds so the gate is exercised uniformly.
 
+## 13. Verdict-specific evidence acceptance
+
+The evidence required for each expected verdict is fixed per seed (mirrored in expected.json):
+
+- Seed 1 (NO_FAILURE): a complete full-domain correctness proof under the frozen completeness criteria. No verified failure anywhere in D.
+- Seeds 2 and 3 (CERTIFIED_LOCALIZED): a verified failure inside F plus a complete proof of correctness throughout the complement D minus F. An incomplete full_d_proof on these seeds is expected, because a failure exists inside F; that incompleteness is not a pipeline failure.
+- Seeds 4, 5 and 6 (REFUTED): a verified failure outside F. That alone suffices to refute localization for the seed; these seeds are not supposed to pass full-domain correctness proofs, and incomplete d_f_proof/full_d_proof results on them are expected refutation-side evidence, never interpreted as missing certificates.
+- Any UNKNOWN on any seed: report the outcome; change nothing.
+
+The full_d_proof invocation on seeds 2-6 is diagnostic uniformity only; acceptance is judged strictly per this section.
+

@@ -50,7 +50,7 @@
     "If the observed outcome for any seed is UNKNOWN, report it; do not modify tools, bounds, seeds, budgets, or timeouts.",
     "If an independent checker disagrees with classifier.py on any seed, stop and report the disagreement."
   ],
-  "success_rule": "RLC-0 succeeds only if every one of the six seeds receives its expected outcome from expected.json, every CERTIFIED_LOCALIZED or NO_FAILURE label is backed by a complete proof under the frozen completeness criteria, and the independent checker agrees with classifier.py on all six labels.",
+  "success_rule": "RLC-0 succeeds only if every one of the six seeds receives its expected outcome from expected.json, every CERTIFIED_LOCALIZED or NO_FAILURE label is backed by a complete proof under the frozen completeness criteria, and the independent checker agrees with classifier.py on all six labels. Acceptance evidence is verdict-specific per expected.json expected_evidence and CONTRACT section 13; incomplete proof obligations on a seed whose expected outcome is REFUTED are expected refutation-side evidence, not missing certificates.",
   "complexity_claim": "NONE. The study does not verify O(log n), loop-iteration bounds, or any other complexity property; it certifies functional behavior, memory safety, and termination only. This limitation must appear prominently in REPORT.md.",
   "tiers": {
     "tier1_exhaustive_small": {
@@ -116,9 +116,15 @@
     },
     "msvc": {
       "package": "Microsoft.VisualStudio.BuildTools",
+      "pinned_version": "18.10.2",
+      "winget_installer_sha256": "5be7256fa9b1a3c18a481d234abb45146f82ccc057c77449b94915e1ae3fd70e",
       "workload": "Microsoft.VisualStudio.Workload.VCTools",
       "cl_version": "PENDING_INSTALL",
       "cl_path": "PENDING_INSTALL",
+      "link_version": "PENDING_INSTALL",
+      "vctools_version": "PENDING_INSTALL",
+      "windows_sdk_dir": "PENDING_INSTALL",
+      "windows_sdk_version": "PENDING_INSTALL",
       "stl": "PENDING_INSTALL"
     },
     "sdk": "PENDING_INSTALL",

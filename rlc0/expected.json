@@ -7,36 +7,42 @@
       "id": 1,
       "file": "seeds/seed1.cpp",
       "expected_outcome": "NO_FAILURE",
+      "expected_evidence": "full_d_proof complete under the frozen completeness criteria (certification gate); any in-F or outside-F verified failure is unexpected",
       "witness": null
     },
     {
       "id": 2,
       "file": "seeds/seed2.cpp",
       "expected_outcome": "CERTIFIED_LOCALIZED",
+      "expected_evidence": "in_f_failure_verified true (witness below) plus d_f_proof complete; full_d_proof must be incomplete (a failure exists inside F) and that incompleteness is expected",
       "witness": {"nums": [1], "target": 1}
     },
     {
       "id": 3,
       "file": "seeds/seed3.cpp",
       "expected_outcome": "CERTIFIED_LOCALIZED",
+      "expected_evidence": "in_f_failure_verified true (witness below) plus d_f_proof complete; full_d_proof must be incomplete (a failure exists inside F) and that incompleteness is expected",
       "witness": {"nums": [1], "target": 1}
     },
     {
       "id": 4,
       "file": "seeds/seed4.cpp",
       "expected_outcome": "REFUTED",
+      "expected_evidence": "outside_f_failure_verified true (witness below) suffices to refute localization; full_d_proof and d_f_proof incompleteness is expected and must not be treated as a pipeline completeness failure",
       "witness": {"nums": [0, 1, 2, 3, 4, 5, 6, 7], "target": 8}
     },
     {
       "id": 5,
       "file": "seeds/seed5.cpp",
       "expected_outcome": "REFUTED",
+      "expected_evidence": "outside_f_failure_verified true (witness below) suffices to refute localization; full_d_proof and d_f_proof incompleteness is expected and must not be treated as a pipeline completeness failure",
       "witness": {"nums": [0], "target": 1}
     },
     {
       "id": 6,
       "file": "seeds/seed6.cpp",
       "expected_outcome": "REFUTED",
+      "expected_evidence": "outside_f_failure_verified true (witness below, failure by nontermination/timeout) suffices to refute localization; full_d_proof and d_f_proof incompleteness is expected and must not be treated as a pipeline completeness failure",
       "witness": {"nums": [0, 2], "target": 1}
     }
   ]

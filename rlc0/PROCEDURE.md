@@ -30,7 +30,7 @@ Status: DRAFT. Steps B0-B6 and C1-C5 execute only in the order written. All arti
 ## B4. CBMC harness (Tier 3)
 
 - Compile seed + frozen harness model (see spec.json tier3_cbmc.harness_model) with goto-cl /c using MSVC headers.
-- Per seed, three invocations with the frozen flags: in_f_failure_search, d_f_proof, full_d_proof (the last only claimed for seed 1's NO_FAILURE path; run for all seeds for uniformity).
+- Per seed, three invocations with the frozen flags: in_f_failure_search, d_f_proof, full_d_proof (the last only claimed for seed 1's NO_FAILURE path; run for all seeds for uniformity, diagnostic only on seeds 2-6 per CONTRACT section 13).
 - Enforce 1800 s wall / 8 GB per invocation. Record exit status, property results, unwinding-assertion status, time, and memory.
 - Counterexample traces are saved; the concrete assignment (nums, target) is extracted as the witness and replayed through the B3 harness to confirm the failure independently of CBMC.
 - Completeness is judged strictly by spec.json tier3_cbmc.completeness_criteria; any failed criterion yields "incomplete".
