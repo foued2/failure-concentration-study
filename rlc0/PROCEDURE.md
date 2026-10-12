@@ -7,6 +7,7 @@ Status: DRAFT. Steps B0-B6 and C1-C5 execute only in the order written. All arti
 1. Record `cl.exe` full version banner and path (from the VS developer environment), `cbmc --version`, `goto-cl` presence.
 2. Non-seed smoke test: a trivial C++17 program with a std::vector call (linear search, unrelated to binary search) compiled two ways: (a) cl.exe natively, executed, exit code checked; (b) goto-cl /c to a goto object, then cbmc with the frozen flags (unwind 4, unwinding assertions, bounds, pointer checks) on a trivial main. Both must succeed.
 3. If either smoke test fails: stop and report the blocker. Do not substitute tools.
+4. If the goto-cl + CBMC smoke test fails against the pinned MSVC release, any fallback to a different Build Tools version (e.g. 17.14.41) requires a dated addendum written BEFORE the switch, recording the failure output and the reason; the chosen version is then written into the freeze record. No silent switching.
 
 ## B1. Reference oracle (two independent implementations)
 
@@ -42,9 +43,10 @@ Status: DRAFT. Steps B0-B6 and C1-C5 execute only in the order written. All arti
 ## B6. Freeze gate
 
 - Write FREEZE.md: SHA-256 of every file in rlc0/ except work/, exact tool versions and paths, exact compile/verify command lines, date, git commit hash.
+- FREEZE.md must contain a "Hash recomputation" block with the exact PowerShell commands (Get-FileHash -Algorithm SHA256 per frozen file, plus the git commands to resolve the rlc0-freeze tag to its commit) so a reviewer can recompute every value independently.
 - Path-scoped commit of rlc0/ (git -c user.name=foued2 -c user.email=116307732+foued2@users.noreply.github.com commit -m ... -- rlc0/).
 - Create and push tag rlc0-freeze; record the tag commit hash in FREEZE.md and in the session report.
-- Only after the freeze gate is Phase C authorized.
+- Only after the freeze gate is Phase C authorized. Phase C additionally requires that a reviewer other than the author has recomputed every FREEZE.md hash, confirmed the rlc0-freeze tag resolves to the recorded commit, and reported agreement. Until that confirmation exists, Phase C stays unauthorized.
 
 ## C1. Single execution
 

@@ -75,4 +75,11 @@ RLC-0 does not verify O(log n), iteration counts, or any complexity bound. Certi
 
 ## 11. Authorization boundary
 
-Phase A (this contract, seeds, expected outcomes, classifier, procedure) may be prepared as DRAFT. Freezing requires: complete version-pinned toolchain, non-seed smoke test success, SHA-256 of every frozen file, commit, tag rlc0-freeze, and the tag commit hash recorded in FREEZE.md. Phase C (single execution over the six seeds) is authorized only after the freeze gate. RLC-0 is a separate project from C_genuine and from the terminated v0.1/v0.2 studies; no file of those studies may be touched. The final report must end with: "RLC-0 is complete. No follow-up is authorized."
+Phase A (this contract, seeds, expected outcomes, classifier, procedure) may be prepared as DRAFT. Freezing requires: complete version-pinned toolchain, non-seed smoke test success, SHA-256 of every frozen file, commit, tag rlc0-freeze, and the tag commit hash recorded in FREEZE.md. Phase C (single execution over the six seeds) is authorized only after the freeze gate AND an independent recomputation of every FREEZE.md hash by a reviewer other than the author, with the rlc0-freeze tag commit confirmed to match. RLC-0 is a separate project from C_genuine and from the terminated v0.1/v0.2 studies; no file of those studies may be touched. The final report must end with: "RLC-0 is complete. No follow-up is authorized."
+
+## 12. Pre-freeze review flags (closed)
+
+- Flag 1 (domain): LC 704 bounds were checked against the live problem page (https://leetcode.com/problems/binary-search/description/, fetched 2026-10-12): 1 <= nums.length <= 10^4; -10^4 < nums[i], target < 10^4; unique; ascending. Mirrored in section 2 and spec.json (problem.official_bounds_confirmed).
+- Flag 2 (seed 4 trigger): the triggering input is named in the frozen files — witness nums [0,1,2,3,4,5,6,7], target 8 (section 6, expected.json, spec.json tier2.frozen_witnesses). Defect path: size >= 8 and target > nums.back() returns size()-1 = 7 instead of -1.
+- Flag 3 (seed 1 gate): seed 1 is the certification gate. Its NO_FAILURE label requires a complete full-D proof under the frozen completeness criteria (spec.json tier3_cbmc.completeness_criteria); if seed 1 is UNKNOWN, certification claims for seeds 2 and 3 are void (section 7). The full_d_proof property is executed for all six seeds so the gate is exercised uniformly.
+
