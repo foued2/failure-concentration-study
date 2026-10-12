@@ -1,0 +1,17 @@
+{
+  "protocol_version": "v0.2",
+  "inherits_instrument_from": "v0.1 FREEZE.md (study/*.py, specs/instrument_spec.json — imported unchanged)",
+  "outcome": "per-hidden-input binary correctness; scoring aggregated pair -> instance; fitting pair-level soft label s/20 with weight 1/pairs_in_instance",
+  "pack_size": 120,
+  "pilot_seeds": [101, 102, 103],
+  "confirmatory_instances": 40,
+  "confirmatory_seed_rule": "int.from_bytes(sha256(f'{v02_protocol_hash16}:confirmatory:{i}')[:4],'big') for i in 0..39; assert no seed in pilot_seeds",
+  "hidden_M": 20,
+  "eligibility_k_min": 2,
+  "delta_nats_per_hidden_input": 0.01,
+  "relabel": {"R": 200, "seed_rule": "int(sha256(f'v02:relabel:{r}')[:4])", "note": "one balanced random partition of 30 probe slots into 6 groups of 5 per r, applied consistently across all instances"},
+  "pilot_gate": {"min_eligible_pairs_per_instance": 15, "min_hidden_correct_rate": 0.10, "min_hidden_incorrect_rate": 0.10},
+  "bootstrap": {"n_boot": 10000, "seed": 99, "ci": 0.95},
+  "format_failure_rate_max": 0.20,
+  "rcs_and_logistic": "identical to v0.1 specs/instrument_spec.json analysis block (knots ln(3),ln(5),ln(10),ln(20),ln(31); ridge 1e-6; max_iter 50)"
+}

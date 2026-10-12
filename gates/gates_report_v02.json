@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-10-12T12:50:46.274453+00:00",
+  "G1": {
+    "name": "G1",
+    "total": 180,
+    "exact_one": 180,
+    "violations": [],
+    "pass": true
+  },
+  "G2": {
+    "name": "G2",
+    "checks": [
+      {
+        "case": "soft_label",
+        "y": [
+          0.75,
+          1.0,
+          0.0,
+          0.5
+        ],
+        "pass": true
+      },
+      {
+        "case": "instance_weight",
+        "w": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "pass": true
+      },
+      {
+        "case": "loo_runs",
+        "deltas": [
+          0.008792846361060647,
+          0.008792846361060647,
+          0.008792846361060647
+        ],
+        "pass": true
+      },
+      {
+        "case": "relabel_deterministic",
+        "pass": true
+      }
+    ],
+    "pass": true
+  },
+  "G3": {
+    "name": "G3",
+    "hidden_inputs_checked": 160,
+    "mismatches": [],
+    "pass": true
+  },
+  "all_pass": true
+}
