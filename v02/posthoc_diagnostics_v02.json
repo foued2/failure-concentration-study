@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-10-12T14:48:19.245740+00:00",
+  "label": "post-hoc software diagnostic; synthetic data only; no effect on real-data analysis",
+  "checks": [
+    {
+      "check": "P1_positive_control",
+      "pass": true,
+      "delta": 0.07117476189381267,
+      "ci": [
+        0.07117476189381267,
+        0.07117476189381267
+      ],
+      "relabel_p95_r20": 0.07117287949000489,
+      "classify": "POSITIVE",
+      "n_instances": 8
+    },
+    {
+      "check": "P2_count_only_control",
+      "pass": true,
+      "delta": -1.2831888551723125e-08,
+      "ci": [
+        -1.2831888551723125e-08,
+        -1.2831888551723125e-08
+      ],
+      "max_abs_di": 1.2831888551723125e-08
+    },
+    {
+      "check": "P3_classify_branches",
+      "pass": true,
+      "got": [
+        "POSITIVE",
+        "NEGATIVE",
+        "AMBIGUOUS",
+        "INCONCLUSIVE (CI straddles threshold)",
+        "NEGATIVE"
+      ],
+      "expected": [
+        "POSITIVE",
+        "NEGATIVE",
+        "AMBIGUOUS",
+        "INCONCLUSIVE (CI straddles threshold)",
+        "NEGATIVE"
+      ]
+    },
+    {
+      "check": "P4_bootstrap_degenerate",
+      "pass": true,
+      "ci": [
+        0.1,
+        0.1
+      ]
+    }
+  ],
+  "all_pass": true
+}
