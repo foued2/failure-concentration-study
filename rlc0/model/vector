@@ -1,0 +1,43 @@
+#ifndef RLC0_MODEL_VECTOR_H
+#define RLC0_MODEL_VECTOR_H
+
+typedef unsigned long long rlc0_size_t;
+
+#ifdef __CPROVER__
+extern "C" void __CPROVER_assert(bool condition, const char* description);
+#endif
+
+namespace std {
+
+template <class T>
+class vector {
+public:
+    typedef rlc0_size_t size_type;
+
+    vector() : m_data(0), m_size(0) {}
+
+    size_type size() const {
+        return m_size;
+    }
+
+    T& operator[](size_type i) {
+#ifdef __CPROVER__
+        __CPROVER_assert(i < m_size, "rlc0 model vector: index out of range");
+#endif
+        return m_data[i];
+    }
+
+    const T& operator[](size_type i) const {
+#ifdef __CPROVER__
+        __CPROVER_assert(i < m_size, "rlc0 model vector: index out of range");
+#endif
+        return m_data[i];
+    }
+
+    T* m_data;
+    size_type m_size;
+};
+
+}
+
+#endif
