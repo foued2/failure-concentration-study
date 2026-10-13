@@ -64,8 +64,9 @@ Immediate stops (frozen): any of seeds 4/5/6 labeled CERTIFIED_LOCALIZED; seed 1
 ## 9. Toolchain
 
 - CBMC 6.11.0 (release cbmc-6.11.0, MSI sha256 8dcb29c2e91329898ecde5b79198dad2f4b5ebc5cb6b7d15e892c4fe26c6ea53), installed per-user; compile driver goto-cl.exe.
-- MSVC cl.exe from Microsoft.VisualStudio.BuildTools with workload VCTools: PENDING_INSTALL (version and path recorded at freeze).
-- llvm-mingw clang++ 23.1.1 was verified during inventory but is NOT part of the frozen toolchain; all native Tier 1/2 executions use cl.exe.
+- MSVC: Visual Studio Build Tools 2026, winget id Microsoft.VisualStudio.BuildTools pinned version 18.10.2 (installer sha256 5be7256fa9b1a3c18a481d234abb45146f82ccc057c77449b94915e1ae3fd70e); cl.exe 19.51.36260 for x64; link.exe 14.51.36260.0; VCToolsVersion 14.51.36231; Windows SDK 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10\.
+- Model route (decided after the B0 failure recorded in ADDENDUM_2026-10-13): CBMC's C++ frontend cannot parse the MSVC 14.51 STL, so the CBMC path compiles seeds against the project-controlled model header `rlc0/model/vector` (shadowing `<vector>` via goto-cl `/I`); the native Tier 1/2 path continues to use cl.exe with the real MSVC STL. The model header is a frozen file; its hash is recorded in FREEZE.md. Command-line quirks (default output naming; `extern "C"` declaration of `__CPROVER_assert`) are frozen in spec.json/PROCEDURE.md.
+- llvm-mingw clang++ 23.1.1 was verified during inventory but is NOT part of the frozen toolchain.
 
 If the required compiler or CBMC cannot be installed and version-pinned, that is a blocker reported before freezing. No substitute toolchain without a separate decision.
 

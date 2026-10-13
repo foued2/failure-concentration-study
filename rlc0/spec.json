@@ -119,16 +119,55 @@
       "pinned_version": "18.10.2",
       "winget_installer_sha256": "5be7256fa9b1a3c18a481d234abb45146f82ccc057c77449b94915e1ae3fd70e",
       "workload": "Microsoft.VisualStudio.Workload.VCTools",
-      "cl_version": "PENDING_INSTALL",
-      "cl_path": "PENDING_INSTALL",
-      "link_version": "PENDING_INSTALL",
-      "vctools_version": "PENDING_INSTALL",
-      "windows_sdk_dir": "PENDING_INSTALL",
-      "windows_sdk_version": "PENDING_INSTALL",
-      "stl": "PENDING_INSTALL"
+      "cl_version": "Microsoft (R) C/C++ Optimizing Compiler Version 19.51.36260 for x64",
+      "cl_path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\cl.exe",
+      "link_version": "Microsoft (R) Incremental Linker Version 14.51.36260.0",
+      "vctools_version": "14.51.36231",
+      "windows_sdk_dir": "C:\\Program Files (x86)\\Windows Kits\\10\\",
+      "windows_sdk_version": "10.0.26100.0",
+      "developer_prompt": "Visual Studio 2026 Developer Command Prompt v18.10.2 (VsDevCmd.bat -arch=amd64 -host_arch=amd64)",
+      "stl": "MSVC 14.51.36231 (native Tier 1/2 path only; NOT parseable by CBMC 6.11.0, see ADDENDUM_2026-10-13)"
+    },
+    "model_route": {
+      "header": "rlc0/model/vector",
+      "mechanism": "goto-cl /I rlc0\\model resolves #include <vector> to the project-controlled model before the system INCLUDE path; shadow proven by cl /EP preprocessing of a canary (model marker rlc0_size_t present, MSVC STL marker integral_constant absent)",
+      "covers_seed_operations": ["default construction", "size()", "operator[] const and non-const"],
+      "index_precondition": "operator[] asserts i < size() via __CPROVER_assert on the CBMC path; the assertion is a verification monitor for the study's memory-safety failure category, not a claim about std::vector's ordinary in-bounds behavior",
+      "cprover_assert_declaration": "must be declared extern \"C\" in the model header or CBMC reports 'no body for callee' (C++ mangling breaks builtin binding); __CPROVER__ is predefined by goto-cl",
+      "goto_cl_output_quirk": "goto-cl silently produces no artifact for /Fe:file and /Fo:file (colon forms); use default output naming (goto-binary written as <name>.exe) or attached non-colon forms; frozen commands use default naming",
+      "frozen_cbmc_commands": [
+        "goto-cl.exe /nologo /std:c++17 /EHsc /I\"<repo>\\rlc0\\model\" <file>.cpp",
+        "cbmc.exe <file>.exe --function main --unwind 64 --unwinding-assertions --bounds-check --pointer-check"
+      ],
+      "frozen_shadow_proof_command": "cl /nologo /std:c++17 /EP /I<repo>\\rlc0\\model <canary>.cpp | findstr markers"
     },
     "sdk": "PENDING_INSTALL",
     "not_in_frozen_toolchain": "llvm-mingw clang++ 23.1.1 was installed during toolchain inventory and verified working for native C++17 compilation; it is NOT part of the frozen RLC-0 toolchain. All native Tier 1/2 executions use cl.exe."
+  },
+  "semantic_correspondence": {
+    "principle": "Certificates are properties of programs built against rlc0/model/vector on the CBMC path. Correspondence to std::vector for the operations the seeds use is an explicit proof obligation, never assumed.",
+    "obligations": [
+      {
+        "id": "S1",
+        "statement": "Operation coverage: a machine-checked scan of the six seeds establishes exactly which vector members they use (expected: construction, size(), operator[]). The model implements precisely those with cppreference-defined semantics for valid in-bounds inputs.",
+        "verification": "grep-level scan of seed sources against the model's public member list, recorded before freeze; any unimplemented member used by a seed is a stop condition."
+      },
+      {
+        "id": "S2",
+        "statement": "Behavioral agreement on defined, in-bounds executions: the same canary/harness logic built twice natively with cl (real MSVC STL vs model header) must agree on return values and crash/termination behavior for every in-bounds operation invocation. The bounds assertion is NOT part of ordinary-behavior comparison; it is the explicit monitor for the study's out-of-bounds failure category.",
+        "verification": "dual-build native comparison over the frozen case sets (Tier 1 + Tier 2 + witnesses) in Phase B; any disagreement stops the study. Required BEFORE final freeze per review condition 1."
+      },
+      {
+        "id": "S3",
+        "statement": "CBMC-path coverage: the model's index precondition assert plus CBMC bounds/pointer checks cover every memory-safety violation real operator[] would permit on the declared domain.",
+        "verification": "negative canary evidence (model assert fires on v[v.size()] with backing buffer in bounds) plus the frozen flag set on every invocation; documented in FREEZE.md."
+      }
+    ],
+    "full_domain_harness_audit": {
+      "requirement": "Before any NO_FAILURE or CERTIFIED_LOCALIZED label, the proof harness must be audited to confirm it represents the entire declared LC704 domain (symbolic length n in [1,10000], symbolic elements with strict-increase and range constraints, symbolic target), not finite pilot cases or boundary samples.",
+      "finite_evidence_rule": "Tier 1/2 execution over 1134 + ~242 inputs is refutation-side evidence only and can never substitute for a completed proof obligation with full unwinding.",
+      "verification": "documented harness review recorded in the Phase B evidence; incomplete unwinding or violated unwinding assertions always yield UNKNOWN, never a certificate."
+    }
   },
   "authorization": {
     "freeze_gate": "No seed may be compiled, executed, or submitted to CBMC until rlc0/FREEZE.md records SHA-256 hashes of every frozen file, the exact tool versions, and the git commit; the rlc0-freeze tag exists; and the tag commit hash is recorded.",
