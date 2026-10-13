@@ -1,0 +1,156 @@
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 windows
+Reading GOTO program from file canary_n63_IN_F.exe
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+SAT checker ran out of memory
+
+** Results:
+C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\harness\canary_n63.h function search
+[search.overflow.1] line 10 arithmetic overflow on signed - in (signed int)return_value_size$0 - 1: ERROR
+[search.unwind.0] line 11 unwinding assertion loop 0: ERROR
+[search.overflow.2] line 12 arithmetic overflow on signed - in right - left: ERROR
+[search.overflow.3] line 12 arithmetic overflow on signed + in left + (right - left) / 2: ERROR
+[search.pointer_dereference.1] line 13 dereference failure: pointer NULL in *return_value_operator[]: ERROR
+[search.pointer_dereference.2] line 13 dereference failure: pointer invalid in *return_value_operator[]: ERROR
+[search.pointer_dereference.3] line 13 dereference failure: deallocated dynamic object in *return_value_operator[]: SUCCESS
+[search.pointer_dereference.4] line 13 dereference failure: dead object in *return_value_operator[]: SUCCESS
+[search.pointer_dereference.5] line 13 dereference failure: pointer outside object bounds in *return_value_operator[]: ERROR
+[search.pointer_dereference.6] line 13 dereference failure: invalid integer address in *return_value_operator[]: ERROR
+[search.pointer_dereference.7] line 16 dereference failure: pointer NULL in *return_value_operator[]$0: ERROR
+[search.pointer_dereference.8] line 16 dereference failure: pointer invalid in *return_value_operator[]$0: ERROR
+[search.pointer_dereference.9] line 16 dereference failure: deallocated dynamic object in *return_value_operator[]$0: SUCCESS
+[search.pointer_dereference.10] line 16 dereference failure: dead object in *return_value_operator[]$0: SUCCESS
+[search.pointer_dereference.11] line 16 dereference failure: pointer outside object bounds in *return_value_operator[]$0: ERROR
+[search.pointer_dereference.12] line 16 dereference failure: invalid integer address in *return_value_operator[]$0: ERROR
+[search.overflow.4] line 17 arithmetic overflow on signed + in mid + 1: ERROR
+[search.overflow.5] line 19 arithmetic overflow on signed - in mid - 1: ERROR
+
+C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\harness\proof_harness.h function rlc0_assert_correct
+[rlc0_assert_correct.assertion.1] line 30 rlc0: returned -1 but target is present: ERROR
+[rlc0_assert_correct.assertion.2] line 32 rlc0: return value outside [0, n): ERROR
+[rlc0_assert_correct.assertion.3] line 34 rlc0: return index does not contain target: ERROR
+[rlc0_assert_correct.pointer_dereference.1] line 34 dereference failure: pointer NULL in buf[(signed long long int)r]: SUCCESS
+[rlc0_assert_correct.pointer_dereference.2] line 34 dereference failure: pointer invalid in buf[(signed long long int)r]: SUCCESS
+[rlc0_assert_correct.pointer_dereference.3] line 34 dereference failure: deallocated dynamic object in buf[(signed long long int)r]: SUCCESS
+[rlc0_assert_correct.pointer_dereference.4] line 34 dereference failure: dead object in buf[(signed long long int)r]: SUCCESS
+[rlc0_assert_correct.pointer_dereference.5] line 34 dereference failure: pointer outside object bounds in buf[(signed long long int)r]: ERROR
+[rlc0_assert_correct.pointer_dereference.6] line 34 dereference failure: invalid integer address in buf[(signed long long int)r]: SUCCESS
+
+C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\harness\proof_harness.h function rlc0_build
+[rlc0_build.pointer_dereference.1] line 13 dereference failure: pointer NULL in p->n: SUCCESS
+[rlc0_build.pointer_dereference.2] line 13 dereference failure: pointer invalid in p->n: SUCCESS
+[rlc0_build.pointer_dereference.3] line 13 dereference failure: deallocated dynamic object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.4] line 13 dereference failure: dead object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.5] line 13 dereference failure: pointer outside object bounds in p->n: SUCCESS
+[rlc0_build.pointer_dereference.6] line 13 dereference failure: invalid integer address in p->n: SUCCESS
+[rlc0_build.pointer_dereference.7] line 13 dereference failure: pointer NULL in p->n: SUCCESS
+[rlc0_build.pointer_dereference.8] line 13 dereference failure: pointer invalid in p->n: SUCCESS
+[rlc0_build.pointer_dereference.9] line 13 dereference failure: deallocated dynamic object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.10] line 13 dereference failure: dead object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.11] line 13 dereference failure: pointer outside object bounds in p->n: SUCCESS
+[rlc0_build.pointer_dereference.12] line 13 dereference failure: invalid integer address in p->n: SUCCESS
+[rlc0_build.pointer_dereference.13] line 14 dereference failure: pointer NULL in p->target: SUCCESS
+[rlc0_build.pointer_dereference.14] line 14 dereference failure: pointer invalid in p->target: SUCCESS
+[rlc0_build.pointer_dereference.15] line 14 dereference failure: deallocated dynamic object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.16] line 14 dereference failure: dead object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.17] line 14 dereference failure: pointer outside object bounds in p->target: SUCCESS
+[rlc0_build.pointer_dereference.18] line 14 dereference failure: invalid integer address in p->target: SUCCESS
+[rlc0_build.pointer_dereference.19] line 14 dereference failure: pointer NULL in p->target: SUCCESS
+[rlc0_build.pointer_dereference.20] line 14 dereference failure: pointer invalid in p->target: SUCCESS
+[rlc0_build.pointer_dereference.21] line 14 dereference failure: deallocated dynamic object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.22] line 14 dereference failure: dead object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.23] line 14 dereference failure: pointer outside object bounds in p->target: SUCCESS
+[rlc0_build.pointer_dereference.24] line 14 dereference failure: invalid integer address in p->target: SUCCESS
+[rlc0_build.overflow.2] line 15 arithmetic overflow on signed + in i + 1: SUCCESS
+[rlc0_build.pointer_dereference.25] line 16 dereference failure: pointer NULL in p->n: SUCCESS
+[rlc0_build.pointer_dereference.26] line 16 dereference failure: pointer invalid in p->n: SUCCESS
+[rlc0_build.pointer_dereference.27] line 16 dereference failure: deallocated dynamic object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.28] line 16 dereference failure: dead object in p->n: SUCCESS
+[rlc0_build.pointer_dereference.29] line 16 dereference failure: pointer outside object bounds in p->n: SUCCESS
+[rlc0_build.pointer_dereference.30] line 16 dereference failure: invalid integer address in p->n: SUCCESS
+[rlc0_build.array_bounds.1] line 17 array.rlc0_input::buf dynamic object upper bound in p->buf[(signed long long int)i]: SUCCESS
+[rlc0_build.array_bounds.2] line 17 array.rlc0_input::buf dynamic object upper bound in p->buf[(signed long long int)i]: SUCCESS
+[rlc0_build.pointer_dereference.31] line 17 dereference failure: pointer NULL in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.32] line 17 dereference failure: pointer invalid in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.33] line 17 dereference failure: deallocated dynamic object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.34] line 17 dereference failure: dead object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.35] line 17 dereference failure: pointer outside object bounds in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.36] line 17 dereference failure: invalid integer address in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.37] line 17 dereference failure: pointer NULL in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.38] line 17 dereference failure: pointer invalid in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.39] line 17 dereference failure: deallocated dynamic object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.40] line 17 dereference failure: dead object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.41] line 17 dereference failure: pointer outside object bounds in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.42] line 17 dereference failure: invalid integer address in p->buf: SUCCESS
+[rlc0_build.overflow.1] line 18 arithmetic overflow on signed + in i + 1: SUCCESS
+[rlc0_build.array_bounds.3] line 19 array.rlc0_input::buf dynamic object upper bound in p->buf[(signed long long int)i]: SUCCESS
+[rlc0_build.array_bounds.4] line 19 array.rlc0_input::buf dynamic object upper bound in p->buf[(signed long long int)(i + 1)]: SUCCESS
+[rlc0_build.pointer_dereference.43] line 19 dereference failure: pointer NULL in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.44] line 19 dereference failure: pointer invalid in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.45] line 19 dereference failure: deallocated dynamic object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.46] line 19 dereference failure: dead object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.47] line 19 dereference failure: pointer outside object bounds in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.48] line 19 dereference failure: invalid integer address in p->buf: SUCCESS
+[rlc0_build.array_bounds.5] line 21 array.rlc0_input::buf dynamic object upper bound in p->buf[(signed long long int)i]: SUCCESS
+[rlc0_build.pointer_dereference.49] line 21 dereference failure: pointer NULL in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.50] line 21 dereference failure: pointer invalid in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.51] line 21 dereference failure: deallocated dynamic object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.52] line 21 dereference failure: dead object in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.53] line 21 dereference failure: pointer outside object bounds in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.54] line 21 dereference failure: invalid integer address in p->buf: SUCCESS
+[rlc0_build.pointer_dereference.55] line 21 dereference failure: pointer NULL in p->target: SUCCESS
+[rlc0_build.pointer_dereference.56] line 21 dereference failure: pointer invalid in p->target: SUCCESS
+[rlc0_build.pointer_dereference.57] line 21 dereference failure: deallocated dynamic object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.58] line 21 dereference failure: dead object in p->target: SUCCESS
+[rlc0_build.pointer_dereference.59] line 21 dereference failure: pointer outside object bounds in p->target: SUCCESS
+[rlc0_build.pointer_dereference.60] line 21 dereference failure: invalid integer address in p->target: SUCCESS
+[rlc0_build.pointer_dereference.61] line 22 dereference failure: pointer NULL in p->present: SUCCESS
+[rlc0_build.pointer_dereference.62] line 22 dereference failure: pointer invalid in p->present: SUCCESS
+[rlc0_build.pointer_dereference.63] line 22 dereference failure: deallocated dynamic object in p->present: SUCCESS
+[rlc0_build.pointer_dereference.64] line 22 dereference failure: dead object in p->present: SUCCESS
+[rlc0_build.pointer_dereference.65] line 22 dereference failure: pointer outside object bounds in p->present: SUCCESS
+[rlc0_build.pointer_dereference.66] line 22 dereference failure: invalid integer address in p->present: SUCCESS
+
+[pointer_dereference.1] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer NULL in this->m_data: SUCCESS
+[pointer_dereference.2] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer invalid in this->m_data: SUCCESS
+[pointer_dereference.3] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: deallocated dynamic object in this->m_data: SUCCESS
+[pointer_dereference.4] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: dead object in this->m_data: SUCCESS
+[pointer_dereference.5] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer outside object bounds in this->m_data: SUCCESS
+[pointer_dereference.6] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: invalid integer address in this->m_data: SUCCESS
+[pointer_dereference.7] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer NULL in this->m_size: SUCCESS
+[pointer_dereference.8] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer invalid in this->m_size: SUCCESS
+[pointer_dereference.9] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: deallocated dynamic object in this->m_size: SUCCESS
+[pointer_dereference.10] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: dead object in this->m_size: SUCCESS
+[pointer_dereference.11] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: pointer outside object bounds in this->m_size: SUCCESS
+[pointer_dereference.12] file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector line 17 dereference failure: invalid integer address in this->m_size: SUCCESS
+C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector function operator[]
+[operator[].assertion.1] line 25 rlc0 model vector: index out of range: ERROR
+[operator[].pointer_dereference.1] line 25 dereference failure: pointer NULL in this->m_size: SUCCESS
+[operator[].pointer_dereference.2] line 25 dereference failure: pointer invalid in this->m_size: SUCCESS
+[operator[].pointer_dereference.3] line 25 dereference failure: deallocated dynamic object in this->m_size: SUCCESS
+[operator[].pointer_dereference.4] line 25 dereference failure: dead object in this->m_size: SUCCESS
+[operator[].pointer_dereference.5] line 25 dereference failure: pointer outside object bounds in this->m_size: SUCCESS
+[operator[].pointer_dereference.6] line 25 dereference failure: invalid integer address in this->m_size: SUCCESS
+[operator[].pointer_dereference.7] line 27 dereference failure: pointer NULL in this->m_data: SUCCESS
+[operator[].pointer_dereference.8] line 27 dereference failure: pointer invalid in this->m_data: SUCCESS
+[operator[].pointer_dereference.9] line 27 dereference failure: deallocated dynamic object in this->m_data: SUCCESS
+[operator[].pointer_dereference.10] line 27 dereference failure: dead object in this->m_data: SUCCESS
+[operator[].pointer_dereference.11] line 27 dereference failure: pointer outside object bounds in this->m_data: SUCCESS
+[operator[].pointer_dereference.12] line 27 dereference failure: invalid integer address in this->m_data: SUCCESS
+
+C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\model\vector function size
+[size.pointer_dereference.1] line 20 dereference failure: pointer NULL in this->m_size: SUCCESS
+[size.pointer_dereference.2] line 20 dereference failure: pointer invalid in this->m_size: SUCCESS
+[size.pointer_dereference.3] line 20 dereference failure: deallocated dynamic object in this->m_size: SUCCESS
+[size.pointer_dereference.4] line 20 dereference failure: dead object in this->m_size: SUCCESS
+[size.pointer_dereference.5] line 20 dereference failure: pointer outside object bounds in this->m_size: SUCCESS
+[size.pointer_dereference.6] line 20 dereference failure: invalid integer address in this->m_size: SUCCESS
+
+** 0 of 131 failed (1 iterations)
+VERIFICATION ERROR

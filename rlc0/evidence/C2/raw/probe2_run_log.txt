@@ -1,0 +1,16 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.2
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+============ probe_v1 compile (C++, pre-declared quantifier variable)
+probe_v1.cpp
+probe_v1.cpp(9): error: parse error before '__CPROVER_forall ( i ;'
+probe_v1.cpp(9):     __CPROVER_assume(__CPROVER_forall(i; i < (unsigned)n ==> (buf[i] > -10000 && buf[i] < 10000)));
+PARSING ERROR
+goto-cl exit: 64
+============ probe_c compile (C mode, declaration-form quantifier)
+probe_c.c
+probe_c.c(8): error: syntax error before '('
+probe_c.c(8):     __CPROVER_assume(__CPROVER_forall(unsigned i; i < (unsigned)n ==> (buf[i] > -10000 && buf[i] < 10000)));
+PARSING ERROR
+goto-cl exit: 64

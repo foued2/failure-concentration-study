@@ -1,0 +1,30 @@
+V1 EXPERIMENT STATUS — RECORD (do not delete or overwrite the run log)
+Date: 2026-10-13
+Target: canary_n63_IN_F.exe
+Command (V1 = flag experiment, NOT the frozen command, NOT the baseline):
+  cbmc.exe canary_n63_IN_F.exe --function main --unwind 64
+    --unwindset "rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001"
+    --unwinding-assertions --bounds-check --pointer-check
+    --max-field-sensitivity-array-size 20000
+Run log: logs\v1_fieldsens.txt (676 bytes, partial — PRESERVED, content ends at
+  "Starting Bounded Model Checking", last write 11:08:14 local)
+
+OUTCOME: INTERRUPTED / INCONCLUSIVE
+  - Run aborted by operator (user abort of the shell command) before CBMC
+    produced any verification result.
+  - NO CBMC verification result exists for V1. Do not cite this log as
+    SUCCESS, FAILURE, ERROR, or any other CBMC verdict.
+  - No CBMC/goto-cl process from this invocation remains (process check
+    2026-10-13 ~11:40 local: none found).
+  - Command line was flawed for long runs: Measure-Command measures elapsed
+    time only; it imposed no wall timeout and no memory budget.
+
+Baseline (verify_all, frozen flags + harness unwindset, no extra flags) and V1
+are separate records. Baseline logs: logs\cbmc_canary_n63_IN_F.txt (completed,
+VERIFICATION ERROR — SAT checker out of memory), logs\cbmc_canary_n63_D_F.txt
+(378 bytes, partial — verify_all batch itself was terminated at tool timeout,
+stuck in "Running propositional reduction"), logs\cbmc_domain.txt (completed).
+
+Per GPT instruction 2026-10-13: baseline and V1 kept separate; next attempt
+must use a bounded runner enforcing 1800 s wall + 8 GB memory budget, run only
+after the original verify_all batch terminated (confirmed terminated).

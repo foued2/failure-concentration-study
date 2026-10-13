@@ -1,0 +1,14 @@
+label: r2_probe_domain
+command: C:\Users\pakla\AppData\Local\Programs\cbmc\bin\cbmc.exe probe_domain.exe --function main --unwind 64 --unwindset rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001 --unwinding-assertions --bounds-check --pointer-check
+out_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\r2_probe_domain.txt
+err_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\r2_probe_domain.txt.err.txt
+start: 2026-10-13T13:02:03.4325699+01:00
+end: 2026-10-13T13:05:27.4747960+01:00
+elapsed_sec: 204
+wall_budget_sec: 1800
+mem_budget_bytes: 8589934592
+mem_enforcement: job_object(True) poll_ms=250
+peak_private_bytes: 1728040960
+outcome: COMPLETED
+exit_code: 10
+note: COMPLETED = child exited naturally within budget; exit_code is cbmc raw exit (0 SUCCESS, 10 FAILED, 6/other see log; cbmc-internal SAT OOM prints 'SAT checker ran out of memory' and yields VERIFICATION ERROR = properties ERROR = INCOMPLETE, never SUCCESS). WALL_TIMEOUT = INCOMPLETE. exit 3 = job limit not armed (review).

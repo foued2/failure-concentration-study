@@ -1,0 +1,240 @@
+﻿New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+New-Object : Exception lors de l'appel de «.ctor» avec «1» argument(s): «Une exception de type 
+'System.OutOfMemoryException' a été levée.»
+Au caractère C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1:3 : 12
++   $chunk = New-Object byte[] (33554432)   # 32 MB
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 

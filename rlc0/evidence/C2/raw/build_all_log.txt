@@ -1,0 +1,45 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.2
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+==== build probe_domain
+probe_domain.cpp
+exit: 0
+==== build n63 IN_F
+proof_main.cpp
+exit: 0
+built canary_n63_IN_F.exe
+==== build n63 D_F
+proof_main.cpp
+exit: 0
+built canary_n63_D_F.exe
+==== build n63 FULL_D
+proof_main.cpp
+exit: 0
+built canary_n63_FULL_D.exe
+==== build large IN_F
+proof_main.cpp
+exit: 0
+built canary_large_IN_F.exe
+==== build large D_F
+proof_main.cpp
+exit: 0
+built canary_large_D_F.exe
+==== build large FULL_D
+proof_main.cpp
+exit: 0
+built canary_large_FULL_D.exe
+==== show-loops (FULL_D binary)
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 windows
+Reading GOTO program from file canary_n63_FULL_D.exe
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Loop Solution::search(this,ref_struct_tag(identifier=std::tag-vector<signed_int>),signed_int).0:
+  file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\harness\canary_n63.h line 11 function search
+
+Loop rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:
+  file C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\harness\proof_harness.h line 15 function rlc0_build
+
+show-loops exit: 0

@@ -1,0 +1,13 @@
+label: baseline_canary_large_IN_F
+command: C:\Users\pakla\AppData\Local\Programs\cbmc\bin\cbmc.exe canary_large_IN_F.exe --function main --unwind 64 --unwindset rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001 --unwinding-assertions --bounds-check --pointer-check
+out_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\base_canary_large_IN_F.txt
+err_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\base_canary_large_IN_F.txt.err.txt
+start: 2026-10-13T12:14:44.1837657+01:00
+end: 2026-10-13T12:16:24.1042426+01:00
+elapsed_sec: 99.9
+wall_budget_sec: 1800
+mem_budget_bytes: 8589934592
+peak_private_bytes: 10258694144
+outcome: MEMORY_LIMIT
+exit_code: 
+note: COMPLETED = process ran to natural exit within budget; exit_code is cbmc raw exit (0 SUCCESS, 10 FAILED, else see log). WALL_TIMEOUT/MEMORY_LIMIT = INCOMPLETE, not a verification verdict.

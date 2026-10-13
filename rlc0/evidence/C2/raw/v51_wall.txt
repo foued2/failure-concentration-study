@@ -1,0 +1,11 @@
+﻿
+Envoi d'une requête 'Ping'  127.0.0.1 avec 32 octets de données :
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128
+Réponse de 127.0.0.1 : octets=32 temps<1ms TTL=128

@@ -1,0 +1,28 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.2
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+============ probe_q compile
+probe_q.cpp
+probe_q.cpp(10): error: parse error before '__CPROVER_forall ( unsigned i'
+probe_q.cpp(10):     __CPROVER_assume(__CPROVER_forall(unsigned i; i < (unsigned)n ==> (buf[i] > -10000 && buf[i] < 10000)));
+PARSING ERROR
+goto-cl exit: 64
+PROBE_Q COMPILE FAILED 
+============ probe_split compile
+probe_split.cpp
+probe_split.cpp(11): error: parse error before '__CPROVER_forall ( unsigned i'
+probe_split.cpp(11):     __CPROVER_assume(__CPROVER_forall(unsigned i; i < (unsigned)n ==> (buf[i] > -10000 && buf[i] < 10000)));
+probe_split.cpp(16): error: parse error before 'else { __CPROVER_assume ('
+probe_split.cpp(16):     } else {
+probe_split.cpp(17): error: parse error before 'buf [ i ]'
+probe_split.cpp(17):         __CPROVER_assume(__CPROVER_forall(unsigned i; i < (unsigned)n ==> buf[i] != target));
+probe_split.cpp(18): error: parse error before '0 ,  )'
+probe_split.cpp(18):         __CPROVER_assert(0, "DF1 D-minus-F split reachable (expect FAILURE with absent-target witness)");
+probe_split.cpp(19): error: parse error before '} return 0 ;'
+probe_split.cpp(19):     }
+probe_split.cpp(21): error: parse error before '}'
+probe_split.cpp(21): }
+PARSING ERROR
+goto-cl exit: 64
+PROBE_SPLIT COMPILE FAILED 

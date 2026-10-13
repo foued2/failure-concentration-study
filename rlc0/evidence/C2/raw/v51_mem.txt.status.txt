@@ -1,0 +1,14 @@
+label: v51_mem
+command: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\selftest_alloc.ps1
+out_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\v51_mem.txt
+err_file: C:\Users\pakla\AppData\Local\Temp\opencode\rlc0-c2\logs\v51_mem.txt.err.txt
+start: 2026-10-13T12:59:39.7653547+01:00
+end: 2026-10-13T12:59:52.3484225+01:00
+elapsed_sec: 12.6
+wall_budget_sec: 120
+mem_budget_bytes: 1073741824
+mem_enforcement: job_object(True) poll_ms=250
+peak_private_bytes: 1073291264
+outcome: COMPLETED
+exit_code: 2
+note: COMPLETED = child exited naturally within budget; exit_code is cbmc raw exit (0 SUCCESS, 10 FAILED, 6/other see log; cbmc-internal SAT OOM prints 'SAT checker ran out of memory' and yields VERIFICATION ERROR = properties ERROR = INCOMPLETE, never SUCCESS). WALL_TIMEOUT = INCOMPLETE. exit 3 = job limit not armed (review).

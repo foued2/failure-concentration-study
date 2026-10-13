@@ -139,10 +139,18 @@ e95673292110ad9aabb778290b93b1f922bab33296f0ae87bd9434a404c50eac  evidence/B0.5/
 5ec802cc096ee120a411aef0c907b13bc8d72efbdca58acec421d593cec0aefb  evidence/B0.5/transcript_real.txt
 ```
 
+### 5.2 C2 harness-audit evidence (executed 2026-10-13; non-seed, raw logs in evidence/C2/raw/)
+
+```
+051e1a4fdc90beb673e2337e38da3d261165b729473e330d1a6a005533ecf59b  evidence/C2/RESULTS.md
+```
+
+`evidence/C2/raw/` holds the verbatim logs (75 files: quantifier probes, loop inventory, domain probe, baseline + bounded canary runs with status sidecars, V1 record, bounded-runner self-tests). RESULTS.md lists the four harness file hashes (section 5 uncommitted at its writing, committed with it) and the OPEN items: canary FAIL not observed (all six OOM inside budget, never SUCCESS), spec.json `frozen_cbmc_commands` missing the required `--unwindset ...:10001`, harness-model wording vs adjacent-pair encoding.
+
 ## 6. Open conditions before final freeze and tag (GPT review 2026-10-13)
 
 1. **Model-versus-real validation (S2, PROCEDURE B0.5): EVIDENCE RECORDED, C1 STILL OPEN.** Executed 2026-10-13 under GPT's non-seed-only approval: synthetic harness, 17 cases all inside D (lengths 1,2,3,7,8,9,15,16,17,64,1000,9999,10000 plus witness-shaped arrays [1], [0..7], [0], [0,2]), covering exactly the seed operation set (grep-verified: seeds use only `size()` and `operator[]`), found-target and absent-target paths, const and non-const access. Both native cl builds exit 0; `fc /b` reports no differences (exit 0); transcripts byte-identical (SHA-256 5ec802cc...). Full commands, raw log, source, hashes, and the source-level semantic argument with its limits: `rlc0/evidence/B0.5/RESULTS.md`. The OOB negative canary was deliberately NOT compared against real std::vector (UB in ordinary C++); it remains the separate CBMC monitor test. Per GPT condition 4, finite differential passes are evidence on tested cases only; C1 remains OPEN until the reviewer judges the combined differential + source-level justification adequate.
-2. **Full-domain harness audit (PROCEDURE B4): PROCEDURE DEFINED, EXECUTION PENDING Phase B.** Before any NO_FAILURE/CERTIFIED_LOCALIZED label, the proof harness must be audited to represent the entire declared LC704 domain (symbolic n in [1,10000], symbolic elements, strict-increase/range constraints, symbolic target); finite Tier 1/2 evidence can never substitute for completed proof obligations with full unwinding.
+2. **Full-domain harness audit (PROCEDURE B4): EVIDENCE RECORDED (C2), ONE ITEM OPEN.** Audit package `rlc0/evidence/C2/` (RESULTS.md + 75 raw files, section 5.2): harness source, exact constraint encoding with raw goto-cl quantifier-unavailability probes, adapter, two-loop inventory with unwindset 10001 rationale, domain probe D1-D9 (expected results both runs), timeout/completeness semantics, hash recheck matching section 5. The harness represents the full declared domain (symbolic n in [1,10000], symbolic elements with strict-increase/range constraints, symbolic target) — verified by the domain probe, not assumed. OPEN: the two defect canaries never reached FAIL inside 1800 s / 8 GB (all six invocations ended cbmc-internal SAT OOM, exit 6, INCOMPLETE — never SUCCESS, also never FAILED); resolving this requires a GPT-authorized decision (flag experiment, budget change, or acceptance of OOM->INCOMPLETE->UNKNOWN), and spec.json's `frozen_cbmc_commands` must gain the required `--unwindset` before final freeze (frozen file not edited without approval). Finite Tier 1/2 evidence can never substitute for completed proof obligations with full unwinding.
 3. **Independent review: OPEN.** A reviewer other than the author must recompute every hash in section 5 and verify the eventual `rlc0-freeze` tag resolves to the reviewed commit. Phase C remains unauthorized until that review reports agreement.
 
 ## 7. Hash recomputation (for the independent reviewer)
@@ -162,6 +170,7 @@ Compare every Hash against section 5 (lowercase). The tag, once created, must re
 
 - Freeze candidate prepared: YES (this file).
 - B0.5 non-seed differential validation: EXECUTED 2026-10-13 under GPT approval; no discrepancies; evidence in `rlc0/evidence/B0.5/`; C1 still open pending reviewer adequacy judgment (section 6.1).
+- C2 non-seed harness audit: EXECUTED 2026-10-13 under CLAUDE's C2 request + GPT's resource-control directive; evidence in `rlc0/evidence/C2/`; canary-FAIL item and spec.json unwindset amendment OPEN (section 6.2); V1 field-sensitivity experiment INTERRUPTED/INCONCLUSIVE, its record kept separate in `evidence/C2/raw/V1_STATUS.txt`.
 - Final freeze + `rlc0-freeze` tag: NOT AUTHORIZED (conditions 6.1-6.3 open).
 - Phase C (six-seed single execution): PROHIBITED until freeze + independent review complete.
 - This candidate itself does not certify anything about the seeds; current evidence supports toolchain feasibility for the modeled setup only.
