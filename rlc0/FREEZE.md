@@ -130,9 +130,18 @@ d4699647ae0386bad8648c17c052f331a60d56f441a78000f4f9ff87f58b271a  ADDENDUM_2026-
 
 If any of these files changes, this candidate is void and the hashes must be regenerated.
 
+### 5.1 B0.5 differential-validation evidence (executed 2026-10-13 under GPT approval; not frozen contract material, hashed for integrity)
+
+```
+e95673292110ad9aabb778290b93b1f922bab33296f0ae87bd9434a404c50eac  evidence/B0.5/differential.cpp
+8f88d85eff96e1759335198986f8b909d17afd13b00878d18514644de25f7301  evidence/B0.5/run_log.txt
+5ec802cc096ee120a411aef0c907b13bc8d72efbdca58acec421d593cec0aefb  evidence/B0.5/transcript_model.txt
+5ec802cc096ee120a411aef0c907b13bc8d72efbdca58acec421d593cec0aefb  evidence/B0.5/transcript_real.txt
+```
+
 ## 6. Open conditions before final freeze and tag (GPT review 2026-10-13)
 
-1. **Model-versus-real validation (S2, PROCEDURE B0.5): OPEN.** Dual-build native comparison (real MSVC STL vs model header) over the seed-used operations on defined, in-bounds executions across the frozen case sets; agreement table to be recorded here before tag. The index assertion stays excluded from ordinary-behavior comparison (monitor only).
+1. **Model-versus-real validation (S2, PROCEDURE B0.5): EVIDENCE RECORDED, C1 STILL OPEN.** Executed 2026-10-13 under GPT's non-seed-only approval: synthetic harness, 17 cases all inside D (lengths 1,2,3,7,8,9,15,16,17,64,1000,9999,10000 plus witness-shaped arrays [1], [0..7], [0], [0,2]), covering exactly the seed operation set (grep-verified: seeds use only `size()` and `operator[]`), found-target and absent-target paths, const and non-const access. Both native cl builds exit 0; `fc /b` reports no differences (exit 0); transcripts byte-identical (SHA-256 5ec802cc...). Full commands, raw log, source, hashes, and the source-level semantic argument with its limits: `rlc0/evidence/B0.5/RESULTS.md`. The OOB negative canary was deliberately NOT compared against real std::vector (UB in ordinary C++); it remains the separate CBMC monitor test. Per GPT condition 4, finite differential passes are evidence on tested cases only; C1 remains OPEN until the reviewer judges the combined differential + source-level justification adequate.
 2. **Full-domain harness audit (PROCEDURE B4): PROCEDURE DEFINED, EXECUTION PENDING Phase B.** Before any NO_FAILURE/CERTIFIED_LOCALIZED label, the proof harness must be audited to represent the entire declared LC704 domain (symbolic n in [1,10000], symbolic elements, strict-increase/range constraints, symbolic target); finite Tier 1/2 evidence can never substitute for completed proof obligations with full unwinding.
 3. **Independent review: OPEN.** A reviewer other than the author must recompute every hash in section 5 and verify the eventual `rlc0-freeze` tag resolves to the reviewed commit. Phase C remains unauthorized until that review reports agreement.
 
@@ -141,6 +150,7 @@ If any of these files changes, this candidate is void and the hashes must be reg
 ```powershell
 cd C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0
 Get-FileHash -Algorithm SHA256 .\CONTRACT.md, .\PROCEDURE.md, .\classifier.py, .\expected.json, .\spec.json, .\seeds\seed1.cpp, .\seeds\seed2.cpp, .\seeds\seed3.cpp, .\seeds\seed4.cpp, .\seeds\seed5.cpp, .\seeds\seed6.cpp, .\model\vector, .\ADDENDUM_2026-10-13.md, .\ADDENDUM_2026-10-13_B.md, .\.gitignore | Format-Table Hash, Path -AutoSize
+Get-FileHash -Algorithm SHA256 .\evidence\B0.5\differential.cpp, .\evidence\B0.5\run_log.txt, .\evidence\B0.5\transcript_model.txt, .\evidence\B0.5\transcript_real.txt | Format-Table Hash, Path -AutoSize
 git -C .. log --oneline -1
 git -C .. tag -l rlc0-freeze
 git -C .. rev-parse rlc0-freeze^{commit}   # after the tag exists
@@ -151,6 +161,7 @@ Compare every Hash against section 5 (lowercase). The tag, once created, must re
 ## 8. Authorization status
 
 - Freeze candidate prepared: YES (this file).
+- B0.5 non-seed differential validation: EXECUTED 2026-10-13 under GPT approval; no discrepancies; evidence in `rlc0/evidence/B0.5/`; C1 still open pending reviewer adequacy judgment (section 6.1).
 - Final freeze + `rlc0-freeze` tag: NOT AUTHORIZED (conditions 6.1-6.3 open).
 - Phase C (six-seed single execution): PROHIBITED until freeze + independent review complete.
 - This candidate itself does not certify anything about the seeds; current evidence supports toolchain feasibility for the modeled setup only.

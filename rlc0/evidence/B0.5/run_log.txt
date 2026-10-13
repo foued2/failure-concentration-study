@@ -1,0 +1,43 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.2
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+==== environment
+Microsoft (R) C/C++ Optimizing Compiler Version 19.51.36260 for x64
+Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
+
+utilisationÿ: cl [ option... ] nom de fichier... [ /link linkoption... ]
+
+C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.51.36231\bin\Hostx64\x64\cl.exe
+==== real build
+differential.cpp
+real compile exit: 0
+real run exit: 0
+==== model build
+differential.cpp
+model compile exit: 0
+model run exit: 0
+==== byte comparison
+Comparaison des fichiers C:\USERS\PAKLA\PYCHARMPROJECTS\FAILURE-CONCENTRATION-STUDY\RLC0\EVIDENCE\B0.5\transcript_real.txt et C:\USERS\PAKLA\PYCHARMPROJECTS\FAILURE-CONCENTRATION-STUDY\RLC0\EVIDENCE\B0.5\TRANSCRIPT_MODEL.TXT
+FC : aucune différence trouvée
+
+fc exit: 0
+==== transcript preview
+c0 n=1 sum=-5 found=0 absent=-1 csum=-5
+c1 n=2 sum=-13 found=1 absent=-1 csum=-13
+c2 n=3 sum=3 found=1 absent=-1 csum=3
+c3 n=7 sum=28 found=3 absent=-1 csum=28
+c4 n=8 sum=4 found=4 absent=-1 csum=4
+c5 n=9 sum=72 found=4 absent=-1 csum=72
+c6 n=15 sum=75 found=7 absent=-1 csum=75
+c7 n=16 sum=120 found=8 absent=-1 csum=120
+c8 n=17 sum=255 found=8 absent=-1 csum=255
+c9 n=64 sum=-1184 found=32 absent=-1 csum=-1184
+c10 n=1000 sum=399500 found=500 absent=-1 csum=399500
+c11 n=9999 sum=0 found=4999 absent=-1 csum=0
+c12 n=10000 sum=-49995000 found=5000 absent=-1 csum=-49995000
+c13 n=1 sum=1 found=0 absent=-1 csum=1
+c14 n=8 sum=28 found=4 absent=-1 csum=28
+c15 n=1 sum=0 found=0 absent=-1 csum=0
+c16 n=2 sum=2 found=1 absent=-1 csum=2
+done 17 cases

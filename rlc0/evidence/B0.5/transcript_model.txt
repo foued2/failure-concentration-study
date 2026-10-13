@@ -1,0 +1,18 @@
+c0 n=1 sum=-5 found=0 absent=-1 csum=-5
+c1 n=2 sum=-13 found=1 absent=-1 csum=-13
+c2 n=3 sum=3 found=1 absent=-1 csum=3
+c3 n=7 sum=28 found=3 absent=-1 csum=28
+c4 n=8 sum=4 found=4 absent=-1 csum=4
+c5 n=9 sum=72 found=4 absent=-1 csum=72
+c6 n=15 sum=75 found=7 absent=-1 csum=75
+c7 n=16 sum=120 found=8 absent=-1 csum=120
+c8 n=17 sum=255 found=8 absent=-1 csum=255
+c9 n=64 sum=-1184 found=32 absent=-1 csum=-1184
+c10 n=1000 sum=399500 found=500 absent=-1 csum=399500
+c11 n=9999 sum=0 found=4999 absent=-1 csum=0
+c12 n=10000 sum=-49995000 found=5000 absent=-1 csum=-49995000
+c13 n=1 sum=1 found=0 absent=-1 csum=1
+c14 n=8 sum=28 found=4 absent=-1 csum=28
+c15 n=1 sum=0 found=0 absent=-1 csum=0
+c16 n=2 sum=2 found=1 absent=-1 csum=2
+done 17 cases
