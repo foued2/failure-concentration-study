@@ -228,6 +228,16 @@ the final value above. Non-ASCII characters verified intact throughout (3 em-das
 mojibake reading during verification was a PowerShell 5.1 console-decoding artifact, not file content —
 byte-level check confirmed the file was never corrupted).
 
+Line-ending provenance of the section-5 hashes (clarified for the independent reviewer): every section-5
+value is the SHA-256 of the **live working-tree file bytes** at section 7's absolute path on this machine
+— the convention already used in round 1 (e.g. round-1 spec.json, CONTRACT.md, seeds, and model/vector
+recorded values all differ from their `git cat-file blob` output purely in line endings, with content
+identical; `.gitignore`, being 0 bytes, is the exception). This repository has `core.autocrlf=true` and no
+`.gitattributes`, so git stores normalized-LF blobs while several working-tree files carry CRLF. Verify
+with `Get-FileHash` against the working tree exactly as section 7 instructs; when comparing committed
+content instead, normalize line endings before hashing. The CONTRACT.md restored above is in LF form
+(its working-tree bytes now equal its committed blob).
+
 All other section 5 hashes unchanged; section 5 regenerated with this addendum's own hash and the
 manifest hash added. FREEZE.md remains self-excluded from section 5 (covered by the git commit).
 

@@ -126,7 +126,7 @@ b42a0f1a988d2cee19b13f52b3bba51146a472fa07c96d28bb65e9616f741376  spec.json   (a
 6690c2eef01f1674c7bd73efec663bd7b6973407ff416d3dceea71350d19b418  model/vector
 b934b42c36050943cecd8a4a6c5fe3bc0cd1ad7c9fd810fd7141c6f1460ac64a  ADDENDUM_2026-10-13.md
 d4699647ae0386bad8648c17c052f331a60d56f441a78000f4f9ff87f58b271a  ADDENDUM_2026-10-13_B.md
-5f0e3b6c7f771e163015fff8431b7dfcfd1c45b0cbb3f69fab134257800c8de3  ADDENDUM_2026-10-13_C.md   (added 2026-10-13: V1 TIMEOUT record, .gitignore explanation, C1 acceptance, command/property/nontermination corrections, CONTRACT reflow-restore incident record)
+0b6931a971c1933afd63d2ba16da589d0480e49f03520753e3c8414de47f3d49  ADDENDUM_2026-10-13_C.md   (added 2026-10-13: V1 TIMEOUT record, .gitignore explanation, C1 acceptance, command/property/nontermination corrections, CONTRACT reflow-restore incident record, hash-provenance note)
 ```
 
 If any of these files changes, this candidate is void and the hashes must be regenerated.
@@ -196,7 +196,7 @@ Get-FileHash -Algorithm SHA256 MANIFEST.sha256  # expect: value in section 5.4
 Remove-Item _recomputed.sha256
 ```
 
-Compare every Hash against section 5 (lowercase). The tag, once created, must resolve to the commit that contains exactly these file contents.
+Compare every Hash against section 5 (lowercase). The tag, once created, must resolve to the commit that contains exactly these file contents. Hash provenance (clarified 2026-10-13, ADDENDUM_C §10): the recorded values hash the working-tree bytes at the path above — the round-1 convention; this repo has `core.autocrlf=true` and no `.gitattributes`, so git-stored blobs are LF-normalized and `git cat-file` output may hash differently for some files with no content difference (compare content after normalizing line endings if checking blobs).
 
 ## 8. Authorization status
 
