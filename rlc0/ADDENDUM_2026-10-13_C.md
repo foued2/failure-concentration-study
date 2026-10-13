@@ -209,10 +209,24 @@ originals preserved in git history, no amend):
 
 ```
 CONTRACT.md  1cd457f4b60bf0c591876445e82fdc7082fab4c6e82d4fbbfe3e18b7c22eb67c
-           -> 87605031e646ddfd95a2646a92cb8f0684c065835e2756d447f8c9b412aba24e
+           -> 247afbfccd6ee27f313f6ebc4d9207f0e58bb60b2c7b617c566969422d3ee735
+             (only the §4 timing-scope paragraph was added; verified by byte-exact
+              prefix/suffix comparison against the pristine committed blob: zero removals)
 spec.json    cd9e1e7f952c621d624d45e27548224232ed9318b2a6f4f0743f8eb62f625e4e
            -> b42a0f1a988d2cee19b13f52b3bba51146a472fa07c96d28bb65e9616f741376
 ```
+
+Incident record (provenance honesty): when this addendum's corrections were first committed (intermediate
+state captured, then corrected in the immediately following commit — original commits preserved, nothing
+amended), CONTRACT.md's working copy carried an uncommitted editor reflow that pre-dated the addendum
+edits: soft line-wrapping at ~100 columns and text-reflow artifacts (`size()` → `size ()`,
+`nums.back()` → `nums.back ()`, `O(log n)` → `O (log n)`). The reflow was cosmetic but unexplained and
+not part of any authorized record change, so CONTRACT.md was restored to the exact committed text
+(binary-extracted from git) plus only the authorized §4 paragraph; the intermediate hash
+87605031e646ddfd95a2646a92cb8f0684c065835e2756d447f8c9b412aba24e (reflowed version) is superseded by
+the final value above. Non-ASCII characters verified intact throughout (3 em-dashes, U+2014; an apparent
+mojibake reading during verification was a PowerShell 5.1 console-decoding artifact, not file content —
+byte-level check confirmed the file was never corrupted).
 
 All other section 5 hashes unchanged; section 5 regenerated with this addendum's own hash and the
 manifest hash added. FREEZE.md remains self-excluded from section 5 (covered by the git commit).

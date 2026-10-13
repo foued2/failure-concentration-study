@@ -112,7 +112,7 @@ Positive canary: clean SUCCESS including the model index assertion (no false ala
 
 ```
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  .gitignore   (0-byte empty file; hash = SHA-256 of empty string, git blob e69de29; history and explanation: ADDENDUM_2026-10-13_C.md §2)
-87605031e646ddfd95a2646a92cb8f0684c065835e2756d447f8c9b412aba24e  CONTRACT.md   (amended 2026-10-13 §4 timing scope; old: 1cd457f4b60bf0c591876445e82fdc7082fab4c6e82d4fbbfe3e18b7c22eb67c, see ADDENDUM_C §10)
+247afbfccd6ee27f313f6ebc4d9207f0e58bb60b2c7b617c566969422d3ee735  CONTRACT.md   (amended 2026-10-13 §4 timing scope only; old: 1cd457f4b60bf0c591876445e82fdc7082fab4c6e82d4fbbfe3e18b7c22eb67c, see ADDENDUM_C §10)
 5aad7b57339097fd1bd6f625601370fb73c7a75845888dafd960b9c622ae217c  PROCEDURE.md
 d46203666d25a9aa8e7d5306eee3382dbf79cfd335ff1b08d6b52a30c080738e  classifier.py
 a318d6ca2e84ed74ddbb9e58778722bdbad218e8daed8de66bc578ec0a27d60b  expected.json
@@ -126,7 +126,7 @@ b42a0f1a988d2cee19b13f52b3bba51146a472fa07c96d28bb65e9616f741376  spec.json   (a
 6690c2eef01f1674c7bd73efec663bd7b6973407ff416d3dceea71350d19b418  model/vector
 b934b42c36050943cecd8a4a6c5fe3bc0cd1ad7c9fd810fd7141c6f1460ac64a  ADDENDUM_2026-10-13.md
 d4699647ae0386bad8648c17c052f331a60d56f441a78000f4f9ff87f58b271a  ADDENDUM_2026-10-13_B.md
-7854f5e43a3ed79a91cc3f737d7eff2a8ebcbc726ad5bc009c52a9fdb2f97cb8  ADDENDUM_2026-10-13_C.md   (added 2026-10-13: V1 TIMEOUT record, .gitignore explanation, C1 acceptance, command/property/nontermination corrections)
+5f0e3b6c7f771e163015fff8431b7dfcfd1c45b0cbb3f69fab134257800c8de3  ADDENDUM_2026-10-13_C.md   (added 2026-10-13: V1 TIMEOUT record, .gitignore explanation, C1 acceptance, command/property/nontermination corrections, CONTRACT reflow-restore incident record)
 ```
 
 If any of these files changes, this candidate is void and the hashes must be regenerated.
