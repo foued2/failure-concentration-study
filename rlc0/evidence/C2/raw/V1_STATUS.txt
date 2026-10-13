@@ -28,3 +28,44 @@ stuck in "Running propositional reduction"), logs\cbmc_domain.txt (completed).
 Per GPT instruction 2026-10-13: baseline and V1 kept separate; next attempt
 must use a bounded runner enforcing 1800 s wall + 8 GB memory budget, run only
 after the original verify_all batch terminated (confirmed terminated).
+
+--- AUTHORIZED BOUNDED RETRY (GPT authorization 2026-10-13; appended 2026-10-13T19:30 local) ---
+
+State before retry: NOT RUN (the original attempt above was unbounded and
+aborted by the operator; no bounded retry had ever been executed).
+
+Retry command (frozen baseline command + the single authorized flag, all
+other settings unchanged):
+  cbmc.exe canary_n63_IN_F.exe --function main --unwind 64
+    --unwindset rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001
+    --unwinding-assertions --bounds-check --pointer-check
+    --max-field-sensitivity-array-size 20000
+Runner: run_bounded.ps1 v5.1 (job-object hard 8 GB, 1800 s wall watchdog,
+  poll 250 ms; mem_enforcement: job_object(True))
+
+OUTCOME: TIMEOUT (WALL_TIMEOUT)
+  start: 2026-10-13T18:58:08.5634159+01:00
+  end:   2026-10-13T19:28:10.8187753+01:00
+  elapsed_sec: 1802.3 (wall budget 1800; killed by watchdog at deadline)
+  mem_budget_bytes: 8589934592
+  peak_private_bytes: 88670208 (84.6 MiB -- well below the 8 GB limit;
+    the run did not OOM, it exhausted the wall budget)
+  exit_code: (none -- process tree killed by taskkill)
+  stdout: ends at "Starting Bounded Model Checking"; NO verification result
+    (raw: raw/v1retry_n63_IN_F.txt)
+  stderr: empty (raw: raw/v1retry_n63_IN_F.txt.err.txt)
+  status sidecar: raw/v1retry_n63_IN_F.txt.status.txt
+  leftover processes after run: 0 (checked)
+
+No CBMC verification result exists for the V1 retry: do not cite it as
+SUCCESS, FAILURE, ERROR, or any other CBMC verdict.
+
+STOPPING RULE APPLIED (GPT 2026-10-13): V1 is inconclusive (TIMEOUT) under
+the existing limits. STOP. No --slice-formula, no --refine-arrays, no other
+solver, no larger resource budget, no other compiler version, no further
+configuration experiment without a new explicit decision.
+
+Scoped statement of record: full-domain certification was not demonstrated
+under this pinned stack (CBMC 6.11.0 + goto-cl / MSVC 18.10.2), this
+harness, and this budget (1800 s / 8 GB). This is not a claim of universal
+impossibility.

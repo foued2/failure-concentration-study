@@ -27,7 +27,15 @@
   "failure": {
     "definition": "An input is a verified failure for a solver if and only if, when executed under the frozen harness, exactly one of the following occurs: (a) the returned int differs from the specification-correct answer (index of target if present, else -1); (b) the process crashes; (c) a memory-safety violation occurs (out-of-bounds access, invalid pointer, undefined behavior instrumented by CBMC bounds/pointer checks); (d) execution exceeds the per-input timeout or does not terminate; (e) output is malformed.",
     "per_input_timeout_ms": 1000,
-    "timeout_fixed_before_any_seed_run": true
+    "timeout_fixed_before_any_seed_run": true,
+    "timeout_scope": "The 1000 ms per-input threshold is an operational failure detector for finite native executions (Tier 1/2). Exceeding it is recorded as an observed timeout under the recorded execution environment (compiler, flags, machine), with the raw result preserved; it is not a proof of nontermination and not a universal wall-clock claim. Certificates (NO_FAILURE, CERTIFIED_LOCALIZED) never assert that every input completes within 1000 ms on any machine.",
+    "nontermination_evidence_rule": {
+      "status": "PRE-REGISTERED 2026-10-13 (addendum C); applies to seed 6 and to any seed before any authorized seed execution",
+      "primary": "A mathematical state-transition argument over the frozen witness may establish nontermination: for seed 6, witness nums [0,2] target 1, the source (seeds/seed6.cpp) executes left = mid with mid = left + (right - left) / 2; when nums[mid] < target the assignment leaves left unchanged while the loop condition left <= right stays true, so the machine state repeats and the loop cannot terminate. The argument must cite the exact source lines.",
+      "corroborating_native": "A native run of the witness exceeding the 1000 ms threshold is an observed timeout in that particular execution environment: record environment and raw result; never call that measurement a proof of infinite looping.",
+      "corroborating_cbmc": "A violated unwinding assertion on Solution::search is corroboration only. It demonstrates that the selected unwinding bound was insufficient to establish loop termination; on its own it is not sufficient evidence of nontermination and must never be reported as such.",
+      "insufficient_alone": ["an unwinding-assertion failure by itself", "a native timeout by itself presented as proof of infinite looping"]
+    }
   },
   "labels": ["NO_FAILURE", "REFUTED", "CERTIFIED_LOCALIZED", "CANDIDATE_ONLY", "UNKNOWN"],
   "label_definitions": {
@@ -81,7 +89,7 @@
     },
     "tier3_cbmc": {
       "unwind": 64,
-      "flags": ["--bounds-check", "--pointer-check", "--unwind", "64", "--unwinding-assertions"],
+      "flags": ["--bounds-check", "--pointer-check", "--unwind", "64", "--unwindset", "rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001", "--unwinding-assertions"],
       "budget_wall_seconds_per_invocation": 1800,
       "budget_memory_gb": 8,
       "properties_per_seed": [
@@ -103,6 +111,20 @@
         "the property is actually asserted (not vacuous by construction)",
         "completed within the frozen wall-clock and memory budget"
       ],
+      "property_set_observed": {
+        "recorded": "2026-10-13 (addendum C) from evidence/C2/raw/cbmc_canary_n63_IN_F.txt: 131 properties emitted by cbmc 6.11.0 for the canary_n63_IN_F binary; probe_domain emitted 82.",
+        "cbmc_6x_defaults": "The CBMC 6.x line enables the standard checks by default, including bounds, pointer, signed-overflow, and unwinding checks; the frozen flag set makes bounds/pointer/unwinding explicit on every invocation.",
+        "classes_emitted": {
+          "pointer_dereference": 114,
+          "signed_overflow": 7,
+          "array_bounds": 5,
+          "user_assertion_explicit_cprover_assert": 4,
+          "unwinding_assertion": 1
+        },
+        "overflow_note": "Signed-overflow properties (e.g. search.overflow.1..5, rlc0_build.overflow.1..2) are emitted although no --overflow-check flag is passed: they are part of cbmc 6.11.0's default UB checking.",
+        "user_assertions": "rlc0_assert_correct.assertion.1..3 (oracle) and operator[].assertion.1 (model index monitor).",
+        "result_states_baseline": "In the unbounded baseline (OOM-affected): 112 SUCCESS, 19 ERROR (ERROR = in-flight property when the SAT checker ran out of memory, i.e. INCOMPLETE, never a pass/fail verdict)."
+      },
       "incomplete_action": "Any failed criterion yields UNKNOWN for that obligation; never a certificate."
     }
   },
@@ -136,9 +158,10 @@
       "cprover_assert_declaration": "must be declared extern \"C\" in the model header or CBMC reports 'no body for callee' (C++ mangling breaks builtin binding); __CPROVER__ is predefined by goto-cl",
       "goto_cl_output_quirk": "goto-cl silently produces no artifact for /Fe:file and /Fo:file (colon forms); use default output naming (goto-binary written as <name>.exe) or attached non-colon forms; frozen commands use default naming",
       "frozen_cbmc_commands": [
-        "goto-cl.exe /nologo /std:c++17 /EHsc /I\"<repo>\\rlc0\\model\" <file>.cpp",
-        "cbmc.exe <file>.exe --function main --unwind 64 --unwinding-assertions --bounds-check --pointer-check"
+        "goto-cl.exe /nologo /std:c++17 /EHsc /I\"<repo>\\rlc0\\model\" /I\"<repo>\\rlc0\\harness\" /DRLC0_SOLVER_HEADER=canary_<x>.h /DOBL_<OBL> \"<repo>\\rlc0\\harness\\proof_main.cpp\"   (per canary/obligation; OBL_<OBL> is one of OBL_IN_F, OBL_D_F, OBL_FULL_D; default output naming, then rename proof_main.exe to canary_<x>_<OBL>.exe)",
+        "cbmc.exe <file>.exe --function main --unwind 64 --unwindset \"rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001\" --unwinding-assertions --bounds-check --pointer-check"
       ],
+      "frozen_cbmc_commands_note": "AMENDED 2026-10-13 (addendum C): the cbmc line is the command actually executed in every recorded run (all .status.txt sidecars in evidence/C2/raw/); it includes the --unwindset for the 10000-trip rlc0_build harness loop, while --unwind 64 remains the global bound for all other loops. The goto-cl line records the full command actually used (build_all.cmd in evidence/C2/raw/): model + harness include paths, the /D defines, and the harness source path. Pre-addendum records omitted the unwindset and the /D/harness arguments; they now match the executed commands exactly.",
       "frozen_shadow_proof_command": "cl /nologo /std:c++17 /EP /I<repo>\\rlc0\\model <canary>.cpp | findstr markers"
     },
     "sdk": "PENDING_INSTALL",

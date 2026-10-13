@@ -17,7 +17,7 @@ This is a freeze candidate prepared per GPT review 2026-10-13. The `rlc0-freeze`
 | Not in toolchain | llvm-mingw clang++ 23.1.1 (inventory only) |
 | MSVC STL | 14.51.36231, native Tier 1/2 path ONLY; CBMC 6.11.0 cannot parse it (ADDENDUM_2026-10-13) |
 
-Frozen CBMC flags (every invocation): `--function <entry> --unwind 64 --unwinding-assertions --bounds-check --pointer-check`; budget 1800 s wall / 8 GB per invocation; per-input native timeout 1000 ms. Proof-completeness settings: spec.json tier3_cbmc.completeness_criteria (unmodified).
+Frozen CBMC flags (every invocation, as executed in every recorded run): `--function <entry> --unwind 64 --unwindset "rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001" --unwinding-assertions --bounds-check --pointer-check` (`--unwind 64` is the global bound for all other loops; the unwindset gives the 10000-trip `rlc0_build` harness loop its required ≥10001 bound); budget 1800 s wall / 8 GB per invocation; per-input native timeout 1000 ms (operational detector — see CONTRACT.md §4 and ADDENDUM_2026-10-13_C.md §5). Proof-completeness settings: spec.json tier3_cbmc.completeness_criteria (unmodified). Commands record amended 2026-10-13 by ADDENDUM_2026-10-13_C.md §4 to match the executed command exactly; property set emitted by cbmc 6.11.0 documented in ADDENDUM_C §6 and spec.json tier3_cbmc.property_set_observed.
 
 ## 2. Model header (CBMC path) — exact contents and hash
 
@@ -83,11 +83,11 @@ Recorded result (2026-10-13): model marker `rlc0_size_t` PRESENT in the preproce
 
 ## 4. Exact frozen commands and canary results
 
-Compile (model route; NOTE: goto-cl silently produces no artifact for `/Fe:file` and `/Fo:file` colon forms — default output naming is mandatory):
+Compile (model route; NOTE: goto-cl silently produces no artifact for `/Fe:file` and `/Fo:file` colon forms — default output naming is mandatory; the full executed build command, including the harness `/I`, the `/DRLC0_SOLVER_HEADER` / `/DOBL_*` defines, and the harness source path, is recorded in spec.json toolchain.model_route.frozen_cbmc_commands and evidence/C2/raw/build_all.cmd):
 
 ```
-goto-cl.exe /nologo /std:c++17 /EHsc /I"<repo>\rlc0\model" <file>.cpp        -> writes <file>.exe (goto-binary)
-cbmc.exe <file>.exe --function main --unwind 64 --unwinding-assertions --bounds-check --pointer-check
+goto-cl.exe /nologo /std:c++17 /EHsc /I"<repo>\rlc0\model" /I"<repo>\rlc0\harness" /DRLC0_SOLVER_HEADER=canary_<x>.h /DOBL_<OBL> "<repo>\rlc0\harness\proof_main.cpp"   (default output naming, then proof_main.exe renamed to canary_<x>_<OBL>.exe)
+cbmc.exe <file>.exe --function main --unwind 64 --unwindset "rlc0_build(ptr_struct_tag(identifier=tag-rlc0_input)).0:10001" --unwinding-assertions --bounds-check --pointer-check
 ```
 
 Non-seed smoke results, raw (2026-10-13, full log C:\Users\pakla\AppData\Local\Temp\opencode\model-smoke-out.txt; smoke canaries used --unwind 16, the study-wide frozen unwind is 64):
@@ -111,12 +111,12 @@ Positive canary: clean SUCCESS including the model index assertion (no false ala
 ## 5. SHA-256 of frozen files (FREEZE.md excluded; its integrity is covered by the git commit)
 
 ```
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  .gitignore
-1cd457f4b60bf0c591876445e82fdc7082fab4c6e82d4fbbfe3e18b7c22eb67c  CONTRACT.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  .gitignore   (0-byte empty file; hash = SHA-256 of empty string, git blob e69de29; history and explanation: ADDENDUM_2026-10-13_C.md §2)
+87605031e646ddfd95a2646a92cb8f0684c065835e2756d447f8c9b412aba24e  CONTRACT.md   (amended 2026-10-13 §4 timing scope; old: 1cd457f4b60bf0c591876445e82fdc7082fab4c6e82d4fbbfe3e18b7c22eb67c, see ADDENDUM_C §10)
 5aad7b57339097fd1bd6f625601370fb73c7a75845888dafd960b9c622ae217c  PROCEDURE.md
 d46203666d25a9aa8e7d5306eee3382dbf79cfd335ff1b08d6b52a30c080738e  classifier.py
 a318d6ca2e84ed74ddbb9e58778722bdbad218e8daed8de66bc578ec0a27d60b  expected.json
-cd9e1e7f952c621d624d45e27548224232ed9318b2a6f4f0743f8eb62f625e4e  spec.json
+b42a0f1a988d2cee19b13f52b3bba51146a472fa07c96d28bb65e9616f741376  spec.json   (amended 2026-10-13: frozen command + unwindset, nontermination rule, timing scope, property set; old: cd9e1e7f952c621d624d45e27548224232ed9318b2a6f4f0743f8eb62f625e4e, see ADDENDUM_C §10)
 341e89e66e1a80047f77aaac34c88343b2aa28c1e0857ee5d418f6e938b3ff83  seeds/seed1.cpp
 7cc0fe09369580d72f1398706cc0f8b806c7e7af1a1c6162477317b920ba8a84  seeds/seed2.cpp
 1877626489ebedbdce595f2a3d68277170ae4af26d8f84694681be868158c4a1  seeds/seed3.cpp
@@ -126,6 +126,7 @@ cd9e1e7f952c621d624d45e27548224232ed9318b2a6f4f0743f8eb62f625e4e  spec.json
 6690c2eef01f1674c7bd73efec663bd7b6973407ff416d3dceea71350d19b418  model/vector
 b934b42c36050943cecd8a4a6c5fe3bc0cd1ad7c9fd810fd7141c6f1460ac64a  ADDENDUM_2026-10-13.md
 d4699647ae0386bad8648c17c052f331a60d56f441a78000f4f9ff87f58b271a  ADDENDUM_2026-10-13_B.md
+7854f5e43a3ed79a91cc3f737d7eff2a8ebcbc726ad5bc009c52a9fdb2f97cb8  ADDENDUM_2026-10-13_C.md   (added 2026-10-13: V1 TIMEOUT record, .gitignore explanation, C1 acceptance, command/property/nontermination corrections)
 ```
 
 If any of these files changes, this candidate is void and the hashes must be regenerated.
@@ -145,32 +146,64 @@ e95673292110ad9aabb778290b93b1f922bab33296f0ae87bd9434a404c50eac  evidence/B0.5/
 051e1a4fdc90beb673e2337e38da3d261165b729473e330d1a6a005533ecf59b  evidence/C2/RESULTS.md
 ```
 
-`evidence/C2/raw/` holds the verbatim logs (75 files: quantifier probes, loop inventory, domain probe, baseline + bounded canary runs with status sidecars, V1 record, bounded-runner self-tests). RESULTS.md lists the four harness file hashes (section 5 uncommitted at its writing, committed with it) and the OPEN items: canary FAIL not observed (all six OOM inside budget, never SUCCESS), spec.json `frozen_cbmc_commands` missing the required `--unwindset ...:10001`, harness-model wording vs adjacent-pair encoding.
+`evidence/C2/raw/` holds the verbatim logs (78 files: quantifier probes, loop inventory, domain probe, baseline + bounded canary runs with status sidecars, V1 original-attempt record, 3 V1-retry sidecars, bounded-runner self-tests), individually hashed in section 5.4. RESULTS.md lists the four harness file hashes (section 5 uncommitted at its writing, committed with it) and its OPEN items. Item "spec.json frozen_cbmc_commands missing the required --unwindset" is DISCHARGED (amended 2026-10-13, ADDENDUM_C §4); the "canary FAIL not observed" item (all six baseline invocations OOM inside budget — see section 6.2) and the "harness-model wording vs adjacent-pair encoding" item remain OPEN.
+
+### 5.3 Harness sources (each file listed in the freeze record itself; same values as evidence/C2/RESULTS.md)
+
+```
+24c1301f6300fbf6cf9e64bab22027aa2fab503f178751de629a945629979d53  harness/proof_harness.h
+5dad1193d4eec1d629886a7f73d5646108be31898ceeead12bf7b5ed4bd94a9d  harness/proof_main.cpp
+f616f9f57765291a49a23681cd9d4bbb3ef3e9a5303779d3059cf3a4fecaf72f  harness/canary_n63.h
+b45d8e52fb90b101be01f984a279a2063b49856f90e76537403e2933b6b59a70  harness/canary_large.h
+```
+
+### 5.4 C2 raw-evidence manifest (covers every file in evidence/C2/raw/)
+
+```
+dfe43258d4dc9cec2fac7fb1a1cedfea5ca2996d3f489882a7c177a60451c45d  evidence/C2/MANIFEST.sha256   (78 entries, one per raw file; entry format: <sha256>  raw/<name>; independently recomputable via section 7)
+```
 
 ## 6. Open conditions before final freeze and tag (GPT review 2026-10-13)
 
-1. **Model-versus-real validation (S2, PROCEDURE B0.5): EVIDENCE RECORDED, C1 STILL OPEN.** Executed 2026-10-13 under GPT's non-seed-only approval: synthetic harness, 17 cases all inside D (lengths 1,2,3,7,8,9,15,16,17,64,1000,9999,10000 plus witness-shaped arrays [1], [0..7], [0], [0,2]), covering exactly the seed operation set (grep-verified: seeds use only `size()` and `operator[]`), found-target and absent-target paths, const and non-const access. Both native cl builds exit 0; `fc /b` reports no differences (exit 0); transcripts byte-identical (SHA-256 5ec802cc...). Full commands, raw log, source, hashes, and the source-level semantic argument with its limits: `rlc0/evidence/B0.5/RESULTS.md`. The OOB negative canary was deliberately NOT compared against real std::vector (UB in ordinary C++); it remains the separate CBMC monitor test. Per GPT condition 4, finite differential passes are evidence on tested cases only; C1 remains OPEN until the reviewer judges the combined differential + source-level justification adequate.
-2. **Full-domain harness audit (PROCEDURE B4): EVIDENCE RECORDED (C2), ONE ITEM OPEN.** Audit package `rlc0/evidence/C2/` (RESULTS.md + 75 raw files, section 5.2): harness source, exact constraint encoding with raw goto-cl quantifier-unavailability probes, adapter, two-loop inventory with unwindset 10001 rationale, domain probe D1-D9 (expected results both runs), timeout/completeness semantics, hash recheck matching section 5. The harness represents the full declared domain (symbolic n in [1,10000], symbolic elements with strict-increase/range constraints, symbolic target) — verified by the domain probe, not assumed. OPEN: the two defect canaries never reached FAIL inside 1800 s / 8 GB (all six invocations ended cbmc-internal SAT OOM, exit 6, INCOMPLETE — never SUCCESS, also never FAILED); resolving this requires a GPT-authorized decision (flag experiment, budget change, or acceptance of OOM->INCOMPLETE->UNKNOWN), and spec.json's `frozen_cbmc_commands` must gain the required `--unwindset` before final freeze (frozen file not edited without approval). Finite Tier 1/2 evidence can never substitute for completed proof obligations with full unwinding.
+1. **Model-versus-real validation (S2, PROCEDURE B0.5): ACCEPTED, BOUNDED SCOPE (GPT disposition 2026-10-13; recorded in ADDENDUM_2026-10-13_C.md §3).** Evidence: executed 2026-10-13 under GPT's non-seed-only approval — synthetic harness, 17 cases all inside D (lengths 1,2,3,7,8,9,15,16,17,64,1000,9999,10000 plus witness-shaped arrays [1], [0..7], [0], [0,2]), covering exactly the seed operation set (grep-verified: seeds use only `size()` and `operator[]`), found-target and absent-target paths, const and non-const access. Both native cl builds exit 0; `fc /b` reports no differences (exit 0); transcripts byte-identical (SHA-256 5ec802cc...). Full commands, raw log, source, hashes, and the source-level semantic argument with its limits: `rlc0/evidence/B0.5/RESULTS.md`. The OOB negative canary was deliberately NOT compared against real std::vector (UB in ordinary C++); it remains the separate CBMC monitor test. **Scope of the acceptance:** the frozen operation set actually used by the study (`size()` + in-bounds `operator[]`), supported by the finite differential passes on tested cases plus the source-level argument. **Not claimed:** equivalence for arbitrary std::vector operations, out-of-bounds behavior, or any API beyond the frozen set. C1 is closed under that bound; no further C1 evidence is required for freeze.
+2. **Full-domain harness audit (PROCEDURE B4): EVIDENCE RECORDED (C2), C2 OPEN — MULTIPLE ITEMS OPEN (status per GPT review 2026-10-13, recorded in ADDENDUM_2026-10-13_C.md).** Audit package `rlc0/evidence/C2/` (RESULTS.md + 78 raw files, sections 5.2/5.4): harness source, exact constraint encoding with raw goto-cl quantifier-unavailability probes, adapter, two-loop inventory with unwindset 10001 rationale, domain probe D1-D9 (expected results both runs), timeout/completeness semantics, hash recheck matching section 5. OPEN items:
+   - **Canary FAIL never observed:** all six baseline invocations ended in cbmc-internal SAT OOM (exit 6, INCOMPLETE) inside 1800 s / 8 GB — never SUCCESS, never FAILED. The single authorized configuration experiment (V1, field-sensitivity flag) completed as **WALL_TIMEOUT** on retry (1802.3 s, peak 84.6 MiB, no verification result — raw: `raw/v1retry_n63_IN_F.txt*`), triggering the GPT stopping rule: **STOP — no further flags, solvers, budgets, or compiler versions without a new explicit decision.** Scoped statement of record: *full-domain certification was not demonstrated under this pinned stack, harness, and budget (1800 s / 8 GB)* — not a claim of universal impossibility. Resolving this item requires a new GPT decision or acceptance of OOM/timeout → INCOMPLETE → UNKNOWN.
+   - **Domain coverage:** the D1-D9 probe results show `n = 10000` reachable and each constraint class enforced (D1 FAILURE as expected; D2-D9 SUCCESS), but do **not** establish universal representability of every boundary/partition combination of the declared domain. The earlier wording "the harness represents the full declared domain — verified by the domain probe" **overclaimed** and is withdrawn (ADDENDUM_C §9); source-level constraint coverage is audited in RESULTS.md §2, and the coverage question remains OPEN as part of C2. No new probe series is run.
+   - **Harness-model wording vs adjacent-pair encoding** (from RESULTS.md): OPEN.
+   Finite Tier 1/2 evidence can never substitute for completed proof obligations with full unwinding. The `--unwindset` command-record item previously listed here is DISCHARGED (section 1/4; ADDENDUM_C §4).
 3. **Independent review: OPEN.** A reviewer other than the author must recompute every hash in section 5 and verify the eventual `rlc0-freeze` tag resolves to the reviewed commit. Phase C remains unauthorized until that review reports agreement.
 
 ## 7. Hash recomputation (for the independent reviewer)
 
 ```powershell
 cd C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0
-Get-FileHash -Algorithm SHA256 .\CONTRACT.md, .\PROCEDURE.md, .\classifier.py, .\expected.json, .\spec.json, .\seeds\seed1.cpp, .\seeds\seed2.cpp, .\seeds\seed3.cpp, .\seeds\seed4.cpp, .\seeds\seed5.cpp, .\seeds\seed6.cpp, .\model\vector, .\ADDENDUM_2026-10-13.md, .\ADDENDUM_2026-10-13_B.md, .\.gitignore | Format-Table Hash, Path -AutoSize
-Get-FileHash -Algorithm SHA256 .\evidence\B0.5\differential.cpp, .\evidence\B0.5\run_log.txt, .\evidence\B0.5\transcript_model.txt, .\evidence\B0.5\transcript_real.txt | Format-Table Hash, Path -AutoSize
+Get-FileHash -Algorithm SHA256 .\CONTRACT.md, .\PROCEDURE.md, .\classifier.py, .\expected.json, .\spec.json, .\seeds\seed1.cpp, .\seeds\seed2.cpp, .\seeds\seed3.cpp, .\seeds\seed4.cpp, .\seeds\seed5.cpp, .\seeds\seed6.cpp, .\model\vector, .\ADDENDUM_2026-10-13.md, .\ADDENDUM_2026-10-13_B.md, .\ADDENDUM_2026-10-13_C.md, .\.gitignore | Format-Table Hash, Path -AutoSize
+Get-FileHash -Algorithm SHA256 .\evidence\B0.5\differential.cpp, .\evidence\B0.5\run_log.txt, .\evidence\B0.5\transcript_model.txt, .\evidence\B0.5\transcript_real.txt, .\evidence\C2\RESULTS.md | Format-Table Hash, Path -AutoSize
+Get-FileHash -Algorithm SHA256 .\harness\proof_harness.h, .\harness\proof_main.cpp, .\harness\canary_n63.h, .\harness\canary_large.h | Format-Table Hash, Path -AutoSize
 git -C .. log --oneline -1
 git -C .. tag -l rlc0-freeze
 git -C .. rev-parse rlc0-freeze^{commit}   # after the tag exists
+```
+
+C2 raw-evidence manifest — recompute and compare against `evidence/C2/MANIFEST.sha256` (format `<sha256>  raw/<name>`, one line per file, sorted by name; expect zero differences, then compare the manifest's own hash against section 5.4):
+
+```powershell
+cd C:\Users\pakla\PycharmProjects\failure-concentration-study\rlc0\evidence\C2
+Get-ChildItem raw -File | Sort-Object Name | Get-FileHash -Algorithm SHA256 |
+  ForEach-Object { $_.Hash.ToLower() + "  raw/" + $_.Name } | Set-Content -Encoding ascii _recomputed.sha256
+fc.exe /W MANIFEST.sha256 _recomputed.sha256   # expect: no differences
+Get-FileHash -Algorithm SHA256 MANIFEST.sha256  # expect: value in section 5.4
+Remove-Item _recomputed.sha256
 ```
 
 Compare every Hash against section 5 (lowercase). The tag, once created, must resolve to the commit that contains exactly these file contents.
 
 ## 8. Authorization status
 
-- Freeze candidate prepared: YES (this file).
-- B0.5 non-seed differential validation: EXECUTED 2026-10-13 under GPT approval; no discrepancies; evidence in `rlc0/evidence/B0.5/`; C1 still open pending reviewer adequacy judgment (section 6.1).
-- C2 non-seed harness audit: EXECUTED 2026-10-13 under CLAUDE's C2 request + GPT's resource-control directive; evidence in `rlc0/evidence/C2/`; canary-FAIL item and spec.json unwindset amendment OPEN (section 6.2); V1 field-sensitivity experiment INTERRUPTED/INCONCLUSIVE, its record kept separate in `evidence/C2/raw/V1_STATUS.txt`.
-- Final freeze + `rlc0-freeze` tag: NOT AUTHORIZED (conditions 6.1-6.3 open).
+- Freeze candidate prepared: YES (this file), record corrected 2026-10-13 per ADDENDUM_2026-10-13_C.md (dated provenance for the spec.json/CONTRACT.md amendments and regenerated section-5 hashes; original commits/logs preserved).
+- B0.5 non-seed differential validation: EXECUTED 2026-10-13 under GPT approval; no discrepancies; evidence in `rlc0/evidence/B0.5/`; **C1 ACCEPTED, BOUNDED SCOPE** (section 6.1; `size()` + in-bounds `operator[]` only, no arbitrary-API equivalence claim).
+- C2 non-seed harness audit: EXECUTED 2026-10-13 under CLAUDE's C2 request + GPT's resource-control directive; evidence in `rlc0/evidence/C2/` (78 raw files + MANIFEST.sha256); **C2 OPEN** — canary-FAIL not observed (baseline OOM INCOMPLETE ×6; V1 retry **WALL_TIMEOUT**, stopping rule applied), domain-coverage OPEN, harness-model wording OPEN (section 6.2). V1 original attempt INTERRUPTED/INCONCLUSIVE; V1 authorized retry TIMEOUT; both records in `evidence/C2/raw/V1_STATUS.txt`.
+- C2 domain-coverage wording correction and seed-6 nontermination/timing rules: PRE-REGISTERED 2026-10-13 (ADDENDUM_C §§5, 9) — before any seed execution.
+- Final freeze + `rlc0-freeze` tag: NOT AUTHORIZED (conditions 6.2, 6.3 open; C1 closed under bounded scope).
 - Phase C (six-seed single execution): PROHIBITED until freeze + independent review complete.
 - This candidate itself does not certify anything about the seeds; current evidence supports toolchain feasibility for the modeled setup only.
