@@ -12,3 +12,5 @@ Clean-room repository. No code, data, or artifacts from `Euler_Project/new-docto
   authorized.
 
 Status: TERMINATED — INFEASIBLE at pilot feasibility gate, 2026-10-11.
+
+- `v02/` — v0.2 completed **NEGATIVE** under the frozen rule (2026-10-12); identifiability limitation (C deterministic given k on the eligible support) recorded in `v02/INTERPRETABILITY_AUDIT_2026-10-14.md`. No follow-up authorized.
