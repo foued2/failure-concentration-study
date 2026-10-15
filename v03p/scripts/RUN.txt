@@ -1,0 +1,25 @@
+v03p/scripts - portable pre-freeze arithmetic evidence (Revision D).
+
+Pinned dependency layout: interpreter = repository .venv (CPython 3.14.0,
+Win32); Python standard library only; no third-party packages; no sampling,
+no RNG - every script is deterministic. Run from this directory so sibling
+imports resolve with no path configuration (no sys.path edits, no absolute
+paths). Staging these uncommitted working files here does not commit them;
+script fate (commit vs inline) remains an owner decision.
+
+Reproduce (Windows PowerShell 5.1, from the repository root):
+  cd v03p\scripts
+  ..\..\.venv\Scripts\python.exe feas_prob.py > feas_prob.out.txt
+  ..\..\.venv\Scripts\python.exe feas_prob_test.py > feas_prob_test.out.txt
+  ..\..\.venv\Scripts\python.exe dgp_counts_v2.py > dgp_counts_v2.out.txt
+  ..\..\.venv\Scripts\python.exe dgp_outcome_tails.py > dgp_outcome_tails.out.txt
+  ..\..\.venv\Scripts\python.exe g_check.py > g_check.out.txt
+  ..\..\.venv\Scripts\python.exe feas_check.py > feas_check.out.txt
+  ..\..\.venv\Scripts\python.exe outcome_tails_c.py > outcome_tails_c.out.txt
+  ..\..\.venv\Scripts\python.exe tail_support_d.py > tail_support_d.out.txt
+
+Local runtimes (CPython 3.14.0, Win32): feas_prob.py ~6 s;
+feas_prob_test.py ~34 s; dgp_outcome_tails.py ~8 s; feas_check.py seconds;
+outcome_tails_c.py seconds; tail_support_d.py minutes (suite quadrature).
+Review-environment timing varies. Verify outputs against the SHA-256
+record in Appendix C of the design draft.
