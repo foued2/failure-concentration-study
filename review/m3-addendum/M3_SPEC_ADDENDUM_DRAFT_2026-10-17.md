@@ -1,7 +1,10 @@
 # M3 specification addendum (draft)
 
-**Status: TEMP / read-only draft for reviewer disposition. Not committed, not part of the
-O2 package, Revision F unaltered, no complete-rule probability computed.**
+**Status: provisional draft for reviewer disposition; NOT frozen. Committed to the
+repository for durable reference on branch `review/m3-addendum` (first commit
+`2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4`; see this folder's README and MANIFEST for
+the record). Not part of the O2 package, Revision F unaltered, no complete-rule
+probability computed.**
 Author: GLM (local agent), 2026-10-17. Basis: A1 rev 3 imported read-only; probe
 `m3_cond_probe.py` + `m3_cond_results.json` (same folder; pinned CPython 3.14.0 venv,
 s < 40 s, no third-party packages).

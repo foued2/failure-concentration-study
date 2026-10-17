@@ -13,9 +13,12 @@ threshold must not be frozen as a scientific eligibility gate.
 
 Contents:
 - M3_SPEC_ADDENDUM_DRAFT_2026-10-17.md
-    The reviewed M3 conditioning specification addendum, Rev d. Preserved
-    byte-for-byte from its source file; line endings enforced by this folder's
-    .gitattributes (* -text).
+    The reviewed M3 conditioning specification addendum, Rev d. Committed for durable
+    reference (first commit 2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4; its opening
+    status line was corrected in a metadata follow-up commit to record that it is
+    committed, with the draft, not-frozen status and all scientific content unchanged
+    from the source draft). Line endings enforced by this folder's .gitattributes
+    (* -text).
 - supporting/m3_cond_probe.py, supporting/m3_cond_results.json
     The exact stdlib-only probe and its results, cited in the addendum header as its
     basis. Evidence only; not a reviewed specification.
@@ -23,6 +26,7 @@ Contents:
     SHA-256 of every file in this folder except the manifest itself.
 
 Provenance: the addendum was authored and revised by the implementation agent (GLM)
-in a local temporary folder on 2026-10-17; this commit is the first durable,
-versioned repository reference for it, created on the owner's direction to unblock
-Revision G v3 publication. Templates follow the review/o2-package conventions.
+in a local temporary folder on 2026-10-17; this package is the durable, versioned
+repository reference for it, created on the owner's direction to unblock Revision G
+v3 publication. The only content change relative to the source draft is the opening
+status metadata. Templates follow the review/o2-package conventions.
