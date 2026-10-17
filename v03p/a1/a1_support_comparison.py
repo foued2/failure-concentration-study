@@ -669,6 +669,15 @@ def h_joint_cons(a, b, o, NTR):
     """P(TrainRa and TestCons8 | global counts).
 
     TrainRa as above; TestCons8: tea>=8, teb>=8 (test re-applies count rule).
+    Structural support (UNION=0.0 returned EXACTLY outside it): the success
+    event is {1<=tra<=a-8, 1<=trb<=b-8, tra+trb>=8} in training plus
+    {tea>=8, teb>=8} in testing (T = N-NTR), which is non-empty iff
+      a>=9, b>=9, a+b>=24, NTR>=8, T>=16.
+    Outside it every draw lies in a failure atom, so the union is exactly 1
+    and h is exactly 0 (do not rely on the IE union evaluating to 1 only up
+    to round-off: an earlier revision left spurious positive residues of
+    order 1e-12 on impossible states).
+
     Failure atoms: F1={tra=0}, F2={trb=0}, F3={tra+trb<=7},
     Q1={tea<=7}={tra>=a-7}, Q2={teb<=7}={trb>=b-7}. Exact inclusion-exclusion
     over the 5 atoms; empty intersections are skipped, with the exact
@@ -681,7 +690,7 @@ def h_joint_cons(a, b, o, NTR):
     Requires a,b >= 8 in every contributing call (guaranteed: f=0 else).
     """
     N = a + b + o
-    if a < 8 or b < 8:
+    if a < 9 or b < 9 or a + b < 24 or NTR < 8 or (N - NTR) < 16:
         return 0.0
     single = lambda ta, tb: _hg_ratio(a, b, o, NTR, ta, tb)
 

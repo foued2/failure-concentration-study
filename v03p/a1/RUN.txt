@@ -6,8 +6,55 @@ Status: NOT FROZEN, NOT PHASE-AUTHORIZED. Published for independent review
 (integrity pass + code-level review) only. Publication does not authorize
 Phase 1 and does not change the RevF freeze.
 
-Revision 2 of this package (this commit)
+Revision 3 of this package (this commit)
 ----------------------------------------
+Follow-up to Revision 2, per GPT's review of the rev-2 delta (A1 sign-off
+still pending). Two remaining issues repaired; no other change.
+
+  1. Structural zeros in h_joint_cons: the gate "a<8 or b<8" was too weak.
+     The success event of TrainRa & TestCons8 is
+       {1<=tra<=a-8, 1<=trb<=b-8, tra+trb>=8} at NTR plus
+       {tea>=8, teb>=8} at T=N-NTR,
+     non-empty iff a>=9, b>=9, a+b>=24, NTR>=8, T>=16. Union = 1 exactly
+     on impossible states, but the IE union evaluated to 1 only up to
+     round-off and the clamp left spurious positive residues (measured
+     pre-fix: 0 at N=113, 290 at N=150, 890 at N=450, 1186 at N=600;
+     largest 1.63e-12 at N=450). The function now returns EXACTLY 0.0
+     outside the structural support. h-table entry counts become
+     lib-count minus the (2N-10) structural zeros:
+       N=113 4851->4635 cons (unchanged vs rev 2),
+       N=150 9180->8890, N=450 94830->93940, N=600 171405->170215.
+  2. Tiny-cell relative validation in the joint2 replay: the comparison
+     now reports worst ABSOLUTE and worst RELATIVE discrepancies
+     separately and asserts both (abs floor 1e-12; rel floor 1e-5).
+     Measured on the regenerated outputs: worst abs 9.392e-14 (lib
+     S1-m2 a-50:50 N=150); worst rel 2.758e-07 (cons S1-m2 c-hist N=113);
+     smallest positive replayed cell is cons S2-m6 c-hist N=113,
+     ref 3.922e-21, got 3.922e-21, abs d 1.7e-28, rel d 4.336e-08.
+
+Regenerated-output impact (rev 2 -> rev 3, measured):
+
+  - Only joint_2bucket cons fields move again: 102 float fields changed
+    (51 cells x {cons, cond_cons}), EVERY one DECREASED (spurious residue
+    mass removed). Per split: 0 fields at N=113 (the 216 structural zeros
+    already evaluated <= 0 there), 48 at N=150, 30 at N=450, 24 at N=600.
+    Per scenario: a-hist 18, a-50:50 12, c-hist 36, c-50:50 36 fields.
+  - Largest absolute change anywhere: 4.669e-13
+    (S1-m2|c-hist|N=450 cond_cons, 4.8325202e-05 -> 4.8325201e-05, ~1e-8 rel).
+  - Largest relative change: 2.9419e-04 (S1-m2|c-hist|N=150 cons,
+    3.46862e-13 -> 3.46760e-13).
+  - Displayed headline results unchanged: a-hist and a-50:50 report rows
+    are byte-identical; S0|a-hist cons at N=450/600 (0.0125914 / 0.027083)
+    unchanged, as is S1-m2|a-hist|600 cons; the 11 changed report rows are
+    c-hist (5) and c-50:50 (6) rows with shifts only in cells of size
+    <= ~5e-15 (N=150 column) and 4th-digit moves in ~1e-13 cells.
+  - New regression lines in the log: structural-zero exact sweep over all
+    280,266 loop-domain states (a,b>=8, a+b<=N, four splits): 0 residues;
+    explicit NTR<8 and T<16 zero checks; joint replay now asserts abs and
+    rel floors separately.
+
+Revision 2 of this package (previous commit)
+--------------------------------------------
 An omitted-intersection defect in h_joint_cons was found by GPT's review of the
 Revision 1 package and confirmed by independent exact enumeration:
 
@@ -69,11 +116,19 @@ Regenerated-output impact (measured, all four splits):
 Published files (__pycache__ excluded)
 --------------------------------------
 path | bytes | sha256 | line endings / encoding
-v03p/a1/a1_support_comparison.py | 30008 | 88EED28A9FAD36633DA3EA769F9653F6DB0E4465102A3C37DA920883AF05CD1E | CRLF (834); UTF-8 source (em dash in line-1 docstring); otherwise ASCII
-v03p/a1/run_a1.py | 25594 | 8048BCB3C6CD26689E176D5199BCC63A1390BB9743F3E75EAEC6BFDCF2F4725D | CRLF (614); UTF-8 source (em dash in the report title string); otherwise ASCII
-v03p/a1/out/a1_report.md | 12804 | 4AB81726B0E3817A279872402F5FB00CDF133FAE5F11CA03215BDA6823876339 | CRLF (272); UTF-8 (em dash E2 80 94); otherwise ASCII
-v03p/a1/out/a1_tables.json | 98340 | E483FE1EC5988B86188F0B530B332EC3230446B219F653E8CCB33EC38DA6A72B | CRLF (4175); pure ASCII
-v03p/a1/out/run.log | 4901 | 750B3BF30E02AAB52B486BD4A4550C3559286CAD4D4D1EC691ED587F0AA1412E | LF (119 lines); UTF-8, no BOM
+v03p/a1/a1_support_comparison.py | 30580 | CF3840F108F82E6739CC01DEEDA1623070E2CEC84EB5059F293C4193D3C96C74 | CRLF (843); UTF-8 source (em dash in line-1 docstring); otherwise ASCII
+v03p/a1/run_a1.py | 28234 | 2675966D25810E5D2FEBFDA40086488FC04042CB2F65A4B8C732AE4D5E9BCB43 | CRLF (666); UTF-8 source (em dash in the report title string); otherwise ASCII
+v03p/a1/out/a1_report.md | 12804 | 1678FA7198EC1DD77BE0A9FB9109954C04456CB9B53E7ADD0F517364088D3C4E | CRLF (272); UTF-8 (em dash E2 80 94); otherwise ASCII
+v03p/a1/out/a1_tables.json | 98345 | 86BDCF97D7E68447EEFEEBE8CE18107A04BBCB55323A5FD6B51816A72B204D06 | CRLF (4175); pure ASCII
+v03p/a1/out/run.log | 5405 | BC8AE9A99DE2172B2BF9E820F8614E106799AD5DD9E6C1718CA0C52BD0EC45D3 | LF (126 lines); UTF-8, no BOM
+
+Attribution
+-----------
+The Revision 1 and Revision 2 commits of this package were authored under
+the working name "MUSE" by the local execution agent; per the owner's role
+assignment the local implementation role is recorded as "GLM" from
+Revision 3 onward (same local agent; no history rewrite - Revision 2,
+commit 9ed4f0c, keeps its published attribution).
 
 Interpreter
 -----------
@@ -128,12 +183,22 @@ Expected results / self-tests
   - Pinned counterexamples (both PASS):
       h_cons( 9,15,126,112 | NTR=112) got ~2.1451668e-07, ref ~2.1451655e-07
       h_lib ( 9,15,126,112 | NTR=112) got ~0.92453192,      ref ~0.92453192
+  - Structural zeros (all PASS):
+      h_cons returns EXACTLY 0.0 outside the support
+      {a>=9, b>=9, a+b>=24, NTR>=8, T>=16}; exhaustive sweep over all
+      280,266 loop-domain states (a,b>=8, a+b<=N, four splits): 0 residues;
+      explicit NTR<8 and T<16 checks: exact 0.0.
+  - h-table entry counts printed at build:
+      h_lib : 4851 / 9180 / 94830 / 171405   (N=113/150/450/600)
+      h_cons: 4635 / 8890 / 93940 / 170215
   - Exact-reference sweeps (both PASS; worst abs diff is pure
     inclusion-exclusion accumulation noise):
       h_lib : worst 2.686e-12   h_cons: worst 2.370e-12   (tolerance 1e-11)
-  - joint2 exact-ref replay at N=113 and N=150:
-      112 values (7 rules x 4 scenarios x 2 variants), worst abs diff
-      9.392e-14 (tolerance max(1e-12, 1e-9 * cell)).
+  - joint2 exact-ref replay at N=113 and N=150, 112 values (7 rules x
+    4 scenarios x 2 variants), asserted on separate abs and rel floors:
+      worst ABS 9.392e-14 (floor 1e-12)
+      worst REL 2.758e-07 (floor 1e-5); smallest positive replayed cell
+      cons S2-m6 c-hist N=113: ref 3.922e-21, abs d 1.7e-28, rel d 4.3e-08.
   - Final line: "FAILURES: none"; process exit code 0.
   - Determinism: out/a1_report.md and out/a1_tables.json are byte-identical on
     re-run (same machine, same interpreter). run.log differs only in timing

@@ -295,6 +295,34 @@ check("h_lib counterexample (9,15,126,112)@NTR=112",
       _gl > 0.0 and abs(_gl - _el) <= max(HTOL, 1e-9 * _el),
       f"got={_gl:.8g} ref={_el:.8g}")
 
+# structural feasibility of TrainRa & TestCons8: success needs 1<=tra<=a-8,
+# 1<=trb<=b-8, tra+trb>=8 (training) and tea>=8, teb>=8 (testing, T=N-NTR),
+# hence a>=9, b>=9, a+b>=24, NTR>=8, T>=16. The function must return EXACT
+# 0.0 outside the support (an earlier revision relied on the IE union
+# evaluating to 1 only up to round-off and left positive residues).
+t0 = time.time()
+nbad_sq = 0
+ntest_sq = 0
+for N in NB:
+    NTR = SPLIT[N]["NTR"]
+    for a in range(8, N + 1):
+        for b in range(8, N - a + 1):
+            ntest_sq += 1
+            if (a < 9 or b < 9 or a + b < 24) and h_joint_cons(a, b, N - a - b, NTR) != 0.0:
+                nbad_sq += 1
+                print(f"  structural residue N={N} (a={a},b={b}): "
+                      f"{h_joint_cons(a, b, N - a - b, NTR):.3e}")
+print(f"structural-zero sweep ({time.time()-t0:.1f}s, {ntest_sq} states)")
+check("h_cons structural zeros exact (a>=9, b>=9, a+b>=24)",
+      nbad_sq == 0, f"{nbad_sq} residues over {ntest_sq} states")
+check("h_cons structural zeros exact (NTR<8)",
+      h_joint_cons(30, 30, 0, 7) == 0.0 and h_joint_cons(20, 20, 10, 7) == 0.0)
+check("h_cons structural zeros exact (T<16)",
+      h_joint_cons(30, 30, 0, 60) == 0.0 and h_joint_cons(20, 20, 10, 42) == 0.0)
+# h_joint_lib has no structural impossibility inside its (a,b>=8) loop
+# domain: success needs a>=2, b>=2, a+b>=10, NTR>=2, T>=2 - all implied
+# by a,b>=8 with the 25/75 fixed split (NTR>=85, T>=28 on this grid).
+
 t0 = time.time()
 worst_h = {"lib": 0.0, "cons": 0.0}
 nbad_h = {"lib": 0, "cons": 0}
@@ -411,23 +439,47 @@ def _exact_joint(N, scen, rule, variant):
     return tot
 
 
-nbad_j = 0
-worst_j = 0.0
+nbad_abs = 0
+nbad_rel = 0
+worst_abs = 0.0
+worst_rel = 0.0
+worst_abs_tag = worst_rel_tag = None
+smallest = None   # (ref, tag, got, d, rel)
+JOINT_ATOL = 1e-12
+JOINT_RTOL = 1e-5   # relative floor for tiny cells; tightened vs measured spread
 for N in (113, 150):
     for scen in ("a-hist", "a-50:50", "c-hist", "c-50:50"):
         for rule in RULES:
             for variant in ("lib", "cons"):
+                tag = f"{variant} {rule} {scen} N={N}"
                 got = JOINT[(rule, scen, N)][variant]
                 ref = _exact_joint(N, scen, rule, variant)
                 d = abs(got - ref)
-                if d > max(1e-12, 1e-9 * max(abs(got), abs(ref))):
-                    nbad_j += 1
-                    print(f"  joint-ref mismatch {variant} {rule} {scen} N={N}: "
-                          f"got={got:.8g} ref={ref:.8g} d={d:.3e}")
-                worst_j = max(worst_j, d)
+                rel = (d / ref) if ref > 0.0 else 0.0
+                if d > worst_abs:
+                    worst_abs, worst_abs_tag = d, tag
+                if rel > worst_rel:
+                    worst_rel, worst_rel_tag = rel, tag
+                if smallest is None or (ref > 0.0 and ref < smallest[0]):
+                    smallest = (ref, tag, got, d, rel)
+                if d > JOINT_ATOL:
+                    nbad_abs += 1
+                    print(f"  joint-ref abs miss {tag}: got={got:.8g} "
+                          f"ref={ref:.8g} d={d:.3e}")
+                if rel > JOINT_RTOL:
+                    nbad_rel += 1
+                    print(f"  joint-ref rel miss {tag}: got={got:.8g} "
+                          f"ref={ref:.8g} rel={rel:.3e}")
 print(f"joint exact-ref check ({time.time()-t0:.1f}s)")
-check("joint2 exact-ref replay (all rules x scens x variants, N=113/150)",
-      nbad_j == 0, f"worst abs diff {worst_j:.3e}")
+print(f"  worst abs diff {worst_abs:.3e} at {worst_abs_tag}; "
+      f"worst rel diff {worst_rel:.3e} at {worst_rel_tag}")
+sref, stag, sgot, sd, srel = smallest
+print(f"  smallest positive cell: ref={sref:.3e} at {stag}, "
+      f"got={sgot:.3e}, abs d={sd:.3e}, rel d={srel:.3e}")
+check("joint2 exact-ref replay abs (112 values, floor 1e-12)",
+      nbad_abs == 0, f"worst abs {worst_abs:.3e}")
+check("joint2 exact-ref replay rel (112 values, floor 1e-5)",
+      nbad_rel == 0, f"worst rel {worst_rel:.3e}")
 
 # marginal train/test (re-application reading = fresh-sample globals)
 MARG_SPLIT = {}

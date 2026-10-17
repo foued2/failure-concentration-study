@@ -101,19 +101,26 @@ building h-tables (exact hypergeometric inclusion-exclusion)...
   h_lib N=113: 4851 entries (0.1s)
   h_cons N=113: 4635 entries (0.2s)
   h_lib N=150: 9180 entries (0.1s)
-  h_cons N=150: 9180 entries (0.4s)
+  h_cons N=150: 8890 entries (0.4s)
   h_lib N=450: 94830 entries (1.4s)
-  h_cons N=450: 94830 entries (4.4s)
+  h_cons N=450: 93940 entries (4.5s)
   h_lib N=600: 171405 entries (2.6s)
-  h_cons N=600: 171401 entries (8.0s)
+  h_cons N=600: 170215 entries (8.0s)
 PASS h_cons counterexample (9,15,126,112)@NTR=112 | got=2.1451668e-07 ref=2.1451655e-07
 PASS h_lib counterexample (9,15,126,112)@NTR=112 | got=0.92453192 ref=0.92453192
-h exact-ref sweep (9.9s)
+structural-zero sweep (0.0s, 280266 states)
+PASS h_cons structural zeros exact (a>=9, b>=9, a+b>=24) | 0 residues over 280266 states
+PASS h_cons structural zeros exact (NTR<8)
+PASS h_cons structural zeros exact (T<16)
+h exact-ref sweep (9.7s)
 PASS h_lib exact-ref sweep (exhaustive + large-state samples) | worst abs diff 2.686e-12
 PASS h_cons exact-ref sweep (exhaustive + large-state samples) | worst abs diff 2.370e-12
 joints 2-bucket (4.1s)
-joint exact-ref check (3.4s)
-PASS joint2 exact-ref replay (all rules x scens x variants, N=113/150) | worst abs diff 9.392e-14
+joint exact-ref check (3.3s)
+  worst abs diff 9.392e-14 at lib S1-m2 a-50:50 N=150; worst rel diff 2.758e-07 at cons S1-m2 c-hist N=113
+  smallest positive cell: ref=3.922e-21 at cons S2-m6 c-hist N=113, got=3.922e-21, abs d=1.701e-28, rel d=4.336e-08
+PASS joint2 exact-ref replay abs (112 values, floor 1e-12) | worst abs 9.392e-14
+PASS joint2 exact-ref replay rel (112 values, floor 1e-5) | worst rel 2.758e-07
 redundancy done
 wrote out/a1_tables.json, out/a1_report.md and out/run.log
 FAILURES: none
