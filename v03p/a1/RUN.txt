@@ -1,0 +1,101 @@
+A1 package - publication and validation procedure
+=================================================
+
+Branch: review/a1-package
+Status: NOT FROZEN, NOT PHASE-AUTHORIZED. Published for independent review
+(integrity pass + code-level review) only. Publication does not authorize
+Phase 1 and does not change the RevF freeze.
+
+Scope
+-----
+A1 = support-rule comparison (S0 vs S1(m) vs S2(m), m in {2,4,6}; B_min=8;
+2 <= k <= 24). Deterministic exact enumeration, Python standard library only;
+no sampling, no random, no Monte Carlo, no generation, no hidden-outcome access.
+S2 is a candidate operationalization, NOT part of RevF: RevF never defines S2
+or its strata. All outputs are SUPPORT-ONLY probabilities, not complete-rule or
+full-study feasibility.
+
+Interpreter
+-----------
+RevF (review/revf-package) pins CPython 3.14.0, standard library only. This is
+satisfied by the repository .venv (pyvenv.cfg: version_info = 3.14.0). The
+published outputs were reproduced byte-identically under BOTH the pinned
+interpreter (repository .venv, CPython 3.14.0) and a system CPython 3.14.5, and
+across repeated runs. NO interpreter deviation remains: out/a1_report.md and
+out/a1_tables.json hashes are unchanged under both interpreters. The verifier
+should still confirm the pinned .venv run reproduces the hashes below.
+
+Published files (__pycache__ excluded)
+--------------------------------------
+path | bytes | sha256 | line endings
+v03p/a1/a1_support_comparison.py | 27920 | C97831B01A1791D4BF88CBBBA49330387E6FF5A38FE0BAAADE809C9064D4ADBB | CRLF (792)
+v03p/a1/run_a1.py | 18476 | ED2A70539F9952E69C0D4F038258578471BCDB900878ADED752BA3430F09EC37 | CRLF (424)
+v03p/a1/out/a1_report.md | 12804 | 73651FBD651FE7B495204C67C16A7EDC39F6C9507F754F7963F1D4AEA0807951 | CRLF (272); cp1252, single 0x97 (EM DASH), otherwise ASCII
+v03p/a1/out/a1_tables.json | 98341 | F15154FD3C92FF2344AAFA4698C9C27035157BACF973406F941BC089FEBDFD2D | CRLF (4175); pure ASCII
+v03p/a1/out/run.log | 4500 | A9C4FBF91F25E002B2F05AAC566D6FCE48AA909955BB2ED80174EC671553949C | CRLF (112); UTF-8 WITHOUT BOM
+
+run.log normalization (documented and verified)
+-----------------------------------------------
+The original producer log was captured by a PowerShell ">" redirect, which
+writes UTF-16LE with a BOM. For publication the log was decoded and re-encoded
+as UTF-8 without a BOM; character content and CRLF line endings are unchanged
+(verified equal after EOL normalization). No text was added, removed, or
+reordered.
+  original : bytes=9002  sha256=20A96A216E64D9E6B7D9B4A364ACA8741D520F10EF9FE54E3BD32730A0979CA8  UTF-16LE, BOM FF FE
+  published: bytes=4500  sha256=A9C4FBF91F25E002B2F05AAC566D6FCE48AA909955BB2ED80174EC671553949C  UTF-8, no BOM
+Note: out/a1_report.md and out/a1_tables.json are program outputs written by
+run_a1.py itself (open() with the interpreter's default locale encoding on
+Win32 -> cp1252 for the report's single em dash). They were NOT re-encoded, so
+their bytes are the faithful program output.
+
+Exact commands
+--------------
+  cd v03p/a1
+  <repo>/.venv/Scripts/python.exe run_a1.py        # pinned CPython 3.14.0
+  # (equivalently: py -3.14 run_a1.py under CPython 3.14.5; hashes identical)
+    -> exits 0 on success; writes out/a1_tables.json and out/a1_report.md;
+       prints PASS/FAIL for every self-test and "FAILURES: none" on success.
+    -> do NOT commit __pycache__.
+
+Log capture (what produced the original log):
+  py -3.14 run_a1.py > out/run.log 2>&1      # PowerShell: UTF-16LE output
+Published log was produced by decoding that to UTF-8 (no BOM), CRLF preserved.
+
+Expected results / self-tests
+-----------------------------
+  - C|k enumeration sizes: Z5=252, Z10=2247, Z20=2247, Z24=456.
+  - Brute-force cross-check of f_s0/f_s1/f_s2 for k in {5,10,20}, n in 0..10:
+    worst absolute difference 3.664e-15 (< 1e-9).
+  - RevF regression: F_bl cells (a/b/c-hist at many N) and O4 cells match RevF
+    reference values within their stated significant-figure tolerance;
+    E[bl-support] within 5e-2 relative.
+  - Split sizes: 113->T=28, 150->T=38, 450->T=113, 600->T=150.
+  - Final line: "FAILURES: none"; process exit code 0.
+  - Determinism: out/a1_report.md and out/a1_tables.json are byte-identical on
+    re-run (same machine, same interpreter).
+
+Validation procedure for the verifier
+-------------------------------------
+  1. Confirm file scope: exactly the five files above; no __pycache__.
+  2. Recompute SHA-256 and byte counts; compare to the table.
+  3. Run under the pinned interpreter (<repo>/.venv/Scripts/python.exe,
+     CPython 3.14.0) from v03p/a1/; expect exit 0 and "FAILURES: none"; compare
+     out/a1_report.md and out/a1_tables.json bytes to the published hashes.
+  4. Confirm run.log content equals the published UTF-8 log after EOL
+     normalization (the preceding UTF-16LE original is documented above).
+
+Carried caveats (from out/a1_report.md; not new claims)
+------------------------------------------------------
+  - N_b = fixed count of unique valid bodies; 113/450 are rho=0.25 plug-in
+    proxies for expected unique counts; validity and duplicate losses are
+    unmodeled. Fixed-unique-count is a genuine approximation; NO directional
+    (optimistic) claim is established without the count distribution and the
+    shape of p(n).
+  - S2 middle-region mass is 0.357 at k=5 and 0.0 at k=10 and k=20, i.e. the
+    middle can be empty; at k=20 the candidate strata are C=0.2 vs C=0.25.
+    Thresholds are stated on attainable z; strata are reported in C. The
+    z -> C mapping is defined in the module docstring.
+  - Any "best" value requires a stated optimization domain (all enumerated
+    rules vs the designated non-vacuous subset). At c-hist @ N=150: maximum over
+    all rules is S1-m2 = 7.52e-4; S1-m4 = 3.76e-4. The RevF O4 cell at 3.8e-6 is
+    a different reference and is not a substitute for either.

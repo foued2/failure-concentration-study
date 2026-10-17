@@ -1,0 +1,112 @@
+PASS Z5==252 | 252
+PASS Z10==2247 | 2247
+PASS Z20==2247 | 2247
+PASS Z24==456 | 456
+PASS k5 values | [0.2, 0.4, 0.6, 0.8, 1.0]
+PASS k5 P extremes
+PASS k10 values | [0.2, 0.3, 0.4, 0.5]
+PASS k20 values | [0.2, 0.25]
+PASS k20 P(0.25) | 0.9439252336448598
+PASS E[C|5]=0.528571 | 0.5285714285714286
+PASS E[C|10]=0.407744 | 0.40774365821094793
+PASS S2 strata k=5 | ([0.2, 0.4], [0.8, 1.0], 0.5, 0.3571, 0.1429)
+PASS S2 strata k=10 | ([0.2, 0.3], [0.4, 0.5], 0.243, 0.0, 0.757)
+PASS S2 strata k=20 | ([0.2], [0.25], 0.0561, 0.0, 0.9439)
+PASS brute S0 k=5 n=0
+PASS brute S0 k=5 n=1
+PASS brute S0 k=5 n=2
+PASS brute S0 k=5 n=3
+PASS brute S0 k=5 n=4
+PASS brute S0 k=5 n=5
+PASS brute S0 k=5 n=6
+PASS brute S0 k=5 n=7
+PASS brute S0 k=5 n=8 | 7.494005416219807e-16
+PASS brute S0 k=5 n=9 | 1.096345236817342e-15
+PASS brute S0 k=5 n=10 | 2.0122792321330962e-15
+PASS brute S0 k=10 n=0
+PASS brute S0 k=10 n=1
+PASS brute S0 k=10 n=2
+PASS brute S0 k=10 n=3
+PASS brute S0 k=10 n=4
+PASS brute S0 k=10 n=5
+PASS brute S0 k=10 n=6
+PASS brute S0 k=10 n=7
+PASS brute S0 k=10 n=8 | 2.0816681711721685e-16
+PASS brute S0 k=10 n=9 | 5.273559366969494e-16
+PASS brute S0 k=10 n=10 | 1.304512053934559e-15
+PASS brute S0 k=20 n=0
+PASS brute S0 k=20 n=1
+PASS brute S0 k=20 n=2
+PASS brute S0 k=20 n=3
+PASS brute S0 k=20 n=4
+PASS brute S0 k=20 n=5
+PASS brute S0 k=20 n=6
+PASS brute S0 k=20 n=7
+PASS brute S0 k=20 n=8 | 2.5912431922403556e-17
+PASS brute S0 k=20 n=9 | 2.1076890233118206e-16
+PASS brute S0 k=20 n=10 | 4.2500725161431774e-16
+brute-force block worst abs diff: 3.664e-15 (0.0s)
+PASS brute worst<1e-9 | 3.6637359812630166e-15
+f-tables built (0.2s)
+PASS RevF F_bl a-hist@60 | got=5.95866e-06 ref=6e-06
+PASS RevF F_bl a-hist@113 | got=0.00111682 ref=0.001117
+PASS RevF F_bl a-hist@120 | got=0.0015457 ref=0.001546
+PASS RevF F_bl a-hist@150 | got=0.00427948 ref=0.004279
+PASS RevF F_bl a-hist@240 | got=0.0218821 ref=0.021882
+PASS RevF F_bl a-hist@300 | got=0.0395341 ref=0.039534
+PASS RevF F_bl a-hist@400 | got=0.0605516 ref=0.060552
+PASS RevF F_bl a-hist@450 | got=0.0635138 ref=0.063514
+PASS RevF F_bl a-hist@600 | got=0.0568304 ref=0.05683
+PASS RevF F_bl b-hist@60 | got=1.59367e-08 ref=1.6e-08
+PASS RevF F_bl b-hist@113 | got=1.80977e-05 ref=1.8e-05
+PASS RevF F_bl b-hist@120 | got=3.01101e-05 ref=3e-05
+PASS RevF F_bl b-hist@150 | got=0.00015744 ref=0.000157
+PASS RevF F_bl b-hist@240 | got=0.00193939 ref=0.001939
+PASS RevF F_bl b-hist@300 | got=0.00493703 ref=0.004937
+PASS RevF F_bl b-hist@400 | got=0.0138973 ref=0.013897
+PASS RevF F_bl b-hist@450 | got=0.0197304 ref=0.01973
+PASS RevF F_bl b-hist@600 | got=0.037421 ref=0.037421
+PASS RevF F_bl c-hist@60 | got=1.12674e-11 ref=1.1e-11
+PASS RevF F_bl c-hist@113 | got=9.55919e-08 ref=9.6e-08
+PASS RevF F_bl c-hist@120 | got=2.02049e-07 ref=2e-07
+PASS RevF F_bl c-hist@150 | got=2.7099e-06 ref=2.7e-06
+PASS RevF F_bl c-hist@240 | got=0.000226445 ref=0.000226
+PASS RevF F_bl c-hist@300 | got=0.00107492 ref=0.001075
+PASS RevF F_bl c-hist@400 | got=0.00484527 ref=0.004845
+PASS RevF F_bl c-hist@450 | got=0.00783227 ref=0.007832
+PASS RevF F_bl c-hist@600 | got=0.0204463 ref=0.020446
+PASS RevF O4 a-50:50@150 | got=0.0133406 ref=0.013341
+PASS RevF O4 a-50:50@600 | got=0.0700405 ref=0.070041
+PASS RevF O4 b-thirds@150 | got=0.00044991 ref=0.00045
+PASS RevF O4 b-thirds@600 | got=0.111332 ref=0.111332
+PASS RevF O4 c-50:50@150 | got=3.83051e-06 ref=3.8e-06
+PASS RevF O4 c-50:50@600 | got=0.0338088 ref=0.033809
+S0 regression (1.1s)
+PASS RevF E[bl] a-hist@150 | got=2.0942 ref=2.09
+PASS RevF E[bl] a-hist@600 | got=25.6648 ref=25.66
+PASS RevF E[bl] b-hist@150 | got=1.1280 ref=1.13
+PASS RevF E[bl] b-hist@600 | got=10.3043 ref=10.3
+PASS RevF E[bl] c-hist@150 | got=0.0622 ref=0.06
+PASS RevF E[bl] c-hist@600 | got=4.7150 ref=4.71
+global grid (7.3s)
+N=113: NTR=85 T=28
+N=150: NTR=112 T=38
+N=450: NTR=337 T=113
+N=600: NTR=450 T=150
+PASS split 113->28
+PASS split 150->38
+PASS split 450->113
+PASS split 600->150
+building h-tables (exact hypergeometric inclusion-exclusion)...
+  h_lib N=113: 4851 entries (0.1s)
+  h_cons N=113: 4635 entries (0.2s)
+  h_lib N=150: 9180 entries (0.1s)
+  h_cons N=150: 9122 entries (0.4s)
+  h_lib N=450: 94830 entries (1.5s)
+  h_cons N=450: 94768 entries (4.7s)
+  h_lib N=600: 171405 entries (2.9s)
+  h_cons N=600: 171341 entries (8.6s)
+joints 2-bucket (4.6s)
+redundancy done
+wrote out/a1_tables.json and out/a1_report.md
+FAILURES: none
