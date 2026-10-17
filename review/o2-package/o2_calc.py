@@ -42,7 +42,13 @@ Method (exact, deterministic, stdlib only; no sampling):
 
 Validations: small-N direct hypergeometric+composition route; brute vs
 analytic F/H; A1 h-table route for T0; bracketing against the published
-A1 joint_2bucket S1-m4 lib/cons values.
+A1 joint_2bucket S1-m4 lib/cons values.  N=16/20 route comparisons are
+recorded as VACUOUS (test block < 8 bodies => complete event mass is
+identically zero); N=32 is the first informative small-N comparison.
+
+External dependency: this script imports v03p/a1/a1_support_comparison.py
+(A1 rev 3, commit f69cc9b) read-only via the absolute A1DIR path below;
+it is NOT self-contained or portable by design.
 """
 
 import sys
@@ -65,9 +71,11 @@ NMAX = 600
 CHECKS = []
 
 
-def check(name, ok, detail=""):
-    CHECKS.append({"name": name, "ok": bool(ok), "detail": str(detail)})
-    print(("PASS " if ok else "FAIL ") + name + ((" | " + str(detail)) if detail != "" else ""))
+def check(name, ok, detail="", vacuous=False):
+    status = "VACUOUS" if vacuous else ("PASS" if ok else "FAIL")
+    CHECKS.append({"name": name, "ok": bool(ok), "vacuous": bool(vacuous),
+                   "status": status, "detail": str(detail)})
+    print(status + " " + name + ((" | " + str(detail)) if detail != "" else ""))
     return bool(ok)
 
 
@@ -368,7 +376,17 @@ def main():
 
     F5 = [A.f_s1(5, n, 4) for n in range(NMAX + 1)]
     F10 = [A.f_s1(10, n, 4) for n in range(NMAX + 1)]
-    check("F5 equals FTABLE entry", True, "f_s1 is the FTABLE builder for S1-m4")
+    if ("S1-m4", 5) not in A.FTABLE:
+        A.build_ftables()
+    ref5 = A.FTABLE[("S1-m4", 5)]
+    ref10 = A.FTABLE[("S1-m4", 10)]
+    nlim = min(len(ref5), len(ref10), len(F5), len(F10))
+    worst5 = max((abs(ref5[n] - F5[n]) for n in range(nlim)), default=0.0)
+    worst10 = max((abs(ref10[n] - F10[n]) for n in range(nlim)), default=0.0)
+    check("V0 F5,F10 equal A.FTABLE[('S1-m4', k)] (exact)",
+          len(ref5) >= len(F5) and len(ref10) >= len(F10) and worst5 == 0.0 and worst10 == 0.0,
+          f"worst |dev| k=5 {worst5:.3e}, k=10 {worst10:.3e}; len ref/calc "
+          f"{len(ref5)}/{len(F5)} and {len(ref10)}/{len(F10)}")
 
     t0 = time.time()
     H5 = build_H(A.CK[5][1])
@@ -409,7 +427,12 @@ def main():
                 dev = max(dev, d)
                 if not rel_close(Td[key], Tr[key], 1e-9) and d > 1e-15:
                     ok = False
-            check(f"V1 direct==RS {label} N={N}", ok, f"max abs dev {dev:.3e}")
+            nte_ = A.split_sizes(N)[1]
+            vac = nte_ < 8
+            vtxt = (f"; VACUOUS: test block {nte_} < 8 => complete event mass "
+                    f"is identically zero") if vac else ""
+            check(f"V1 direct==RS {label} N={N}", ok, f"max abs dev {dev:.3e}{vtxt}",
+                  vacuous=vac)
             if label == "real a-hist":
                 wf = max(abs(PF5[a] - F5[a]) for a in range(8, N + 1))
                 wh = 0.0
@@ -479,6 +502,10 @@ def main():
         "NB": list(NB),
         "scenarios": list(SCENS),
         "failures": [c for c in CHECKS if not c["ok"]],
+        "checks_total": len(CHECKS),
+        "checks_pass": sum(1 for c in CHECKS if c["status"] == "PASS"),
+        "checks_vacuous": sum(1 for c in CHECKS if c["status"] == "VACUOUS"),
+        "checks_fail": sum(1 for c in CHECKS if c["status"] == "FAIL"),
     }
     out = {"meta": meta, "checks": CHECKS, "results": results}
     outfile = os.path.join(OUTDIR, "o2_results.json")
@@ -507,8 +534,13 @@ def main():
     lines.append("")
     lines.append("## checks")
     lines.append("")
+    lines.append(f"- check records: {len(CHECKS)} total; "
+                 f"{sum(1 for c in CHECKS if c['status'] == 'PASS')} PASS, "
+                 f"{sum(1 for c in CHECKS if c['status'] == 'VACUOUS')} VACUOUS, "
+                 f"{sum(1 for c in CHECKS if c['status'] == 'FAIL')} FAIL")
+    lines.append("")
     for c in CHECKS:
-        lines.append(f"- [{'x' if c['ok'] else ' '}] {c['name']}" + (f" -- {c['detail']}" if c["detail"] else ""))
+        lines.append(f"- [{c['status']}] {c['name']}" + (f" -- {c['detail']}" if c["detail"] else ""))
     lines.append("")
     lines.append("## assumptions / limitations")
     lines.append("")
@@ -529,6 +561,8 @@ def main():
 
     print("wrote o2_results.json and o2_report.md")
     print("FAILURES:", "none" if all_ok else [c["name"] for c in CHECKS if not c["ok"]])
+    print(f"CHECKS: {meta['checks_total']} total = {meta['checks_pass']} PASS + "
+          f"{meta['checks_vacuous']} VACUOUS + {meta['checks_fail']} FAIL")
     print(f"total runtime {time.time()-t_start:.1f}s")
     return 0 if all_ok else 1
 
