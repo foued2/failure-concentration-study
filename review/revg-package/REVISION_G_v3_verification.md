@@ -1,0 +1,51 @@
+# Revision G v3 — verification report (CLAUDE)
+
+Scope: documentation-only candidate. The Revision G v3 document itself is not committed or published; no repository file belonging to RevF, A1 or the O2 package was changed. Step 5 hash verification of a Revision G commit waits for owner approval and a published commit.
+
+Finalization update, 2026-10-17 (implementation agent, per the owner's direction): the M3 reference blocker was resolved in one bounded pass. The addendum source file was present and intact on the implementation machine (original source 19678 bytes, SHA-256 F29A13182556B6081794E2C23046E74F61CF7286730C8B5F2E62E58EA4862816; Rev b/c/d blocks and the GPT follow-up annotation confirmed; no mathematical content changed). It was committed and pushed as the durable reference at branch `review/m3-addendum`: initial commit `2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4`; metadata follow-up commit `c70a3870bc23fb973de4c8c7632f84ce0331bb33` corrected the addendum's opening status line to record the commit (draft, not-frozen status and all scientific content unchanged; file SHA-256 now `462DAB4CC7E792B36E2DBD1A233CA348369660B9C8461F425388213162E2E959`, 19864 bytes) and updated the package README and MANIFEST. Byte-identity checks against GitHub raw passed at both commits. Candidate sections 0, 5 and 7 now pin the final commit. Details in sections 1, 2, 3, 4 and 5 below. The report body is otherwise preserved; edits are marked.
+
+## 1. Files and diff summary
+
+| File | State |
+|---|---|
+| REVISION_G_v3_candidate.md | new (candidate; not in the repository) |
+| REVISION_G_v3_verification.md | new (this report; not in the repository) |
+| RevF, A1 package, O2 package, study branches | untouched |
+
+Changes relative to my previous chat draft of v3: (a) CVD comparison corrected (correction 1); (b) N=32 comparison named with all six quantities, N=16/20 labelled vacuous (correction 2); (c) "essentially infeasible" narrowed to scenario (c) at N=113 and N=150, a-scenarios kept (correction 3); (d) O2 package pinned to commit 4d7517a with full hashes, no regeneration (correction 4); (e) section 3 now carries both probability tables, the validation record and the reviewer reproduction; (f) M3 section rewritten to the boundaries in the work order. Correction pass after GPT's review: (g) section 3.3 percentages relabelled as O2 event probabilities including CVD; (h) section 1 O2 training wording scoped to CVD only, M3 criteria excluded; (i) RS clarified as a route label, not rejection sampling; (j) B_split wording changed to the approved-rule form; (k) status line records the owner statement and the publication gate. Finalization pass (this update): (l) M3 reference pinned — branch `review/m3-addendum`, final commit `c70a3870bc23fb973de4c8c7632f84ce0331bb33`, path `review/m3-addendum/M3_SPEC_ADDENDUM_DRAFT_2026-10-17.md`, blob `737c5e574a9af6eb977484011681a1e05e91d203`, file SHA-256 `462DAB4CC7E792B36E2DBD1A233CA348369660B9C8461F425388213162E2E959` (opening status metadata corrected in the metadata follow-up commit; scientific content unchanged); candidate status line and section 7 publication paragraph updated accordingly; no mathematical content changed.
+
+## 2. Claim-by-claim checklist
+
+| # | Claim | Source checked | Result |
+|---|---|---|---|
+| 1a | The 5e-6 bound applies to T0 - P_atleastone = T_HH; maximum about 3.985e-7 | o2_results.json, 16 cells (max at c-50:50, N=450: 3.985e-7); identity violations above 1e-15: 0 | confirmed |
+| 1b | P_atleastone - P_each reaches about 9.653e-4 | same file (max at c-50:50, N=450); minimum about 1.5e-8 | confirmed |
+| 2a | N=32 comparison covers T0, T_HF, T_FH, T_HH, P_atleastone, P_each | o2_calc.py V1 loop over exactly these six keys; I re-evaluated both routes at N=32: relative deviations 5e-15 to 1e-14 in both tables | confirmed |
+| 2b | N=16 and N=20 are vacuous | test blocks 4 and 5 below 8; four records carry status VACUOUS in the JSON | confirmed |
+| 2c | Work-order wording "rejection-sampling" | o2_calc.py states "exact, deterministic, stdlib only; no sampling"; the comparison is direct-hypergeometric vs the RS route | NOT confirmed; candidate uses the accurate description |
+| 3 | "Essentially infeasible" only for c at N=113 and N=150 | c values at N=113/150 are at most about 2.1e-5; a values: 0.0148 to 0.0272 at N=113, 0.107 to 0.161 at N=150 | confirmed; a-scenarios retained |
+| 4 | O2 package pinned, bytes unchanged | four files re-hashed from commit 4d7517a; hashes equal MANIFEST.sha256 and the figures reported by the implementation agent | confirmed |
+| 5 | Section 3.3 percentages are O2 event probabilities that include CVD, not count-only | values 14.5%-16.4% and 42.5%-44.9% are P_atleastone / P_each; T0 (no CVD) is a different quantity | corrected in candidate section 3.3 |
+| 6 | Section 1 no longer implies M3 criteria are part of O2 | phrase "adopted per-split identifiability checks" replaced by the CVD-only wording | corrected |
+| 7 | "RS" identified as the package's route label | wording added to candidate section 3 (method) | added |
+| 8 | B_split = 8 kept as the approved proposed rule | wording changed from "open to revision" to "revisited only if the owner explicitly reopens" | corrected |
+| 9 | M3 reference placeholder retained, no invented reference | sections 0 and 5 unchanged in that respect | retained (superseded by item 10) |
+| 10 | M3 reference established and durable | source file inspected on the implementation machine: original 19678 bytes, SHA-256 F29A13182556B6081794E2C23046E74F61CF7286730C8B5F2E62E58EA4862816, Rev b/c/d blocks and GPT follow-up annotation present, scientific content unchanged; committed at `review/m3-addendum`, metadata follow-up `c70a387...` (opening status line now records the commit; file SHA-256 462DAB4C... / 19864 bytes); raw GitHub fetch at the final commit re-hashed to the same value | confirmed |
+
+## 3. Integrity confirmations
+
+- O2 package (commit 4d7517a1a30f47d3c41fb9f0ee6eed4397e8e05e): o2_calc.py 2A85CDA2…14024EEA (23233 B); o2_results.json 78AEC5D9…6732D237 (17085 B); o2_report.md 172C3803…F1E6F3EC (8133 B); o2_review.zip 4BA69FBC…334D47BCE (13850 B). Full values are in the candidate, section 3.
+- RevF blob c9ad2e1e19540e79d06a415e2eb5ab731c1a0daf, 100679 bytes, identical at commits f69cc9b and 4d7517a. The A1 module and a1_tables.json also matched their pinned hashes when fetched for my rerun.
+- Reproduction: the unmodified calculation logic, run in a clean CPython 3.13.13 environment against the pinned A1 sources (A1 path changed only in a local copy), gave 56 = 52 PASS + 4 VACUOUS + 0 FAIL with all result cells within a relative 1.45e-15 of the published JSON. Reproducibility only.
+- M3 addendum package (branch `review/m3-addendum`; initial commit 2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4, metadata follow-up c70a3870bc23fb973de4c8c7632f84ce0331bb33): addendum file SHA-256 462DAB4CC7E792B36E2DBD1A233CA348369660B9C8461F425388213162E2E959 (19864 B; original source was 19678 B, SHA-256 F29A13182556B6081794E2C23046E74F61CF7286730C8B5F2E62E58EA4862816); supporting probe SHA-256 01D55CFF6F20282088BD81241E696006536E7D7BB4B4C660FB194EFACA56D348 (12874 B); supporting results SHA-256 B636196444EC13C9464FE4C0F7B4C91E865276B7EAA4422D9FD29EAF564DA21D (5706 B); README SHA-256 77B2258528F6DAE8FFFB43C9C62A2B861738DCD35817013817CFF3AA72747654 (1922 B); MANIFEST self-check all OK; GitHub raw fetch of the addendum and README at the final commit re-hashed to the identical values and byte counts; working branch restored afterwards.
+
+## 4. Commit and hashes
+
+No Revision G commit was made. The commits created in the finalization pass are the M3 addendum package at branch `review/m3-addendum`: initial commit `2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4` and metadata follow-up `c70a3870bc23fb973de4c8c7632f84ce0331bb33` (final addendum blob `737c5e574a9af6eb977484011681a1e05e91d203`), pushed to origin and raw-check verified. Final document hashes after the reference update: REVISION_G_v3_candidate.md `A3B33EE5C0FA4683CCE73A936F901EC8FD35F6917166FB7BAD7A32037E0B9F38` (12570 bytes); this report's own SHA-256 is recorded in the delivery message rather than inside itself (a file cannot contain its own hash). These hashes should be recorded again at publication. Byte-level equality with CLAUDE's pre-finalization local files cannot be assumed across environments; the content is the reviewed text with only the specified reference updates.
+
+## 5. Unresolved issues
+
+1. RESOLVED (finalization, 2026-10-17): the M3 addendum was not found in the repository by earlier branch-tip searches because it had never been committed; it existed at the reported local source. A one-pass check on the implementation machine confirmed the file intact (Rev b/c/d blocks and GPT follow-up annotation present, no mathematical change) and created the durable reference at branch `review/m3-addendum`: initial commit `2c18d333…`; metadata follow-up `c70a387…` (opening status line now records the commit; scientific content unchanged; file SHA-256 `462DAB4CC7E792B36E2DBD1A233CA348369660B9C8461F425388213162E2E959`, 19864 bytes). Raw checks at the final commit passed. The candidate pins the final commit in sections 0, 5 and 7. The addendum remains provisional and NOT frozen; owner decisions on its section 9 items remain open.
+2. The direct validation route shares A1's multinomial and hypergeometric helper functions with the main route's inputs; its independence lies in the brute-force bucket tables and the split handling. Documented in the candidate.
+3. Approval wording reconciled. Foued's words "ALL APPROVED" are his own, sent together with GPT's correction instructions. The candidate says "Content approved by Foued for this candidate" and separates content approval from permission to publish. The scope reading (approval of the candidate as corrected) is Claude's; Foued should correct it if he meant otherwise.
+4. Publication is now gated only by the owner's explicit publication instruction and the remaining integrity checks; no blocker of substance remains. No commit or path was invented; the committed addendum is the actual source file, hash-verified end to end.
