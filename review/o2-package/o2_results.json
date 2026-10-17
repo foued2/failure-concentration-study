@@ -1,0 +1,537 @@
+{
+ "checks": [
+  {
+   "detail": "f_s1 is the FTABLE builder for S1-m4",
+   "name": "F5 equals FTABLE entry",
+   "ok": true
+  },
+  {
+   "detail": "worst rel dev 2.912e-15",
+   "name": "V2 H5(n,1) == F5(n) all n (rel)",
+   "ok": true
+  },
+  {
+   "detail": "worst rel dev 1.313e-15",
+   "name": "V2 H10(n,1) == F10(n) all n (rel)",
+   "ok": true
+  },
+  {
+   "detail": "0 violations",
+   "name": "V2 H5 <= F5 pointwise",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 0.000e+00",
+   "name": "V1 direct==RS real a-hist N=16",
+   "ok": true
+  },
+  {
+   "detail": "5.995e-15",
+   "name": "V1 brute F5==analytic N=16",
+   "ok": true
+  },
+  {
+   "detail": "5.107e-15",
+   "name": "V1 brute H5==analytic N=16",
+   "ok": true
+  },
+  {
+   "detail": "3.442e-15",
+   "name": "V1 brute F10==analytic N=16",
+   "ok": true
+  },
+  {
+   "detail": "3.775e-15",
+   "name": "V1 brute H10==analytic N=16",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 0.000e+00",
+   "name": "V1 direct==RS harness N=16",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 0.000e+00",
+   "name": "V1 direct==RS real a-hist N=20",
+   "ok": true
+  },
+  {
+   "detail": "1.099e-14",
+   "name": "V1 brute F5==analytic N=20",
+   "ok": true
+  },
+  {
+   "detail": "9.437e-15",
+   "name": "V1 brute H5==analytic N=20",
+   "ok": true
+  },
+  {
+   "detail": "3.442e-15",
+   "name": "V1 brute F10==analytic N=20",
+   "ok": true
+  },
+  {
+   "detail": "4.219e-15",
+   "name": "V1 brute H10==analytic N=20",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 0.000e+00",
+   "name": "V1 direct==RS harness N=20",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 2.275e-24",
+   "name": "V1 direct==RS real a-hist N=32",
+   "ok": true
+  },
+  {
+   "detail": "3.120e-14",
+   "name": "V1 brute F5==analytic N=32",
+   "ok": true
+  },
+  {
+   "detail": "2.986e-14",
+   "name": "V1 brute H5==analytic N=32",
+   "ok": true
+  },
+  {
+   "detail": "6.217e-15",
+   "name": "V1 brute F10==analytic N=32",
+   "ok": true
+  },
+  {
+   "detail": "4.441e-15",
+   "name": "V1 brute H10==analytic N=32",
+   "ok": true
+  },
+  {
+   "detail": "max abs dev 2.168e-17",
+   "name": "V1 direct==RS harness N=32",
+   "ok": true
+  },
+  {
+   "detail": "cons=2.494000e-08 T0=1.484338e-02 lib=1.084602e-01",
+   "name": "V4 cons<=T0<=lib a-hist@113",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.464729e-02 P_one=1.484330e-02 T0=1.484338e-02",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-hist@113",
+   "ok": true
+  },
+  {
+   "detail": "cons=4.847083e-06 T0=1.065409e-01 lib=3.463038e-01",
+   "name": "V4 cons<=T0<=lib a-hist@150",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.058959e-01 P_one=1.065407e-01 T0=1.065409e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-hist@150",
+   "ok": true
+  },
+  {
+   "detail": "cons=1.776202e-01 T0=9.927130e-01 lib=9.957627e-01",
+   "name": "V4 cons<=T0<=lib a-hist@450",
+   "ok": true
+  },
+  {
+   "detail": "P_each=9.926841e-01 P_one=9.927130e-01 T0=9.927130e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-hist@450",
+   "ok": true
+  },
+  {
+   "detail": "cons=4.695528e-01 T0=9.994620e-01 lib=9.995130e-01",
+   "name": "V4 cons<=T0<=lib a-hist@600",
+   "ok": true
+  },
+  {
+   "detail": "P_each=9.994605e-01 P_one=9.994620e-01 T0=9.994620e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-hist@600",
+   "ok": true
+  },
+  {
+   "detail": "cons=6.494216e-08 T0=2.717950e-02 lib=2.226955e-01",
+   "name": "V4 cons<=T0<=lib a-50:50@113",
+   "ok": true
+  },
+  {
+   "detail": "P_each=2.680785e-02 P_one=2.717933e-02 T0=2.717950e-02",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-50:50@113",
+   "ok": true
+  },
+  {
+   "detail": "cons=1.250131e-05 T0=1.611214e-01 lib=5.831837e-01",
+   "name": "V4 cons<=T0<=lib a-50:50@150",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.602359e-01 P_one=1.611211e-01 T0=1.611214e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-50:50@150",
+   "ok": true
+  },
+  {
+   "detail": "cons=3.713457e-01 T0=9.964474e-01 lib=9.996788e-01",
+   "name": "V4 cons<=T0<=lib a-50:50@450",
+   "ok": true
+  },
+  {
+   "detail": "P_each=9.964462e-01 P_one=9.964474e-01 T0=9.964474e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-50:50@450",
+   "ok": true
+  },
+  {
+   "detail": "cons=7.749382e-01 T0=9.999295e-01 lib=9.999832e-01",
+   "name": "V4 cons<=T0<=lib a-50:50@600",
+   "ok": true
+  },
+  {
+   "detail": "P_each=9.999295e-01 P_one=9.999295e-01 T0=9.999295e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 a-50:50@600",
+   "ok": true
+  },
+  {
+   "detail": "cons=2.124723e-16 T0=3.582910e-07 lib=1.186247e-05",
+   "name": "V4 cons<=T0<=lib c-hist@113",
+   "ok": true
+  },
+  {
+   "detail": "P_each=3.373788e-07 P_one=3.582778e-07 T0=3.582910e-07",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-hist@113",
+   "ok": true
+  },
+  {
+   "detail": "cons=3.171557e-13 T0=1.504472e-05 lib=3.197289e-04",
+   "name": "V4 cons<=T0<=lib c-hist@150",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.430304e-05 P_one=1.504422e-05 T0=1.504472e-05",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-hist@150",
+   "ok": true
+  },
+  {
+   "detail": "cons=3.063962e-05 T0=1.454619e-01 lib=4.882544e-01",
+   "name": "V4 cons<=T0<=lib c-hist@450",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.445754e-01 P_one=1.454615e-01 T0=1.454619e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-hist@450",
+   "ok": true
+  },
+  {
+   "detail": "cons=7.740641e-04 T0=4.253013e-01 lib=8.015944e-01",
+   "name": "V4 cons<=T0<=lib c-hist@600",
+   "ok": true
+  },
+  {
+   "detail": "P_each=4.245239e-01 P_one=4.253012e-01 T0=4.253013e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-hist@600",
+   "ok": true
+  },
+  {
+   "detail": "cons=2.959619e-16 T0=4.878662e-07 lib=1.629518e-05",
+   "name": "V4 cons<=T0<=lib c-50:50@113",
+   "ok": true
+  },
+  {
+   "detail": "P_each=4.592631e-07 P_one=4.878484e-07 T0=4.878662e-07",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-50:50@113",
+   "ok": true
+  },
+  {
+   "detail": "cons=4.415360e-13 T0=2.023030e-05 lib=4.361228e-04",
+   "name": "V4 cons<=T0<=lib c-50:50@150",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.922528e-05 P_one=2.022962e-05 T0=2.023030e-05",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-50:50@150",
+   "ok": true
+  },
+  {
+   "detail": "cons=4.236859e-05 T0=1.640256e-01 lib=5.733691e-01",
+   "name": "V4 cons<=T0<=lib c-50:50@450",
+   "ok": true
+  },
+  {
+   "detail": "P_each=1.630600e-01 P_one=1.640252e-01 T0=1.640256e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-50:50@450",
+   "ok": true
+  },
+  {
+   "detail": "cons=1.065273e-03 T0=4.492997e-01 lib=8.660282e-01",
+   "name": "V4 cons<=T0<=lib c-50:50@600",
+   "ok": true
+  },
+  {
+   "detail": "P_each=4.486204e-01 P_one=4.492995e-01 T0=4.492997e-01",
+   "name": "V5 order 0<=P_each<=P_atleastone<=T0 c-50:50@600",
+   "ok": true
+  },
+  {
+   "detail": "htab=0.01484337922 rs=0.01484337922 (1.5s)",
+   "name": "V3 htab-vs-RS T0 a-hist@113",
+   "ok": true
+  },
+  {
+   "detail": "htab=3.582909786e-07 rs=3.582909786e-07 (1.5s)",
+   "name": "V3 htab-vs-RS T0 c-hist@113",
+   "ok": true
+  }
+ ],
+ "meta": {
+  "NB": [
+   113,
+   150,
+   450,
+   600
+  ],
+  "event": "S1-m4 support + TrainRa + CVD (both readings) + Test (lib1 & total>=8)",
+  "excluded": [
+   "matrix rank/conditioning criterion (M3)",
+   "3-bucket scenarios",
+   "attempt-axis budget",
+   "validity/dedup modeling"
+  ],
+  "executable": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\.venv\\Scripts\\python.exe",
+  "failures": [],
+  "generated_utc": "2026-10-17T12:16:57.554763+00:00",
+  "interpreter": "3.14.0 (main, Nov 19 2025, 22:43:52) [MSC v.1944 64 bit (AMD64)]",
+  "runtime_s": 39.3,
+  "scenarios": [
+   "a-hist",
+   "a-50:50",
+   "c-hist",
+   "c-50:50"
+  ],
+  "status": "TEMPORARY pre-freeze calculation; not published; repo untouched"
+ },
+ "results": {
+  "a-50:50|113": {
+   "N": 113,
+   "NTE": 28,
+   "NTR": 85,
+   "P_atleastone": 0.027179329533351775,
+   "P_each": 0.026807851731372952,
+   "T0": 0.027179495584536133,
+   "T_FH": 0.0001757727681387941,
+   "T_HF": 0.00019603713620874693,
+   "T_HH": 1.6605118435976897e-07,
+   "cons_ref": 6.494216201831562e-08,
+   "lib_ref": 0.22269546281663416,
+   "scen": "a-50:50"
+  },
+  "a-50:50|150": {
+   "N": 150,
+   "NTE": 38,
+   "NTR": 112,
+   "P_atleastone": 0.16112113209220058,
+   "P_each": 0.16023586254391564,
+   "T0": 0.1611214183114173,
+   "T_FH": 0.0004061644356843097,
+   "T_HF": 0.0004796775510340544,
+   "T_HH": 2.8621921671114726e-07,
+   "cons_ref": 1.2501312019576747e-05,
+   "lib_ref": 0.5831837128902279,
+   "scen": "a-50:50"
+  },
+  "a-50:50|450": {
+   "N": 450,
+   "NTE": 113,
+   "NTR": 337,
+   "P_atleastone": 0.9964473886569126,
+   "P_each": 0.9964461586733118,
+   "T0": 0.9964473886570573,
+   "T_FH": 2.949332909170245e-07,
+   "T_HF": 9.350505992868441e-07,
+   "T_HH": 1.4469534893227603e-13,
+   "cons_ref": 0.3713456683782331,
+   "lib_ref": 0.9996787765482591,
+   "scen": "a-50:50"
+  },
+  "a-50:50|600": {
+   "N": 600,
+   "NTE": 150,
+   "NTR": 450,
+   "P_atleastone": 0.9999294940514931,
+   "P_each": 0.9999294790144799,
+   "T0": 0.9999294940514931,
+   "T_FH": 2.4162401177322856e-09,
+   "T_HF": 1.2620773056851268e-08,
+   "T_HH": 1.3210575833598527e-17,
+   "cons_ref": 0.7749382298357389,
+   "lib_ref": 0.9999832025999345,
+   "scen": "a-50:50"
+  },
+  "a-hist|113": {
+   "N": 113,
+   "NTE": 28,
+   "NTR": 85,
+   "P_atleastone": 0.014843299717309777,
+   "P_each": 0.014647289017193763,
+   "T0": 0.014843379217925237,
+   "T_FH": 0.00013788435388153812,
+   "T_HF": 5.828534746539674e-05,
+   "T_HH": 7.950061546052845e-08,
+   "cons_ref": 2.4939995839649214e-08,
+   "lib_ref": 0.10846020130438,
+   "scen": "a-hist"
+  },
+  "a-hist|150": {
+   "N": 150,
+   "NTE": 38,
+   "NTR": 112,
+   "P_atleastone": 0.10654072524370252,
+   "P_each": 0.10589594918896104,
+   "T0": 0.10654088252064192,
+   "T_FH": 0.0005264965222913903,
+   "T_HF": 0.00011859408632889193,
+   "T_HH": 1.5727693939574348e-07,
+   "cons_ref": 4.847083197177973e-06,
+   "lib_ref": 0.346303810965105,
+   "scen": "a-hist"
+  },
+  "a-hist|450": {
+   "N": 450,
+   "NTE": 113,
+   "NTR": 337,
+   "P_atleastone": 0.9927130035711671,
+   "P_each": 0.9926841197296052,
+   "T0": 0.9927130035713528,
+   "T_FH": 2.887238392703816e-05,
+   "T_HF": 1.1458006375669832e-08,
+   "T_HH": 1.8568781598827215e-13,
+   "cons_ref": 0.17762017785783576,
+   "lib_ref": 0.9957626627440082,
+   "scen": "a-hist"
+  },
+  "a-hist|600": {
+   "N": 600,
+   "NTE": 150,
+   "NTR": 450,
+   "P_atleastone": 0.999461964998262,
+   "P_each": 0.9994604739961818,
+   "T0": 0.999461964998262,
+   "T_FH": 1.4909727337085908e-06,
+   "T_HF": 2.934651978411531e-11,
+   "T_HH": 2.0629832855128387e-17,
+   "cons_ref": 0.4695528106855122,
+   "lib_ref": 0.9995130091617506,
+   "scen": "a-hist"
+  },
+  "c-50:50|113": {
+   "N": 113,
+   "NTE": 28,
+   "NTR": 85,
+   "P_atleastone": 4.878483996980992e-07,
+   "P_each": 4.592630610651782e-07,
+   "T0": 4.87866232392381e-07,
+   "T_FH": 1.395189958044412e-08,
+   "T_HF": 1.4669104441040405e-08,
+   "T_HH": 1.7832694281819694e-11,
+   "cons_ref": 2.9596193101898053e-16,
+   "lib_ref": 1.629518116761471e-05,
+   "scen": "c-50:50"
+  },
+  "c-50:50|150": {
+   "N": 150,
+   "NTE": 38,
+   "NTR": 112,
+   "P_atleastone": 2.0229620671231843e-05,
+   "P_each": 1.922527556220336e-05,
+   "T0": 2.0230296126929528e-05,
+   "T_FH": 4.887355698424691e-07,
+   "T_HF": 5.169604505813831e-07,
+   "T_HH": 6.754556976841656e-10,
+   "cons_ref": 4.415359518103274e-13,
+   "lib_ref": 0.00043612276375400215,
+   "scen": "c-50:50"
+  },
+  "c-50:50|450": {
+   "N": 450,
+   "NTE": 113,
+   "NTR": 337,
+   "P_atleastone": 0.1640252030403527,
+   "P_each": 0.16305995258676556,
+   "T0": 0.16402560152436063,
+   "T_FH": 0.00044374541890117785,
+   "T_HF": 0.0005223020027018173,
+   "T_HH": 3.984840079339843e-07,
+   "cons_ref": 4.236859149037206e-05,
+   "lib_ref": 0.5733690783989329,
+   "scen": "c-50:50"
+  },
+  "c-50:50|600": {
+   "N": 600,
+   "NTE": 150,
+   "NTR": 450,
+   "P_atleastone": 0.449299533592588,
+   "P_each": 0.4486203727873534,
+   "T0": 0.44929965709511777,
+   "T_FH": 0.00029300864937533425,
+   "T_HF": 0.0003863991609188199,
+   "T_HH": 1.235025297604876e-07,
+   "cons_ref": 0.0010652732211998473,
+   "lib_ref": 0.8660282461604215,
+   "scen": "c-50:50"
+  },
+  "c-hist|113": {
+   "N": 113,
+   "NTE": 28,
+   "NTR": 85,
+   "P_atleastone": 3.5827782519000357e-07,
+   "P_each": 3.373788433666212e-07,
+   "T0": 3.582909786226679e-07,
+   "T_FH": 1.0750557867707295e-08,
+   "T_HF": 1.0174730821003742e-08,
+   "T_HH": 1.3153432664326237e-11,
+   "cons_ref": 2.1247232115704956e-16,
+   "lib_ref": 1.1862466263805515e-05,
+   "scen": "c-hist"
+  },
+  "c-hist|150": {
+   "N": 150,
+   "NTE": 38,
+   "NTR": 112,
+   "P_atleastone": 1.5044215239933929e-05,
+   "P_each": 1.4303044335280347e-05,
+   "T0": 1.5044719727290519e-05,
+   "T_FH": 3.902173229393496e-07,
+   "T_HF": 3.51962556427413e-07,
+   "T_HH": 5.044873565893998e-10,
+   "cons_ref": 3.171557110147915e-13,
+   "lib_ref": 0.00031972889740095685,
+   "scen": "c-hist"
+  },
+  "c-hist|450": {
+   "N": 450,
+   "NTE": 113,
+   "NTR": 337,
+   "P_atleastone": 0.14546152512479532,
+   "P_each": 0.14457540251594736,
+   "T0": 0.1454618657008862,
+   "T_FH": 0.0006197704455316754,
+   "T_HF": 0.0002670333154980319,
+   "T_HH": 3.40576090897407e-07,
+   "cons_ref": 3.063961796044523e-05,
+   "lib_ref": 0.48825439478316607,
+   "scen": "c-hist"
+  },
+  "c-hist|600": {
+   "N": 600,
+   "NTE": 150,
+   "NTR": 450,
+   "P_atleastone": 0.4253011502733643,
+   "P_each": 0.4245239303481829,
+   "T0": 0.4253012650627859,
+   "T_FH": 0.0006240992121886435,
+   "T_HF": 0.0001533502918359945,
+   "T_HH": 1.1478942163232652e-07,
+   "cons_ref": 0.0007740640776132329,
+   "lib_ref": 0.8015943891438193,
+   "scen": "c-hist"
+  }
+ }
+}
