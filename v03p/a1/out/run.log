@@ -88,7 +88,7 @@ PASS RevF E[bl] b-hist@150 | got=1.1280 ref=1.13
 PASS RevF E[bl] b-hist@600 | got=10.3043 ref=10.3
 PASS RevF E[bl] c-hist@150 | got=0.0622 ref=0.06
 PASS RevF E[bl] c-hist@600 | got=4.7150 ref=4.71
-global grid (7.3s)
+global grid (7.0s)
 N=113: NTR=85 T=28
 N=150: NTR=112 T=38
 N=450: NTR=337 T=113
@@ -101,12 +101,19 @@ building h-tables (exact hypergeometric inclusion-exclusion)...
   h_lib N=113: 4851 entries (0.1s)
   h_cons N=113: 4635 entries (0.2s)
   h_lib N=150: 9180 entries (0.1s)
-  h_cons N=150: 9122 entries (0.4s)
-  h_lib N=450: 94830 entries (1.5s)
-  h_cons N=450: 94768 entries (4.7s)
-  h_lib N=600: 171405 entries (2.9s)
-  h_cons N=600: 171341 entries (8.6s)
-joints 2-bucket (4.6s)
+  h_cons N=150: 9180 entries (0.4s)
+  h_lib N=450: 94830 entries (1.4s)
+  h_cons N=450: 94830 entries (4.4s)
+  h_lib N=600: 171405 entries (2.6s)
+  h_cons N=600: 171401 entries (8.0s)
+PASS h_cons counterexample (9,15,126,112)@NTR=112 | got=2.1451668e-07 ref=2.1451655e-07
+PASS h_lib counterexample (9,15,126,112)@NTR=112 | got=0.92453192 ref=0.92453192
+h exact-ref sweep (9.9s)
+PASS h_lib exact-ref sweep (exhaustive + large-state samples) | worst abs diff 2.686e-12
+PASS h_cons exact-ref sweep (exhaustive + large-state samples) | worst abs diff 2.370e-12
+joints 2-bucket (4.1s)
+joint exact-ref check (3.4s)
+PASS joint2 exact-ref replay (all rules x scens x variants, N=113/150) | worst abs diff 9.392e-14
 redundancy done
-wrote out/a1_tables.json and out/a1_report.md
+wrote out/a1_tables.json, out/a1_report.md and out/run.log
 FAILURES: none

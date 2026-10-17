@@ -1,6 +1,7 @@
 """Run A1: self-tests, RevF regression, full grids, joint train/test.
 
-Deterministic, stdlib only. Writes out/a1_tables.json and out/a1_report.md.
+Deterministic, stdlib only. Writes out/a1_tables.json, out/a1_report.md
+and out/run.log (tee of stdout, UTF-8/LF).
 Exit code 0 only if every self-test and regression check passes.
 """
 
@@ -15,7 +16,7 @@ from a1_support_comparison import (
     CK, CK_Z, S2_STRATA, NMAX, LFACT, SCEN, INRANGE, RULES, FTABLE,
     build_ftables, f_s0, f_s1, f_s2, brute_probs, global2, global3_full,
     global3_box, bucket_marginals, split_sizes, h_joint_lib, h_joint_cons,
-    joint2, _hg_ratio,
+    joint2, _hg_ratio, log_comb,
 )
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -28,6 +29,29 @@ def check(name, cond, detail=""):
     print(("PASS " if cond else "FAIL ") + name + (" | " + str(detail) if detail else ""))
     if not cond:
         fails.append(name)
+
+
+os.makedirs(OUT, exist_ok=True)
+
+
+class _Tee:
+    """Console tee: every stdout line is mirrored to out/run.log."""
+
+    def __init__(self, *streams):
+        self._streams = streams
+
+    def write(self, text):
+        for s in self._streams:
+            s.write(text)
+        return len(text)
+
+    def flush(self):
+        for s in self._streams:
+            s.flush()
+
+
+_LOG_FH = open(os.path.join(OUT, "run.log"), "w", encoding="utf-8", newline="\n")
+sys.stdout = _Tee(sys.__stdout__, _LOG_FH)
 
 
 # ---- 1. C|k distributions -------------------------------------------------
@@ -221,6 +245,100 @@ for N in NB:
         HT[(variant, N)] = tab
         print(f"  h_{variant} N={N}: {len(tab)} entries ({time.time()-t1:.1f}s)")
 
+
+# ---- 5b. exact-enumeration regression for the joint probabilities -----------
+# Direct success-event enumeration (no inclusion-exclusion) as an
+# independent reference for h_joint_lib / h_joint_cons, plus a full
+# recomputation of the joint2 sums at N=113/150.  The first published
+# cons version skipped F3&Q1/F3&Q2 and three conditional triples
+# (structural zeros only for a,b>=15 / a+b>=22, NOT for all a,b>=8);
+# the counterexample found by review: a=9, b=15, o=126, NTR=112.
+
+HTOL = 1e-11   # > observed worst IE-vs-direct fp noise (2.4e-12)
+
+
+def _exact_h(a, b, o, NTR, cons):
+    """P(TrainRa & TestX | (a,b,o)) as a direct sum over (tra, tb).
+
+    TrainRa: 1<=tra, 1<=trb, tra+trb>=8. TestLib1: tra<=a-1, trb<=b-1;
+    TestCons8: tra<=a-8, trb<=b-8.
+    """
+    N = a + b + o
+    if a < 8 or b < 8:
+        return 0.0
+    u_ta, u_tb = (a - 8, b - 8) if cons else (a - 1, b - 1)
+    if u_ta < 1 or u_tb < 1:
+        return 0.0
+    s = 0.0
+    for ta in range(1, min(u_ta, NTR) + 1):
+        tb_lo = max(1, 8 - ta, (a + b - (N - NTR)) - ta)  # to=NTR-ta-tb<=o
+        tb_hi = min(u_tb, NTR - ta)
+        for tb in range(tb_lo, tb_hi + 1):
+            to = NTR - ta - tb
+            if to < 0 or to > o:
+                continue
+            t = (log_comb(a, ta) + log_comb(b, tb) + log_comb(o, to)
+                 - log_comb(N, NTR))
+            if t > -745.0:
+                s += math.exp(t)
+    return s
+
+
+_ec = _exact_h(9, 15, 126, 112, True)
+_gc = h_joint_cons(9, 15, 126, 112)
+check("h_cons counterexample (9,15,126,112)@NTR=112",
+      _gc > 0.0 and abs(_gc - _ec) <= max(HTOL, 1e-9 * _ec),
+      f"got={_gc:.8g} ref={_ec:.8g}")
+_el = _exact_h(9, 15, 126, 112, False)
+_gl = h_joint_lib(9, 15, 126, 112)
+check("h_lib counterexample (9,15,126,112)@NTR=112",
+      _gl > 0.0 and abs(_gl - _el) <= max(HTOL, 1e-9 * _el),
+      f"got={_gl:.8g} ref={_el:.8g}")
+
+t0 = time.time()
+worst_h = {"lib": 0.0, "cons": 0.0}
+nbad_h = {"lib": 0, "cons": 0}
+for variant in ("lib", "cons"):
+    cons = variant == "cons"
+    hfn = h_joint_cons if cons else h_joint_lib
+    for N in NB:
+        NTR = SPLIT[N]["NTR"]
+        # exhaustive: every state where the cons emptiness guards branch
+        # (a<=14 rows, b<=14 cols; a+b<=21 adds nothing new); lib included
+        # at the same states as a control.
+        for a in range(8, 15):
+            for b in range(8, N - a + 1):
+                o = N - a - b
+                ref = _exact_h(a, b, o, NTR, cons)
+                d = abs(hfn(a, b, o, NTR) - ref)
+                if d > max(HTOL, 1e-9 * ref):
+                    nbad_h[variant] += 1
+                worst_h[variant] = max(worst_h[variant], d)
+        for b in range(8, 15):
+            for a in range(15, N - b + 1):
+                o = N - a - b
+                ref = _exact_h(a, b, o, NTR, cons)
+                d = abs(hfn(a, b, o, NTR) - ref)
+                if d > max(HTOL, 1e-9 * ref):
+                    nbad_h[variant] += 1
+                worst_h[variant] = max(worst_h[variant], d)
+        # deterministic stride samples of large states (a,b>=15)
+        for i in range(64):
+            a = 15 + (i * 37) % max(1, N - 30)
+            b = 15 + (i * 53) % max(1, N - a - 14)
+            o = N - a - b
+            ref = _exact_h(a, b, o, NTR, cons)
+            d = abs(hfn(a, b, o, NTR) - ref)
+            if d > max(HTOL, 1e-9 * ref):
+                nbad_h[variant] += 1
+                print(f"  h-ref mismatch {variant} N={N} (a={a},b={b}): {d:.3e}")
+            worst_h[variant] = max(worst_h[variant], d)
+print(f"h exact-ref sweep ({time.time()-t0:.1f}s)")
+check("h_lib exact-ref sweep (exhaustive + large-state samples)",
+      nbad_h["lib"] == 0, f"worst abs diff {worst_h['lib']:.3e}")
+check("h_cons exact-ref sweep (exhaustive + large-state samples)",
+      nbad_h["cons"] == 0, f"worst abs diff {worst_h['cons']:.3e}")
+
 t0 = time.time()
 JOINT = {}
 for rule in RULES:
@@ -239,6 +357,77 @@ for rule in RULES:
                                       "cond_lib": (jl / F if F > 0 else 0.0),
                                       "cond_cons": (jc / F if F > 0 else 0.0)}
 print(f"joints 2-bucket ({time.time()-t0:.1f}s)")
+
+
+# joint2 regression: every (rule, scenario, variant) at N=113/150 against
+# the direct-enumeration reference (exact h per state, exact multinomial
+# weights, independent of joint2's label/NTR wiring).
+t0 = time.time()
+EXHT = {}
+for variant in ("lib", "cons"):
+    for N in (113, 150):
+        NTR = SPLIT[N]["NTR"]
+        tab = {}
+        for a in range(8, N + 1):
+            for b in range(8, N - a + 1):
+                h = _exact_h(a, b, N - a - b, NTR, variant == "cons")
+                if h > 0.0:
+                    tab[(a, b)] = h
+        EXHT[(variant, N)] = tab
+
+
+def _exact_joint(N, scen, rule, variant):
+    """P(Global & TrainRa & TestX) recomputed from scratch at N."""
+    ks = INRANGE[scen]
+    p = SCEN[scen]
+    f5, f10 = FTABLE[(rule, ks[0])], FTABLE[(rule, ks[1])]
+    p5, p10 = p[ks[0]], p[ks[1]]
+    pO = 1.0 - p5 - p10
+    lp5, lp10 = math.log(p5), math.log(p10)
+    lpO = math.log(pO) if pO > 0 else 0.0
+    tot = 0.0
+    exht = EXHT[(variant, N)]
+    for n5 in range(8, N + 1):
+        a5 = f5[n5]
+        if a5 <= 0.0:
+            continue
+        base5 = LFACT[N] - LFACT[n5] + n5 * lp5
+        for n10 in range(8, N - n5 + 1):
+            a10 = f10[n10]
+            if a10 <= 0.0:
+                continue
+            h = exht.get((n5, n10))
+            if h is None or h <= 0.0:
+                continue
+            nO = N - n5 - n10
+            if pO <= 0.0 and nO > 0:
+                continue
+            t = base5 - LFACT[n10] - LFACT[nO] + n10 * lp10
+            if nO and pO > 0:
+                t += nO * lpO
+            if t <= -745.0:
+                continue
+            tot += math.exp(t) * a5 * a10 * h
+    return tot
+
+
+nbad_j = 0
+worst_j = 0.0
+for N in (113, 150):
+    for scen in ("a-hist", "a-50:50", "c-hist", "c-50:50"):
+        for rule in RULES:
+            for variant in ("lib", "cons"):
+                got = JOINT[(rule, scen, N)][variant]
+                ref = _exact_joint(N, scen, rule, variant)
+                d = abs(got - ref)
+                if d > max(1e-12, 1e-9 * max(abs(got), abs(ref))):
+                    nbad_j += 1
+                    print(f"  joint-ref mismatch {variant} {rule} {scen} N={N}: "
+                          f"got={got:.8g} ref={ref:.8g} d={d:.3e}")
+                worst_j = max(worst_j, d)
+print(f"joint exact-ref check ({time.time()-t0:.1f}s)")
+check("joint2 exact-ref replay (all rules x scens x variants, N=113/150)",
+      nbad_j == 0, f"worst abs diff {worst_j:.3e}")
 
 # marginal train/test (re-application reading = fresh-sample globals)
 MARG_SPLIT = {}
@@ -336,7 +525,7 @@ tables = {
     "split": {str(N): SPLIT[N] for N in NB},
     "diagnostics": DIAG,
 }
-with open(os.path.join(OUT, "a1_tables.json"), "w") as fh:
+with open(os.path.join(OUT, "a1_tables.json"), "w", encoding="utf-8") as fh:
     json.dump(tables, fh, indent=1)
 
 lines = []
@@ -415,10 +604,11 @@ lines.append("- R-b (within-block re-application of C conditions) joint likewise
 lines.append("  not computed; marginals at NTR/T are exact fresh-sample values.")
 lines.append("- Double-precision log-space; terms < ~5e-324 recorded as 0-dagger")
 lines.append("  (underflow), distinct from 0* structural zeros.")
-with open(os.path.join(OUT, "a1_report.md"), "w") as fh:
+with open(os.path.join(OUT, "a1_report.md"), "w", encoding="utf-8") as fh:
     fh.write("\n".join(lines) + "\n")
 
-print("wrote out/a1_tables.json and out/a1_report.md")
+print("wrote out/a1_tables.json, out/a1_report.md and out/run.log")
 print("FAILURES:", fails if fails else "none")
+_LOG_FH.flush()
 sys.exit(1 if fails else 0)
 

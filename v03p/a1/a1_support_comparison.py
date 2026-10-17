@@ -669,6 +669,16 @@ def h_joint_cons(a, b, o, NTR):
     """P(TrainRa and TestCons8 | global counts).
 
     TrainRa as above; TestCons8: tea>=8, teb>=8 (test re-applies count rule).
+    Failure atoms: F1={tra=0}, F2={trb=0}, F3={tra+trb<=7},
+    Q1={tea<=7}={tra>=a-7}, Q2={teb<=7}={trb>=b-7}. Exact inclusion-exclusion
+    over the 5 atoms; empty intersections are skipped, with the exact
+    emptiness conditions (a,b>=8 throughout):
+      F1&Q1, F2&Q2: empty (opposed constraints).
+      F3&Q1: empty iff a>=15 (needs tra in [a-7, 7]); F3&Q2 iff b>=15.
+      F1&F3&Q2: empty iff b>=15; F2&F3&Q1: empty iff a>=15.
+      F3&Q1&Q2: empty iff a+b>=22.
+      Every quadruple/quintuple contains F1&Q1 or F2&Q2: empty.
+    Requires a,b >= 8 in every contributing call (guaranteed: f=0 else).
     """
     N = a + b + o
     if a < 8 or b < 8:
@@ -745,14 +755,46 @@ def h_joint_cons(a, b, o, NTR):
     s13 = sum_A0_le7()
     s23 = sum_B0_le7()
     # F1&tailA = {tra=0, tra>=a-7} -> empty (a>=8). F2&tailB empty.
-    # F3&tailA: {sum<=7, tra>=a-7} -> a>=8 -> empty. F3&tailB empty.
-    # triples: F1&F2&F3={(0,0)}; F1&F2&tailA empty (a>=8); F1&F2&tailB empty;
-    # F1&tailA&tailB empty; F2&tailA&tailB empty; F1&F2&tailA&... empty.
-    # F1&F3&tailB = {tra=0, sum<=7, trb>=b-7} -> b>=8 -> empty. etc.
+    # F3&tailA: {sum<=7, tra>=a-7} -> empty iff a>=15 (needs tra in
+    # [a-7, 7]); non-empty for 8 <= a <= 14. Symmetrically F3&tailB.
+    # (An earlier version treated both as always empty, which overstated
+    # the union and clamped small h to 0; caught by the exact-enumeration
+    # regression in run_a1.py section 5b, counterexample a=9, b=15,
+    # o=126, NTR=112.)
+    s3q1 = 0.0
+    if a <= 14:
+        for ta in range(max(0, a - 7), min(7, a, NTR) + 1):
+            for tb in range(0, min(7 - ta, b, NTR - ta) + 1):
+                s3q1 += single(ta, tb)
+    s3q2 = 0.0
+    if b <= 14:
+        for tb in range(max(0, b - 7), min(7, b, NTR) + 1):
+            for ta in range(0, min(7 - tb, a, NTR - tb) + 1):
+                s3q2 += single(ta, tb)
+    # triples: F1&F2&F3={(0,0)}; F1&F2&tailA, F1&F2&tailB, F1&tailA&tailB,
+    # F2&tailA&tailB empty (a,b>=8). Conditional triples:
+    # F1&F3&tailB = {tra=0, sum<=7, trb>=b-7} -> empty iff b>=15;
+    # F2&F3&tailA = {trb=0, sum<=7, tra>=a-7} -> empty iff a>=15;
+    # F3&tailA&tailB = {sum<=7, tra>=a-7, trb>=b-7} -> empty iff a+b>=22.
     t123 = single(0, 0)
+    t13q2 = 0.0
+    if b <= 14:
+        for tb in range(max(0, b - 7), min(7, b, NTR) + 1):
+            t13q2 += single(0, tb)
+    t23q1 = 0.0
+    if a <= 14:
+        for ta in range(max(0, a - 7), min(7, a, NTR) + 1):
+            t23q1 += single(ta, 0)
+    t3q1q2 = 0.0
+    if a + b <= 21:
+        for ta in range(max(0, a - 7), min(7, a, NTR) + 1):
+            for tb in range(max(0, b - 7), min(7 - ta, b, NTR - ta) + 1):
+                t3q1q2 += single(ta, tb)
+    # every quadruple/quintuple intersects F1&tailA or F2&tailB inside:
+    # opposed constraints, structural zeros (a,b>=8).
     union = (p1 + p2 + p3 + q1 + q2
-             - s12 - s1q2 - s2q1 - sqq - s13 - s23
-             + t123)
+             - s12 - s1q2 - s2q1 - sqq - s13 - s23 - s3q1 - s3q2
+             + t123 + t13q2 + t23q1 + t3q1q2)
     return max(0.0, min(1.0, 1.0 - union))
 
 

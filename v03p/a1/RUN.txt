@@ -6,60 +6,114 @@ Status: NOT FROZEN, NOT PHASE-AUTHORIZED. Published for independent review
 (integrity pass + code-level review) only. Publication does not authorize
 Phase 1 and does not change the RevF freeze.
 
-Scope
------
-A1 = support-rule comparison (S0 vs S1(m) vs S2(m), m in {2,4,6}; B_min=8;
-2 <= k <= 24). Deterministic exact enumeration, Python standard library only;
-no sampling, no random, no Monte Carlo, no generation, no hidden-outcome access.
-S2 is a candidate operationalization, NOT part of RevF: RevF never defines S2
-or its strata. All outputs are SUPPORT-ONLY probabilities, not complete-rule or
-full-study feasibility.
+Revision 2 of this package (this commit)
+----------------------------------------
+An omitted-intersection defect in h_joint_cons was found by GPT's review of the
+Revision 1 package and confirmed by independent exact enumeration:
+
+  - Defect: the inclusion-exclusion over the 5 failure atoms
+    F1={tra=0}, F2={trb=0}, F3={tra+trb<=7}, Q1={tea<=7}={tra>=a-7},
+    Q2={teb<=7}={trb>=b-7} treated F3&Q1, F3&Q2 and the conditional
+    triples F1&F3&Q2, F2&F3&Q1, F3&Q1&Q2 as structural zeros for every
+    a,b>=8. They are empty only when a>=15 / b>=15 / a+b>=22 respectively.
+    The omitted PAIR probabilities dominate the omitted TRIPLES (each
+    triple is a subset of a pair), so the union was overstated and small
+    h values could clamp to exactly 0.0.
+  - Counterexample (exact, verifiable): a=9, b=15, o=126, NTR=112, where the
+    only fully-feasible success state is (tra,tb)=(1,7): the published return
+    was 0.0; the correct value is ~2.1451655e-07.
+  - h_joint_lib is NOT affected (its G1={tra=a} makes every intersection
+    containing F3 impossible for a>=8); unchanged in this revision.
+
+Fix and hardening (this revision):
+
+  - a1_support_comparison.py: h_joint_cons rebuilt with the exact
+    emptiness guards (adds s3q1, s3q2, t13q2, t23q1, t3q1q2); comments and
+    docstring corrected. Everything else in the module is byte-for-byte
+    the Revision 1 logic.
+  - run_a1.py: new section 5b regression - direct success-event
+    enumeration (no inclusion-exclusion) as an independent reference:
+      * pinned counterexample checks for h_cons and h_lib;
+      * exhaustive sweep over a<=14 / b<=14 states (the region where the
+        cons guards branch) plus 64 stride-sampled large states per
+        split, all four splits, both variants;
+      * full recomputation of every joint2 value at N=113 and N=150
+        (all 7 rules x 4 two-bucket scenarios x both variants = 112
+        values) from exact per-state h and exact multinomial weights.
+  - run_a1.py: out/a1_report.md and out/a1_tables.json are now written
+    with explicit encoding="utf-8" (the report's em dash was previously
+    written through the Win32 locale as cp1252 0x97 - an encoding defect,
+    not a content defect). out/run.log is now written by run_a1.py itself
+    as a console tee (UTF-8, LF).
+
+Regenerated-output impact (measured, all four splits):
+
+  - Only joint_2bucket cons fields move: 182 of the 448 joint_2bucket float
+    fields changed (91 joint cells x {cons, cond_cons}); every one ROSE, as
+    required by
+    h_new - h_old = P(F3&Q1)+P(F3&Q2)-P(F1&F3&Q2)-P(F2&F3&Q1)-P(F3&Q1&Q2) >= 0.
+    Per split: 56 changed fields at N=113, 56 at N=150, 42 at N=450,
+    28 at N=600.
+  - Largest relative shifts: +13.5% at N=113 and +13.4% at N=150 (cells of
+    size ~1e-16 to ~1e-13 in the c-hist scenario, where omitted mass is large
+    relative to the cell); +0.18% max at N=450 (S1-m2|c-hist cond_cons);
+    +4.9e-05 max at N=600. Headline S0 | a-hist cons cells at N=450/600
+    (0.0125914 / 0.027083) are unchanged at displayed precision, as are
+    all F_global, marginal_bucket, marginal_split, redundancy_Bmin,
+    split, diagnostics and meta values.
+  - h-table entry counts (run.log): h_lib unchanged (4851 / 9180 / 94830 /
+    171405 for N=113/150/450/600); h_cons gains previously-clamped states:
+    N=113 4635 (unchanged), N=150 9122 -> 9180, N=450 94768 -> 94830,
+    N=600 171341 -> 171401.
+
+Published files (__pycache__ excluded)
+--------------------------------------
+path | bytes | sha256 | line endings / encoding
+v03p/a1/a1_support_comparison.py | 30008 | 88EED28A9FAD36633DA3EA769F9653F6DB0E4465102A3C37DA920883AF05CD1E | CRLF (834); UTF-8 source (em dash in line-1 docstring); otherwise ASCII
+v03p/a1/run_a1.py | 25594 | 8048BCB3C6CD26689E176D5199BCC63A1390BB9743F3E75EAEC6BFDCF2F4725D | CRLF (614); UTF-8 source (em dash in the report title string); otherwise ASCII
+v03p/a1/out/a1_report.md | 12804 | 4AB81726B0E3817A279872402F5FB00CDF133FAE5F11CA03215BDA6823876339 | CRLF (272); UTF-8 (em dash E2 80 94); otherwise ASCII
+v03p/a1/out/a1_tables.json | 98340 | E483FE1EC5988B86188F0B530B332EC3230446B219F653E8CCB33EC38DA6A72B | CRLF (4175); pure ASCII
+v03p/a1/out/run.log | 4901 | 750B3BF30E02AAB52B486BD4A4550C3559286CAD4D4D1EC691ED587F0AA1412E | LF (119 lines); UTF-8, no BOM
 
 Interpreter
 -----------
 RevF (review/revf-package) pins CPython 3.14.0, standard library only. This is
 satisfied by the repository .venv (pyvenv.cfg: version_info = 3.14.0). The
-published outputs were reproduced byte-identically under BOTH the pinned
-interpreter (repository .venv, CPython 3.14.0) and a system CPython 3.14.5, and
-across repeated runs. NO interpreter deviation remains: out/a1_report.md and
-out/a1_tables.json hashes are unchanged under both interpreters. The verifier
-should still confirm the pinned .venv run reproduces the hashes below.
+regenerated outputs above were produced under the pinned interpreter. A
+re-run under another CPython 3.14.x may differ in the last ulps of floats;
+sub-1e-11 differences are within the tests' own tolerances. Verifiers should
+still run the pinned interpreter and confirm the report/JSON hashes below.
+Byte stability is expected for out/a1_report.md and out/a1_tables.json on
+the pinned Windows setup; cross-platform checks are numerical, not byte
+comparisons.
 
-Published files (__pycache__ excluded)
---------------------------------------
-path | bytes | sha256 | line endings
-v03p/a1/a1_support_comparison.py | 27920 | C97831B01A1791D4BF88CBBBA49330387E6FF5A38FE0BAAADE809C9064D4ADBB | CRLF (792)
-v03p/a1/run_a1.py | 18476 | ED2A70539F9952E69C0D4F038258578471BCDB900878ADED752BA3430F09EC37 | CRLF (424)
-v03p/a1/out/a1_report.md | 12804 | 73651FBD651FE7B495204C67C16A7EDC39F6C9507F754F7963F1D4AEA0807951 | CRLF (272); cp1252, single 0x97 (EM DASH), otherwise ASCII
-v03p/a1/out/a1_tables.json | 98341 | F15154FD3C92FF2344AAFA4698C9C27035157BACF973406F941BC089FEBDFD2D | CRLF (4175); pure ASCII
-v03p/a1/out/run.log | 4500 | A9C4FBF91F25E002B2F05AAC566D6FCE48AA909955BB2ED80174EC671553949C | CRLF (112); UTF-8 WITHOUT BOM
+run.log provenance
+------------------
+Since this revision, run.log is written by run_a1.py itself: the script
+tees stdout to out/run.log (UTF-8, no BOM, LF line endings). Because the
+log contains wall-clock timing tokens ("(0.1s)" etc.), it is NOT
+byte-stable across runs; a verifier must compare log CONTENT with timing
+tokens ignored or normalized. Report and JSON are static text and are
+byte-stable on the pinned interpreter.
 
-run.log normalization (documented and verified)
------------------------------------------------
-The original producer log was captured by a PowerShell ">" redirect, which
-writes UTF-16LE with a BOM. For publication the log was decoded and re-encoded
-as UTF-8 without a BOM; character content and CRLF line endings are unchanged
-(verified equal after EOL normalization). No text was added, removed, or
-reordered.
-  original : bytes=9002  sha256=20A96A216E64D9E6B7D9B4A364ACA8741D520F10EF9FE54E3BD32730A0979CA8  UTF-16LE, BOM FF FE
-  published: bytes=4500  sha256=A9C4FBF91F25E002B2F05AAC566D6FCE48AA909955BB2ED80174EC671553949C  UTF-8, no BOM
-Note: out/a1_report.md and out/a1_tables.json are program outputs written by
-run_a1.py itself (open() with the interpreter's default locale encoding on
-Win32 -> cp1252 for the report's single em dash). They were NOT re-encoded, so
-their bytes are the faithful program output.
+Historical note (Revision 1, superseded): the first log was captured via a
+PowerShell ">" redirect (UTF-16LE, BOM FF FE, 9002 bytes,
+20A96A216E64D9E6B7D9B4A364ACA8741D520F10EF9FE54E3BD32730A0979CA8) and
+published after re-encoding to UTF-8 no-BOM CRLF (4500 bytes,
+A9C4FBF91F25E002B2F05AAC566D6FCE48AA909955BB2ED80174EC671553949C).
+That capture corresponds to the pre-fix Revision 1 outputs.
 
 Exact commands
 --------------
   cd v03p/a1
   <repo>/.venv/Scripts/python.exe run_a1.py        # pinned CPython 3.14.0
-  # (equivalently: py -3.14 run_a1.py under CPython 3.14.5; hashes identical)
-    -> exits 0 on success; writes out/a1_tables.json and out/a1_report.md;
-       prints PASS/FAIL for every self-test and "FAILURES: none" on success.
+    -> exits 0 on success; writes out/a1_tables.json, out/a1_report.md and
+       out/run.log; prints PASS/FAIL for every self-test, the regression
+       sweeps and the joint replay; final line "FAILURES: none".
     -> do NOT commit __pycache__.
 
-Log capture (what produced the original log):
-  py -3.14 run_a1.py > out/run.log 2>&1      # PowerShell: UTF-16LE output
-Published log was produced by decoding that to UTF-8 (no BOM), CRLF preserved.
+Log capture: out/run.log is produced by the run itself (tee). No external
+redirect is used in this revision.
 
 Expected results / self-tests
 -----------------------------
@@ -69,20 +123,34 @@ Expected results / self-tests
   - RevF regression: F_bl cells (a/b/c-hist at many N) and O4 cells match RevF
     reference values within their stated significant-figure tolerance;
     E[bl-support] within 5e-2 relative.
-  - Split sizes: 113->T=28, 150->T=38, 450->T=113, 600->T=150.
+  - Split sizes: 113->T=28 (NTR=85), 150->T=38 (NTR=112), 450->T=113 (NTR=337),
+    600->T=150 (NTR=450).
+  - Pinned counterexamples (both PASS):
+      h_cons( 9,15,126,112 | NTR=112) got ~2.1451668e-07, ref ~2.1451655e-07
+      h_lib ( 9,15,126,112 | NTR=112) got ~0.92453192,      ref ~0.92453192
+  - Exact-reference sweeps (both PASS; worst abs diff is pure
+    inclusion-exclusion accumulation noise):
+      h_lib : worst 2.686e-12   h_cons: worst 2.370e-12   (tolerance 1e-11)
+  - joint2 exact-ref replay at N=113 and N=150:
+      112 values (7 rules x 4 scenarios x 2 variants), worst abs diff
+      9.392e-14 (tolerance max(1e-12, 1e-9 * cell)).
   - Final line: "FAILURES: none"; process exit code 0.
   - Determinism: out/a1_report.md and out/a1_tables.json are byte-identical on
-    re-run (same machine, same interpreter).
+    re-run (same machine, same interpreter). run.log differs only in timing
+    tokens.
 
 Validation procedure for the verifier
 -------------------------------------
-  1. Confirm file scope: exactly the five files above; no __pycache__.
-  2. Recompute SHA-256 and byte counts; compare to the table.
+  1. Confirm file scope: exactly the five files above; no __pycache__;
+     v03p/a1/.gitattributes (* -text) present so blobs are byte-exact.
+  2. Recompute SHA-256 and byte counts of the five files; compare to the table.
   3. Run under the pinned interpreter (<repo>/.venv/Scripts/python.exe,
-     CPython 3.14.0) from v03p/a1/; expect exit 0 and "FAILURES: none"; compare
-     out/a1_report.md and out/a1_tables.json bytes to the published hashes.
-  4. Confirm run.log content equals the published UTF-8 log after EOL
-     normalization (the preceding UTF-16LE original is documented above).
+     CPython 3.14.0) from v03p/a1/; expect exit 0 and "FAILURES: none";
+     compare out/a1_report.md and out/a1_tables.json bytes to the published
+     hashes; compare run.log content ignoring the timing tokens.
+  4. Independently (optional but recommended, as GPT did in review): enumerate
+     the direct success event for (a=9, b=15, o=126, NTR=112) and confirm
+     h_joint_cons returns ~2.1451655e-07 (any value within 1e-11 of it), not 0.
 
 Carried caveats (from out/a1_report.md; not new claims)
 ------------------------------------------------------
