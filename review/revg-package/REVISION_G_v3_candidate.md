@@ -1,6 +1,8 @@
-# Revision G v3 — CANDIDATE (documentation only; not committed or published)
+# Revision G v3 — CANDIDATE (documentation only; PUBLISHED on branch `review/revg-package`)
 
-Status: Content approved by Foued for this candidate ("ALL APPROVED", chat, 2026-10-17, given in response to GPT's review of the candidate and its correction instructions). Not committed or published. The M3-reference prerequisite is satisfied (section 0); publication awaits the remaining publication integrity checks and the owner's explicit publication instruction. Stage 1 simulation-protocol freeze has NOT occurred. Phase 1 is NOT AUTHORIZED. RevF text is not edited.
+Status: Content approved by Foued for this candidate ("ALL APPROVED", chat, 2026-10-17, given in response to GPT's review of the candidate and its correction instructions). Published on branch `review/revg-package` under the owner's explicit PUBLISH instruction (2026-10-17); see the package README.txt and MANIFEST.sha256 for the commit record and hash chain. Stage 1 simulation-protocol freeze has NOT occurred. Phase 1 is NOT AUTHORIZED. RevF text is not edited.
+
+Provenance: this text was finalized by the implementation agent from the verbatim reviewed text relayed through the review channel, because CLAUDE's original local files were not accessible on the implementation machine; byte-level equality with the pre-finalization local file is not assumed. The content is the reviewed text with only the specified M3 reference updates and publication-status metadata corrections.
 
 ## 0. References (pinned)
 
@@ -111,6 +113,6 @@ RevF section 11 items not addressed here: O1/O3/O4/O5 resolution, G6a-fix vs G6a
 ## 7. Boundaries and publication
 
 - No edit to RevF; no change to A1 or O2 package bytes; no solver generation; no wider grid; no Phase 1 activity.
-- Content approval of this text is separate from permission to publish. The approvals in section 1 authorize bounded design work only; they do not authorize Phase 1 or solver generation. The M3 reference is pinned in section 0; publication additionally requires the publication integrity checks and the owner's instruction to publish.
-- Publication plan: document-only commit with a hash manifest, after owner approval of the final text; GLM then verifies the commit and hashes (Step 5).
+- Content approval of this text is separate from permission to publish. The approvals in section 1 authorize bounded design work only; they do not authorize Phase 1 or solver generation. The M3 reference is pinned in section 0; the owner's explicit PUBLISH instruction was given on 2026-10-17.
+- Publication: document-only commit with a hash manifest on branch `review/revg-package` (2026-10-17). Step 5 hash verification is run from a clean fetch of the published commit and reported separately; any later byte-changing correction requires a fresh Step 5 run naming the new commit.
 - "INCONCLUSIVE: NOT FEASIBLE AT AN AFFORDABLE N" remains an acceptable terminal outcome.

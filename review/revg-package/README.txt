@@ -6,6 +6,12 @@ Status: PUBLISHED candidate documentation. Content approved by Foued ("ALL APPRO
 simulation-protocol freeze has NOT occurred. Phase 1 is NOT AUTHORIZED. Revision F is
 not edited; the O2 package and existing numerical results are unchanged.
 
+Post-publication metadata correction: the first publication commit retained stale
+"not committed or published" wording in the two documents, and the verification
+report's title lacked the finalization attribution; these were corrected in a metadata
+follow-up commit on the same branch (see commit history), with no scientific content
+change. The manifest below covers the corrected bytes.
+
 Contents:
 - REVISION_G_v3_candidate.md
     The Revision G v3 candidate document.
@@ -28,7 +34,7 @@ and verification documents were finalized by the implementation agent from the v
 reviewed text because CLAUDE's original local files were not accessible on the
 implementation machine; byte-level equality with the pre-finalization local files is
 not assumed. The published bytes are the reviewed content with only the specified M3
-reference updates.
+reference updates and publication-status metadata corrections.
 
 This package is document-only: no calculations, no regeneration, no complete-rule
 probability, no solver generation. "INCONCLUSIVE: NOT FEASIBLE AT AN AFFORDABLE N"
