@@ -1,0 +1,2 @@
+﻿# Preserve exact bytes for A1 review artifacts across platforms (no EOL conversion).
+* -text
