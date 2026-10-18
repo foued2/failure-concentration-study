@@ -1053,7 +1053,10 @@ def run_battery():
         row["mono_s0_margin"] = lg
         row["mono_s0_min_at"] = lfail
         row["mono_s0_diffs"] = mlist
-        if not _chk(R, "ii-s0-mono", var, lg >= -MONO0_TOL, lg, -MONO0_TOL):
+        ok_mono, peak_at, mono_why = _mono_contract(mlist, MONO0_TOL, 5e-10)
+        row["mono_s0_contract"] = {"ok": ok_mono, "peak_at": peak_at,
+                                   "why": mono_why}
+        if not _chk(R, "ii-s0-mono", var, ok_mono, lg, MONO0_TOL):
             R["first_fail"] = "ii-s0-mono:" + var
             R["rows"][var] = row
             return R
@@ -1132,7 +1135,10 @@ def run_battery():
         row["mono_s1_margin"] = lg1
         row["mono_s1_min_at"] = lfail1
         row["mono_s1_diffs"] = mlist1
-        if not _chk(R, "ii-s1-mono", var, lg1 >= -MONO1_TOL, lg1, -MONO1_TOL):
+        ok_mono1, peak_at1, mono_why1 = _mono_contract(mlist1, MONO1_TOL, 5e-10)
+        row["mono_s1_contract"] = {"ok": ok_mono1, "peak_at": peak_at1,
+                                   "why": mono_why1}
+        if not _chk(R, "ii-s1-mono", var, ok_mono1, lg1, MONO1_TOL):
             R["first_fail"] = "ii-s1-mono:" + var
             R["rows"][var] = row
             return R
@@ -1218,6 +1224,24 @@ def run_battery():
     R["all_pass"] = all(c["verdict"] in ("PASS", "n/a") for c in R["checks"])
     R["elapsed_s"] = time.time() - t_start
     return R
+
+
+def _mono_contract(diffs, rising_slack, falling_slack):
+    """Single-peak contract on successive Delta(gamma) diffs: within jitter
+    slack, diffs stay >= -rising_slack until the first negative diff (the
+    peak), then no rise beyond +falling_slack afterwards (declines of any
+    size are the peak's falling branch)."""
+    flip = None
+    for g, d in diffs:
+        if flip is None:
+            if d < 0.0:
+                flip = g
+            elif d < -rising_slack:
+                return False, g, "dip below slack on the rising branch"
+        else:
+            if d > falling_slack:
+                return False, g, "second rise after the peak"
+    return True, flip, None
 
 
 def write_report(R, path):

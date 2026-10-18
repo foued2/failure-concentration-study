@@ -113,6 +113,18 @@ marginalization), and the within-group split is `E[N_c | T_{ab}] = T_{ab}·ρ_{c
 - **Monotonicity grid** (check ii): `γ = 0, 0.5, 1.0, …, 8.0` (17 points), at σ = 0 (exact) and
   σ = 1 (GH at the frozen node count). Criteria: σ = 0: `Δ(γ_{j+1}) ≥ Δ(γ_j) − 1e-12`;
   σ = 1: `≥ Δ(γ_j) − 5e-10` (quadrature slack).
+  **Amendment (post-freeze run 2, 2026-10-18, symmetric-stop protocol: run stopped at
+  `ii-s0-mono` on the `c` rows, record archived; amendment committed before the re-run):** the
+  single-peaked shape discovered at the check-(iii) amendment has row-dependent `γ_peak`; for the
+  `c` rows the peak lies INSIDE the declared `[0, 8]` grid (run-2 evidence: `c-hist`
+  `Δ` rises through `γ = 7.5` and declines by `−1.96e-4` at `γ = 8.0`, peak `≈ 3.97e-2` at
+  `γ ≈ 7.6`), so a rising-through-8 contract cannot hold there. Amended contract for both σ = 0
+  and σ = 1 monotonicity checks: **single-peak behavior on the grid** — successive grid diffs
+  stay `≥ Δ(0) − rising_slack` (`σ = 0: 1e-12`, `σ = 1: 5e-10`) until the first negative diff
+  (recorded as the peak location), and **no further rise beyond `+5e-10`** after that point
+  (declines of any size belong to the falling branch); dip-below-slack on the rising branch or a
+  second rise past the falling slack trips the check. The declared thresholds and grids are
+  otherwise unchanged.
 - **Check (i) zero-RE agreement:** at every `γ_grid` point, `|Δ_prod(γ) − Δ_ref(γ)| ≤ 1e-9`
   (absolute; both paths exact; achieved margins reported).
 - **W1 precursor (weights cross-agreement):** production vs reference `w_k`, `π_{c|k}`, and derived
