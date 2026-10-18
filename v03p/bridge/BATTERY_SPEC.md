@@ -169,6 +169,25 @@ marginalization), and the within-group split is `E[N_c | T_{ab}] = T_{ab}·ρ_{c
   must trip check (i); `m3` retained `RIDGE = 1e-6` penalty in the σ = 0 production fit → must trip
   check (i) (validates the unpenalized-optimum rider, round-7); `m4` extended predictions
   substituted by the true marginals `p̄` at σ = 1 → must trip check (v).
+  **Amendment (post-freeze run 3, 2026-10-18, symmetry-of-record protocol): run 3 completed with
+  the m1–m3 gates silently bypassed — a surplus argument placed `MUT_TOL = 1e-6` into the
+  `report_only` positional slot of the check recorder, whose truthiness disabled stop-on-fail and
+  recorded verdicts `n/a` while every margin stayed the real measured value; run 3's report is
+  archived intact as `BATTERY_REPORT_2026-10-18_run3_mutations_report_only_bypass.md` with
+  measured margins m1 `5.917e-3 / 4.906e-3 / 1.180e-2 / 7.256e-3`, m2
+  `1.912e-3 / 2.485e-3 / 2.515e-17 / 1.816e-3`, m3 `7.887e-6 / 7.896e-6 / 7.908e-6 / 7.871e-6`
+  (a / a-50:50 / c-hist / c-50:50), and the amendment is committed before the re-run. Two
+  corrections, jointly declared: (a) **gating restored** — the m1–m3 recorder calls drop the
+  surplus argument, so mutation failures stop the run like every other declared check (a direct
+  consequence is that run 3's `PASS` banner does not stand; the standing record will be the
+  post-amendment run); (b) **m2 amended to cross-substitution per row** — the mutation substitutes
+  the OTHER declared mix into the row's truth table (`c-hist` on `a`-rows, as originally declared;
+  `a-hist` on `c`-rows). The original one-directional wording cannot trip on `c`-rows by
+  construction: substituting a mix into a row that already IS that mix leaves `Δ` unchanged at
+  float scale (`2.515e-17`, run-3 evidence), which is not a mutation. Cross-substitution preserves
+  the intent (the mix choice must be detectable in `Δ`) symmetrically; the run-3 margins put the
+  expected cross-substitution effects of order `1e-3`, far above `1e-6`. `m1`, `m3`, `m4` are
+  unchanged by this amendment.
 - **Check (v) oracle-bound trip-wire (σ = 1):** with the fitted extended family's achieved loss
   `L_ext*`, the gap `g = L_ext* − Σ_k w_k Σ_c π_{c|k} H(p̄(k,c))` must be `> 1e-9` at every
   `γ_grid` point (the marginalized truth is generally not logit-linear in `C` under σ = 1 — GPT round-8);

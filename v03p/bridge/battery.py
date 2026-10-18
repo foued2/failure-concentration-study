@@ -1067,14 +1067,16 @@ def run_battery():
         m1d = delta_of(uniform_pi_wset(wsp), wt2)[0]
         row["mut_m1_margin"] = m1d - dref2
         if not _chk(R, "m1", var, abs(m1d - dref2) > MUT_TOL,
-                    abs(m1d - dref2), ">", MUT_TOL):
+                    abs(m1d - dref2), ">"):
             R["first_fail"] = "m1:" + var
             R["rows"][var] = row
             return R
-        dmut2, _ = delta_of(ws_p["c-hist"], wt2)
+        mix_in = "a-hist" if var.startswith("c") else "c-hist"
+        dmut2, _ = delta_of(ws_p[mix_in], wt2)
         row["mut_m2_margin"] = dmut2 - dref2
+        row["mut_m2_mix_in"] = mix_in
         if not _chk(R, "m2", var, abs(dmut2 - dref2) > MUT_TOL,
-                    abs(dmut2 - dref2), ">", MUT_TOL):
+                    abs(dmut2 - dref2), ">"):
             R["first_fail"] = "m2:" + var
             R["rows"][var] = row
             return R
@@ -1083,7 +1085,7 @@ def run_battery():
         row["mut_m3_margin"] = dmut3 - dref2
         row["mut_m3_fit"] = {"beta": ftr["beta"], "iters": ftr["iters"]}
         if not _chk(R, "m3", var, abs(dmut3 - dref2) > MUT_TOL,
-                    abs(dmut3 - dref2), ">", MUT_TOL):
+                    abs(dmut3 - dref2), ">"):
             R["first_fail"] = "m3:" + var
             R["rows"][var] = row
             return R
