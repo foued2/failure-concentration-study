@@ -336,7 +336,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 2.1360e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.9648e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 2.1360e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.9648e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### a-50:50|150  (NTR=112, NTE=38)
 
@@ -368,7 +368,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 2.5566e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 2.4354e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 2.5566e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 2.4354e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### a-50:50|450  (NTR=337, NTE=113)
 
@@ -464,7 +464,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 1.9726e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.9336e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 1.9726e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.9336e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### a-hist|150  (NTR=112, NTE=38)
 
@@ -496,7 +496,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 2.5967e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 2.4996e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 2.5967e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 2.4996e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### a-hist|450  (NTR=337, NTE=113)
 
@@ -592,7 +592,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 1.1513e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.0724e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 1.1513e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.0724e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### c-50:50|150  (NTR=112, NTE=38)
 
@@ -624,7 +624,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 1.3480e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.3343e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 1.3480e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.3343e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### c-50:50|450  (NTR=337, NTE=113)
 
@@ -720,7 +720,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 1.3555e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.2988e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 1.3555e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.2988e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### c-hist|150  (NTR=112, NTE=38)
 
@@ -752,7 +752,7 @@ Threshold stages (c >= tau):
 | 1600.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau). bound_unmasked = 1.6147e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.5732e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
+P(c>=tau) unmasked: empty-bucket semantics exact under option (a) (an empty bucket contributes zero to c; the x=y=0 pair passes no positive tau); the computed value remains a retained-state estimate in the omitted-mass interval [v, v + bound_unmasked] conditional on the floating-point computation (roundoff not separately bounded). bound_unmasked = 1.6147e-29 (pair truncation only; DP unpruned at t <= 112). Masked bound_abs = 1.5732e-29 (pair truncation only). Unresolved entries at tau=10.0: none.
 
 ### c-hist|450  (NTR=337, NTE=113)
 
@@ -828,4 +828,4 @@ P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quanti
 - v2_one_tn / v2_each_tn are conditional-subset quantities: P(TR & TN & c>=tau) and P(TR & TN & each & c>=tau).  They are <= P(TN & c>=tau) and are not directly comparable to O2's unconditional tn-stage P_atleastone.
 - Reproducibility limitation: A1DIR and the O2 results path are pinned absolute paths; reruns bind to this machine layout.  Module and A1 hashes are recorded in nc1_results.json meta.
 - All other stages (support gates, CVD readings, moments) exact at every N; cross-checked against O2 (V06).
-- Runtime: total 513.0s (FULL)
+- Runtime: total 485.8s (FULL)

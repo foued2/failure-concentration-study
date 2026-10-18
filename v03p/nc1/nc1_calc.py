@@ -2123,7 +2123,13 @@ def write_outputs(per_kt, scen_res, timing):
                     "plus zero/positive scans, wording downgraded to "
                     "omitted-mass bounds conditional on the "
                     "floating-point computation (roundoff not "
-                    "separately bounded)",
+                    "separately bounded); "
+                    "rev 3 per GPT/CLAUDE R2: report wording - "
+                    "empty-bucket semantics exact, estimate itself an "
+                    "omitted-mass bound + unbounded roundoff; mutation "
+                    "tests run in scratch copies (M1 y=0 leak -> V17 "
+                    "fires, M2 tau-inversion -> V16 fires, M3 TR-row "
+                    "omission -> V15 fires; clean battery unaffected)",
     }
     doc = {"meta": meta, "checks": CHECKS, "per_kt": per_kt,
            "scen": scen_res}
@@ -2235,9 +2241,13 @@ def write_report(per_kt, scen_res, timing):
         L.append("")
         if not big:
             L.append(
-                f"P(c>=tau) unmasked: exact under option (a) (an empty "
-                f"bucket contributes zero to c; the x=y=0 pair passes no "
-                f"positive tau). bound_unmasked = "
+                f"P(c>=tau) unmasked: empty-bucket semantics exact under "
+                f"option (a) (an empty bucket contributes zero to c; the "
+                f"x=y=0 pair passes no positive tau); the computed value "
+                f"remains a retained-state estimate in the omitted-mass "
+                f"interval [v, v + bound_unmasked] conditional on the "
+                f"floating-point computation (roundoff not separately "
+                f"bounded). bound_unmasked = "
                 f"{fmt_cell(r['taus'][tks[0]]['bound_unmasked'])} "
                 f"(pair truncation only; DP unpruned at t <= 112). "
                 f"Masked bound_abs = "

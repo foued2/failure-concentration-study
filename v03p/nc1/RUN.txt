@@ -146,3 +146,82 @@ Rev-2 artifacts (sha256):
 
 Status: rev-2 correction committed under owner authorization; GPT/
 CLAUDE sign-off pending on the corrected artifacts.
+
+2026-10-18 review round 2 (GPT + CLAUDE, delivered inline in project
+README).  Both accept the rev-2 correction logic in principle and ask
+for (1) mutation tests proving V15/V16 can fail, and (2) the report
+wording fix to say the empty-bucket semantics are exact while the
+computed value still carries the omitted-mass bound and separately
+unbounded roundoff.  No re-authorization involved; scope is rev-2
+validation only.  Scratch mutation copies live outside the repo
+(staging: C:\Users\pakla\AppData\Local\Temp\opencode\mut1..3,
+quick runs 54.6/61.6/54.6 s); the committed engine itself is the
+uncorrupted e95caaa lineage code plus this wording change.
+
+Mutation tests (defect injected into scratch copies only; quick
+mode, 4 groups N=113/150 a-hist/c-50:50; all exit code 1 = the
+battery detects):
+  M1  original y=0 leak re-injected (c_tail_pair x=y=0 -> 1.0;
+      y==0 floor ignored -> full bucket-5 mass).
+      Expected per reviewers: V15 fails.
+      Observed: V15 PASS (48 rows, 0 violations, 0 zero/positive
+      defects) and V16 PASS (88 pairs, 0 increases).  By
+      construction, not a miss: the leak INFLATES the unmasked
+      column (a-hist|113 tau=10 value 0.6098924367788425 ->
+      0.6155455732342165; delta = injected y=0 pair mass
+      0.005653136455374019), and V15 guards the opposite
+      (less-than) direction; a tau-constant plateau preserves
+      tau-order.  The defect IS detected, by the check built for
+      these degenerate branches: V17 FAIL, detail
+      x=y=0 tau=10.0 not 0.0.
+  M2  controlled tau-monotonicity violation (swap P_c_ge_tau
+      between tau=10 and tau=20 in scen_thresholds output).
+      Expected: V16 fails.
+      Observed: V16 FAIL (4 pairs, worst rel increase 1.455e+01
+      at c-50:50|113 tau=20); V15 FAIL secondarily (4 rows,
+      worst rel shortfall 8.093e-01: the swap lowers fu(tau=10)
+      below tr(tau=10)); V17 PASS.
+  M3  TR-row omission from the unmasked sum (skip y>=1 and
+      x+y>=8 pairs in the pfull loop) -- the defect class V15 was
+      built for (the 69 N>=450 rows of the pre-correction
+      engine).  Expected: V15 fails.
+      Observed: V15 FAIL (27 rows, worst rel shortfall 9.970e-01;
+      0 zero/positive defects -- fires purely on the relative
+      branch), V16 PASS (0 increases: the truncated sum is still
+      a monotone probability), V17 PASS.
+  Clean-run control: rev-3 FULL rerun (wording + meta rev 3 only;
+  engine logic untouched from e95caaa) gives 39 checks 0 FAIL
+  (485.8 s), V15 96 rows 0 violations, V16 264 pairs 0 increases.
+
+Wording fix (both reviewers): all 8 small-N report blocks now
+read  P(c>=tau) unmasked: empty-bucket semantics exact under
+option (a) (an empty bucket contributes zero to c; the x=y=0 pair
+passes no positive tau); the computed value remains a
+retained-state estimate in the omitted-mass interval
+[v, v + bound_unmasked] conditional on the floating-point
+computation (roundoff not separately bounded).  The old phrase
+occurs nowhere in the report.
+
+Reviewer mapping correction, recorded for the tail: V15/V16 are
+relative-order checks; the y=0 leak inflates its guarded operand
+and is mathematically invisible to them; its detector is V17
+(demonstrated by M1).  V15's own firing capability is
+demonstrated by M3 (omission class), V16's by M2 (inversion
+class).
+
+Regression gates for rev 3: 4,416 scen fields (incl. unresolved
+lists) + per_kt repr-exact identical to e95caaa; all 39 check
+entries byte-identical (V15/V16 details unchanged this rev);
+report diff vs e95caaa is exactly the 8 wording lines + the
+runtime line; meta diffs confined to run_date/timing_s/
+module_hash_sha256/revision.
+
+Rev-3 artifacts (sha256):
+  nc1_calc.py      c23639b85877161ad97186a6a088655ca7c1cce524aaf0b55464f1653725859d
+  nc1_results.json 326fb2bf0226dd2af8a1ec0b6ee78c0525d720518f1536416929ae2528ba71db
+  nc1_report.md    25599296f94b3de2fbe8f7506ccad6966e7823ebe2cee842fe3881c3c6fed55d
+
+Status: rev-3 wording fix + mutation evidence committed under
+owner authorization; NC1 closes pending reviewer acceptance of
+this block; the beta_min study-level decision remains with the
+owner (Foued).
