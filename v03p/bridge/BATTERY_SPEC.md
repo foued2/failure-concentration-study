@@ -158,10 +158,20 @@ marginalization), and the within-group split is `E[N_c | T_{ab}] = T_{ab}·ρ_{c
   check (i) (validates the unpenalized-optimum rider, round-7); `m4` extended predictions
   substituted by the true marginals `p̄` at σ = 1 → must trip check (v).
 - **Check (v) oracle-bound trip-wire (σ = 1):** with the fitted extended family's achieved loss
-  `L_ext*`, the gap `g = L_ext* − Σ_k w_k Σ_c π_{c|k} H(p̄(k,c))` must be `> 1e-9` at every `γ_grid`
-  point (the marginalized truth is generally not logit-linear in `C` under σ = 1 — GPT round-8);
+  `L_ext*`, the gap `g = L_ext* − Σ_k w_k Σ_c π_{c|k} H(p̄(k,c))` must be `> 1e-9` at every
+  `γ_grid` point (the marginalized truth is generally not logit-linear in `C` under σ = 1 — GPT round-8);
   the substitution mutation `m4` must drive `g ≤ 1e-12` (trip). A production gap `≤ 1e-9` without a
   mutation **stops the run** for implementation correction before any result is interpreted.
+  **Amendment (post-freeze run 1, 2026-10-18, symmetric-stop protocol: run stopped at this check,
+  original record archived; amendment committed before the re-run):** at `γ = 0` the σ = 1 truth has
+  no `C`-dependence at all (`p̄(k,c,0)` is constant per stratum), so the extended restricted family
+  represents it **exactly** (the fit places `β_C = 0`; run-1 evidence: `g(0) = 0` at float scale
+  `≈ 1.9e-18`, per-stratum constant fitted predictions) and the round-8 wire cannot hold there.
+  The amended gate applies the `> 1e-9` criterion to the **`C`-bearing points** `γ ∈ γ_grid ∩ [0.25, 8]`
+  (`run-1` evidence: `g` ∈ `[1.09e-8, 3.81e-5]` across those points, all above the threshold with
+  margin) and records `γ = 0` as a report-only row (exact-representability evidence), which matches
+  the round-8 wording ("generally not logit-linear"). The substitution mutation `m4` at `γ = 2.0`
+  is unchanged.
 - **Q-check (quadratic form, sanity only, no gate):** report
   `|Δ_prod(γ) − Δ_quad(γ)|` across the small-`γ` band, where
   `Δ_quad(γ) = (γ²/2)·Σ_k w_k·p_k(1−p_k)·Var_k^{sup}(C)` (A2.2 scope paragraph, zero-RE only).

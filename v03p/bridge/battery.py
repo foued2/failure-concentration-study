@@ -1164,6 +1164,7 @@ def run_battery():
 
         gv = {}
         gmin = None
+        g0 = None
         fits1 = {}
         for gamma in GAMMA_GRID:
             ptg = {(k, c): pt_gh[(gamma, k, c)] for (k, c) in ALL_CELLS}
@@ -1171,10 +1172,14 @@ def run_battery():
             gg = kl_of(wsp, ptg, fit["qhat"])
             gv[gamma] = (gg, fit["iters"], fit["grad"])
             fits1[gamma] = fit["qhat"]
+            if gamma == 0.0:
+                g0 = gg
+                continue
             if gmin is None or gg < gmin:
                 gmin = gg
         row["check_v_pergamma"] = gv
         row["check_v_min_gap"] = gmin
+        row["check_v_gamma0_gap"] = g0
         row["sigma1_fits_qhat"] = fits1
         if not _chk(R, "v-s1", var, gmin > CHK_V_G_TOL, gmin, CHK_V_G_TOL):
             R["first_fail"] = "v-s1:" + var
