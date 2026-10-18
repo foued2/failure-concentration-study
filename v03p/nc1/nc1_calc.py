@@ -65,9 +65,12 @@ R1 risk handling (blowup; probe2/probe3/probe4 measurements):
     when NTR > 112), and (x,y) pairs with R[x][y] < 1e-18 dropped (bound
     ~1.4e-16).  Masked threshold-stage values are retained-state
     estimates: dropping mass only removes passing configurations, so the
-    certified interval is [v, v + bound]; entries below their bound are
-    marked "unresolved", not negligible.  Unmasked P(c>=tau) is null at
-    N = 450, 600 (R-table size).  Every other stage is exact at all N.
+    true value lies in [v, v + bound] up to floating-point roundoff
+    (omitted-mass bound conditional on the computation; roundoff is not
+    separately bounded -- see the R1 notes in nc1_report.md); entries
+    below their bound are marked "unresolved", not negligible.
+    Unmasked P(c>=tau) is null at N = 450, 600 (R-table size).  Every
+    other stage is exact at all N.
 
 Correction pass (owner-authorized 2026-10-18, option (a)): an empty bucket
 contributes zero to c.  The per-pair P(c>=tau) tail is computed by
@@ -1164,9 +1167,12 @@ def scen_thresholds(scen, N, taus, verbose=True):
                        dispatch (null when not computed, N >= 450)
       C_not5/C_not10/C_notnot, D5/D10, C5_same/C10_same
       v2_one / v2_each stage values and their TN variants
-      bound_abs        certified masked-value bound (per-N applicable:
-                       R_drop_tr + dp_drop iff NTR > 112)
-      bound_unmasked   bound for P_c_ge_tau (null at N >= 450)
+      bound_abs        omitted-mass bound for masked values (per-N
+                       applicable: R_drop_tr + dp_drop iff NTR > 112);
+                       conditional on the floating-point computation,
+                       roundoff not separately bounded
+      bound_unmasked   omitted-mass bound for P_c_ge_tau (null at
+                       N >= 450)
       unresolved       per-tau entries with v < applicable bound
     Supported by the folded w tables for both S masks."""
     p5 = A.SCEN[scen][5]
@@ -1826,10 +1832,21 @@ def v14():
 
 
 def v15(scen_res):
-    """P(c>=tau) >= P(TR & c>=tau) on every computable (group, tau) row."""
+    """P(c>=tau) >= P(TR & c>=tau) on every computable (group, tau) row.
+
+    Relative-only tolerance (GPT R1 rev): no unit-scale absolute floor.
+    A shortfall is a violation iff (tr - fu) > 1e-12 * tr; when the two
+    are of similar scale this is above the ulp-reordering noise (~1e-16
+    relative), so any real violation at tiny scales is caught.  Also a
+    hard zero-versus-positive scan: fu == 0.0 with tr > 0.0 is a defect,
+    because the TR rows are a subset of the same kept pair rows and their
+    identical positive contributions appear in both sums (all terms
+    nonnegative, so the subset sum cannot vanish while the larger one is
+    positive)."""
     ok = True
     det = ""
-    nrow = nviol = 0
+    nrow = nviol = nzero = 0
+    worst = 0.0
     for key in sorted(scen_res):
         for tk in sorted(scen_res[key]["taus"], key=lambda x: float(x)):
             r = scen_res[key]["taus"][tk]
@@ -1838,19 +1855,39 @@ def v15(scen_res):
                 continue
             nrow += 1
             tr = r["P_c_ge_tau_tr"]
-            if fu < tr - (1e-12 * max(1.0, tr) + 1e-15):
-                nviol += 1
+            if fu == 0.0 and tr > 0.0:
+                nzero += 1
                 ok = False
-                if len(det) < 300:
-                    det += f"{key} tau={tk} {fu:.17g} < {tr:.17g}; "
+                if len(det) < 280:
+                    det += f"ZERO {key} tau={tk} tr={tr:.6e}; "
+                continue
+            if fu < tr:
+                rel = (tr - fu) / tr
+                worst = max(worst, rel)
+                if rel > 1e-12:
+                    nviol += 1
+                    ok = False
+                    if len(det) < 280:
+                        det += (f"{key} tau={tk} fu={fu:.17g} < "
+                                f"tr={tr:.17g} rel {rel:.3e}; ")
     check("V15 P(c>=tau) >= P(TR & c>=tau) every computable row", ok,
-          f"{nrow} rows, {nviol} violations" + ((" | " + det) if det else ""))
+          f"{nrow} rows, {nviol} violations (rel-tol 1e-12, no abs "
+          f"floor), {nzero} zero/positive defects, worst rel shortfall "
+          f"{worst:.3e}" + ((" | " + det) if det else ""))
 
 
 def v16(scen_res):
-    """tau-monotonicity of P(c>=tau) and P(TR & c>=tau) per group."""
+    """tau-monotonicity of P(c>=tau) and P(TR & c>=tau) per group.
+
+    Relative-only tolerance (GPT R1 rev): v_next may exceed v_prev by at
+    most 1e-12 * prev; no absolute floor.  If prev == 0.0 then v_next
+    must be exactly 0.0: events nest as tau grows, so a positive value at
+    a larger tau with exact zero at the smaller tau is a real inversion
+    (kept contributions are identical and nonnegative in both sums)."""
     ok = True
     det = ""
+    npair = nviol = nzero = 0
+    worst = 0.0
     for key in sorted(scen_res):
         for col in ("P_c_ge_tau", "P_c_ge_tau_tr"):
             prev = None
@@ -1858,14 +1895,29 @@ def v16(scen_res):
                 v = scen_res[key]["taus"][tk][col]
                 if v is None:
                     continue
-                if prev is not None and \
-                        v > prev + 1e-12 * max(1.0, prev) + 1e-15:
-                    ok = False
-                    det += f"{key} {col} tau={tk} {v:.17g} > {prev:.17g}; "
+                if prev is not None:
+                    npair += 1
+                    if v > prev + 1e-12 * prev:
+                        if prev == 0.0:
+                            nzero += 1
+                            ok = False
+                            if len(det) < 280:
+                                det += (f"ZERO-INV {key} {col} tau={tk} "
+                                        f"v={v:.6e} > 0; ")
+                        else:
+                            rel = (v - prev) / prev
+                            worst = max(worst, rel)
+                            nviol += 1
+                            ok = False
+                            if len(det) < 280:
+                                det += (f"{key} {col} tau={tk} "
+                                        f"{v:.17g} > {prev:.17g} "
+                                        f"rel {rel:.3e}; ")
                 prev = v
     check("V16 tau-monotonicity P_c_ge_tau, P_c_ge_tau_tr", ok,
-          det[:400] if det else
-          "all groups non-increasing across the 12-tau grid")
+          f"{npair} pairs, {nviol} increases (rel-tol 1e-12, no abs "
+          f"floor), {nzero} zero inversions, worst rel increase "
+          f"{worst:.3e}" + ((" | " + det) if det else ""))
 
 
 def _brute_tail_1d(k, t, thr):
@@ -2066,7 +2118,12 @@ def write_outputs(per_kt, scen_res, timing):
         "revision": "correction pass 1 (owner-authorized option (a)): "
                     "c_tail_pair four-case dispatch, x=y=0 contributes 0, "
                     "null unmasked P_c_ge_tau at N>=450, V15-V17 added, "
-                    "per-N applicable bounds and unresolved marking",
+                    "per-N applicable bounds and unresolved marking; "
+                    "rev 2 per GPT R1: V15/V16 relative-only tolerances "
+                    "plus zero/positive scans, wording downgraded to "
+                    "omitted-mass bounds conditional on the "
+                    "floating-point computation (roundoff not "
+                    "separately bounded)",
     }
     doc = {"meta": meta, "checks": CHECKS, "per_kt": per_kt,
            "scen": scen_res}
@@ -2191,7 +2248,9 @@ def write_report(per_kt, scen_res, timing):
             L.append(
                 f"P(c>=tau) unmasked: null (not computed at N >= 450; "
                 f"R-table size). Masked quantities are retained-state "
-                f"estimates: true value in [v, v + bound_abs], "
+                f"estimates with omitted-mass interval [v, v + "
+                f"bound_abs] (conditional on the floating-point "
+                f"computation; roundoff not separately bounded), "
                 f"bound_abs = {fmt_cell(r['taus'][tks[0]]['bound_abs'])} "
                 f"(R_drop_tr + dp_drop). Entries with v < bound_abs are "
                 f"unresolved (not negligible, not zero): at tau={tks[0]}: "
@@ -2212,14 +2271,23 @@ def write_report(per_kt, scen_res, timing):
              "For N <= 150 the DP is exact: masked bound_abs = "
              "R_drop_tr (~2e-29), unmasked bound_unmasked = "
              "R_drop_full.")
-    L.append("- Certified intervals (retained-state estimates; dropping "
-             "mass only removes passing configurations, so the true "
-             "value lies in [v, v + bound]): masked bound_abs = "
-             "R_drop_tr + dp_drop ~9.46e-10 at N >= 450.  Values below "
-             "their applicable bound are marked unresolved in "
+    L.append("- Omitted-mass intervals (retained-state estimates; "
+             "dropping mass only removes passing configurations, so up "
+             "to floating-point roundoff the true value lies in "
+             "[v, v + bound]): masked bound_abs = R_drop_tr + dp_drop "
+             "~9.46e-10 at N >= 450.  These are omitted-mass bounds "
+             "conditional on the floating-point computation: roundoff "
+             "is not separately bounded.  Supporting evidence, not a "
+             "roundoff certificate: all c>=tau comparisons are exact "
+             "integer arithmetic (pooled_R0/ssfloor_x); tiny tails are "
+             "computed via backward cumulative arrays to keep absolute "
+             "roundoff off the tails (tailx); and the retained-mass "
+             "machinery agrees with exact enumeration at the 1e-14.."
+             "1e-16 relative level in V02/V04/V07/V09/V14/V17.  Values "
+             "below their applicable bound are marked unresolved in "
              "nc1_results.json and must not be read as zero or as "
              "significant (e.g. masked a-hist|450 tau=625 is ~4.3e-70 "
-             "< 9.46e-10: unresolved; the certified statement is only "
+             "< 9.46e-10: unresolved; the defensible statement is only "
              "that the true value is <= ~9.5e-10).")
     L.append("- R-table pair truncation: 1e-30 (N <= 150), 1e-18 "
              "(N >= 450); contribution bound ~1.4e-16.")

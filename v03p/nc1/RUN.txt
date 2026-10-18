@@ -75,8 +75,9 @@ Changes vs 7d61d5e (nc1_calc.py):
   - P_c_ge_tau = null at N >= 450 (was 0.0).
   - bound_abs per-N applicable (dp_drop only when NTR > 112);
     bound_unmasked added; per-tau "unresolved" lists below-bound
-    entries (certified interval [v, v+bound]; below-bound = not
-    negligible, not zero).
+    entries (omitted-mass interval [v, v+bound] conditional on the
+    floating-point computation; below-bound = not negligible, not
+    zero).
   - V15/V16/V17 added (39 checks total).
   - report wording: correction provenance, intervals and unresolved
     rule, distribution-coverage scope (X-dists t<=40, summaries
@@ -93,4 +94,55 @@ corrected artifacts supersede only the plateau-inflated unmasked
 column.
 
 Status: correction pass committed under owner authorization; GPT/
+CLAUDE sign-off pending on the corrected artifacts.
+
+=====================================================================
+Rev 2 of the correction pass (GPT R1 blockers 1+2, 2026-10-18)
+=====================================================================
+
+GPT R1 review of f33d050 withheld sign-off on two blockers; both
+addressed, computation untouched:
+
+Blocker 1 -- V15/V16 sensitivity at tiny scales:
+  V15 and V16 previously used unit-scale absolute floors (max(1.0, .)
+  in the tolerance), which allowed a 1e-70 masked value to pass against
+  an exactly-zero unmasked value.  Rewritten to relative-only
+  tolerances (violation iff shortfall/increase > 1e-12 * reference, no
+  absolute floor) plus explicit zero-versus-positive scans:
+  - V15 hard check: unmasked exactly 0.0 while masked > 0.0 is a
+    defect (TR rows are a subset of the same kept pair rows with
+    identical nonnegative contributions).
+  - V16 hard check: prev == 0.0 requires v_next == 0.0 (events nest as
+    tau grows).
+  Result on the rerun: 96 rows / 264 pairs, 0 violations, 0
+  zero/positive defects, worst relative shortfall 0.000e+00 and worst
+  relative increase 0.000e+00 (the TR rows contribute products
+  identical to the unmasked sums, so the invariant holds to the bit).
+
+Blocker 2 -- certification wording:
+  The bounds account only for omitted probability mass (pair
+  truncation, DP drop); floating-point roundoff is not separately
+  bounded.  All "certified interval" language is replaced by
+  "omitted-mass interval [v, v + bound], conditional on the
+  floating-point computation (roundoff not separately bounded)" in
+  the engine docstrings, the report per-group blocks and the R1
+  protocol notes.  The notes also record the supporting (non-
+  certificate) evidence: exact integer threshold arithmetic
+  (pooled_R0/ssfloor_x), backward-cumulative tails that keep absolute
+  roundoff off tiny tails, and retained-mass agreement with exact
+  enumeration at the 1e-14..1e-16 relative level (V02/V04/V07/V09/
+  V14/V17).  Below-bound entries continue to be marked unresolved.
+
+Regression gates for rev 2: computation code untouched except V15/V16
+internals and wording; rerun 39 checks 0 FAIL (513.0 s); all 4,224
+numeric scen fields + per_kt bit-identical to f33d050 (repr-exact);
+only V15/V16 detail strings and meta run_date/timing_s/module_hash/
+revision differ.
+
+Rev-2 artifacts (sha256):
+  nc1_calc.py      e71213a3ec66236cc044efffc219629be4f64a9e0e3c2c75084ef4539e1d4145
+  nc1_results.json e9fe971ca3c2be0613908462413524639af9875bf96d94a58b0cca279926f1eb
+  nc1_report.md    05ee6ceff708b159f652d247424ba97e5db105ef3841cbe20ae6b46e73a9225c
+
+Status: rev-2 correction committed under owner authorization; GPT/
 CLAUDE sign-off pending on the corrected artifacts.

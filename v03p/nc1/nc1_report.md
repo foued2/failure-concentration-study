@@ -42,8 +42,8 @@ Checks: 39 run, 0 FAIL, 0 VACUOUS.
 - PASS: V11 a-50:50|600 same-partition/monotone invariants | resid(<=1e-12) 5.816e-26 neg 0.000e+00 order 0.000e+00
 - PASS: V11 c-hist|600 same-partition/monotone invariants | resid(<=1e-12) 0.000e+00 neg 0.000e+00 order 0.000e+00
 - PASS: V11 c-50:50|600 same-partition/monotone invariants | resid(<=1e-12) 0.000e+00 neg 0.000e+00 order 0.000e+00
-- PASS: V15 P(c>=tau) >= P(TR & c>=tau) every computable row | 96 rows, 0 violations
-- PASS: V16 tau-monotonicity P_c_ge_tau, P_c_ge_tau_tr | all groups non-increasing across the 12-tau grid
+- PASS: V15 P(c>=tau) >= P(TR & c>=tau) every computable row | 96 rows, 0 violations (rel-tol 1e-12, no abs floor), 0 zero/positive defects, worst rel shortfall 0.000e+00
+- PASS: V16 tau-monotonicity P_c_ge_tau, P_c_ge_tau_tr | 264 pairs, 0 increases (rel-tol 1e-12, no abs floor), 0 zero inversions, worst rel increase 0.000e+00
 
 ## Per-(k,t) summary (t <= 120)
 
@@ -400,7 +400,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot.
 
 ### a-50:50|600  (NTR=450, NTE=150)
 
@@ -432,7 +432,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot, not10_same10.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot, not10_same10.
 
 ### a-hist|113  (NTR=85, NTE=28)
 
@@ -528,7 +528,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot, E55, same5_c_ge_tau, not5_same5, E55_tn.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_notnot, E55, same5_c_ge_tau, not5_same5, E55_tn.
 
 ### a-hist|600  (NTR=450, NTE=150)
 
@@ -560,7 +560,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_not5, C_notnot, E55, same5_c_ge_tau, not5_same5, E55_tn.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: C_not5, C_notnot, E55, same5_c_ge_tau, not5_same5, E55_tn.
 
 ### c-50:50|113  (NTR=85, NTE=28)
 
@@ -656,7 +656,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
 
 ### c-50:50|600  (NTR=450, NTE=150)
 
@@ -688,7 +688,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
 
 ### c-hist|113  (NTR=85, NTE=28)
 
@@ -784,7 +784,7 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
 
 ### c-hist|600  (NTR=450, NTE=150)
 
@@ -816,16 +816,16 @@ Threshold stages (c >= tau):
 | 1600.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 2500.0 | null | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates: true value in [v, v + bound_abs], bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
+P(c>=tau) unmasked: null (not computed at N >= 450; R-table size). Masked quantities are retained-state estimates with omitted-mass interval [v, v + bound_abs] (conditional on the floating-point computation; roundoff not separately bounded), bound_abs = 9.4604e-10 (R_drop_tr + dp_drop). Entries with v < bound_abs are unresolved (not negligible, not zero): at tau=10.0: none.
 
 ## R1 protocol notes
 
 - Correction pass (owner-authorized 2026-10-18, option (a)): an empty bucket contributes zero to c.  Per-pair P(c>=tau) handles four explicit cases: x>0,y>0 pooled bivariate tail; x>0,y=0 1D bucket-5 tail; x=0,y>0 1D bucket-10 tail; x=y=0 contributes 0 (c=0 passes no positive tau), tested on its own (V17).  Pre-correction, empty-bucket rows returned full bucket-5 mass, inflating every unmasked value by exactly P(t10-train-empty).
 - DP streaming: EPS_DP = 1e-14 prunes only t > 112, so dp_drop enters bounds only when NTR > 112 (N >= 450).  For N <= 150 the DP is exact: masked bound_abs = R_drop_tr (~2e-29), unmasked bound_unmasked = R_drop_full.
-- Certified intervals (retained-state estimates; dropping mass only removes passing configurations, so the true value lies in [v, v + bound]): masked bound_abs = R_drop_tr + dp_drop ~9.46e-10 at N >= 450.  Values below their applicable bound are marked unresolved in nc1_results.json and must not be read as zero or as significant (e.g. masked a-hist|450 tau=625 is ~4.3e-70 < 9.46e-10: unresolved; the certified statement is only that the true value is <= ~9.5e-10).
+- Omitted-mass intervals (retained-state estimates; dropping mass only removes passing configurations, so up to floating-point roundoff the true value lies in [v, v + bound]): masked bound_abs = R_drop_tr + dp_drop ~9.46e-10 at N >= 450.  These are omitted-mass bounds conditional on the floating-point computation: roundoff is not separately bounded.  Supporting evidence, not a roundoff certificate: all c>=tau comparisons are exact integer arithmetic (pooled_R0/ssfloor_x); tiny tails are computed via backward cumulative arrays to keep absolute roundoff off the tails (tailx); and the retained-mass machinery agrees with exact enumeration at the 1e-14..1e-16 relative level in V02/V04/V07/V09/V14/V17.  Values below their applicable bound are marked unresolved in nc1_results.json and must not be read as zero or as significant (e.g. masked a-hist|450 tau=625 is ~4.3e-70 < 9.46e-10: unresolved; the defensible statement is only that the true value is <= ~9.5e-10).
 - R-table pair truncation: 1e-30 (N <= 150), 1e-18 (N >= 450); contribution bound ~1.4e-16.
 - Distribution-deliverable scope: full X distributions t <= 40; per-(k,t) summaries t <= 120; threshold stages on the fixed 12-tau grid; unmasked P(c>=tau) null at N >= 450.
 - v2_one_tn / v2_each_tn are conditional-subset quantities: P(TR & TN & c>=tau) and P(TR & TN & each & c>=tau).  They are <= P(TN & c>=tau) and are not directly comparable to O2's unconditional tn-stage P_atleastone.
 - Reproducibility limitation: A1DIR and the O2 results path are pinned absolute paths; reruns bind to this machine layout.  Module and A1 hashes are recorded in nc1_results.json meta.
 - All other stages (support gates, CVD readings, moments) exact at every N; cross-checked against O2 (V06).
-- Runtime: total 519.3s (FULL)
+- Runtime: total 513.0s (FULL)
