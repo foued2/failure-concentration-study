@@ -58,12 +58,24 @@ Key identities used (each verified numerically in this run):
       (+ P(same5&same10&c>=tau) = 0 for tau > 0).
 
 R1 risk handling (blowup; probe2/probe3/probe4 measurements):
-  - N = 113, 150: exact full range (DP unpruned; (x,y) truncation 1e-30).
+  - N = 113, 150: exact full range (DP unpruned; (x,y) truncation 1e-30,
+    dropped pair mass ~2e-29 = the applicable unmasked bound).
   - N = 450, 600: DP states with p < 1e-14 dropped for t > 112 (dropped
-    mass accumulated exactly; certified bound ~1e-9), and (x,y) pairs
-    with R[x][y] < 1e-18 dropped (bound ~1.4e-16).  These threshold-stage
-    values are flagged PROVISIONAL pending owner acceptance of the R1
-    amendment; every other stage is exact at all N.
+    mass accumulated exactly; dp-side bound ~9.46e-10, applicable only
+    when NTR > 112), and (x,y) pairs with R[x][y] < 1e-18 dropped (bound
+    ~1.4e-16).  Masked threshold-stage values are retained-state
+    estimates: dropping mass only removes passing configurations, so the
+    certified interval is [v, v + bound]; entries below their bound are
+    marked "unresolved", not negligible.  Unmasked P(c>=tau) is null at
+    N = 450, 600 (R-table size).  Every other stage is exact at all N.
+
+Correction pass (owner-authorized 2026-10-18, option (a)): an empty bucket
+contributes zero to c.  The per-pair P(c>=tau) tail is computed by
+c_tail_pair with four explicit cases: x>0,y>0 pooled bivariate tail;
+x>0,y=0 1D bucket-5 tail; x=0,y>0 1D bucket-10 tail; x=y=0 contributes 0
+(c=0 passes no positive tau) and is tested on its own (V17).  The
+pre-correction engine returned full bucket-5 mass on empty-bucket-10
+rows, inflating every unmasked value by exactly P(t10-train-empty).
 """
 
 import sys, os, math, json, time, datetime
@@ -279,6 +291,34 @@ def pair_dp_dp(x, y, r0):
     a = dp_side(5, x)
     b = dp_side(10, y)
     return gen_tail(a[0], a[1], b[0], b[2], 4 * y, x, r0)
+
+
+def c_tail_pair(x, y, num, den, ds5=None):
+    """P(c >= tau) for the (x, y) train pair, option (a): an empty bucket
+    contributes zero to c.  Four explicit cases:
+      x == 0 and y == 0: c = 0, passes no positive tau -> 0.0
+      y == 0: c = d5^2 X5/(x s^2)          -> X5 >= ssfloor_x(5, x)
+      x == 0: c = d10^2 X10/(y s^2)        -> X10 >= ssfloor_x(10, y)
+      x > 0 and y > 0: pooled two-bucket tail (exact bivariate).
+    """
+    if x == 0 and y == 0:
+        return 0.0
+    if y == 0:
+        return tailx(5, x, ssfloor_x(5, x, num, den))
+    if x == 0:
+        return tailx(10, y, ssfloor_x(10, y, num, den))
+    if ds5 is None:
+        ds5 = dp_side(5, x)
+    ds10 = dp_side(10, y)
+    r0 = pooled_R0(x, y, num, den)
+    return gen_tail(ds5[0], ds5[1], ds10[0], ds10[2], 4 * y, x, r0)
+
+
+_TAU_QTY = ("P_c_ge_tau_tr", "C_not5", "C_not10", "C_notnot",
+            "E55", "E1010", "same5_c_ge_tau", "same10_c_ge_tau",
+            "not5_same5", "not10_same10", "v2_one", "v2_each",
+            "sup_tr_c_ge_tau", "E55_tn", "E1010_tn", "v2_one_tn",
+            "v2_each_tn", "sup_tr_tn_c_ge_tau")
 
 
 _CCOMP = {}   # (k, n) -> list of (X, prob) for small train comps
@@ -1120,10 +1160,14 @@ def scen_thresholds(scen, N, taus, verbose=True):
 
     Returns a dict with per tau:
       P_c_ge_tau_tr    P(TR & c>=tau)                    (pure train)
-      P_c_ge_tau       P(c>=tau) unconditioned           (N <= 150 only)
+      P_c_ge_tau       P(c>=tau) unconditioned, option (a) four-case
+                       dispatch (null when not computed, N >= 450)
       C_not5/C_not10/C_notnot, D5/D10, C5_same/C10_same
       v2_one / v2_each stage values and their TN variants
-      bound_abs        certified absolute error bound
+      bound_abs        certified masked-value bound (per-N applicable:
+                       R_drop_tr + dp_drop iff NTR > 112)
+      bound_unmasked   bound for P_c_ge_tau (null at N >= 450)
+      unresolved       per-tau entries with v < applicable bound
     Supported by the folded w tables for both S masks."""
     p5 = A.SCEN[scen][5]
     p10 = A.SCEN[scen][10]
@@ -1316,9 +1360,9 @@ def scen_thresholds(scen, N, taus, verbose=True):
                     rf = rsf[i]
                     if rf <= 0.0:
                         continue
-                    # x = 0: c >= tau  <=>  X10 >= ssfloor_x(10, y)
-                    pfull += rf * tailx(10, y,
-                                        ssfloor_x(10, y, num, den))
+                    if y == 0:
+                        continue  # x=y=0: c=0, passes no positive tau
+                    pfull += rf * c_tail_pair(0, y, num, den)
             for x in range(1, NTR + 1):
                 rowf = rows_fu[x]
                 if rowf is None:
@@ -1329,20 +1373,22 @@ def scen_thresholds(scen, N, taus, verbose=True):
                     rf = rsf[i]
                     if rf <= 0.0:
                         continue
-                    r0 = pooled_R0(x, y, num, den)
-                    ds10 = dp_side(10, y)
-                    pfull += rf * gen_tail(ds5[0], ds5[1], ds10[0], ds10[2],
-                                           4 * y, x, r0)
+                    pfull += rf * c_tail_pair(x, y, num, den, ds5)
         sup_tr_c = ptr - cn5 - cn10 + cnn
         v2_one = sup_tr_c
         v2_each = sup_tr_c - e55 - e1010
         sup_tr_tn_c = ptr * P_TN - cn5t - cn10t + cnnt
         v2_one_tn = sup_tr_tn_c
         v2_each_tn = sup_tr_tn_c - e55t - e1010t
-        bnd = drop_tr + bnd_dp
-        out["taus"][repr(tau)] = {
+        # Applicable bounds: DP pruning is active only for t > 112, so the
+        # dp-side drop enters the masked bound only when NTR > 112
+        # (N >= 450).  For N <= 150 the masked bound is R_drop_tr alone.
+        bnd = drop_tr + (bnd_dp if NTR > T_EXACT else 0.0)
+        bnd_fu = drop_fu if rows_fu is not None else None
+        ent = {
             "tau": tau,
-            "P_c_ge_tau_tr": ptr, "P_c_ge_tau": pfull,
+            "P_c_ge_tau_tr": ptr,
+            "P_c_ge_tau": (pfull if rows_fu is not None else None),
             "C_not5": cn5, "C_not10": cn10, "C_notnot": cnn,
             "E55": e55, "E1010": e1010,
             "same5_c_ge_tau": d5, "same10_c_ge_tau": d10,
@@ -1352,8 +1398,14 @@ def scen_thresholds(scen, N, taus, verbose=True):
             "E55_tn": e55t, "E1010_tn": e1010t,
             "v2_one_tn": v2_one_tn, "v2_each_tn": v2_each_tn,
             "sup_tr_tn_c_ge_tau": sup_tr_tn_c,
-            "bound_abs": bnd,
+            "bound_abs": bnd, "bound_unmasked": bnd_fu,
         }
+        unr = [kk for kk in _TAU_QTY if ent[kk] < bnd]
+        pc = ent["P_c_ge_tau"]
+        if pc is not None and pc < bnd_fu:
+            unr.append("P_c_ge_tau")
+        ent["unresolved"] = unr
+        out["taus"][repr(tau)] = ent
         if verbose:
             print(f"  tau={tau:g}: ptr={ptr:.6e} v2_one={v2_one:.6e} "
                   f"v2_each={v2_each:.6e} (bound {bnd:.2e})")
@@ -1773,6 +1825,117 @@ def v14():
                  f"pur={worst['pur']:.3e} a={worst['a']:.3e}")
 
 
+def v15(scen_res):
+    """P(c>=tau) >= P(TR & c>=tau) on every computable (group, tau) row."""
+    ok = True
+    det = ""
+    nrow = nviol = 0
+    for key in sorted(scen_res):
+        for tk in sorted(scen_res[key]["taus"], key=lambda x: float(x)):
+            r = scen_res[key]["taus"][tk]
+            fu = r["P_c_ge_tau"]
+            if fu is None:
+                continue
+            nrow += 1
+            tr = r["P_c_ge_tau_tr"]
+            if fu < tr - (1e-12 * max(1.0, tr) + 1e-15):
+                nviol += 1
+                ok = False
+                if len(det) < 300:
+                    det += f"{key} tau={tk} {fu:.17g} < {tr:.17g}; "
+    check("V15 P(c>=tau) >= P(TR & c>=tau) every computable row", ok,
+          f"{nrow} rows, {nviol} violations" + ((" | " + det) if det else ""))
+
+
+def v16(scen_res):
+    """tau-monotonicity of P(c>=tau) and P(TR & c>=tau) per group."""
+    ok = True
+    det = ""
+    for key in sorted(scen_res):
+        for col in ("P_c_ge_tau", "P_c_ge_tau_tr"):
+            prev = None
+            for tk in sorted(scen_res[key]["taus"], key=lambda x: float(x)):
+                v = scen_res[key]["taus"][tk][col]
+                if v is None:
+                    continue
+                if prev is not None and \
+                        v > prev + 1e-12 * max(1.0, prev) + 1e-15:
+                    ok = False
+                    det += f"{key} {col} tau={tk} {v:.17g} > {prev:.17g}; "
+                prev = v
+    check("V16 tau-monotonicity P_c_ge_tau, P_c_ge_tau_tr", ok,
+          det[:400] if det else
+          "all groups non-increasing across the 12-tau grid")
+
+
+def _brute_tail_1d(k, t, thr):
+    """Direct enumeration: P(X_k >= thr | train size t), small t only."""
+    s = 0.0
+    for ct in comps(k, t):
+        lg = comp_logp(k, ct)
+        if lg is None or lg < -745.0:
+            continue
+        if comp_X(k, ct) >= thr:
+            s += math.exp(lg)
+    return s
+
+
+def v17():
+    """Option (a) four-case dispatch of c_tail_pair.
+
+    (i) the x=y=0 branch is tested on its own: c = 0 passes no positive
+    tau, so the contribution must be exactly 0.0 at every tau (this row
+    passed no other invariant and was the second leak path);
+    (ii) the 1D empty-bucket cases are cross-checked against direct
+    enumeration (not self-consistency with the same DP alone);
+    (iii) regression guard: the empty-bucket-10 rows must not return
+    full bucket-5 mass (the pre-correction leak)."""
+    ok = True
+    det = ""
+    for tau in TAUS:
+        num, den = tau_frac(tau)
+        if c_tail_pair(0, 0, num, den) != 0.0:
+            ok = False
+            det = f"x=y=0 tau={tau} not 0.0"
+            break
+    if ok:
+        worst = 0.0
+        ncase = 0
+        for k, t in ((5, 3), (5, 6), (5, 2), (10, 3), (10, 6), (10, 2)):
+            for tau in (10.0, 39.0625, 625.0):
+                num, den = tau_frac(tau)
+                a = c_tail_pair(t, 0, num, den) if k == 5 else \
+                    c_tail_pair(0, t, num, den)
+                b = _brute_tail_1d(k, t, ssfloor_x(k, t, num, den))
+                d = abs(a - b) / max(a, b, 1e-300) if max(a, b) > 0 else 0.0
+                worst = max(worst, d)
+                ncase += 1
+        if worst > 1e-12:
+            ok = False
+            det = f"1D empty-bucket worst rel {worst:.3e}"
+    if ok:
+        num, den = tau_frac(10.0)
+        leak = c_tail_pair(3, 0, num, den)
+        if not (leak < 1.0):
+            ok = False
+            det = f"c_tail_pair(3,0) = {leak!r} (leak regression)"
+    if ok:
+        worst = 0.0
+        for (x, y) in ((3, 3), (5, 2), (8, 4)):
+            for tau in (10.0, 39.0625):
+                num, den = tau_frac(tau)
+                a = c_tail_pair(x, y, num, den)
+                b = pair_dp_dp(x, y, pooled_R0(x, y, num, den))
+                d = abs(a - b) / max(a, b, 1e-300) if max(a, b) > 0 else 0.0
+                worst = max(worst, d)
+        if worst > 1e-15:
+            ok = False
+            det = f"pooled dispatch worst rel {worst:.3e}"
+    check("V17 c_tail_pair four cases (x=y=0 own test, 1D vs brute, "
+          "dispatch)", ok, det or
+          "12 taus zero-row + 18 1D-brute + 6 pooled-dispatch cases OK")
+
+
 # ==========================================================================
 # Part 10: per-(k,t) tables, scenario collection, outputs, run control
 # ==========================================================================
@@ -1900,6 +2063,10 @@ def write_outputs(per_kt, scen_res, timing):
         "R_CUT_SMALL": R_CUT_SMALL,
         "R_CUT_BIG": R_CUT_BIG,
         "timing_s": timing,
+        "revision": "correction pass 1 (owner-authorized option (a)): "
+                    "c_tail_pair four-case dispatch, x=y=0 contributes 0, "
+                    "null unmasked P_c_ge_tau at N>=450, V15-V17 added, "
+                    "per-N applicable bounds and unresolved marking",
     }
     doc = {"meta": meta, "checks": CHECKS, "per_kt": per_kt,
            "scen": scen_res}
@@ -1994,34 +2161,80 @@ def write_report(per_kt, scen_res, timing):
                  " v2_one (sup) | v2_each (sup) | v2_one TN |"
                  " v2_each TN | C_not5 | C_not10 | C_notnot |")
         L.append("|---|---|---|---|---|---|---|---|---|---|")
-        prov = "PROVISIONAL" if int(key.split("|")[1]) >= 450 else "exact"
-        for tk in sorted(r["taus"], key=lambda x: float(x)):
+        big = int(key.split("|")[1]) >= 450
+        tks = sorted(r["taus"], key=lambda x: float(x))
+        for tk in tks:
             rr = r["taus"][tk]
+            pc = rr["P_c_ge_tau"]
             L.append(
-                f"| {tk} | {fmt_cell(rr['P_c_ge_tau'])} |"
+                f"| {tk} | {'null' if pc is None else fmt_cell(pc)} |"
                 f" {fmt_cell(rr['P_c_ge_tau_tr'])} |"
                 f" {fmt_cell(rr['v2_one'])} | {fmt_cell(rr['v2_each'])} |"
                 f" {fmt_cell(rr['v2_one_tn'])} | {fmt_cell(rr['v2_each_tn'])} |"
                 f" {fmt_cell(rr['C_not5'])} | {fmt_cell(rr['C_not10'])} |"
                 f" {fmt_cell(rr['C_notnot'])} |")
-        if int(key.split("|")[1]) < 150:
-            L.append("")
-            L.append("P_c_ge_tau unmasked is exact for N <= 150; "
-                     "the 450/600 unmasked values are not computed "
-                     "(R-table size) and remain empty.")
+        unr = r["taus"][tks[0]]["unresolved"]
+        unr_s = ", ".join(unr) if unr else "none"
         L.append("")
-        L.append(f"R1 status for this block: {prov} "
-                 f"(bound_abs = {fmt_cell(r['taus'][sorted(r['taus'], key=lambda x: float(x))[0]]['bound_abs'])})"
-                 if prov == "PROVISIONAL" else
-                 "R1 status for this block: exact.")
+        if not big:
+            L.append(
+                f"P(c>=tau) unmasked: exact under option (a) (an empty "
+                f"bucket contributes zero to c; the x=y=0 pair passes no "
+                f"positive tau). bound_unmasked = "
+                f"{fmt_cell(r['taus'][tks[0]]['bound_unmasked'])} "
+                f"(pair truncation only; DP unpruned at t <= 112). "
+                f"Masked bound_abs = "
+                f"{fmt_cell(r['taus'][tks[0]]['bound_abs'])} "
+                f"(pair truncation only). Unresolved entries at "
+                f"tau={tks[0]}: {unr_s}.")
+        else:
+            L.append(
+                f"P(c>=tau) unmasked: null (not computed at N >= 450; "
+                f"R-table size). Masked quantities are retained-state "
+                f"estimates: true value in [v, v + bound_abs], "
+                f"bound_abs = {fmt_cell(r['taus'][tks[0]]['bound_abs'])} "
+                f"(R_drop_tr + dp_drop). Entries with v < bound_abs are "
+                f"unresolved (not negligible, not zero): at tau={tks[0]}: "
+                f"{unr_s}.")
         L.append("")
     L.append("## R1 protocol notes")
     L.append("")
-    L.append("- DP streaming: EPS_DP = 1e-14 for t > 112; dropped mass "
-             "accumulated exactly; certified bias bound ~1e-9 on "
-             "threshold-stage CDFs at N = 450, 600 (PROVISIONAL).")
+    L.append("- Correction pass (owner-authorized 2026-10-18, option "
+             "(a)): an empty bucket contributes zero to c.  Per-pair "
+             "P(c>=tau) handles four explicit cases: x>0,y>0 pooled "
+             "bivariate tail; x>0,y=0 1D bucket-5 tail; x=0,y>0 1D "
+             "bucket-10 tail; x=y=0 contributes 0 (c=0 passes no "
+             "positive tau), tested on its own (V17).  Pre-correction, "
+             "empty-bucket rows returned full bucket-5 mass, inflating "
+             "every unmasked value by exactly P(t10-train-empty).")
+    L.append("- DP streaming: EPS_DP = 1e-14 prunes only t > 112, so "
+             "dp_drop enters bounds only when NTR > 112 (N >= 450).  "
+             "For N <= 150 the DP is exact: masked bound_abs = "
+             "R_drop_tr (~2e-29), unmasked bound_unmasked = "
+             "R_drop_full.")
+    L.append("- Certified intervals (retained-state estimates; dropping "
+             "mass only removes passing configurations, so the true "
+             "value lies in [v, v + bound]): masked bound_abs = "
+             "R_drop_tr + dp_drop ~9.46e-10 at N >= 450.  Values below "
+             "their applicable bound are marked unresolved in "
+             "nc1_results.json and must not be read as zero or as "
+             "significant (e.g. masked a-hist|450 tau=625 is ~4.3e-70 "
+             "< 9.46e-10: unresolved; the certified statement is only "
+             "that the true value is <= ~9.5e-10).")
     L.append("- R-table pair truncation: 1e-30 (N <= 150), 1e-18 "
              "(N >= 450); contribution bound ~1.4e-16.")
+    L.append("- Distribution-deliverable scope: full X distributions "
+             "t <= 40; per-(k,t) summaries t <= 120; threshold stages "
+             "on the fixed 12-tau grid; unmasked P(c>=tau) null at "
+             "N >= 450.")
+    L.append("- v2_one_tn / v2_each_tn are conditional-subset "
+             "quantities: P(TR & TN & c>=tau) and P(TR & TN & each & "
+             "c>=tau).  They are <= P(TN & c>=tau) and are not directly "
+             "comparable to O2's unconditional tn-stage P_atleastone.")
+    L.append("- Reproducibility limitation: A1DIR and the O2 results "
+             "path are pinned absolute paths; reruns bind to this "
+             "machine layout.  Module and A1 hashes are recorded in "
+             "nc1_results.json meta.")
     L.append("- All other stages (support gates, CVD readings, moments) "
              "exact at every N; cross-checked against O2 (V06).")
     L.append(f"- Runtime: {timing}")
@@ -2067,8 +2280,9 @@ def run(quick=False):
     v10()
     v13()
     v14()
+    v17()
     timing["checks1"] = time.time() - t0
-    print(f"battery V01-V10,V13: {fmt(timing['checks1'])}")
+    print(f"battery V01-V10,V13,V14,V17: {fmt(timing['checks1'])}")
     per_kt = per_kt_tables()
     scen_res = {}
     ts = TAUS
@@ -2091,6 +2305,11 @@ def run(quick=False):
             dt = time.time() - t1
             timing[f"scen_{scen}_{N}"] = dt
             print(f"{scen} N={N}: {fmt(dt)}")
+    t0 = time.time()
+    v15(scen_res)
+    v16(scen_res)
+    timing["checks2"] = time.time() - t0
+    print(f"battery V15-V16: {fmt(timing['checks2'])}")
     timing["total"] = time.time() - t_all
     tstr = f"total {timing['total']:.1f}s ({tag})"
     write_outputs(per_kt, scen_res, timing)

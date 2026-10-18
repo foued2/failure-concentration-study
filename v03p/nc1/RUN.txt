@@ -39,3 +39,58 @@ GPT review checkpoint (opened 2026-10-18; three issues pending):
      t <= 40, summaries t <= 120 (deviation to be recorded if ratified).
 
 Status: unapproved; no freeze/authorization result.
+
+Correction pass (owner-authorized 2026-10-18, option (a)) -- applied
+====================================================================
+
+Owner authorization (2026-10-18): bounded correction pass on NC1 only,
+option (a): an empty bucket contributes zero to c, all four bucket cases
+handled explicitly with x=y=0 passing no positive tau and tested on its
+own; uncomputed values represented as null; added unmasked >= masked and
+tau-monotonicity checks; per-quantity per-N applicable bounds with
+below-bound entries marked unresolved; narrowed-coverage, v2_one_tn
+subset wording and absolute-path limitation recorded; follow-up commit
+preserving 7d61d5e.
+
+Gates passed before committing:
+  1. Baseline reproduction: 7d61d5e code rerun unmodified -> all 192
+     P_c_ge_tau entries reproduced exactly (masked machinery unchanged;
+     earlier rerun log with the committed hash retained in staging).
+  2. Corrected run: 39 checks, 0 FAIL, 0 VACUOUS (519.3 s, CPython 3.14).
+  3. Regression: every masked field across all 8 groups x 12 taus x 18
+     fields bit-identical to 7d61d5e (0 mismatches); per_kt and stage
+     blocks bit-identical; 96/96 small-N P_c_ge_tau rows strictly
+     decreased and all >= masked (V15); tau-monotone (V16); x=y=0
+     four-case branch tested on its own (V17).
+Corrected values match the review-thread preview harness exactly
+(a-hist|113 tau=10: 0.6098924367788425; tau=39.0625:
+0.00691217059147110; c-hist|113 tau=10: 0.06524676567585736).
+
+Changes vs 7d61d5e (nc1_calc.py):
+  - c_tail_pair(): per-pair P(c>=tau) under option (a), four explicit
+    cases (x>0,y>0 pooled bivariate; x>0,y=0 bucket-5 1D; x=0,y>0
+    bucket-10 1D; x=y=0 contributes 0).  pfull routes through it; the
+    empty-bucket rows no longer return full bucket-5 mass (both leak
+    paths closed).
+  - P_c_ge_tau = null at N >= 450 (was 0.0).
+  - bound_abs per-N applicable (dp_drop only when NTR > 112);
+    bound_unmasked added; per-tau "unresolved" lists below-bound
+    entries (certified interval [v, v+bound]; below-bound = not
+    negligible, not zero).
+  - V15/V16/V17 added (39 checks total).
+  - report wording: correction provenance, intervals and unresolved
+    rule, distribution-coverage scope (X-dists t<=40, summaries
+    t<=120, 12-tau grid), v2_one_tn conditional-subset wording,
+    absolute-path reproducibility limitation.
+
+New artifacts (sha256):
+  nc1_calc.py      79f146c86da171a5d0396f83b27efb6ebaa2260fb17422a99eba90eb6ac607bb
+  nc1_results.json b1656b2a5925862fe0daca9ee3540d237e56f74a0b20cc2c757311af9f3b5ce1
+  nc1_report.md    f55a713bc16a1c457bb3b2cfecbb01fb5486e0bff9ff371597d579260cecb67d
+
+Baseline (7d61d5e) hashes above are preserved for provenance; the
+corrected artifacts supersede only the plateau-inflated unmasked
+column.
+
+Status: correction pass committed under owner authorization; GPT/
+CLAUDE sign-off pending on the corrected artifacts.
