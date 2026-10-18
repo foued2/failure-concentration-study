@@ -4,7 +4,8 @@
 **Companion to:** `v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md` (Revision 2), §2.1 and §0.1 item 1  
 **Prepared under:** owner work order `v03p/VDRAFT_IMPLEMENTATION_ORDER_2026-10-18.md` (commit `906dd351e647d3d28a70ae16a01070e34fdca8a6`), item 3  
 **Prepared by:** GLM  
-**Status:** Documentation only. No computation performed; no protocol authorized by this record. REVIEW CONTEXT: review draft only.
+**Status:** Documentation only. No computation performed; no protocol authorized by this record. REVIEW CONTEXT: review draft only.  
+**UPDATE (2026-10-18, owner-ordered):** Both controlling texts are now preserved **byte-exact at `v03p/source/` — as found, not frozen** — per Foued's explicit authorization; full provenance in §7. The "not checked into the repository" (§1) and "NOT available verbatim" (§2) findings describe the dependency's state at work-order time and are superseded by §7 for present status; the decision trail is retained verbatim. The `β_min` numerical mapping remains PROVISIONAL-PENDING-SOURCE pending reviewer verification of the committed texts.
 
 ## 1. The dependency
 
@@ -86,4 +87,25 @@ Resolving the dependency means committing the controlling texts into the reposit
 - No quantitative `γ ↔ β_min` or `β_min ↔ c*` conversion is asserted as authoritative here. The only numeric relations carried in Revision 2 are (a) the algebraic restatement of the engine's own `c` definition (which follows from the §3 excerpt plus arithmetic) and (b) the clearly labeled candidate mapping quarantined in A2.3, which is absent from this record precisely because it is not source-backed.
 - NC1's validated status and its saturation/mutation record are unaffected by this dependency.
 
-**Status line:** Source dependency documented; `β_min` numerical mapping remains PROVISIONAL-PENDING-SOURCE; no computation or protocol authorized by this record.
+## 7. Provenance addendum: byte-exact preservation of the controlling texts (owner order, 2026-10-18)
+
+**Authorization (Foued, verbatim).** *"Commit the two source files byte-exact to v03p/source/ on review/target-bridge-vdraft, as found and not frozen, with sizes, SHA-256 hashes and last-write times recorded. Do not edit them. No computation; NC1 stays closed and NC2 and Phase 1 stay held."*
+
+**What was committed.** Two files copied byte-exact (verbatim, unedited) from their volatile temp locations into `v03p/source/`:
+
+| Repo path | Origin path (local temp, volatile) | Size (bytes) | SHA-256 (as found; verified equal on the copy) | Last write (UTC) | Byte census |
+|---|---|---|---|---|---|
+| `v03p/source/ENGINE_SPEC_v1_2026-10-17.md` | `C:\Users\pakla\AppData\Local\Temp\opencode\engine\ENGINE_SPEC_v1_2026-10-17.md` | 23,411 | `9ee6f1ef5fda68a6eb195820f3774b24dc8dcae0a2e40119fb0d0a3fb910c856` | 2026-10-18T06:00:57.5742213Z | CR 0 / LF 329 / no BOM |
+| `v03p/source/M3_SPEC_ADDENDUM_DRAFT_2026-10-17.md` | `C:\Users\pakla\AppData\Local\Temp\opencode\m3_cond\M3_SPEC_ADDENDUM_DRAFT_2026-10-17.md` | 19,678 | `f29a13182556b6081794e2c23046e74f61cf7286730c8b5f2e62e58ea4862816` | 2026-10-17T15:44:10.0890014Z | CR 0 / LF 315 / no BOM |
+
+**Byte-exactness verification.** (i) `Copy-Item` verbatim copy (file-system byte level; last-write stamps unchanged after the copy); (ii) SHA-256 recomputed on each repository copy equals the as-found hash measured before the copy (GLM probe, 2026-10-18) — the engine file's hash also matches DeepSeek's earlier recorded revision (23,411 bytes, SHA-256 `9EE6F1EF…C856`) exactly, i.e. no post-record amendment; (iii) staged with per-command `core.autocrlf=false`, so git applied no line-ending normalization (the CR 0 censi above show both files are LF-only, so normalization would have been inert regardless — the override is belt-and-braces); (iv) staged blob ids equal `git -c core.autocrlf=false hash-object` of each working copy (file↔blob identity chain), verified in the preservation commit.
+
+**Status preserved, not upgraded — "as found and not frozen."**
+
+- *Engine spec.* Header: "Zero-generation decision engine — specification v1 (draft for review)"; a TEMP design document carrying its own 2026-10-17 amendment ledger through several review rounds. Its hash matches the previously recorded revision exactly (above), so no post-record amendment exists.
+- *M3 addendum.* Header: "M3 specification addendum (draft)"; status line "TEMP / read-only draft for reviewer disposition. Not committed, not part of the O2 package, Revision F unaltered, no complete-rule probability computed"; ledger Rev b → Rev c → "Rev d, 2026-10-17 (annotation; no mathematical changes)", recording GPT's disposition of Rev c ("derivation and threshold counts check out; provisionally accepted") and a follow-up noting Rev d consistent. **No earlier recorded hash exists for this file**; the preservation records the as-found state only and asserts no unchangedness claim beyond what the file itself states.
+- *Sibling artifacts noted, not copied* (temp-only; characterized in GLM's probe report of 2026-10-18): `m3_cond\m3_cond_probe.py` (12,874 bytes) and `m3_cond\m3_cond_results.json` (5,706 bytes), both last written 2026-10-17.
+
+**Effect on dependency status (deliberately not oversold, per CLAUDE's caution).** This preservation removes only the source-hygiene blocker: two controlling texts now leave volatile temp storage, are hash-recorded on the review branch, and are unedited. It does not freeze, sign off, or validate them; the M3 addendum's own status remains reviewer-disposition-pending. Per GPT's disposition of the same date, the next step is review of the actual committed texts against the §4 checklist (and §2.1's checklist in the bridge draft); even after that review, "the precise population functional linking `γ` to `β_min` may remain to be established" — that mapping is the bridge's own A1/A2 work. The numerical `β_min` mapping therefore stays **PROVISIONAL-PENDING-SOURCE**. NC1 remains closed; NC2 and Phase 1 remain held; no computation was run to produce this preservation, and none is authorized by it.
+
+**Status line (updated 2026-10-18 after the owner-ordered preservation, §7).** Both controlling texts preserved byte-exact at `v03p/source/` — as found, not frozen; reviewer disposition pending. The `β_min` numerical mapping remains PROVISIONAL-PENDING-SOURCE. No computation performed at any point under this record; NC1 closed; NC2 and Phase 1 held; no protocol authorized by this record.
