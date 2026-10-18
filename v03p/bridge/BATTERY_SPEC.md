@@ -29,13 +29,23 @@ Per bucket `k ∈ {5, 10}` and variant with in-range mix shares `p_k` (from `SCE
    count vectors, Rev F:287). `k = 5`: levels `{0.2, 0.4, 0.6, 0.8, 1.0}`, `Z = 252`;
    `k = 10`: levels `{0.2, 0.3, 0.4, 0.5}`, `Z = 2247`. Level weights are **not equiprobable** in
    general.
-3. **Bucket support predicate (Rev F conditions 1–4, bucket-local):**
-   `I_k ⟺ n ≥ 8 ∧ N_{cmin(k)} ≥ 4 ∧ N_{cmax(k)} ≥ 4`, with `cmin(k) = 0.2` and
-   `cmax(k) = 1.0` (`k = 5`) / `0.5` (`k = 10`) — the grid endpoints. Condition 2's "≥ 2 distinct C
-   values" is implied by both-extremes-≥4. This is the same predicate whose outcome-blind
-   bucket-local probabilities `A.f_s1(k, n, 4)` back NC1's `F5/F10` tables; its use here is the
-   bucket-local population proxy only — the complete-rule pass probability stays `P(pass) = 0` as
-   drafted (Rev F:175), unchanged.
+3. **Bucket support predicate (Rev F conditions 1–4, bucket-local; AMENDED before code freeze —
+   amendment note below):** the rule is Revision F:145-148 — a bucket is included iff
+   (1) `2 ≤ k ≤ 24` (in-range by construction here), (2) `n ≥ 8` distinct canonical bodies,
+   (3) `≥ 2` distinct `C` values, and (4) **both C extremes of the bucket are represented by ≥ 4
+   distinct bodies each** — the OBSERVED extremes of the realized bucket (whatever values they
+   are), not the grid endpoints. This is exactly the committed A1 source's `S0` rule
+   (`a1_support_comparison.py:10-13`: `S0: n >= 8, >= 2 distinct C values, >= 4 bodies at each
+   OBSERVED C extreme`); conditions 2–3 are implied by the both-extremes-≥4 clause. Its use here
+   is the bucket-local population proxy only — the complete-rule pass probability stays
+   `P(pass) = 0` as drafted (Rev F:175), unchanged. **Amendment audit trail:** the initial
+   declaration (commit `a527828`, 2026-10-18) stated a grid-endpoint reading
+   (`N_{0.2} ≥ 4 ∧ N_{cmax-grid} ≥ 4`), citing NC1's `F5/F10` (`A.f_s1`) as precedent; that was a
+   transcription error — `f_s1` is NC1's own `S1(m)` proxy ("≥ m bodies outside the modal value",
+   `a1_support_comparison.py:190-206`), a different rule within NC1's closed scope, and grid-endpoint
+   counts are mathematically neither necessary nor sufficient for the observed-extremes condition.
+   The error was caught by the pre-code predicate re-verification (WW pin) before any battery code
+   was written or run; nothing was computed under the erroneous reading.
 4. **Stratum weights:** `w_k = E[n_k·1{I_k}] / Σ_{k'∈{5,10}} E[n_{k'}·1{I_{k'}}]` — normalized over
    the two strata (equal weight per eligible test cell reduces to equal weight per eligible body
    among eligible cells, Rev F:232; suite effect marginalized symmetrically — A2.2 rider).
@@ -49,22 +59,40 @@ Per bucket `k ∈ {5, 10}` and variant with in-range mix shares `p_k` (from `SCE
    real study's population (draft A2.3, CLAUDE caveat).
 
 **Grouping identity used by both paths (declared here once):** under the multinomial composition law
-per bucket size `n`, the grouped counts `(A, T, B) = (N_{cmin}, Σ_{mid-levels} N_c, N_{cmax})` are
-`Multinomial(n; ρ_{cmin}, ρ_{mid}, ρ_{cmax})` where `ρ_{mid} = Σ_{mid} ρ_{c|k}`; per-`n` support
-aggregates depend only on this trinomial plus the within-group split `E[N_c | T] = T·ρ_{c|k}/ρ_{mid}`
-(exact multinomial marginalization).
+per bucket size `n`, for each ordered pair of levels `a < b` (candidate observed extremes) the
+grouped counts `(N_a, T_{ab}, N_b) = (N_a, Σ_{a<c<b} N_c, N_b)` are
+`Trinomial(n; ρ_a, ρ_{ab}, ρ_b)` with `ρ_{ab} = Σ_{a<c<b} ρ_{c|k}` (exact multinomial
+marginalization), and the within-group split is `E[N_c | T_{ab}] = T_{ab}·ρ_{c|k}/ρ_{ab}` for
+`a < c < b`. The predicate `I_k` decomposes over pairs disjointly:
+`P(I_k | n) = Σ_{a<b} P(all draws within [a,b] ∧ N_a ≥ 4 ∧ N_b ≥ 4 | n)`.
 
 ## 3. Production and reference paths (both exact; structurally independent)
 
+- **REFERENCE** (independent; closed forms only; no shared weighting code): per-`n` aggregates by
+  the **observed-pair sums** above — `P(I_k|n) = Σ_{a<b} Σ_{c_a ≥ 4, c_b ≥ 4, c_a + c_b ≤ n}
+  C(n; c_a, c_b, n − c_a − c_b)·ρ_a^{c_a}·ρ_b^{c_b}·ρ_{ab}^{n − c_a − c_b}`, and per level `c`
+  `E[N_c·1{I_k}|n]` split into c-as-left-endpoint (`c = a`, own count term), c-as-right-endpoint
+  (`c = b`), and c-strictly-inside (`(n − c_a − c_b)·ρ_c/ρ_{ab}`) contributions over the same
+  pair/trinomial cells — the same mathematical formulation as the committed A1 `f_s0` implementation
+  (A1:239-257), plus
+  `Δ_ref(γ) = Σ_k ŵ_k Σ_c π̂_{c|k}·D_KL[Bern(q(k,c,γ)) ‖ Bern(q̄̂_k)]` with
+  `q̄̂_k = Σ_c π̂_{c|k}·q(k,c,γ)` — the exact zero-RE benchmark of A2.2, evaluated entirely from the
+  reference's own weights.
 - **PRODUCTION** (the bridge machinery, reused later for `γ*` and `β_pop`): per-`n` aggregates
-  `P(I_k | n)`, `E[N_c·1{I_k} | n]` by a capped-state dynamic program over the grouped trinomial
-  (saturating counters at the predicate thresholds), folded over `n` by the Binomial bucket-size law
-  with truncation noted and any dropped mass bounded and reported. Fitting machinery: **unpenalized
+  `P(I_k | n)`, `E[N_c·1{I_k} | n]` by the **first-nonzero-block decomposition** — a level-ordered
+  closed-form scheme conditioned on which level is the bucket's smallest occupied level, with the
+  tails evaluated by disjoint-block multinomial disaggregation (prefix/left-tail sums
+  `LA(u) = Σ_a Σ_{c_a ≥ 4} C(u; c_a)·ρ_a^{c_a}·(1 − ρ_{≤a})^{u − c_a}` and the mirrored
+  right-tail `RC(w)`, combined over a binomial split of the remaining mass) — an independent
+  derivation whose only basis is the W-DEF predicate above, sharing no weight code with the
+  reference, folded over `n` by the Binomial bucket-size law. Fitting machinery: **unpenalized
   Newton–IRLS** on the restricted parametrizations justified by the Rev F §5A rank table
   (Rev F:166-173): the committed 5-column RCS family restricted to `{5, 10}` spans **all stratum
   functions** (rank exactly 2), and the extended family's restriction = same stratum constants +
   `C` (rank 3); therefore the fitted prediction spaces of both committed families equal the
   restricted parametrizations `{1{k=5}, 1{k=10}}` (baseline) and `{1{k=5}, 1{k=10}, C}` (extended).
+  Reported fit metric `grad` = per-parameter exact column score `|Σ_cells Ω_j (t_j − q̂_j) x_{ji}|∞`
+  at the reported parameter vector (definition clarified pre-code-freeze, 2026-10-18).
   σ = 0 targets: `p̄ = ` truth, `q(k, c, γ) = logit⁻¹(−log(1+k) + γC)` (`θ0 = 0`, `θ1 = −1`).
   σ = 1 targets: `p̄(k, c; γ) = E_{s~N(0,2)}[logit⁻¹(−log(1+k) + γC + s)]` (declared zero-mean
   independent effects; `u + v ~ N(0, σ_u² + σ_v²) = N(0, 2)`), computed by Gauss–Hermite quadrature
@@ -72,13 +100,11 @@ aggregates depend only on this trinomial plus the within-group split `E[N_c | T]
   Monte Carlo cross-check (`2·10⁶` draws of `s`; SE reported). Family-level population losses depend
   on the truth only through `p̄` (`E_{u,v}[−p log q − (1−p) log(1−q)] = CE(Bern(p̄), q)`); check V-2
   validates this equivalence numerically.
-- **REFERENCE** (independent; closed forms only; no shared weighting code): same per-`n` aggregates
-  by **direct trinomial sums and inclusion–exclusion**
-  (`P(I_k|n) = 1 − P(A ≤ 3) − P(B ≤ 3) + P(A ≤ 3 ∧ B ≤ 3)`, moments by truncated-mean algebra),
-  folded exactly like production but computed through the different formulation; and
-  `Δ_ref(γ) = Σ_k ŵ_k Σ_c π̂_{c|k}·D_KL[Bern(q(k,c,γ)) ‖ Bern(q̄̂_k)]` with
-  `q̄̂_k = Σ_c π̂_{c|k}·q(k,c,γ)` — the exact zero-RE benchmark of A2.2, evaluated entirely from the
-  reference's own weights.
+- **W0 brute-force validation (both paths, small `n`):** explicit enumeration over all C-count
+  vectors (`C(n + V − 1, V − 1)` compositions, e.g. 8008 at `n = 12, k = 5`) gives the exact
+  predicate probabilities and per-level moments; both paths must agree with brute force on every
+  aggregate to `≤ 1e-12` per `n ≤ 12`, and (consistent with A1's own precedent) spot-checks at
+  slightly larger `n`.
 
 ## 4. Tested `γ` values and frozen tolerances
 
@@ -90,15 +116,40 @@ aggregates depend only on this trinomial plus the within-group split `E[N_c | T]
 - **Check (i) zero-RE agreement:** at every `γ_grid` point, `|Δ_prod(γ) − Δ_ref(γ)| ≤ 1e-9`
   (absolute; both paths exact; achieved margins reported).
 - **W1 precursor (weights cross-agreement):** production vs reference `w_k`, `π_{c|k}`, and derived
-  `Var_k^{sup}(C)` agree to `≤ 1e-10` absolute.
+  `Var_k^{sup}(C)` agree to `≤ 1e-10` absolute (and per-`n` `P(I_k|n)`, `E[N_c·1{I}|n]` at every
+  `n ≤ 600`).
+- **W2 artifact cross-check (vs the committed A1 source):** the battery's per-`n`
+  `P(I_k|n)` (reference path) agrees with `A1.f_s0(k, n)` (`a1_support_comparison.py`, the committed
+  conditions-1–4 computation) to `≤ 1e-10` at every `n ≤ 600`; a mismatch beyond the tolerance is a
+  stop-level defect.
+- **W3 brute-force agreement:** the W0 enumeration checks both paths at small `n` to `≤ 1e-12`
+  per aggregate.
 - **Check (ii):** `|Δ(0)| ≤ 1e-12` at σ = 0 and σ = 1.
 - **Check (iii) bisection self-test (σ = 0):** solve `Δ(γ) = δ* = 0.020273255405408218` and
   `Δ(γ) = 2δ* = 0.040546510810816436` inside the declared bracket `[0, 8]`; attainment
   `|Δ(γ̂) − target| ≤ 1e-4` (Rev F:364 convention); iterations and achieved margins reported. The
   σ = 1 calibration re-attains the same tolerance per row at calibration time and reports it.
+  **Amendment (pre-code-freeze, 2026-10-18, feasibility probe — no battery run executed, no
+  battery-run number in any commit):** the zero-RE benchmark `Δ(γ)` is single-peaked in `γ`: rising
+  on `[0, γ_peak ≈ 7.5–9]` (per row), then declining toward 0 as `γ → ∞` (all level truths saturate
+  to a common limit, so the marginal spread vanishes again). Row shape evidence from the probe:
+  `Δ_peak` ∈ `[3.74e-2, 3.97e-2]` < `2δ* = 0.04055` for all four rows, with `γ_peak` in `[7.5, 9]`;
+  the declared `[0, 8]` mono grid lies inside the rising branch (monotonicity unaffected).
+  Consequently the `2δ*` target **has no real solution in any bracket** and the amended PASS
+  criterion of check (iii) is: *for every target, the solver behaves correctly per the amended
+  contract — either (a) attainment on a solvable target with `|Δ(γ̂) − target| ≤ 1e-4`, or (b)
+  not-attained **with the exact bracket evidence** `(Δ(lo) < target) ∧ (Δ(hi) < target)` recorded.*
+  The `δ*` row solves are real (probe: `γ̂ ≈ 3.78–4.94` by row, attained well inside tolerance);
+  the `2δ*` rows report the (b) arm with evidence. Unattainability of `2δ*` is a **finding** to be
+  restated in the later bridge report (γ*/β_pop stage), not a machinery failure.
 - **GH convergence criterion:** node doubling alters no `p̄`-dependent battery quantity by more than
   `1e-12` absolute; node counts reported per row. **MC cross-check:** `|Δ_MC − Δ_GH| ≤ 5·SE_MC`
-  (SE reported; the MC step used for totals at the frozen node count's convergence level).
+  with an absolute float-noise floor `+ 1e-12` — **amended pre-code-freeze (2026-10-18),
+  feasibility probe**: at `γ = 0` both `Δ` values are float-scale (`SE ≈ 1e-19`, margins at the
+  `1e-18` float level), so the bare `5·SE` expression is below quadrature/float noise at the
+  degenerate point; `5·SE + 1e-12` matches the declared V-2 expression form (criterion verified
+  PASS for the probe row at every `γ_grid` point with margins up to `≈ 1e-5` vs `5·SE` limits
+  `≈ 1e-4`).
 - **Check (iv) mutation battery** (production path mutated; reference untouched; threshold
   `γ = 2.0`; every mutation must trip its target check, recorded in the report):
   `m1` uniform `C` weights (`π_c = 1/#levels`, stratum weights kept) → must trip check (i)
