@@ -183,6 +183,23 @@ battery detects):
       at c-50:50|113 tau=20); V15 FAIL secondarily (4 rows,
       worst rel shortfall 8.093e-01: the swap lowers fu(tau=10)
       below tr(tau=10)); V17 PASS.
+  M1b 2026-10-18 (GPT/CLAUDE R3 request, isolated defect): ONLY the
+      x>0,y=0 branch mutated (return tailx(5, x, 0); the x=y=0 branch
+      left correct at 0.0).  This isolates the leak path M1 could not
+      attribute: V17 is a chain of if ok: stages ((i) x=y=0, (ii) 18
+      1D-vs-brute cases, (iii) leak-regression guard), so M1's first
+      failure proved only stage (i), not the x>0,y=0 detector.
+      Expected (CLAUDE, refined): stage (ii) fires first - the 1D
+      empty-bucket cases ARE x>0,y=0 calls cross-checked against
+      direct enumeration, so the explicit leak<1.0 guard is
+      unreachable as a first detector by code order.
+      Observed: V17 FAIL at stage (ii), detail 1D empty-bucket worst
+      rel 1.000e+00 (leak returns full bucket-5 mass where the brute
+      tail is 0.0 at high tau); stage (i) passed; V15 PASS (48 rows,
+      0 violations), V16 PASS (88 pairs); exit 1.  Log: staging
+      mut4\\mut4_log.txt (quick run 58.9 s; scratch engine sha256
+      prefix bd85a2ac3821dbe2).  The second mutation path is thereby
+      proven detected by V17 exactly as designed.
   M3  TR-row omission from the unmasked sum (skip y>=1 and
       x+y>=8 pairs in the pfull loop) -- the defect class V15 was
       built for (the 69 N>=450 rows of the pre-correction
