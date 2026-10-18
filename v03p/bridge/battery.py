@@ -1121,7 +1121,7 @@ def run_battery():
         lg1, lfail1, mlist1 = None, None, []
         prev = None
         for gamma in MONO_GRID:
-            ptg = {(k, c): pt_gh[(gamma, k, c)] for (k, c) in ALL_CELLS}
+            ptg = {(k, c): pbar_sigma1(k, c, gamma, 256, TAU) for (k, c) in ALL_CELLS}
             dp, _q = delta_of(wsp, ptg)
             if prev is not None:
                 dsec = dp - prev
