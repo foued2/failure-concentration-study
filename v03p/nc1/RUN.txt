@@ -1,0 +1,41 @@
+NC1 run record (review/nc1 artifacts) -- 2026-10-18
+====================================================
+
+Owner-authorized NC1 (2026-10-18). Temp stage computed with "no repository
+changes" restriction; artifacts were subsequently pushed to the repo by
+owner directive (same date) for the GPT review thread. Bytes are exactly
+as reviewed (sha256 below); do not renormalize EOLs (.gitattributes pins
+exact bytes).
+
+Artifacts (sha256):
+  nc1_calc.py      83ceacfab371150356477b23ed7b0183db2772616cd659963c47a6b7d316773c
+  nc1_results.json 0a3fb42c12fb21a887c5ca1fce4a2af8ac053a8763bacdc16c9501aab339c775
+  nc1_report.md    62c232f124e0b0a0eea132718d27004b3fe0d0270dd783d4738da3702b9548a1
+
+Run provenance (nc1_results.json meta):
+  interpreter  CPython 3.14.0 (stdlib only, deterministic)
+  module hash  83ceacfab371150356477b23ed7b0183db2772616cd659963c47a6b7d316773
+  a1 hash      cf3840f108f82e67... (v03p/a1/a1_support_comparison.py, read-only import)
+  N_B          [113, 150, 450, 600]; taus 10..2500; c* (39.0625, 156.25, 625.0)
+  runtime      516.2 s full run
+  checks       36 run, 0 FAIL, 0 VACUOUS (V01-V10, V12-V14, V11 x 16 groups)
+
+Certification status:
+  N = 113, 150: exact (DP unpruned to t = 112; pair truncation 1e-30,
+  dropped mass <= 2.6e-29)
+  N = 450, 600: threshold-stage values PROVISIONAL (dp_drop bound
+  9.460e-10 from EPS_DP = 1e-14 at t > 112; R-pair truncation 1e-18
+  contributes <= ~1.4e-16); all other stages exact at every N.
+  Exact c* thresholds (M3 addendum): beta .20 -> 39.0625, .10 -> 156.25,
+  .05 -> 625.00.
+
+GPT review checkpoint (opened 2026-10-18; three issues pending):
+  1. Certified-bound presentation for tails far below bound_abs.
+  2. Gate-stage comparability: NC1 v2_one is pre-test-gate; the O2
+     P_atleastone-comparable quantity is the TN-multiplied v2_one_tn
+     (e.g. a-hist|113 tau=10: v2_one = 0.0931006670, v2_one_tn =
+     0.0100243182, O2 tn-stage P_atleastone = 0.014873).
+  3. Distribution-deliverable scope: full X-distributions limited to
+     t <= 40, summaries t <= 120 (deviation to be recorded if ratified).
+
+Status: unapproved; no freeze/authorization result.
