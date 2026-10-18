@@ -155,7 +155,9 @@ computed value still carries the omitted-mass bound and separately
 unbounded roundoff.  No re-authorization involved; scope is rev-2
 validation only.  Scratch mutation copies live outside the repo
 (staging: C:\Users\pakla\AppData\Local\Temp\opencode\mut1..3,
-quick runs 54.6/61.6/54.6 s); the committed engine itself is the
+quick runs 56.8/60.0/56.3 s; per-run logs mut1_log.txt /
+mut2_log.txt / mut3_log.txt sit next to each mutated engine in
+the staging dirs); the committed engine itself is the
 uncorrupted e95caaa lineage code plus this wording change.
 
 Mutation tests (defect injected into scratch copies only; quick
