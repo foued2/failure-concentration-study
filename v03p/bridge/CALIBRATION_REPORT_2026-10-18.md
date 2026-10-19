@@ -44,8 +44,27 @@ weights for both families (battery production weightsets).
 
 Integrity (verified at run time inside the frozen execution):
 - `battery`: committed == working = `cfec42ad6866a10bf8930badc0e7b928b477efea`
-- `calibrate`: committed == working = `2764c41e11dac4e3c7779acd78fa170710727c50`
+- `calibrate`: committed == working = `222b606e18f814ffa878b4da7f76492c01884026`
 (battery.py frozen machinery, module imported read-only;)
+
+## Audit trail (freeze chain)
+
+- `c100a5e` base freeze (objectives, weights, quadrature,
+  seed 20261019, 2e6 MC draws, tolerances; blob
+  `a6f6ef91f10a65ee637ba919c786b685ef0927e6`)
+- `999e1b1` writer-only fix (unformatted margin
+  placeholder; no computational change; blob
+  `dbfb87fcd6923430fa937e0695e34cee1b24f254`)
+- `dd87ef0` provenance-only (blob hashes on the record;
+  blob `2764c41e11dac4e3c7779acd78fa170710727c50`)
+- this freeze: wording/edge-recording/beta-sensitivity
+  addition (analysis and output only; all headline numbers
+  bit-identical to the base freeze)
+The report_only positional-slot hazard from the battery's
+run-3 does not apply here: calibrate.py never calls
+battery's `_chk` recorder (grep-verified).  Any future
+quadrature size beyond 256 must re-pass the finiteness
+guards (numpy hermgauss(512) NaN weights, caught pre-freeze).
 
 ## Row weightsets (support-conditioned, both families)
 
@@ -118,14 +137,19 @@ Integrity (verified at run time inside the frozen execution):
       den_k 2.850774368e-01 beta_k 0.14650197689302533
   - beta_pop fit-sensitivity (on qhat_ext): 1.214285522e-01
   - labeled average-derivative approximation: 1.876781560e-01
+  - method-noise sensitivity of beta_pop
+    (review addition 2026-10-19):
+    f'(gamma*) = 4.288e-03 (central difference h = 0.05); MC gap 3.408e-06 -> gamma displacement <= 7.948e-04
+    beta_pop at gamma* - disp = 1.214230715e-01, at gamma* + disp = 1.214340292e-01; |dbeta| <= 5.481e-06
   - c*_prov = (1.25/beta_pop)^2 = 1.059688917e+02 -> no NC1 row (grid mismatch)
   - NC1-grid comparison: >39.0625; <156.25; <625.0
   - anchor: beta_min = 0.10 (c*_ref = 156.25);
     ratio c*_prov / c*_ref = 6.782009e-01
   - context: oracle Delta at gamma* (KL, delta_of) =
     2.0291678841e-02 (not a gate; decomposition context)
-- 2d* = 0.040546510810816436 finding: NOT ATTAINABLE (evidence-based)
+- 2d* = 0.040546510810816436 finding: not attained within the declared peak-search domain (evidence-based)
   - actual peak: f(gamma=1.097820312e+01) = 3.0671039338e-02
+  - argmax position versus the scan edge: coarse scan ran to gamma = 32 (extend cap 64); the argmax lies 21.0218 inside that edge, and f(32) = 7.3680406141e-04 < f_peak (curve falling at the edge: True)
   - margin 2d* - peak = 9.8754714729e-03 (positive: the observed maximum on the frozen bracket lies below the target)
   - MC corroboration at the argmax: f_MC = 3.0660884439e-02 SE = 3.423e-05 gap = 1.015e-05
   - GH node agreement at the argmax: 2.220e-16
@@ -162,14 +186,19 @@ Integrity (verified at run time inside the frozen execution):
       den_k 2.987625660e-01 beta_k 0.15406588396346335
   - beta_pop fit-sensitivity (on qhat_ext): 1.303651355e-01
   - labeled average-derivative approximation: 1.979090877e-01
+  - method-noise sensitivity of beta_pop
+    (review addition 2026-10-19):
+    f'(gamma*) = 4.031e-03 (central difference h = 0.05); MC gap 3.634e-06 -> gamma displacement <= 9.017e-04
+    beta_pop at gamma* - disp = 1.303591165e-01, at gamma* + disp = 1.303711495e-01; |dbeta| <= 6.019e-06
   - c*_prov = (1.25/beta_pop)^2 = 9.193843472e+01 -> no NC1 row (grid mismatch)
   - NC1-grid comparison: >39.0625; <156.25; <625.0
   - anchor: beta_min = 0.10 (c*_ref = 156.25);
     ratio c*_prov / c*_ref = 5.884060e-01
   - context: oracle Delta at gamma* (KL, delta_of) =
     2.0292066757e-02 (not a gate; decomposition context)
-- 2d* = 0.040546510810816436 finding: NOT ATTAINABLE (evidence-based)
+- 2d* = 0.040546510810816436 finding: not attained within the declared peak-search domain (evidence-based)
   - actual peak: f(gamma=1.120020232e+01) = 2.9659466467e-02
+  - argmax position versus the scan edge: coarse scan ran to gamma = 32 (extend cap 64); the argmax lies 20.7998 inside that edge, and f(32) = 6.0870863891e-04 < f_peak (curve falling at the edge: True)
   - margin 2d* - peak = 1.0887044344e-02 (positive: the observed maximum on the frozen bracket lies below the target)
   - MC corroboration at the argmax: f_MC = 2.9649965141e-02 SE = 3.522e-05 gap = 9.501e-06
   - GH node agreement at the argmax: 1.110e-16
@@ -206,14 +235,19 @@ Integrity (verified at run time inside the frozen execution):
       den_k 2.220864169e-01 beta_k 0.11896760396810134
   - beta_pop fit-sensitivity (on qhat_ext): 1.048519539e-01
   - labeled average-derivative approximation: 1.519359285e-01
+  - method-noise sensitivity of beta_pop
+    (review addition 2026-10-19):
+    f'(gamma*) = 5.647e-03 (central difference h = 0.05); MC gap 3.830e-06 -> gamma displacement <= 6.782e-04
+    beta_pop at gamma* - disp = 1.048455013e-01, at gamma* + disp = 1.048584030e-01; |dbeta| <= 6.453e-06
   - c*_prov = (1.25/beta_pop)^2 = 1.421238522e+02 -> no NC1 row (grid mismatch)
   - NC1-grid comparison: >39.0625; <156.25; <625.0
   - anchor: beta_min = 0.10 (c*_ref = 156.25);
     ratio c*_prov / c*_ref = 9.095927e-01
   - context: oracle Delta at gamma* (KL, delta_of) =
     2.0279792333e-02 (not a gate; decomposition context)
-- 2d* = 0.040546510810816436 finding: NOT ATTAINABLE (evidence-based)
+- 2d* = 0.040546510810816436 finding: not attained within the declared peak-search domain (evidence-based)
   - actual peak: f(gamma=9.383552183e+00) = 3.2428669520e-02
+  - argmax position versus the scan edge: coarse scan ran to gamma = 32 (extend cap 64); the argmax lies 22.6164 inside that edge, and f(32) = 3.7736993504e-04 < f_peak (curve falling at the edge: True)
   - margin 2d* - peak = 8.1178412910e-03 (positive: the observed maximum on the frozen bracket lies below the target)
   - MC corroboration at the argmax: f_MC = 3.2416418754e-02 SE = 3.285e-05 gap = 1.225e-05
   - GH node agreement at the argmax: 2.220e-16
@@ -250,14 +284,19 @@ Integrity (verified at run time inside the frozen execution):
       den_k 2.943810242e-01 beta_k 0.14217616200512093
   - beta_pop fit-sensitivity (on qhat_ext): 1.213205071e-01
   - labeled average-derivative approximation: 1.809479552e-01
+  - method-noise sensitivity of beta_pop
+    (review addition 2026-10-19):
+    f'(gamma*) = 4.618e-03 (central difference h = 0.05); MC gap 3.754e-06 -> gamma displacement <= 8.129e-04
+    beta_pop at gamma* - disp = 1.213137823e-01, at gamma* + disp = 1.213272276e-01; |dbeta| <= 6.725e-06
   - c*_prov = (1.25/beta_pop)^2 = 1.061577224e+02 -> no NC1 row (grid mismatch)
   - NC1-grid comparison: >39.0625; <156.25; <625.0
   - anchor: beta_min = 0.10 (c*_ref = 156.25);
     ratio c*_prov / c*_ref = 6.794094e-01
   - context: oracle Delta at gamma* (KL, delta_of) =
     2.0288602321e-02 (not a gate; decomposition context)
-- 2d* = 0.040546510810816436 finding: NOT ATTAINABLE (evidence-based)
+- 2d* = 0.040546510810816436 finding: not attained within the declared peak-search domain (evidence-based)
   - actual peak: f(gamma=1.072886741e+01) = 3.1400148490e-02
+  - argmax position versus the scan edge: coarse scan ran to gamma = 32 (extend cap 64); the argmax lies 21.2711 inside that edge, and f(32) = 4.8155115288e-04 < f_peak (curve falling at the edge: True)
   - margin 2d* - peak = 9.1463623210e-03 (positive: the observed maximum on the frozen bracket lies below the target)
   - MC corroboration at the argmax: f_MC = 3.1389535431e-02 SE = 3.620e-05 gap = 1.061e-05
   - GH node agreement at the argmax: 1.110e-16
@@ -266,9 +305,17 @@ Integrity (verified at run time inside the frozen execution):
 
 ## Findings (PROVISIONAL, NOT A COMPLETE-RULE ESTIMATE)
 
-- a-hist: gamma*(d*) = 6.4833; beta_pop = 0.1214 per s_ref unit-> c*_prov = 105.969 (no NC1 row (grid mismatch)); 2d* not attainable: actual peak 3.067104e-02 at gamma-peak 10.9782, margin 9.875e-03
-- a-50:50: gamma*(d*) = 6.9111; beta_pop = 0.1304 per s_ref unit-> c*_prov = 91.9384 (no NC1 row (grid mismatch)); 2d* not attainable: actual peak 2.965947e-02 at gamma-peak 11.2002, margin 1.089e-02
-- c-hist: gamma*(d*) = 5.2570; beta_pop = 0.1049 per s_ref unit-> c*_prov = 142.124 (no NC1 row (grid mismatch)); 2d* not attainable: actual peak 3.242867e-02 at gamma-peak 9.3836, margin 8.118e-03
-- c-50:50: gamma*(d*) = 6.2634; beta_pop = 0.1213 per s_ref unit-> c*_prov = 106.158 (no NC1 row (grid mismatch)); 2d* not attainable: actual peak 3.140015e-02 at gamma-peak 10.7289, margin 9.146e-03
+Wording policy (GPT accepted, Claude additions, 2026-10-19):
+the 2d* verdicts here are DOMAIN-RELATIVE - "not attained
+within the declared peak-search domain" - declared on
+single-peak behavior of the scanned curve, not a proof of
+global maximality.  Percentages versus the 0.10 anchor are
+descriptive only, never effect sizes or evidence about
+natural solvers.
 
-Elapsed seconds: 9.36
+- a-hist: gamma*(d*) = 6.4833; beta_pop = 0.1214 per s_ref unit-> c*_prov = 105.969 (no NC1 row (grid mismatch)); beta side-by-side: 0.12143 primary / 0.12143 extended-fit / 0.18768 labeled approx; min 0.12143 is above 0.10; 2d* not attained within the declared peak-search domain: peak 3.067104e-02 at gamma 10.9782 (21.0218 inside the scan edge 32, falling at edge True), margin 9.875e-03
+- a-50:50: gamma*(d*) = 6.9111; beta_pop = 0.1304 per s_ref unit-> c*_prov = 91.9384 (no NC1 row (grid mismatch)); beta side-by-side: 0.13037 primary / 0.13037 extended-fit / 0.19791 labeled approx; min 0.13037 is above 0.10; 2d* not attained within the declared peak-search domain: peak 2.965947e-02 at gamma 11.2002 (20.7998 inside the scan edge 32, falling at edge True), margin 1.089e-02
+- c-hist: gamma*(d*) = 5.2570; beta_pop = 0.1049 per s_ref unit-> c*_prov = 142.124 (no NC1 row (grid mismatch)); beta side-by-side: 0.10485 primary / 0.10485 extended-fit / 0.15194 labeled approx; min 0.10485 is above 0.10; 2d* not attained within the declared peak-search domain: peak 3.242867e-02 at gamma 9.3836 (22.6164 inside the scan edge 32, falling at edge True), margin 8.118e-03
+- c-50:50: gamma*(d*) = 6.2634; beta_pop = 0.1213 per s_ref unit-> c*_prov = 106.158 (no NC1 row (grid mismatch)); beta side-by-side: 0.12132 primary / 0.12132 extended-fit / 0.18095 labeled approx; min 0.12132 is above 0.10; 2d* not attained within the declared peak-search domain: peak 3.140015e-02 at gamma 10.7289 (21.2711 inside the scan edge 32, falling at edge True), margin 9.146e-03
+
+Elapsed seconds: 8.56
