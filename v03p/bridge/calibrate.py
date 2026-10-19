@@ -409,8 +409,12 @@ def run_calibration():
                            "dstar": DSTAR,
                            "2dstar": TWO_DSTAR,
                            "ridge": 0.0}},
-         "rows": {}, "findings": {}}
+          "rows": {}, "findings": {}}
     t0 = time.time()
+    _ok, _det = integrity()
+    if not _ok:
+        raise RuntimeError("integrity gate failed inside run: %r" % _det)
+    R["meta"]["integrity"] = _det
     ws_p = B.assemble_weightsets("prod")
     R["weights"] = {var: {kk: ws_p[var][kk] for kk in
                           ("w5", "w10", "var5", "var10", "pi5", "pi10",
@@ -536,8 +540,11 @@ def write_calibration_report(R, path):
     L.append("<= 50 iterations, ridge 0.0); the same support-conditioned")
     L.append("weights for both families (battery production weightsets).")
     L.append("")
-    L.append("Integrity: battery.py blob verified before the run (frozen")
-    L.append("machinery; module imported read-only).")
+    L.append("Integrity (verified at run time inside the frozen execution):")
+    for rel, det2 in R["meta"]["integrity"].items():
+        L.append("- `%s`: committed == working = `%s`"
+                 % (rel, det2["committed"]))
+    L.append("(battery.py frozen machinery, module imported read-only;)")
     L.append("")
     L.append("## Row weightsets (support-conditioned, both families)")
     L.append("")
