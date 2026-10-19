@@ -74,6 +74,30 @@ direct bridge is NOT DEFINED.  NC1 stays closed; NC2, Phase 1, solver
 generation, hidden-outcome collection, spending, and master merge remain
 unauthorized.  The battery machinery is imported read-only and its own
 integrity is verified against the branch freeze before any number exists.
+
+Process notes (post-execution review, 2026-10-19; freeze #4):
+- Freeze chain: c100a5e (base) -> 999e1b1 (writer-only) -> dd87ef0
+  (provenance-only) -> this amendment (wording/edge-recording/beta
+  sensitivity; analysis and output only).  Headline numbers (gamma*,
+  peaks, margins, beta_pop) must stay bit-identical across the chain;
+  every freeze commit records its blob hash, and the report's integrity
+  block prints the two verified blobs of the executing freeze.
+- Positional-argument hazard (battery run-3 lesson): calibrate.py NEVER
+  calls battery's `_chk` recorder (grep-verified); frozen battery.py is
+  imported read-only with no battery-side call sites exercised here, so
+  the `report_only` positional-slot hazard cannot arise in this stage.
+- Quadrature-size guard: any future node count beyond 256 must be
+  re-validated for finiteness in the pre-freeze test (numpy hermgauss
+  returned NaN weights at 512 in this environment; caught pre-freeze;
+  python max() hides NaN against 0.0, so the finiteness guards abort
+  instead of comparing).
+- Wording policy (GPT accepted, Claude additions): the 2delta* result
+  is domain-relative - "not attained within the declared peak-search
+  domain" - with the argmax recorded against the scan's range edge and
+  the curve's direction at the edge; peaks are declared on observed
+  single-peak behavior of the scanned curve, not a proof of global
+  maximality.  Percentages vs the 0.10 anchor are descriptive only,
+  never effect sizes or evidence about natural solvers.
 """
 
 import sys, os, math, time, datetime, subprocess
@@ -471,6 +495,28 @@ def run_calibration():
                 "anchor": {"beta_min_ref": 0.10, "cstar_ref": 156.25},
                 "oracle_delta_context": oracle_delta(wset, gs),
             }
+            # -- method-noise sensitivity of beta_pop (review addition
+            #    2026-10-19): translate the achieved evidence scale
+            #    (MC gap) into a gamma-displacement bound through the
+            #    frozen objective's slope, then re-map beta_pop.
+            h_slope = 0.05
+            slope = (f_of(wset, gs + h_slope)
+                     - f_of(wset, gs - h_slope)) / (2.0 * h_slope)
+            gap01 = row["delta1_solution"]["mc"]["gap"]
+            if abs(slope) >= 1e-12:
+                disp = gap01 / abs(slope)
+                bp_lo = beta_pop(wset, gs - disp)[0]
+                bp_hi = beta_pop(wset, gs + disp)[0]
+                dbnd = max(abs(bp - bp_lo), abs(bp - bp_hi))
+            else:
+                disp = bp_lo = bp_hi = dbnd = None
+            row["beta_sensitivity"] = {
+                "slope_h": h_slope, "slope": slope, "mc_gap": gap01,
+                "gamma_displacement_bound": disp,
+                "beta_pop_at_gamma_minus": bp_lo,
+                "beta_pop_at_gamma_plus": bp_hi,
+                "delta_beta_bound": dbnd,
+            }
             srow = {}
             sol2 = bisect_to(lambda g: f_of(wset, g), TWO_DSTAR,
                              BRACKET_START)
@@ -490,12 +536,18 @@ def run_calibration():
                     "grid_match": cstar_row(map_cstar(bp2))[1],
                 }
             if not sol2["attained"]:
+                edge_g, edge_v = max(row["peak"]["record"]["coarse_grid"],
+                                     key=lambda t: t[0])
                 srow["delta2_peak_finding"] = {
-                    "declared": "NOT ATTAINABLE (evidence-based)",
+                    "declared": "not attained within the declared "
+                                "peak-search domain (evidence-based)",
                     "peak_gamma": row["peak"]["gamma"],
                     "peak_f": row["peak"]["f"],
                     "target": TWO_DSTAR,
                     "margin": TWO_DSTAR - row["peak"]["f"],
+                    "scan_edge": edge_g, "scan_edge_f": edge_v,
+                    "argmax_below_edge_by": edge_g - row["peak"]["gamma"],
+                    "falling_at_edge": edge_v < row["peak"]["f"],
                 }
                 # MC corroboration of the peak's non-attainment margin
                 ts_pk, se_pk = mc_se_of_f(wset, gp, s)
@@ -545,6 +597,25 @@ def write_calibration_report(R, path):
         L.append("- `%s`: committed == working = `%s`"
                  % (rel, det2["committed"]))
     L.append("(battery.py frozen machinery, module imported read-only;)")
+    L.append("")
+    L.append("## Audit trail (freeze chain)")
+    L.append("")
+    L.append("- `c100a5e` base freeze (objectives, weights, quadrature,")
+    L.append("  seed 20261019, 2e6 MC draws, tolerances; blob")
+    L.append("  `a6f6ef91f10a65ee637ba919c786b685ef0927e6`)")
+    L.append("- `999e1b1` writer-only fix (unformatted margin")
+    L.append("  placeholder; no computational change; blob")
+    L.append("  `dbfb87fcd6923430fa937e0695e34cee1b24f254`)")
+    L.append("- `dd87ef0` provenance-only (blob hashes on the record;")
+    L.append("  blob `2764c41e11dac4e3c7779acd78fa170710727c50`)")
+    L.append("- this freeze: wording/edge-recording/beta-sensitivity")
+    L.append("  addition (analysis and output only; all headline numbers")
+    L.append("  bit-identical to the base freeze)")
+    L.append("The report_only positional-slot hazard from the battery's")
+    L.append("run-3 does not apply here: calibrate.py never calls")
+    L.append("battery's `_chk` recorder (grep-verified).  Any future")
+    L.append("quadrature size beyond 256 must re-pass the finiteness")
+    L.append("guards (numpy hermgauss(512) NaN weights, caught pre-freeze).")
     L.append("")
     L.append("## Row weightsets (support-conditioned, both families)")
     L.append("")
@@ -599,6 +670,22 @@ def write_calibration_report(R, path):
                      % bpr["beta_fit_sensitivity"])
             L.append("  - labeled average-derivative approximation: %.9e"
                      % bpr["beta_appr"])
+            bsens = row.get("beta_sensitivity")
+            if bsens is not None and \
+                    bsens["gamma_displacement_bound"] is not None:
+                L.append("  - method-noise sensitivity of beta_pop")
+                L.append("    (review addition 2026-10-19):")
+                L.append("    f'(gamma*) = %.3e (central difference"
+                         " h = %r); MC gap %.3e -> gamma displacement"
+                         " <= %.3e"
+                         % (bsens["slope"], bsens["slope_h"],
+                            bsens["mc_gap"],
+                            bsens["gamma_displacement_bound"]))
+                L.append("    beta_pop at gamma* - disp = %.9e,"
+                         " at gamma* + disp = %.9e; |dbeta| <= %.3e"
+                         % (bsens["beta_pop_at_gamma_minus"],
+                            bsens["beta_pop_at_gamma_plus"],
+                            bsens["delta_beta_bound"]))
             L.append("  - c*_prov = (1.25/beta_pop)^2 = %.9e -> %s"
                      % (bpr["cstar_prov"], bpr["grid_match"]))
             L.append("  - NC1-grid comparison: %s"
@@ -634,6 +721,14 @@ def write_calibration_report(R, path):
                          % (TWO_DSTAR, pf.get("declared")))
                 L.append("  - actual peak: f(gamma=%.9e) = %.10e"
                          % (pf["peak_gamma"], pf["peak_f"]))
+                L.append("  - argmax position versus the scan edge:"
+                         " coarse scan ran to gamma = %g (extend cap"
+                         " %g); the argmax lies %.4f inside that edge,"
+                         " and f(%g) = %.10e < f_peak (curve falling at"
+                         " the edge: %r)"
+                         % (pf["scan_edge"], PEAK_EXT_CAP,
+                            pf["argmax_below_edge_by"], pf["scan_edge"],
+                            pf["scan_edge_f"], pf["falling_at_edge"]))
                 L.append("  - margin 2d* - peak = %.10e (positive: the"
                          " observed maximum on the frozen bracket lies"
                          " below the target)" % (pf["margin"],))
@@ -651,6 +746,14 @@ def write_calibration_report(R, path):
         L.append("")
     L.append("## Findings (PROVISIONAL, NOT A COMPLETE-RULE ESTIMATE)")
     L.append("")
+    L.append("Wording policy (GPT accepted, Claude additions, 2026-10-19):")
+    L.append("the 2d* verdicts here are DOMAIN-RELATIVE - \"not attained")
+    L.append("within the declared peak-search domain\" - declared on")
+    L.append("single-peak behavior of the scanned curve, not a proof of")
+    L.append("global maximality.  Percentages versus the 0.10 anchor are")
+    L.append("descriptive only, never effect sizes or evidence about")
+    L.append("natural solvers.")
+    L.append("")
     for var, row in R["rows"].items():
         fnd = []
         sol = row["delta1_solution"]
@@ -660,13 +763,25 @@ def write_calibration_report(R, path):
                        "-> c*_prov = %s (%s)"
                        % (sol["gamma"], bpr["beta_pop"],
                           "%g" % bpr["cstar_prov"], bpr["grid_match"]))
+            vvals = (bpr["beta_pop"], bpr["beta_fit_sensitivity"],
+                     bpr["beta_appr"])
+            wmax = min(vvals)
+            fnd.append("beta side-by-side: %.5f primary / %.5f"
+                       " extended-fit / %.5f labeled approx;"
+                       " min %.5f is %s 0.10"
+                       % (vvals[0], vvals[1], vvals[2], wmax,
+                          "above" if wmax >= 0.10 else "BELOW"))
         else:
             fnd.append("delta* NOT attained (%r)" % sol.get("note"))
         if row.get("peak_status") == "not_attained_on_bracket":
             pf = row["delta2"].get("delta2_peak_finding", {})
-            fnd.append("2d* not attainable: actual peak %.6e at gamma-peak"
-                       " %.4f, margin %.3e" %
-                       (pf["peak_f"], pf["peak_gamma"], pf["margin"]))
+            fnd.append("2d* not attained within the declared"
+                       " peak-search domain: peak %.6e at gamma %.4f"
+                       " (%.4f inside the scan edge %g, falling at edge"
+                       " %r), margin %.3e" %
+                       (pf["peak_f"], pf["peak_gamma"],
+                        pf["argmax_below_edge_by"], pf["scan_edge"],
+                        pf["falling_at_edge"], pf["margin"]))
         else:
             sol2 = row["delta2"].get("delta2_solution", {})
             if sol2.get("attained"):
