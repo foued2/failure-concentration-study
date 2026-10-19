@@ -627,8 +627,9 @@ def write_calibration_report(R, path):
                          % (TWO_DSTAR, pf.get("declared")))
                 L.append("  - actual peak: f(gamma=%.9e) = %.10e"
                          % (pf["peak_gamma"], pf["peak_f"]))
-                L.append("  - margin 2d* - peak = %.10e (> 0: beyond the")
-                L.append("    observed maximum on the frozen bracket)")
+                L.append("  - margin 2d* - peak = %.10e (positive: the"
+                         " observed maximum on the frozen bracket lies"
+                         " below the target)" % (pf["margin"],))
                 L.append("  - MC corroboration at the argmax: f_MC = %.10e"
                          " SE = %.3e gap = %.3e"
                          % (pf["mc_at_peak"]["f_mc"],
