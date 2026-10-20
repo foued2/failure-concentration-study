@@ -210,8 +210,8 @@ adopted, and no attempt-budget or timing projection is drawn from the slot arm.
 
 | Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 reading |
 |---|---|---:|---:|---:|---|
-| (a)@120 | `ρ=0` unique | 1.546e-3–1.546e-3 | 3.091 | 0 | Both candidate rules ruled out |
-| (a)@120 | `ρ=.25` slots | 2.731e-4–2.731e-4 | 0.546 | 0 | Both candidate rules ruled out |
+| (a)@120 | `ρ=0` unique | 1.546e-3–1.546e-3 | 3.091 | 2.3e-29 | Both candidate rules ruled out |
+| (a)@120 | `ρ=.25` slots | 2.731e-4–2.731e-4 | 0.546 | 1.1e-57 | Both candidate rules ruled out |
 | (a)@240 | `ρ=0` unique | 2.188e-2–2.188e-2 | 43.764 | 0.787 | `P(N≥39)≥.95` ruled out; expected count not certified |
 | (a)@240 | `ρ=.25` slots | 8.572e-3–8.572e-3 | 17.144 | 3.6e-6 | Both candidate rules ruled out |
 | (a)@300 | `ρ=0` unique | 3.953e-2–3.953e-2 | 79.068 | 1.000 | Not certified; complete-rule lower bound is 0 |

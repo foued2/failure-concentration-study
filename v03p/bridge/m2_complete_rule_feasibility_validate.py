@@ -66,7 +66,13 @@ def binom_sf_local(m, n, p):
         return 1.0
     if m >= n:
         return 0.0
-    return sum(binom_pmf_local(n, i, p) for i in range(m + 1, n + 1))
+    return math.fsum(binom_pmf_local(n, i, p) for i in range(m + 1, n + 1))
+
+
+def prob_close(got, want, rel=1e-9):
+    if got == want:
+        return True
+    return abs(got - want) <= rel * max(abs(got), abs(want))
 
 
 def multinomial_logpmf(counts, probs):
@@ -256,9 +262,9 @@ def check_cell_schema(ref):
                 errors.append(tag + " E upper")
             want_lo = binom_sf_local(FLOOR - 1, REPS, pl)
             want_hi = binom_sf_local(FLOOR - 1, REPS, pu)
-            if abs(arm["P_N_ge_39_support_lower"] - want_lo) > 1e-9:
+            if not prob_close(arm["P_N_ge_39_support_lower"], want_lo):
                 errors.append(tag + " P39 support lower")
-            if abs(arm["P_N_ge_39_support_upper"] - want_hi) > 1e-9:
+            if not prob_close(arm["P_N_ge_39_support_upper"], want_hi):
                 errors.append(tag + " P39 support upper")
             if arm["P_complete_lower"] != 0.0:
                 errors.append(tag + " complete lower not zero")
@@ -268,7 +274,7 @@ def check_cell_schema(ref):
                 errors.append(tag + " complete E upper")
             if arm["P_N_ge_39_complete_lower"] != 0.0:
                 errors.append(tag + " complete P39 lower not zero")
-            if abs(arm["P_N_ge_39_complete_upper"] - want_hi) > 1e-9:
+            if not prob_close(arm["P_N_ge_39_complete_upper"], want_hi):
                 errors.append(tag + " complete P39 upper")
             exp_status = ("ruled_out" if REPS * pu < FLOOR
                           else "not_certified")
@@ -413,15 +419,16 @@ def check_report_tables(ref):
             arm = by_key[(scenario, nb)]["arms"][TABLE_ARMS[arm_name]]
             if lower > upper:
                 errors.append(tag + " report interval order")
-            for got, want, floor, field in (
-                (lower, arm["P_support_lower"], 5e-15, "P lower"),
-                (upper, arm["P_support_upper"], 5e-15, "P upper"),
-                (e_upper, arm["E_complete_upper"], 5e-5, "E upper"),
-                (p_upper, arm["P_N_ge_39_complete_upper"], 5e-15,
-                 "P39 upper"),
+            for got, want, field in (
+                (lower, arm["P_support_lower"], "P lower"),
+                (upper, arm["P_support_upper"], "P upper"),
+                (p_upper, arm["P_N_ge_39_complete_upper"], "P39 upper"),
             ):
-                if abs(got - want) > max(floor, 5e-4 * abs(want)):
+                if not prob_close(got, want, 5e-3):
                     errors.append(tag + " report " + field)
+            if abs(e_upper - arm["E_complete_upper"]) > max(
+                    5e-5, 5e-4 * abs(arm["E_complete_upper"])):
+                errors.append(tag + " report E upper")
             if TABLE_LABELS[label] != arm["o3_label"]:
                 errors.append(tag + " report O3 label")
     missing = sorted(expected - seen)

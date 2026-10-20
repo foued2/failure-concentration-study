@@ -602,16 +602,12 @@ def small_support(scenario, n_map):
         "patterns_violating": n_viol,
     }
 
-def binom_cdf(m, n, p):
-    if m < 0:
-        return 0.0
-    if m >= n:
-        return 1.0
-    return sum(binom_pmf(n, i, p) for i in range(0, m + 1))
-
-
 def binom_sf(m, n, p):
-    return max(0.0, min(1.0, 1.0 - binom_cdf(m, n, p)))
+    if m < 0:
+        return 1.0
+    if m >= n:
+        return 0.0
+    return math.fsum(binom_pmf(n, i, p) for i in range(m + 1, n + 1))
 
 
 def required_p_for_prob(floor_count, target, reps, lo=0.0, hi=1.0):

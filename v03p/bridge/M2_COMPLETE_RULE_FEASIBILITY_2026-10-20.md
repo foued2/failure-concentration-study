@@ -26,10 +26,10 @@ in the main decision document.
 | `v03p/a1/a1_support_comparison.py` | SHA-256 `CF3840F108F82E6739CC01DEEDA1623070E2CEC84EB5059F293C4193D3C96C74` | committed CK support machinery, S0/S1/S2 rules, exact `f_s0` cross-check |
 | `v03p/bridge/battery.py` | SHA-256 `5E952A202FA0335A305A5110A9D810F86731D9ABAA1D69C12E3E71DD57707A05` | DGP constants `TH0=0`, `TH1=−1`, `SIG_B=SIG_S=1`, `MC_SEED=20261018`; A1 import |
 | `study/models.py` | SHA-256 `4E4226FE055DCFDFC4074C77EB5CBF8860F1C747A21DD15DC53A8AF3C6C4C420` | frozen RCS basis / design rows (`rcs_basis`, `KNOTS`) |
-| `v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md` | SHA-256 `C1E3D50FB1A5488AF43B6CE3DB0E933A6D6995199DE52B91D23DBC55B27C4FD3` | current Revision 3 decision entry, correction pass 1; the pre-restructure Revision 2 draft is preserved at SHA-256 `24D04F8156866029545615F0FDBC0D7995C7BFB12F9BC039EEB3C66224E2744D` in the review log |
-| `v03p/bridge/m2_complete_rule_feasibility.py` | SHA-256 `D1672A01425665333A9F7B176B7FA259AB257877D2D258E68A33C65868FD2B72` | main calculation |
-| `v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json` | SHA-256 `0FCCC452DE05C85D27ADD6D597758C1F5764CD8E006211FFC398B65DFC6E1A72` | machine-readable results |
-| `v03p/bridge/m2_complete_rule_feasibility_validate.py` | SHA-256 `F83DF288C1E033CF70A317B8F77D89E2DC9AB4D286554B19A2DCF75AB951F38E` | independent validation and report-to-JSON consistency check |
+| `v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md` | SHA-256 `1FD941F85000B94224ADF28FDEC8A6E3F8D97337B46F09E24E495198C8539B82` | current Revision 3 decision entry, correction pass 1; the pre-restructure Revision 2 draft is preserved at SHA-256 `24D04F8156866029545615F0FDBC0D7995C7BFB12F9BC039EEB3C66224E2744D` in the review log |
+| `v03p/bridge/m2_complete_rule_feasibility.py` | SHA-256 `7AD1162DE76B6E4310C8B9DED4CFA1EA3F1625B9CA8B9C95CE9D5FD5AB431EAF` | main calculation |
+| `v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json` | SHA-256 `EDFB53C1D740D34A3A2214A355FB08968ED5525AC9C435A1F29B087F9471137C` | machine-readable results |
+| `v03p/bridge/m2_complete_rule_feasibility_validate.py` | SHA-256 `1B7D2AD7A8E767B7FCD474886E3C00F0C8862541FDA73DEFE84333A8F42B12EF` | independent validation and report-to-JSON consistency check |
 
 Source files were read, not modified. The calculation uses Python 3.14.0 with NumPy 2.4.6; it does
 not import `battery.py` and does not use any sampler. The A1 import was used only for the
@@ -107,6 +107,9 @@ a ±8 marginal-SD count box. It returns `p_box`, the omitted count tail, and the
 The interval is propagated monotonically: `E[N]` and `P(N≥39)` are intervals, and the table reports
 their upper ends where a planning threshold is at issue. The omitted tails are small but are **not**
 uniformly below `1e-12`; examples are `(a)@60: 4.85e-10`, `(b)@60: 5.3e-9`, `(c)@120: 3.4e-9`.
+Binomial survival probabilities are summed directly with `math.fsum` over the upper-tail PMFs, not
+by subtracting a CDF from one. For example, the `(a)@120` fixed-unique complete-rule
+`P(N≥39)` is `2.2977e-29`, not zero; the table retains these tiny nonzero endpoints.
 The complete-rule interval is `[0, P(conditions 1–4 upper)]`, because the κ gate can only reject and
 no cell-wide gate lower bound is established. The O3 readings therefore use the complete-rule
 upper bounds; an upper bound above a threshold is **not** a passing result.
@@ -121,18 +124,18 @@ show both duplicate arms; they do not select one.
 
 | Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 |
 |---|---|---:|---:|---:|---|
-| a-hist / 60 | rho=0 unique | [5.9587e-06, 5.9591e-06] | 0.0119 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 60 | rho=.25 slots | [2.6547e-07, 2.6662e-07] | 5.3323e-04 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 120 | rho=0 unique | [1.5457e-03, 1.5457e-03] | 3.0914 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 120 | rho=.25 slots | [2.7310e-04, 2.7310e-04] | 0.5462 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 60 | rho=0 unique | [1.5936e-08, 2.1208e-08] | 4.2417e-05 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 60 | rho=.25 slots | [4.3897e-10, 2.8445e-08] | 5.6890e-05 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 120 | rho=0 unique | [3.0110e-05, 3.0113e-05] | 0.0602 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 120 | rho=.25 slots | [2.3715e-06, 2.3761e-06] | 0.0048 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 60 | rho=0 unique | [1.1245e-11, 3.0697e-08] | 6.1394e-05 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 60 | rho=.25 slots | [1.9281e-13, 3.6839e-08] | 7.3679e-05 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 120 | rho=0 unique | [2.0205e-07, 2.0546e-07] | 4.1092e-04 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 120 | rho=.25 slots | [6.0974e-09, 1.2322e-08] | 2.4644e-05 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 60 | rho=0 unique | [5.9587e-06, 5.9591e-06] | 0.0119 | 3.1322e-122 | both_rules_ruled_out |
+| a-hist / 60 | rho=.25 slots | [2.6547e-07, 2.6662e-07] | 5.3323e-04 | 7.5518e-175 | both_rules_ruled_out |
+| a-hist / 120 | rho=0 unique | [1.5457e-03, 1.5457e-03] | 3.0914 | 2.2977e-29 | both_rules_ruled_out |
+| a-hist / 120 | rho=.25 slots | [2.7310e-04, 2.7310e-04] | 0.5462 | 1.1442e-57 | both_rules_ruled_out |
+| b-hist / 60 | rho=0 unique | [1.5936e-08, 2.1208e-08] | 4.2417e-05 | 1.0058e-217 | both_rules_ruled_out |
+| b-hist / 60 | rho=.25 slots | [4.3897e-10, 2.8445e-08] | 5.6890e-05 | 9.4353e-213 | both_rules_ruled_out |
+| b-hist / 120 | rho=0 unique | [3.0110e-05, 3.0113e-05] | 0.0602 | 8.2212e-95 | both_rules_ruled_out |
+| b-hist / 120 | rho=.25 slots | [2.3715e-06, 2.3761e-06] | 0.0048 | 8.4240e-138 | both_rules_ruled_out |
+| c-hist / 60 | rho=0 unique | [1.1245e-11, 3.0697e-08] | 6.1394e-05 | 1.8423e-211 | both_rules_ruled_out |
+| c-hist / 60 | rho=.25 slots | [1.9281e-13, 3.6839e-08] | 7.3679e-05 | 2.2636e-208 | both_rules_ruled_out |
+| c-hist / 120 | rho=0 unique | [2.0205e-07, 2.0546e-07] | 4.1092e-04 | 2.9162e-179 | both_rules_ruled_out |
+| c-hist / 120 | rho=.25 slots | [6.0974e-09, 1.2322e-08] | 2.4644e-05 | 6.3880e-227 | both_rules_ruled_out |
 
 Only `60` and `120` are Rev F candidate body counts. They are both far below the O3 planning
 thresholds in both arms.
@@ -145,47 +148,47 @@ at `ρ=0.25` (112.75 and 450.25).
 
 | Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 |
 |---|---|---:|---:|---:|---|
-| a-hist / 113 | rho=0 unique | [1.1168e-03, 1.1168e-03] | 2.2336 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 113 | rho=.25 slots | [1.7458e-04, 1.7458e-04] | 0.3492 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 150 | rho=0 unique | [4.2795e-03, 4.2795e-03] | 8.5590 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 150 | rho=.25 slots | [1.1258e-03, 1.1258e-03] | 2.2515 | 0.0000e+00 | both_rules_ruled_out |
-| a-hist / 240 | rho=0 unique | [2.1882e-02, 2.1882e-02] | 43.7642 | 0.7871 | P_rule_ruled_out |
+| a-hist / 113 | rho=0 unique | [1.1168e-03, 1.1168e-03] | 2.2336 | 1.6321e-34 | both_rules_ruled_out |
+| a-hist / 113 | rho=.25 slots | [1.7458e-04, 1.7458e-04] | 0.3492 | 3.6438e-65 | both_rules_ruled_out |
+| a-hist / 150 | rho=0 unique | [4.2795e-03, 4.2795e-03] | 8.5590 | 2.2002e-14 | both_rules_ruled_out |
+| a-hist / 150 | rho=.25 slots | [1.1258e-03, 1.1258e-03] | 2.2515 | 2.1896e-34 | both_rules_ruled_out |
+| a-hist / 240 | rho=0 unique | [2.1882e-02, 2.1882e-02] | 43.7642 | 7.8705e-01 | P_rule_ruled_out |
 | a-hist / 240 | rho=.25 slots | [8.5722e-03, 8.5722e-03] | 17.1444 | 3.6427e-06 | both_rules_ruled_out |
-| a-hist / 300 | rho=0 unique | [3.9534e-02, 3.9534e-02] | 79.0682 | 1.0000 | not_certified |
-| a-hist / 300 | rho=.25 slots | [1.8040e-02, 1.8040e-02] | 36.0804 | 0.3340 | both_rules_ruled_out |
-| a-hist / 400 | rho=0 unique | [6.0552e-02, 6.0552e-02] | 121.1031 | 1.0000 | not_certified |
-| a-hist / 400 | rho=.25 slots | [3.9576e-02, 3.9576e-02] | 79.1525 | 1.0000 | not_certified |
-| a-hist / 450 | rho=0 unique | [6.3514e-02, 6.3514e-02] | 127.0276 | 1.0000 | not_certified |
-| a-hist / 450 | rho=.25 slots | [4.9602e-02, 4.9602e-02] | 99.2050 | 1.0000 | not_certified |
-| a-hist / 600 | rho=0 unique | [5.6830e-02, 5.6830e-02] | 113.6608 | 1.0000 | not_certified |
-| a-hist / 600 | rho=.25 slots | [6.3434e-02, 6.3434e-02] | 126.8681 | 1.0000 | not_certified |
-| b-hist / 113 | rho=0 unique | [1.8098e-05, 1.8099e-05] | 0.0362 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 113 | rho=.25 slots | [1.2766e-06, 1.2824e-06] | 0.0026 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 150 | rho=0 unique | [1.5744e-04, 1.5744e-04] | 0.3149 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 150 | rho=.25 slots | [1.8911e-05, 1.8914e-05] | 0.0378 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 240 | rho=0 unique | [1.9394e-03, 1.9394e-03] | 3.8788 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 240 | rho=.25 slots | [4.8355e-04, 4.8355e-04] | 0.9671 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 300 | rho=0 unique | [4.9370e-03, 4.9370e-03] | 9.8741 | 1.4910e-13 | both_rules_ruled_out |
-| b-hist / 300 | rho=.25 slots | [1.4676e-03, 1.4676e-03] | 2.9351 | 0.0000e+00 | both_rules_ruled_out |
-| b-hist / 400 | rho=0 unique | [1.3897e-02, 1.3897e-02] | 27.7947 | 0.02488 | both_rules_ruled_out |
-| b-hist / 400 | rho=.25 slots | [4.9729e-03, 4.9729e-03] | 9.9458 | 5.5567e-13 | both_rules_ruled_out |
-| b-hist / 450 | rho=0 unique | [1.9730e-02, 1.9730e-02] | 39.4607 | 0.5514 | P_rule_ruled_out |
+| a-hist / 300 | rho=0 unique | [3.9534e-02, 3.9534e-02] | 79.0682 | 1.0000e+00 | not_certified |
+| a-hist / 300 | rho=.25 slots | [1.8040e-02, 1.8040e-02] | 36.0804 | 3.3399e-01 | both_rules_ruled_out |
+| a-hist / 400 | rho=0 unique | [6.0552e-02, 6.0552e-02] | 121.1031 | 1.0000e+00 | not_certified |
+| a-hist / 400 | rho=.25 slots | [3.9576e-02, 3.9576e-02] | 79.1525 | 1.0000e+00 | not_certified |
+| a-hist / 450 | rho=0 unique | [6.3514e-02, 6.3514e-02] | 127.0276 | 1.0000e+00 | not_certified |
+| a-hist / 450 | rho=.25 slots | [4.9602e-02, 4.9602e-02] | 99.2050 | 1.0000e+00 | not_certified |
+| a-hist / 600 | rho=0 unique | [5.6830e-02, 5.6830e-02] | 113.6608 | 1.0000e+00 | not_certified |
+| a-hist / 600 | rho=.25 slots | [6.3434e-02, 6.3434e-02] | 126.8681 | 1.0000e+00 | not_certified |
+| b-hist / 113 | rho=0 unique | [1.8098e-05, 1.8099e-05] | 0.0362 | 2.0039e-103 | both_rules_ruled_out |
+| b-hist / 113 | rho=.25 slots | [1.2766e-06, 1.2824e-06] | 0.0026 | 3.0207e-148 | both_rules_ruled_out |
+| b-hist / 150 | rho=0 unique | [1.5744e-04, 1.5744e-04] | 0.3149 | 6.6898e-67 | both_rules_ruled_out |
+| b-hist / 150 | rho=.25 slots | [1.8911e-05, 1.8914e-05] | 0.0378 | 1.1145e-102 | both_rules_ruled_out |
+| b-hist / 240 | rho=0 unique | [1.9394e-03, 1.9394e-03] | 3.8788 | 7.5445e-26 | both_rules_ruled_out |
+| b-hist / 240 | rho=.25 slots | [4.8355e-04, 4.8355e-04] | 0.9671 | 3.6329e-48 | both_rules_ruled_out |
+| b-hist / 300 | rho=0 unique | [4.9370e-03, 4.9370e-03] | 9.8741 | 1.6547e-12 | both_rules_ruled_out |
+| b-hist / 300 | rho=.25 slots | [1.4676e-03, 1.4676e-03] | 2.9351 | 3.5289e-30 | both_rules_ruled_out |
+| b-hist / 400 | rho=0 unique | [1.3897e-02, 1.3897e-02] | 27.7947 | 2.4884e-02 | both_rules_ruled_out |
+| b-hist / 400 | rho=.25 slots | [4.9729e-03, 4.9729e-03] | 9.9458 | 2.0494e-12 | both_rules_ruled_out |
+| b-hist / 450 | rho=0 unique | [1.9730e-02, 1.9730e-02] | 39.4607 | 5.5138e-01 | P_rule_ruled_out |
 | b-hist / 450 | rho=.25 slots | [7.7867e-03, 7.7867e-03] | 15.5735 | 3.8105e-07 | both_rules_ruled_out |
-| b-hist / 600 | rho=0 unique | [3.7421e-02, 3.7421e-02] | 74.8419 | 1.0000 | not_certified |
-| b-hist / 600 | rho=.25 slots | [1.9767e-02, 1.9767e-02] | 39.5340 | 0.5560 | P_rule_ruled_out |
-| c-hist / 113 | rho=0 unique | [9.5592e-08, 9.8056e-08] | 1.9611e-04 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 113 | rho=.25 slots | [2.7019e-09, 1.0009e-08] | 2.0018e-05 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 150 | rho=0 unique | [2.7099e-06, 2.7118e-06] | 0.0054 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 150 | rho=.25 slots | [1.0780e-07, 1.1124e-07] | 2.2248e-04 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 240 | rho=0 unique | [2.2645e-04, 2.2645e-04] | 0.4529 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 240 | rho=.25 slots | [1.9249e-05, 1.9250e-05] | 0.0385 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 300 | rho=0 unique | [1.0749e-03, 1.0749e-03] | 2.1498 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 300 | rho=.25 slots | [1.4017e-04, 1.4017e-04] | 0.2803 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 400 | rho=0 unique | [4.8453e-03, 4.8453e-03] | 9.6905 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 400 | rho=.25 slots | [1.0916e-03, 1.0916e-03] | 2.1833 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 600 | rho=0 unique | [3.7421e-02, 3.7421e-02] | 74.8419 | 1.0000e+00 | not_certified |
+| b-hist / 600 | rho=.25 slots | [1.9767e-02, 1.9767e-02] | 39.5340 | 5.5603e-01 | P_rule_ruled_out |
+| c-hist / 113 | rho=0 unique | [9.5592e-08, 9.8056e-08] | 1.9611e-04 | 8.6322e-192 | both_rules_ruled_out |
+| c-hist / 113 | rho=.25 slots | [2.7019e-09, 1.0009e-08] | 2.0018e-05 | 1.9241e-230 | both_rules_ruled_out |
+| c-hist / 150 | rho=0 unique | [2.7099e-06, 2.7118e-06] | 0.0054 | 1.4560e-135 | both_rules_ruled_out |
+| c-hist / 150 | rho=.25 slots | [1.0780e-07, 1.1124e-07] | 2.2248e-04 | 1.1823e-189 | both_rules_ruled_out |
+| c-hist / 240 | rho=0 unique | [2.2645e-04, 2.2645e-04] | 0.4529 | 8.3986e-61 | both_rules_ruled_out |
+| c-hist / 240 | rho=.25 slots | [1.9249e-05, 1.9250e-05] | 0.0385 | 2.2136e-102 | both_rules_ruled_out |
+| c-hist / 300 | rho=0 unique | [1.0749e-03, 1.0749e-03] | 2.1498 | 3.9802e-35 | both_rules_ruled_out |
+| c-hist / 300 | rho=.25 slots | [1.4017e-04, 1.4017e-04] | 0.2803 | 7.4456e-69 | both_rules_ruled_out |
+| c-hist / 400 | rho=0 unique | [4.8453e-03, 4.8453e-03] | 9.6905 | 9.4828e-13 | both_rules_ruled_out |
+| c-hist / 400 | rho=.25 slots | [1.0916e-03, 1.0916e-03] | 2.1833 | 7.0354e-35 | both_rules_ruled_out |
 | c-hist / 450 | rho=0 unique | [7.8323e-03, 7.8323e-03] | 15.6645 | 4.3872e-07 | both_rules_ruled_out |
-| c-hist / 450 | rho=.25 slots | [2.1446e-03, 2.1446e-03] | 4.2893 | 0.0000e+00 | both_rules_ruled_out |
-| c-hist / 600 | rho=0 unique | [2.0446e-02, 2.0446e-02] | 40.8927 | 0.6391 | P_rule_ruled_out |
+| c-hist / 450 | rho=.25 slots | [2.1446e-03, 2.1446e-03] | 4.2893 | 2.5773e-24 | both_rules_ruled_out |
+| c-hist / 600 | rho=0 unique | [2.0446e-02, 2.0446e-02] | 40.8927 | 6.3913e-01 | P_rule_ruled_out |
 | c-hist / 600 | rho=.25 slots | [7.8631e-03, 7.8631e-03] | 15.7261 | 4.8221e-07 | both_rules_ruled_out |
 
 ### 3.3 Immediate feasibility readings
@@ -359,14 +362,17 @@ not a substitute for an exact bound.
 5. **Cell schema and O3 labels.** The validator checks all 55 cells: interval algebra
    (`p_box ≤ p_upper`, support/complete upper equality, zero lower bounds), monotone `E` and
    `P(N≥39)`, duplicate aliases and `M_mean`, tail-mixture bookkeeping, and the three allowed O3
-   labels. No schema errors were found.
+   labels. Survival probabilities are checked with relative tolerance, so a zero endpoint cannot
+   pass against a tiny nonzero value; the old CDF-subtraction result of `0` for `(a)@120` is
+   rejected against the stable `2.2977e-29`. No schema errors were found.
 6. **κ implementation check.** The Gram/sufficient-statistics implementation reproduces the three
    recorded 2026-10-19 κ values to `≤8.6e-13` (§5.1).
 7. **Exact enumeration mass checks.** The small-support enumerations sum to `1 − O(1e-12)` over all
    patterns (§5.2); the complete-rule conjunction is evaluated on the same enumerated objects as
    the pass rule.
 8. **Report-to-JSON consistency.** The validator parses the candidate and planning tables in §3 and
-   checks the rounded interval endpoints, complete-rule upper bounds, and O3 codes against the JSON.
+   checks the rounded interval endpoints, complete-rule upper bounds (including tiny survival
+   probabilities with relative tolerance), and O3 codes against the JSON.
 9. **Commands.** `py -3.14 -B v03p/bridge/m2_complete_rule_feasibility.py` regenerates the JSON and
    the printed cell table. The script is deterministic; it uses no random seed. The independent
    validator is run with
