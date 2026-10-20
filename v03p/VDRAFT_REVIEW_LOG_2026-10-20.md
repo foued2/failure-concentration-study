@@ -1,0 +1,1373 @@
+# VDraft review log — preserved historical record (2026-10-20)
+
+**Status:** HISTORICAL REVIEW RECORD. This file preserves, verbatim and in order, the full
+Revision 2 review draft and its review-round history as it stood at SHA-256
+24D04F8156866029545615F0FDBC0D7995C7BFB12F9BC039EEB3C66224E2744D (2026-10-20). It is moved
+out of the main decision document so the decision entry stays readable. Nothing below is deleted,
+reordered, or retroactively corrected; the main decision document
+(v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md) is the current entry point and
+records the post-2026-10-19 feasibility results and the remaining owner decisions. Where the main
+document and this log differ, the main document governs the current decision; the log governs the
+history of how that decision was reached.
+
+---
+# VDraft: Target Bridge and Research Decision Plan — Revision 2
+
+**Date:** 2026-10-18  
+**Status:** REVIEW DRAFT ONLY (Revision 2). Produced under the owner implementation order
+`v03p/VDRAFT_IMPLEMENTATION_ORDER_2026-10-18.md` (commit `906dd351e647d3d28a70ae16a01070e34fdca8a6`, from
+Foued, relayed by GPT, to GLM). Not frozen. No NC2 computation, Phase 1 simulation, solver generation,
+hidden-outcome collection, spending, NC1 rerun, or protocol freeze/authorization is granted by this document
+or by that order. The branch remains separate from `master`. **Bridge stage progress (2026-10-18): the
+verification battery (owner order step (2)) is COMPLETE — standing record = `BATTERY_REPORT_2026-10-18.md` (
+commit `4618f31`), reached after pre-registered runs 1–3 (each stopped/archived with its record committed:
+`v-s1` γ=0; `ii-s0-mono` c-rows; mutation gate bypass) and three documented spec amendments — Γ\*
+calibration (step (3)) is COMPLETE: standing record = `CALIBRATION_REPORT_2026-10-18.md` (amended record
+commit `05f9a40` under freeze `8a1b5ab`; earlier chain `c100a5e` base → `999e1b1` writer-only → `dd87ef0`
+provenance-only → `199d30c` first record; blob hashes recorded inside the report). All four matched-population
+rows stored a solved γ\* (δ\*) in `[5.257, 6.911]` (residual `|f − δ\*| ≤ 1.8e-12`), `β_pop ∈ [0.105, 0.130]`
+with `c*_prov` = `91.94–142.12` (all below the `156.25` anchor and between the NC1 grid points `39.0625` /
+`156.25` → "no NC1 row (grid mismatch)"), and 2δ\* **not attained within the declared peak-search domain** (
+evidence-based: actual σ=1 objective peaks `0.0297–0.0324 < 2δ\*`, margins `8.1e-3–1.1e-2`, MC-corroborated;
+argmaxes γ ≈ `9.4–11.2` lie ≥ 20.8 inside the frozen `γ = 32` scan edge with the curve falling there; declared
+on single-peak scan behavior, not a proven global maximum). β side-by-side on the record: primary /
+extended-fit identical at float scale, labeled average-derivative variant `0.152–0.198`; no variant falls
+below `0.10` on any row; `β_pop` method-noise bound `≤ 6.7e-6`, hundreds of times below the tightest anchor
+margin. Percentages vs the anchor are descriptive only, never effect sizes. Every row is PROVISIONAL / NOT A
+COMPLETE-RULE ESTIMATE (bucket-local-proxy population); the next step is the owner-recorded interpretation vs
+the `β_min = 0.10` anchor, still not given.**  
+**Purpose:** Translate the owner's minimum-meaningful predictive target (`δ*`) into the mechanistic signal
+parameter of the `c*` heuristic — designated **`β_min`** by the owner order — as a reviewable plan, while
+keeping the original scientific question primary. Revision 2 applies the converged review corrections (GLM,
+GPT, Claude) recorded in §0. The candidate-grid owner menu (`β ∈ {0.05, 0.10, 0.20}`) is retired: `β_min` is
+derived through the target-translation procedure, not chosen from the grid.
+
+## 0. Change record (Revision 2)
+
+| Order item (work order `906dd351`) | Reviewer finding source | Edit applied in this revision                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|------------------------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1                                  | GLM Q1, GPT Q1          | §2 `β_min` row, §4, A1.3, A2.3, A3 rewritten on the fixed M3 reference unit `s_ref = 0.12703` exactly; "slope per one within-`k` SD of `C`" removed as the definition of `β_min`; within-`k` variation retained as the identification/population input, with the M3 bucket weighting and body-count scaling stated explicitly (A1.3)                                                                                                                                                  |
+| 2                                  | GLM Q1, order item 2    | §2 keeps `δ*` / `γ` / `β_min` / `c*` as four distinct quantities; no conversion is asserted as authoritative; the only numeric cross-relations shown are the algebraic restatement of the engine's own `c` definition (A1.3) and a clearly labeled non-authoritative candidate mapping (A2.3)                                                                                                                                                                                         |
+| 3                                  | GLM Q5, GPT Q1          | §2.1 and the new source document `v03p/VDRAFT_M3_SOURCE_DEPENDENCY_2026-10-18.md`: controlling M3 Rev d / engine spec v1 §2 texts are NOT in the repository and the exact text is not available verbatim in the active conversation; the `β_min` numerical mapping is kept **PROVISIONAL-PENDING-SOURCE**; nothing is fabricated or paraphrased as if retrieved. The only verbatim anchors preserved are the in-repo engine docstring excerpts, quoted with file/line/hash provenance |
+| 4                                  | GLM Q2/Q5, GPT Q2       | A2 and A3 declare the population and support family for every `Δ`, `γ`, `β_min`, and spread value; every bucket-local-proxy quantity is labeled **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE** (Rev F §5A: complete-rule `P(pass) = 0` as drafted, Rev F:175)                                                                                                                                                                                                                         |
+| 5                                  | GPT Q2, GLM Q2          | A2.2 pins the calibration to Revision F's stated convention (bisection, tolerance `10⁻⁴` on `Δ`, fixed calibration seed, recorded Monte Carlo size — Rev F:364); a deterministic alternative requires its own documented validation on the bridge population before use; A2.3 states that the exact marginal/probability-scale functional for `β_min` comes from the controlling M3 definition (source-pending)                                                                       |
+| 6                                  | GLM Q3, GPT Q3          | §6 B2 and §8 add the confirmatory-procedure choice as an explicit owner blocker (Revision F held-out log-loss comparison vs the in-chat engine-spec scale-(i) stratified-permutation procedure), with no blending of estimands or operating characteristics                                                                                                                                                                                                                           |
+| 7                                  | GLM Q3                  | §6 B2 word "selected" removed ("- no §5A resolution has been adopted; Rev F:177, 625"); §7 adds the owner decision whether power at `δ*` is gated (Revision F gates power at `2δ*` and only reports power at `δ*`, Rev F:268)                                                                                                                                                                                                                                                         |
+| 8                                  | GPT Q5, GLM Q5          | A3 scenario-scope note: NC1's `c` construction covers only its `k=5` and `k=10` buckets (`nc1_calc.py:106-111`), and NC1 evaluated no (b)-family scenario at all (`nc1_calc.py:96`); no NC1 contribution is implied for Revision F scenario (b)'s `k=20` without a separately specified extension; no new NC1 computations fill threshold-grid gaps (A2.4/A3)                                                                                                                         |
+| 9                                  | CLAUDE Q4, GPT Q4       | §7 adds the optional pre-registered `PILOT-DECIDES` branch and states explicitly that GO or passing a pilot gate does not confirm the theory and never authorizes a later phase automatically                                                                                                                                                                                                                                                                                         |
+| 10                                 | all reviewers           | Header/status unchanged in kind: review draft only; contrast list extended ("NC1 rerun" added)                                                                                                                                                                                                                                                                                                                                                                                        |
+| —                                  | CLAUDE Q3               | §2 footnote separating Revision F's M1/M2/M3 conditioning candidates from NC1's M1/M2/M3 mutation tests (unrelated namespaces)                                                                                                                                                                                                                                                                                                                                                        |
+
+### 0.1 Genuine remaining blockers
+
+1. **Source dependency — resolved at the hygiene level (2026-10-18, owner-ordered).** Both controlling texts
+   are now preserved **byte-exact at `v03p/source/` — as found, not frozen** (sizes, full SHA-256 hashes, and
+   last-write times recorded; provenance: §7 of `v03p/VDRAFT_M3_SOURCE_DEPENDENCY_2026-10-18.md`; the engine
+   copy matches its previously recorded hash exactly; the M3 addendum is recorded as-found, since no earlier
+   recorded hash exists). Only the source-hygiene dependency is removed: the texts remain
+   reviewer-disposition-pending (the M3 addendum's own status is "read-only draft for reviewer disposition"),
+   so the numerical mapping stayed **PROVISIONAL-PENDING-SOURCE** at that step; the second pass of 2026-10-18
+   (§0.2 item 6) then fixed the bridge functional as `β_pop` (A2.3) and recorded the M3 §9 dispositions per
+   the F5 defaults (source record §8), advancing the live label to **PROVISIONAL (source-committed as-found,
+   unfrozen)**. No computation was performed for the preservation — it is an operating action ordered by the
+   owner, not a bridge calculation.
+2. **§5A M1/M2/M3 resolution and complete-rule recalculation** — owner decision + reviewer verification (Rev F
+   §11 items 13–14). Blocks complete-rule labeling, not this plan's PROVISIONAL rows. Status 2026-10-19
+   (second work order): M2 recommended conditionally — reviewer sign-off on the exact mathematics plus owner
+   acceptance as a gate-semantics change — with the complete-rule recalculation still unperformed and its
+   missing inputs recorded (see §0.3(b), (e)).
+3. **Confirmatory-procedure choice** — owner decision (§8 item added). Required before any Phase 1 gate claim;
+   not required for the bridge.
+4. **Power-at-`δ*` gating** — owner decision (§7).
+5. **Bridge execution authorization — explicitly given (Foued, 2026-10-18; §0.2 item 12).** Owner
+   authorization to proceed with the already-specified bridge work for matched-population scenarios (a)/ (c)
+   in the battery-first order (battery implement + freeze → run with margins → `γ*` at `δ*` and `2δ*` →
+   `β_pop` → provisional `c*` mapping → gap report → separate committed report). Scope: bridge computation
+   only — NC1 stays closed; NC2/Phase 1/solver generation/hidden-outcome collection/spending/master merge stay
+   unauthorized. The budget/power decision stays outstanding and gates interpretation (§7), not calculation.
+
+### 0.2 Post-review correction pass (GPT/ review of Revision 2 at
+`78d5f36ff09367bc138645d8c8ae130a2f8eb7ef`; CLAUDE/ concurrence)
+
+Four targeted corrections applied, with no computation and no other substantive change:
+
+1. **Correction A — provisional meaning of `β_min`, and symbol disambiguation.** The §2 `β_min` row now labels
+   the probability-scale reading a **provisional working interpretation inferred from the engine
+   normalization**, not the binding M3 definition (the engine anchors fix `s_ref` and the construction of `c`,
+   not the statistical functional of `β_min`). The A2.3 candidate mapping is marked **conditional on that
+   interpretation**. §4 keeps `0.1007` as an illustrative approximation only — not a resolved translation of
+   `δ*` into `β_min`, not a selected minimum-signal value, not sheeted into any decision. Symbols
+   disambiguation added (§2 footnote): Revision F's predictor `x_RCS = log(1+k)` vs the M3 channel `x_M3` =
+   `s_ref`-normalized within-bucket departure; `β_min`'s slope attaches to `x_M3` only, and every former bare-
+   `x` use (§2, §4, A2.3) now carries the distinct name.
+2. **Correction B — DGP variance vs realized variance in the offered-mass specification.** A1.3 and A3 now
+   distinguish the DGP variance `σ_k²` (unconditioned) from the realized `t`-denominator variance
+   `V̂ar_k^{(t)}` (identity for the realized bucket: `Σ_i(C_i − C̄_k)² = t_k·V̂ar_k^{(t)}`; for i.i.d. draws
+   at fixed `t_k`: `E[Σ_i(C_i − C̄_k)² | t_k] = (t_k − 1)·σ_k²`, before support conditioning). `E[c]` is
+   specified per-row under the row's declared support/composition rule — empty buckets contribute zero,
+   support conditioning respected — and never as expected bucket sizes × unconditioned DGP variances. Every
+   `Var` occurrence in §2/A1.3/A3 now states which variance it is (A3 variance-notation rule). Specification
+   correction only; no new computation authorized or run.
+3. **Correction C — units of `x_M3` (GPT/ sign-off condition on `9aaf3ee`; CLAUDE/ concurrence).**
+   `x_{M3,i} = (C_i − C̄_{k(i)})/s_ref` is **dimensionless by construction** (the raw departure is divided by
+   the constant `s_ref` exactly once). §2, §4, and A2.3 now read: `β_min` is the probability-scale slope per
+   one unit of `x_M3`, equivalently per a raw within-bucket departure of size `s_ref = 0.12703`; `Var(x_M3)`
+   is the plain variance of that dimensionless normalized channel — no further `s_ref²` attribution (which
+   would double-divide; the `s_ref²` factor belongs to the raw→`c` scaling in the `c` construction). The §4
+   approximation and the A2.3 candidate mapping therefore remain mutually consistent as written. Wording fix
+   only.
+4. **Correction C follow-up — stale-phrasing sweep (GPT/ review of `32024d07d5daa83c9c8caa20d743b4082b0fbcde`;
+   CLAUDE/ concurrence).** GPT's remaining correction applied: the §2 `c` row's descriptive phrase now reads
+   "a body-count-scaled sum of squared dimensionless, `s_ref`-normalized departures, not a per-body variance"
+   (replacing "a body-count-scaled total in `s_ref²` units"), and the A3 offered-mass column label now reads
+   "construction normalized by `s_ref²`" (replacing "s_ref²-units construction"). Sweep of both VDraft
+   documents for any remaining site asserting that unit meaning: none other; the one remaining literal "s_ref²
+   units" string is §4's unit-discipline sentence, which deliberately quotes the phrase in order to retract it
+   (Correction C's own language). Wording fix only.
+5. **Source preservation executed (Foued's explicit order, 2026-10-18).** Both controlling texts preserved
+   **byte-exact at `v03p/source/` — as found and not frozen** — with sizes, full SHA-256 hashes, and
+   last-write times recorded in the source record's new §7 provenance addendum; files unedited; the engine
+   copy matches its previously recorded hash, the M3 addendum recorded as-found. No computation performed; NC1
+   stays closed and NC2 and Phase 1 stay held. This resolves §0.1 item 1's source-hygiene dependency only; the
+   `β_min` numerical mapping remains **PROVISIONAL-PENDING-SOURCE** pending reviewer verification of the
+   committed texts against the §2.1 checklist and, per GPT's disposition, possible further establishment of
+   the exact `γ ↔ β_min` population functional through A1/A2. §0.1 item 1, §2.1, and A1.1 updated accordingly.
+6. **Bridge-functional tightening + owner dispositions (GPT/ and CLAUDE/ reviews of `091041f`; Foued/ decision
+   2026-10-18).** Both reviewers accepted the preservation and the Correction C wording. Their remaining
+   finding: A2.3's candidate `β_min ≈ γ*·s_ref·E[p̃(1−p̃)]` is an average local derivative, which need not
+   equal the linear-projection slope M3's primary statistic estimates (the channel takes discrete grid levels;
+   agreement holds only in special cases such as a Gaussian predictor). A2.3 now defines the bridge target **
+   `β_pop`** — the population counterpart of M3's stratified within-`k` centered covariance-over-variance
+   slope under Revision F's declared generator, with `p̄` marginalized over the `(u, v)` mixture and the row's
+   centering/support/weighting — and retains the derivative strictly as a labeled approximation reported
+   alongside. §2.1 records the committed-source notes (worked `c*` constants "not acceptable for freeze" until
+   M3's §9 decisions; §9 item 1: `z_req` alone is not a power guarantee; §9 item 4: linear information
+   argument, hence `c*` is not automatically calibrated under a logistic random-effects generator — the gap
+   report exists for exactly this) and the checklist dispositions. **Foued/ confirmed the engine-spec F5
+   defaults as written** as the dispositions of the M3 §9 open items (β per reference-SD scale; `z_req` = pure
+   effect magnitude with power handled by calibration; `σ_max` = 0.5 worst-case bound; stratified exact
+   permutation as M3's primary estimator convention — the study's confirmatory-procedure choice remains a
+   separate owner blocker), recorded in source record §8. **Foued/ authorization** (read from "CONFIRMED AND
+   AUTHORIZED" in context): the A2 bridge computation is authorized to run after this specification commit, in
+   the ordered sequence γ* calibration → `β_pop` → `c*` mapping → gap report; it had not run as of this
+   commit. NC1 stays closed; NC2 and Phase 1 stay held. The mapping label advances from
+   PROVISIONAL-PENDING-SOURCE to **PROVISIONAL (source-committed as-found, unfrozen)** throughout the live
+   text; the source files remain as-found and unfrozen. Specification/wording only in this commit; no
+   computation.
+7. **Population-alignment fixes before computation (GPT/ and CLAUDE/ reviews of `1852359`; draft-side fixes
+   only).** (i) **Support-conditioned weights made explicit** in A2.3: the `β_pop` sums and stratum means use
+   the row's support-conditioned distribution of eligible bodies — the grid levels are not equiprobable, and
+   declared selection effects on the `C` distribution are in scope; with the CLAUDE caveat that this
+   distribution is a bucket-local proxy under the §5A contradiction, so every row keeps PROVISIONAL / NOT A
+   COMPLETE-RULE ESTIMATE and no claim is made about the real study's population. (ii) **Scenario (b) marked
+   not like-for-like:** the direct `δ* → β_pop → c*` bridge is NOT DEFINED for (b) (`γ*` calibrated over a
+   population that includes `k = 20`, `β_pop` estimated over `k ∈ {5, 10}` only); a restricted sensitivity row
+   with its own population and calibration is optional, clearly labeled, and never presented as the full
+   scenario- (b) target; no NC1 `k=20` extension. The matched-population rows for scenarios (a) and (c)
+   proceed. (iii) **A3 columns relabeled:** "Implied `β_min`" → "Population slope `β_pop` (labeled derivative
+   approximation alongside)"; "Implied `c*`" → "Mapped `c*` — provisional heuristic comparison,
+   `c* = (1.25/β_pop)²`"; the `c*` cell can never be presented as a frozen M3 minimum-effect decision. (iv) **
+   `p̄` numerical discipline:** per-row stated method — Gauss–Hermite node doubling to a declared tolerance
+   plus a seeded Monte Carlo cross-check; node counts, tolerance, and achieved agreement reported per row. (v)
+   **Pre-run verification battery** added to A2 (zero-random-effects closed-form agreement at small `γ`;
+   `Δ(0) = 0` and monotonicity in `γ`; `10⁻⁴` bisection convergence; an NC1-style mutation battery whose
+   failure stops the run). (vi) **§7 sequencing note:** bridge numbers cannot be read into GO / ALTERNATIVE /
+   STOP until the owner records the budget ceiling and minimum `δ*`-power, before the numbers are examined.
+   Owner requests pending: confirmation of the source-record §8 transcription, and a rough budget ceiling. No
+   computation in this commit.
+8. **Battery check (i) corrected before computation (GPT/ review of `cd1ae15`).** GPT's round-5 review found
+   the battery's small-`γ` check invalid for the pooled estimator — a substantive defect in the battery
+   itself, the sort the battery exists to catch — and required a targeted correction before any bridge
+   numbers. Changes: (a) the pooled single-`p` form `Δ ≈ β_pop²·Var(x_M3)/(2p(1−p))` is **retired** (its
+   homogeneous-baseline assumption does not hold for the pooled two-stratum bridge). (b) The **`Δ_oracle`
+   construction is pinned in A2.2**: population-limit evaluation of the §7 fitted models (Rev F:
+   270/101/232/237), both models **refitted at the population level** — not held at `(θ0, θ1) = (0, −1)` —
+   random effects omitted from the fitted families as in the study's models; pinned consequence: per Rev F
+   §5A's verified rank table (Rev F:166-173), the baseline's restriction to a scenario's in-range `k` points
+   reaches full rank over stratum constants, so the population baseline absorbs the stratum means of `C` in
+   every scenario, the residual channel is the within-stratum `C`-deviation (the channel M3's slope measures),
+   and between-stratum mean effects arise only under the rejected held-fixed reading. The pin is draft-side,
+   pending reviewer re-verification. (c) Check (i) now targets the **stratum-weighted small-`γ` benchmark**
+   `Δ(γ) ≈ (γ²/2)·Σ_{k∈{5,10}} w_k·p_k(1−p_k)·Var_k^{sup}(C)` (equivalently
+   `Σ_k w_k·β_k(γ)²·Var_k(x_M3)/(2p_k(1−p_k))`, `p_k = 1/(k+2)`), computed with each row's support-conditioned
+   weights; tested `γ` values and per-`γ` tolerances declared in the report. (d) Monotonicity is scoped to the
+   **declared calibration bracket** `[γ_lo, γ_hi]`, not all `γ`. No computation in this commit; per GPT's
+   sequencing, the battery is implemented and run before γ* calibration for scenarios (a)/ (c).
+9. **Executable benchmark accepted + governance note (GPT/ review of `0b31dd4`).** GPT round-6 verified the
+   stratified benchmark's mathematics (the boxed leading term as pinned in A2.2) and accepted the round-5 pins
+   and labels as drafted; it imposed one remaining requirement, now implemented in A2.2: (a) the **primary**
+   zero-RE check is against the **exact finite-support benchmark**
+   `Δ_exact(γ) = Σ_k w_k·Σ_{i∈k} π_{i|k}·D_KL[Bern(q_i(γ)) ∥ Bern(q̄_k(γ))]` — exact in the zero-RE case
+   (extended = truth; optimal refitted baseline = stratum-mean scalar prediction), evaluated **independently**
+   of the production weighting machinery (its `π_{i|k}` is a direct closed-form computation of the row's
+   declared parameters); (b) the quadratic asymptotic form survives **only as a reported-discrepancy sanity
+   check** across the declared small-`γ` band — no reliance on an unspecified `O(γ³)` remainder bound; (c)
+   **scope warning recorded**: the stratified benchmark is for the zero-RE check only; the actual
+   `σ_u = σ_v = 1` generator has different marginals and derivatives, and the check is kept explicitly
+   separate from the main `γ*` calibration; (d) the mutation battery must be tested against the independent
+   reference, not a path sharing production's weighting calculation; (e) **governance note**: the
+   §8-transcription confirmation and the budget/power decision are recorded as outstanding owner items — not
+   inferable from nonresponse; the written bridge authorization stands regardless. No computation in this
+   commit; the next step remains battery-then-calibration for scenarios (a)/ (c).
+10. **Round-7 riders implemented; battery-implementation phase next (GPT/ "ROUND 6 ACCEPTED"; CLAUDE/
+    concurrence, 2026-10-18).** GPT accepted the executable finite-support benchmark, the zero-RE/separation
+    scope, and the governance note, with one implementation precaution, now pinned in A2.2: the bridge's
+    population-limit evaluation uses the **unpenalized population optimum** — Rev F's fixed `RIDGE = 1e-6`
+    must not be reproduced on a normalized population loss (it would not vanish relative to the accumulated
+    objective and could silently break the exact agreement against `q_i`/`q̄_k`); any regularized variant
+    needs demonstrated convergence first. Weighting rider pinned: the independent reference and the production
+    path use the **same** support-conditioned weights per the equal-weight-per-eligible-test-cell estimand
+    (equal cell ↔ equal body among eligible cells, Rev F:232); `C` levels never equiprobable without
+    justification. CLAUDE's additions implemented: (i) **two-`k` fact confirmed against Revision F** —
+    scenarios (a)/ (c) have exactly the in-range `k` values `{5, 10}` (§5A verified table, Rev F:166-171,
+    baseline rank exactly 2; §9.1 `k`-mixes agree), scenario (b) `{5, 10, 20}` (rank exactly 3); the pinned
+    five-column baseline restriction reproduces both stratum mean probabilities at (a)/ (c); CLAUDE's
+    three-means impossibility binds `M1`'s two-parameter `[1, x]` form (the pinned RCS basis is rank-3
+    saturated at (b)'s three points), and (b) stays NOT DEFINED on the A2.3 population mismatch either way;
+    (ii) **battery freeze before the run** — battery code hash, frozen tested-`γ` list, frozen tolerances, and
+    frozen declared weight definitions recorded on the branch before any number exists; post-hoc changes void
+    the pass; (iii) **symmetric stop rule** — an all-pass report still lists per-check margins and the
+    failures each check would have caught. **Time-box (CLAUDE perspective; accepted):** this is the final
+    spec-only commit before implementation — the battery code freeze, run, and bridge report follow; a further
+    specification round before any number appears would need a concrete newly-found defect, not preference. No
+    computation in this commit.
+11. **Family-constraint guard for the `σ > 0` calibration (GPT/ review of `360f09d`).** GPT verified round 7
+    against Rev F — the two-`k` confirmation correct ((a)/ (c) `k ∈ {5,10}`, (b) includes `k = 20`), the
+    unpenalized-optimum/support-weight/freeze/symmetric-stop riders appropriate, no NC1 reopening — and
+    imposed one implementation guard, now a dedicated A2.2 paragraph: the strictly-proper-scoring statement
+    implies per-cell optimality only for unconstrained predictions, and at `σ_u = σ_v = 1` the `(u, v)`
+    -marginalized cell probabilities have logits generally **not linear in `C`**, so the extended logistic
+    family does not represent them exactly; the actual `γ*` calibration must (1) integrate the true
+    conditionals over the mixture by the declared method, (2) fit both families at their unpenalized
+    population optima minimizing their own population log-losses under the same support-conditioned weights,
+    (3) compute `Δ(γ)` from those optimized predictions — never substituting true marginals as the extended
+    model's predictions — and (4) keep the exact finite-support KL expression as the zero-RE reference only;
+    the optimization objective, convergence criterion, and achieved residuals are recorded in the
+    implementation/report before results are interpreted, and substituting true marginals as extended
+    predictions stops the run for correction. Next action per GPT (time-boxed, confirmed): freeze battery code
+    hash, tested `γ` values, tolerances, and weighting definitions in the repository, then run the battery for
+    (a)/ (c) with per-check margins reported even on pass, stop on failure without post-hoc tolerance changes,
+    and only then calibrate `γ*` at `δ*` and `2δ*` → `β_pop` → provisional `c*` mapping → gap report. Labels
+    unchanged: every result **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE**; scenario (b)'s direct bridge **NOT
+    DEFINED**; no scientific finding either way; NC1 stays closed; NC2, Phase 1, solver generation, and
+    hidden-outcome collection unauthorized. No computation in this commit.
+12. **Owner decision (nominal β reference) and explicit bridge authorization (Foued, 2026-10-18, relayed by
+    GPT/).** (a) **Nominal β reference:** `β_min = 0.10` correctness-probability points per one fixed
+    reference SD of the normalized within-`k` concentration channel, mapping to `c* = (1.25/0.10)² = 156.25`
+    (the existing middle NC1 threshold) — recorded as the **provisional comparison anchor only**: not a
+    validated `δ* → β` conversion and not a substitute for the computed `β_pop`; the illustrative
+    approximation `0.1007` (§4) supports using `0.10` as a planning reference but establishes nothing about
+    the true population effect. **The bridge must not be tuned to obtain `0.10`**: the computed `β_pop` and
+    its mapped `c*` are reported honestly against this reference (and the NC1 grid), explicitly allowed to
+    differ substantially (GPT's stated requirement). (b) **Authorization granted** for the already-specified
+    bridge work for matched-population scenarios (a)/ (c), in this order: (1) implement and freeze the
+    verification battery — code hash, support-conditioned weighting definitions, tested `γ` values, and
+    tolerances committed to the branch **before execution**; (2) run the battery for (a)/ (c) reporting
+    **every check's result and margin, including passes** — any failed check stops the run, no post-hoc
+    tolerance changes; (3) only after a passing battery, calibrate `γ*` at `Δ = δ* = 0.0202732554` and the
+    sensitivity target `Δ = 2δ* = 0.0405465108`; (4) for each matched-population case compute `β_pop` via both
+    families' **unpenalized population optima**, map to the provisional `c*` heuristic, and report the gap
+    against the existing NC1 thresholds; (5) publish the method, numerical convergence, quadrature node
+    counts, Monte Carlo cross-check, achieved tolerances, and limitations in a **separate committed report**.
+    (c) **Scope:** bridge computation only — NC1 remains closed; no NC2, no Phase 1, no solver generation, no
+    hidden-outcome collection, no spending, no master merge. (d) **Budget/power note:** the outstanding
+    budget-ceiling and minimum-`δ*`-power inputs are needed before interpreting results as
+    GO/ALTERNATIVE/STOP, not before calculating them — §7 updated accordingly. (e) **No further specification
+    round** unless execution uncovers a concrete defect. Difference invariant retained for reviewers: `0.10`
+    is the comparison reference; `β_pop` is the result to be measured.
+13. **Battery W-DEF amendment caught before code (GLM pre-code re-verification, 2026-10-18).** The freeze
+    declaration's initial bucket predicate (`BATTERY_SPEC.md` as committed at `a527828`) stated a
+    grid-endpoint reading of Rev F's condition 4 and cited NC1's `f_s1`-backed `F5/F10` as precedent. Pre-code
+    re-verification against the controlling texts found the actual rule is the **observed-extremes** reading
+    (Rev F:145-148: "both C extremes of the bucket are represented by ≥ 4 distinct bodies each" — A1's
+    committed `S0`, `a1_support_comparison.py:10-13`), while NC1's `F5/F10` = `A.f_s1(k, n, 4)` implement
+    NC1's own `S1(m)` proxy ("≥ 4 bodies outside the modal value", A1:190-206), a different rule in NC1's
+    closed scope — neither necessary nor sufficient for the grid-endpoint clause. Amended in `BATTERY_SPEC.md`
+    (item 3, with audit trail) and the A2.2 battery block before any battery code was written and before any
+    number existed; W2 now cross-validates per-`n` `P(I_k|n)` against the committed `A1.f_s0(k, n)` artifact
+    to `1e-10`. No computation has been run under either reading; the amendment is disclosed to reviewers
+    before the run.
+
+14. **Pre-freeze-part-2 amendments from the implementation feasibility probes (GLM, 2026-10-18; battery code
+    written, no battery run executed, no battery-run number committed).** Three declared checks were amended
+    in `BATTERY_SPEC.md` **before** the freeze-part-2 commit, each with the probe evidence recorded: (a)
+    **check (iii) — Δ (γ) is single-peaked in γ:** the zero-RE benchmark rises on `[0, γ_peak ≈ 7.5–9]` then
+    declines toward 0 as `γ → ∞`, with row peaks `Δ_peak ∈ [3.74e-2, 3.97e-2]` per row — all **below**
+    `2δ* = 0.04055`; so `Δ(γ) = 2δ*` has no real solution in any bracket. The `δ*` target is solvable per row
+    (`γ̂ ≈ 3.78–4.94`, well inside the declared `[0, 8]` bracket and tolerance); check (iii)'s amended PASS
+    criterion is correct solver behavior: attainment-with-tolerance on solvable targets, or evidence-based
+    not-attainment `(Δ(lo) < target) ∧ (Δ(hi) < target)` recorded (the `2δ*` unattainability is a finding for
+    the later bridge report, not a machinery failure). (b) **MC cross-check formula addenda:**
+    `|Δ_MC − Δ_GH| ≤ 5·SE_MC + 1e-12` — at `γ = 0` both Δ values sit at float scale (`SE ≈ 1e-19`), below
+    quadrature/float noise, so the bare `5·SE` expression is unfalsifiable there; the floor matches the
+    declared V-2 expression. (c) **fit metric definition:** the reported IRLS `grad` is the per-parameter
+    exact column score at the reported parameter vector. All other declared checks and tolerances unchanged.
+
+15. **Run 1 record and check (v) amendment under the symmetric-stop protocol (GLM, 2026-10-18).** Freeze part
+    2 committed (`695085d`, blob `086eb18dbc01c211466083402bc1eac62d197cb1`) with one pre-run mechanical
+    correction committed first (`3ca69a4`, σ=1 mono loop on-demand GH evaluation; crash before any check
+    verdict, no numbers existed). **Run 1** executed and **stopped exactly as designed** at check `v-s1`
+    (a-hist row): the declared check (v) required `g > 1e-9` at every `γ_grid` point, but at `γ = 0` the σ = 1
+    truth has no `C`-dependence at all, so the extended family represents it exactly (run-1 evidence:
+    `g(0) = 0` at float scale `≈ 1.9e-18`, per-stratum constant fitted predictions with `β_C = 0`) — the
+    round-8 wire is vacuous at that point. Every other declared check and mutation reported PASS with strong
+    margins in run 1 (a-hist: W0 `1.7e-14`, W1 `4.3e-12`, W2 `7.8e-16`, W1-derived `< 1.4e-14` per row,
+    GH-conv `1.1e-14`, V-1 `1.1e-16`, check (i) `1.7e-16`, check (ii) `2.1e-17`/1.2e-17, mono `1.4e-4`/
+    `1.1e-4` inside slack, MC within `5·SE+1e-12` (`9.9e-6` margin vs `1.6e-4` limit), m1/m2/m3 trip
+    (`5.9e-3`/`1.9e-3`/`7.9e-6`), δ* bisection attained). The run-1 record is archived intact
+    (`BATTERY_REPORT_2026-10-18_run1_stopped_v-s1.md`, committed); check (v) amended in `BATTERY_SPEC.md` to
+    gate the `> 1e-9` criterion on the `C`-bearing points `γ ∈ [0.25, 8]` (run-1 evidence: `g` ∈
+    `[1.09e-8, 3.81e-5]`, all above threshold) with `γ = 0` recorded report-only; the amended code is
+    committed and a fresh official run executes under the amended declaration, replacing run 1 as the standing
+    record. All numbers above remain **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE**; the stopped run is
+    history, not an interpretation basis.
+
+16. **Run 2 record and monotonicity amendment under the symmetric-stop protocol (GLM, 2026-10-18).** Run 2
+    (under the run-1-amended declaration) passed the a-hist row fully — including the amended `v-s1` gate (γ =
+    0 recorded report-only) — and stopped at `ii-s0-mono` on the `c-hist` row, again as designed: the σ = 0
+    `Δ(γ)` rises until `γ ≈ 7.6` and declines across the grid edge (`Δ(8) − Δ(7.5) = −1.96e-4` below the
+    `1e-12` rising-slack), i.e., the `c` rows' peak lies inside the declared `[0, 8]` grid (a-rows peak at
+    `γ ≈ 8.5–9`, outside). Both monotonicity checks amended to the **single-peak contract** already documented
+    at the check- (iii) amendment: successive grid diffs stay `≥ −rising_slack` (`σ = 0: 1e-12`,
+    `σ = 1: 5e-10`) until the first negative diff (recorded peak location), then no second rise beyond
+    `+5e-10` (declines of any size belong to the falling branch). Run-2 reasoning evidence: `c-hist`
+    `g(8) = 3.950e-2 < its peak ≈ 3.97e-2` ✓ single peak; a-hist rising branch intact inside the grid
+    (`min successive diff = +1.37e-4`). Run-2 record archived intact
+    (`BATTERY_REPORT_2026-10-18_run2_stopped_ii-s0-mono-c-hist.md`, committed) — every a-hist check and
+    mutation PASSed there with margins consistent with run 1; the amendment and code are committed and a fresh
+    official run executes, replacing run 2 as the standing record. Still **PROVISIONAL / NOT A COMPLETE-RULE
+    ESTIMATE** throughout; no interpretation from stopped runs.
+
+17. **Mutation-gate bypass discovered and amended (GLM, 2026-10-18, symmetry-of-record protocol).** Run 3
+    (under the run-2-amended declaration) printed `BATTERY PASS`, but an instrumented re-execution (driver
+    script only, no frozen-file modification) proved the m1–m3 recorder calls passed a surplus argument that
+    placed `MUT_TOL = 1e-6` into the recorder's `report_only` positional slot; its truthiness disabled
+    stop-on-fail and forced verdict `n/a`, so the mutation checks were **report-only by accident** while `m4`
+    was genuinely gated (verified per-call: `report_only=True`, m2-on-c-hist `ok=False` with margin
+    `2.515e-17` yet `returned=True`). Run 3's PASS therefore does not stand as the standing record; it is
+    archived intact with its real measured margins
+    (`BATTERY_REPORT_2026-10-18_run3_mutations_report_only_bypass.md`, committed) as structural evidence. Two
+    joint amendments declared in `BATTERY_SPEC.md`: (a) the surplus argument dropped — m1–m3 gating restored
+    (mutation failure stops the run); (b) `m2` amended to cross-substitution per row (`c-hist` into `a`-rows
+    as originally declared; `a-hist` into `c`-rows), because the one-directional wording is self-identity on
+    `c`-rows (`Δ` diff at float scale) and can never trip there — run-3 margins put the cross-substitution
+    effect of order `1e-3`, far above `1e-6`. The post-amendment official run executes with real mutation
+    gates and replaces run 3 as the standing record; every headline number above remains **PROVISIONAL / NOT A
+    COMPLETE-RULE ESTIMATE**.
+
+18. **Γ\* calibration executed (step (3)) and its record committed (GLM, 2026-10-18).** `calibrate.py` written
+    (~700 lines) and frozen in a declared four-commit chain — base freeze `c100a5e` (objectives, weights,
+    quadrature, seed `20261019`, 2e6 MC draws, tolerances; blob `a6f6ef91…` in the message), freeze #2
+    `999e1b1` (report-writer-only fix: the 2δ\* margin line had printed a literal `%.10e` placeholder; no
+    computational change, blob `dbfb87fc…`), freeze #3 `dd87ef0` (provenance-only: both blob hashes verified
+    inside the frozen execution recorded on the record, blob `2764c41e…`), freeze #4 `8a1b5ab` (wording /
+    argmax-vs-edge recording / β-sensitivity addition — analysis and output only, all headline numbers
+    bit-identical to the base freeze, blob `222b606e…`). Pre-freeze verification caught two real defects
+    before any official run: Python `max()` silently swallows `NaN` into a false `0.0` node-agreement
+    (quadrature finiteness guards now abort the run), and numpy `hermgauss(512)` returns non-finite weights in
+    this environment (the doubling check is the battery's own validated `128 → 256` chain, agreement measured
+    `1.1–2.2e-16`; any future node count beyond 256 must re-pass those finiteness guards). The amended
+    record's audit trail lists the full blob chain with its writer-only/provenance-only designations, and
+    records that the battery run-3 positional-slot hazard does not apply here (calibrate.py never calls
+    battery's `_chk` recorder, grep-verified). **Official record** (first `199d30c`, amended `05f9a40`,
+    deterministic, reconfirmed bit-identical across repeated executions): objective
+    `f(γ) = L_baseline_unpen − L_extended_unpen`, both unpenalized IRLS families refit against the same
+    support-conditioned population (GH-256, `τ = √2`, row weights `w_k·π_c` battery production sets). Results
+    per row — `γ\*(δ\*)` = `6.483284` (a-hist), `6.911072` (a-50:50), `5.256996` (c-hist), `6.263395` (c-50:
+    50) with achieved `|f − δ\*| ≤ 1.8e-12` against the Rev F `1e-4` tolerance; MC cross-check gaps
+    `3.4–3.8e-6 ≤ 5·SE`; per-row `β_pop` (A2.3 truth-marginalized, pooled within-stratum, `s_ref = 0.12703`) =
+    `0.12143 / 0.13037 / 0.10485 / 0.12132` (extended-fit sensitivity identical at float scale; the A2.3
+    average-derivative approximation `0.152–0.198` sits 1.5–2× higher, is a different estimand, and is NOT
+    used; none of the three variants falls below `0.10` on any row — per-row min flag recorded; `β_pop`
+    method-noise sensitivity (review addition): the achieved MC gap translated through `f'(γ\*)` (central
+    difference, `h = 0.05`) gives γ-displacement bounds `6.8e-4–9.0e-4` and `|Δβ| ≤ 5.5e-6–6.7e-6`, hundreds
+    of times below even the tightest anchor margin); `c*_prov = (1.25/β_pop)²` =
+    `105.97 / 91.94 / 142.12 / 106.16` — all below the anchor `c*_ref = 156.25` (ratios `0.588–0.910`), all
+    between the NC1 grid points `39.0625` / `156.25` → "no NC1 row (grid mismatch)" (no tuning toward the
+    anchor was performed; anchor percentages are descriptive only, never effect sizes or evidence about
+    natural solvers). **2δ\* = `0.0405465108` is NOT ATTAINED within the declared peak-search domain on any
+    row (domain-relative wording per GPT's accepted disposition, replacing the earlier over-claim):** the
+    actual σ=1 objective is single-peaked on the frozen scan with maxima `3.0671e-2` (γ `10.978`), `2.9659e-2`
+    (`11.200`), `3.2429e-2` (`9.384`), `3.1400e-2` (`10.729`), margins over `8.118e-3` to `1.089e-2`,
+    MC-corroborated at the argmax (`gaps ≈ 1e-5`, `SE ≈ 3e-5`), GH agreement `1.1–2.2e-16`; every argmax lies
+    at least `20.80` inside the frozen coarse-scan edge (`γ = 32`, extend cap `64`) with the curve falling at
+    the edge (`f(edge) = 3.77e-4–7.37e-4 ≪ peak`), and the verdict rests on single-peak scan behavior, not a
+    proof of global maximality. Oracle-Delta context at γ\* (**R2**, diagnostic only — A2.2 target
+    selection): `2.029–2.029e-2 ≈ δ\* + 2e-5` (the extended-family misfit slot is small). **Root audit and
+    retained requirement (Analysis A, 2026-10-19; owner decision Foued, relayed by GPT/):** the `2δ*` power
+    requirement is **retained** — neither `δ*`, the target, nor the 80% criterion is lowered; under the
+    selected R1 target the peak shortfall on every row is a **target-reachability limitation of the current
+    proposed generator over its declared search domain**, not a Phase-1 power failure (Phase 1 has not run;
+    no pass/fail claim). The calibrated γ\*(δ\*) is the first (rising-branch) crossing per A2.2; the
+    descending-branch crossing of `Δ_R1(γ) = δ*` exists on the frozen scan and is recorded here as a
+    diagnostic only: γ_desc = `16.486894` / `16.334939` / `15.117656` / `16.245378` (a-hist / a-50:50 /
+    c-hist / c-50:50), bracket `[γ_peak, 32.0]`, γ-tolerance `1e-9`, achieved `|f − δ*| ≤ 9.2e-13`; the
+    two roots are distinct and no global uniqueness is claimed. Interpretation gate:
+    `β_pop > β_min = 0.10` on every row (mapped
+    thresholds WEAKER than heuristically anchored paper-critique); all values PROVISIONAL / NOT A
+    COMPLETE-RULE ESTIMATE over a bucket-local-proxy population; scenario (b) NOT DEFINED; NC2 / Phase 1 /
+    solver generation / hidden-outcome collection / spending / master merge remain unauthorized.
+
+19. **Owner target selection and bounded root audit (Foued 2026-10-19, relayed by GPT/; recorded under the
+    2026-10-19 work order).** (a) **R1 selected** as the bridge's primary population target — the
+    population-limit model-family gain, defined in A2.2 with its root convention; recorded as the owner's
+    **selected interpretation** of the target deferred by Rev F:270, not as a definition mandated by
+    Revision F. (b) **R2** (the `delta_of` oracle-KL quantity) is retained only as a separately reported
+    diagnostic; it is neither substituted for R1 nor treated as equivalent to it. (c) The **`2δ*` power
+    requirement is retained unchanged**; the reported peak below `2δ*` on every row is a **declared-domain
+    reachability limitation of the current proposed generator** — not a Phase-1 power failure, and no
+    Phase-1 pass/fail claim is made (Phase 1 has not run). (d) **Root convention and audit (A2.2; item 18):**
+    the calibrated γ\*(δ\*) is the first rising-branch crossing; the descending-branch crossing of the same
+    equation exists on the frozen scan and is recorded per row in item 18 as a diagnostic only; no global
+    uniqueness is claimed. (e) **`β_min = 0.10` and the `c*` mapping remain PROVISIONAL:** no `θ1` /
+    random-effect-variance / weighting / normalization sensitivity analyses have been conducted, the
+    threshold's scientific justification is still not documented, and numerical calibration precision does
+    not validate the threshold or its interpretation. (f) **Scope executed:** Analysis A used the frozen
+    calibration machinery read-only; focused draft edits only; **no commit, no push, no solver experiment**.
+
+### 0.3 Decision-package integration (Foued 2026-10-19, relayed by GPT/): G6b, §5A and O3
+
+(Second 2026-10-19 work order; bounded deterministic analysis only.) Current work order (Foued, 2026-10-19,
+relayed by GPT/): resolve G6, §5A and O3 and record the results in the draft. Scope executed: document reads,
+read-only design/linear-algebra analysis of the §5A alternatives, the O3 floor trace and arithmetic, and
+focused draft edits. No Phase 1 execution, no G6b run, no outcome simulation, no sensitivity sweeps, no
+changes to thresholds, DGP, support rule, model, weightsets, `2δ*` or frozen machinery, no commit and no
+push. All items below are **proposed resolutions with recorded evidence — none is adopted by this draft**;
+the reserved approvals (reviewer sign-off, owner decisions) remain with their holders.
+
+(a) **G6b recorded as the intended scientific objective (target selection only; not execution permission).**
+The intended inference target is G6b, the unconditional full-pipeline target of Rev F:239 (each of the
+`B = 2000` replicates re-draws the 75/25 split and refits both models). This is a target selection, not an
+authorization: Phase 1 simulation, G6b execution, solver generation and hidden-outcome collection all remain
+unauthorized. The item-19 distinctions stand unchanged: R1 remains the bridge's primary population target;
+R2 remains a diagnostic only; neither is substituted for the other or for the G6b procedure target. **The
+calibration relationship is stated, not assumed:** the procedure-level expected gain decomposes as
+`E[Δ_proc] = Δ_R1 + ε_B − ε_E`, with `ε_B, ε_E` the expected excess risks of the fitted baseline/extended
+models relative to their population limits (no ordering established; the earlier `≤ Δ_R1` bound was withdrawn
+by the corrected scientific disposition and is not used anywhere). The calibrated `γ*` therefore does **not**
+equal the G6b target. Under the selected target the calibration must be either (i) recalibrated to the
+full-procedure target — with method, bisection tolerance, seed and Monte Carlo size frozen before Phase 1 —
+or (ii) restated as an oracle-effect stress test with every claim that its FPR/power results validate the
+predictive estimand removed (Rev F:270). Until then no FPR/power result may be read as validating the
+predictive estimand. Retained unchanged: FPR ≤ 5% at `Δ = 0` (directional); 80% power at `2δ*` in scenario
+(a) at `N_b = 120, N_s = 40`; power at `δ*` reported, not gated; neither `δ*` nor the target is lowered; the
+item-19(c) reachability limitation of the current proposed generator over its declared search domain stands
+as recorded.
+
+(b) **§5A recommended resolution: M2 (κ_eff diagnostic on the estimable subspace), conditional on
+reviewer sign-off on the exact mathematics plus owner acceptance as a gate-semantics change.** M2 removes
+the immediate structural objection posed by the conventional rank-based condition-number gate; it does
+**not** yet establish adequate complete-rule support or interval validity (item (e)). Tested in the
+work-order order (M2 first, then M1, then M3) against the five criteria: scientific question preserved;
+contrast identifiable; the as-drafted `P(pass) = 0` resolved without silently excluding the effect; gate
+coherent with the G6b target and its uncertainty procedure; consequences explicit.
+
+- **Precise estimand statement (M2).** Nothing changes in the models, the design matrices or the §1
+  estimand: Δ remains the expected held-out log-loss difference of the raw committed RCS baseline vs the same
+  baseline plus `C` (`study/models.py:17-34,61-80`), and its uncertainty procedure remains the §7 two-way
+  cluster bootstrap. `κ_eff` is a diagnostic on the unweighted column-standardized extended matrix
+  (standardization as in the rank check: intercept as-is, non-intercept columns centered/scaled; Rev F:179,
+  194–195); it gates the unweighted proxy only, does not enter fitting, and does not redefine the estimand as
+  a coefficient contrast. Unidentified directions remain silently ridge-regularized; the interval covers
+  estimable contrasts only.
+
+- **Identifiability evidence (verified numerically in this work order).** The Rev F:173 lemma holds on every
+  evaluated admissible pattern: conditions 3–4 force within-`k` C variation, hence
+  `rank(extended) − rank(baseline) = +1` in every evaluated scenario ((a)/(c): rank 3 vs 2; (b): 4 vs 3).
+  The raw extended null space has dimension 3 ((a)/(c)) and 2 ((b)); **every null-basis vector has
+  C-component ≤ 3e-16** — the `C` column is linearly independent of the `k`-basis, so the `C` coefficient is
+  not in the null space and the within-`k` concentration contrast is identified. Predictions at test rows
+  with trained `k` are exactly invariant to the null space (row·v = 0 at k = 5, 10, 20); test rows at
+  untrained `k` are not (`|row·v|` = 1.99e-2 at k = 8 in (a); 3.59e-3 in (b); 0.181 at k = 20 in (a)) — the
+  untrained-`k` question is the N2 policy item (c), not an identifiability failure of the trained-`k`
+  contrast.
+
+- **Conditioning evidence (exhaustive deterministic sweep over admissible C-composition patterns).**
+  Attainable levels exactly as Rev F:287; conditions 1–4 enforced (observed extremes ≥ 4 bodies each).
+  Scenario (a)/(c) (k ∈ {5,10}): κ_eff ∈ [2.00, 13.40] across all 299,347 enumerated patterns at bucket
+  sizes (8,8), (10,10), (12,12), (16,16); the `κ_eff ≤ 30` clause never binds. Scenario (b) (k ∈ {5,10,20}):
+  κ_eff up to 36.09 at (8,8,8) with 1.67% of patterns above 30; up to 37.12 at (12,12,8) with 0.16% above
+  30; up to 39.84 at (8,8,12) with 3.33% above 30 — the clause binds for a small unweighted fraction of
+  admissible patterns. τ = 1e-9 in the sweep; `r` equals the structural rank in every pattern, so the
+  reading is insensitive to any τ between numerical noise and the smallest true singular value. Structural
+  reading: in (b), admissible patterns whose C distributions nearly coincide across buckets make `C` nearly
+  a function of `k` — exactly what a conditioning clause is meant to detect. Exact
+  Dirichlet-multinomial-weighted pass fractions are part of the §11.14 recalculation (item (e)).
+
+- **M1 — evaluated, not selected (retained as fallback only if M2 sign-off is withheld).** Conventional κ is
+  finite and small (1.496 demo (a); 1.785 demo (b)); M1 resolves the contradiction. But at two `k` values
+  `span{1, x}` equals the RCS baseline span exactly (residuals ≤ 7e-16 each way): in (a)/(c) M1 is
+  prediction-identical to the current baseline up to ridge parameterization, while at three `k` values (b) it
+  restricts the baseline (RCS ⊄ span{1, x}: residual 1.97e-2). It therefore changes the baseline model family
+  ("beyond a linear-in-log-count baseline") in the same scenario where the grid's gated cell sits — a model
+  change requiring owner approval and full re-verification of §9.1/Phase-1 artifacts. **Misspecification
+  assessment (qualified):** the declared DGP's conditional log-odds contain the linear term in
+  `x = log(1+k)` (`battery.py:43-44,69-70`), but after averaging over `C` and integrating the body/suite
+  random effects the **marginal** probability need not remain logistic-linear in `x`; "correctly specified
+  in mean" is therefore NOT established and must not be used to support M1. The two-`k`-value case is a
+  support-saturation fact (span equality at two points), not general evidence of correct specification; at
+  three `k` values, correctness of the marginal mean would need its own justification. The change remains a
+  scientific baseline-form decision (and a finite-sample estimator change), not a free condensation of the
+  RCS form.
+
+- **M3 — evaluated, fallback only with the changed interpretation accepted; not equivalent to "beyond exact
+  count."** At the current grids M3's column space is identical to M2's extended column space (dummy columns
+  lie in the baseline span; the baseline lies in the M3 span; residuals ≤ 1.4e-15; ranks equal — 3 in (a),
+  4 in (b)). Remaining differences: the ridge parameterization (ridge is not reparameterization-invariant),
+  the open dummies-ridge sub-decision (Rev F:185), the estimand wording ("beyond bucket means", not "beyond
+  a smooth `k` function"), and a full implementation rewrite plus re-verification. At other `k` grids the two
+  diverge; M3 is not a general equivalent of M2.
+
+- **Coherence with G6b.** The gate stays outcome-blind and is applied per replication and per realized
+  training block (Rev F §5B); the interval is computed conditional on feasible replications (O3 rule, item
+  (d)); under G6b the per-replication gate-pass probability is the binding object (item (f)). If the M2
+  mathematics is not signed off, §5A reopens — nothing is adopted by this draft.
+
+(c) **Companion item — untrained-`k` test cells (N2) remain an owner decision coordinated with O2.** None of
+the M-options makes untrained-`k` scoring identified: under M1/M2 it is extrapolation whose value depends on
+the ridge representative of the null directions; under M3 an untrained bucket's dummy is unestimable. The
+P-i (split INFEASIBLE if any eligible test body is untrained) versus P-ii (narrower evaluation population)
+selection must be coordinated with O2 and fixed before freeze; scores across M-options must use the same
+evaluation cases; no silent extrapolation.
+
+(d) **O3 proposed rule (floor traced, not invented).** Quantity: the number of feasible (gate-passing,
+estimable) replications in each interval-designated cell. **Minimum realized eligible sample size:**
+`f_min = 39` is the minimum number of realized eligible replications at which the specified one-sided 95%
+Clopper–Pearson coverage lower bound can reach 92.5%, assuming all eligible outcomes succeed: with all f
+replications covering, the bound equals `0.05^(1/f)`; f = 38 gives 0.924192 < 0.925 and f = 39 gives
+0.926062 ≥ 0.925. Below a realized count of 39 the coverage criterion is unattainable irrespective of
+outcomes. (Same arithmetic at other targets, recorded not adopted: 90% → 29; 95% → 59.) **Planning rule —
+expected counts only:** `39/2000 = 0.0195` is an expected-count threshold (`E[eligible] ≥ 39` per
+interval-designated cell), not a guarantee that at least 39 realized eligible replications will be
+available; a planning rule based on expected counts must not be confused with a rule guaranteeing an
+evaluable realized sample. Confirmation that a cell meets the planning threshold requires a valid lower
+bound on `E[eligible]` (or the exact complete-rule probability calculation); an upper bound on
+`E[eligible]` can only rule a cell out (bound < 39) or leave it undetermined (bound ≥ 39). **Disposition:**
+a cell whose realized eligible sample is below the floor, or that is ruled out under the planning rule,
+is NOT EVALUABLE — it never passes by default and is never silently converted to a
+characterization-only cell; if a required interval-performance cell is not evaluable, the overall interval
+assessment is INCOMPLETE (each cell reported with its `P(feasible)`) and authorizes nothing further.
+Scenario (d) has structural-zero support as a mathematical fact and is gate-characterization-only by
+construction (correct-infeasible-decision rates), never interval-evaluable. The FPR and power items are
+evaluated on the same feasible set with the same floor. No post-hoc conversion or re-anchoring; any
+grid/sample-size re-anchoring is O1 and must be frozen before Phase 1. This adopts the disposition text
+already drafted as a proposal at Rev F:259,272 — the number 39 is its missing floor.
+
+(e) **Complete-rule consequence and remaining blocker.** With M2 the as-drafted `P(pass) = 0` contradiction
+(Rev F:175) is removed in principle — but only as an algebraic impossibility. M2 has not established that
+the complete-rule support is adequate, that the required probability is positive at any particular cell
+size, or that the resulting interval procedure is valid: **the exact complete-rule support probability
+remains unrecalculated, and §5A/O3 and the GO condition therefore remain unresolved.** The complete rule
+becomes conditions 1–4 ∧ rank-increase (implied by conditions 3–4) ∧ `κ_eff ≤ 30` (non-binding for (a)/(c)
+at the swept sizes; slightly binding for (b)); admissible-pattern existence under the design analysis is
+not the same as a verified positive probability under the full generating distribution. Item (f) uses only
+the dominating upper bound `P(complete) ≤ P(bucket-local) = §9.2 F_bl`. The exact recalculation (Rev F
+§11.14) has **not** been performed: it requires the Dirichlet-multinomial-weighted pass fraction over
+C-composition patterns under the adopted rule. The exact composition machinery exists in-repo for the
+bucket-local part (`v03p/a1/a1_support_comparison.py:61-66`); the §9.2 provenance scripts (`feas_prob.py`,
+`feas_check.py`) are not present in the repository, so the recalculation is a required pre-freeze
+deliverable with its own work order and provenance record.
+
+(f) **O3 × grid × G6b: consequence for GO (no new data used).** `E[eligible] ≤ 2000 × F_bl` (§9.2
+bucket-local table; upper bounds on the expected eligible count, before the complete-rule filters of item
+(e)) gives at the drafted sizes: (a)@120 ≤ 3.09 (also ≤ 0.012 at 60, ≤ 2.23 at 113, ≤ 8.56 at 150). Because
+every §5A resolution leaves the complete rule no less restrictive than conditions 1–4, its probability
+cannot exceed the bucket-local upper bound, so the expected eligible count at these sizes cannot reach 39
+under any §5A option. **The drafted gated power cell (scenario (a), `N_b = 120, N_s = 40`) is therefore
+ruled out under the expected-count planning rule of item (d).** For the other sizes the upper bounds are
+(a)@240 43.76, @300 79.07, @400 121.10, @450 127.03, @600 113.66; (b)@450 39.46, @600 74.84; (c)@600
+40.89. An upper bound at or above 39 merely fails to rule out meeting an expected-count floor of 39 — it
+does **not** establish that the design meets it: no size is claimed to pass without a valid lower bound or
+the required complete-rule probability calculation. Consequence for the §7 GO row: "complete-rule support
+is nonzero and adequate" and "the design is evaluable at the approved budget" are currently NOT MET at the
+drafted grid. GO remains blocked: under the proposed O3 expected-count planning rule, the required (a)@120
+cell is ruled out because `E[N_eligible] ≤ 3.09 < 39`; this does not establish that 39 realized eligible
+replications are probabilistically impossible. O3 rule adoption and the exact complete-rule support
+probability remain unresolved, and any O1 coordinated re-anchoring would need a size whose expected
+eligible count is demonstrated — by a valid lower bound or the exact recalculation — to sustain the
+planning threshold, with the minimum realized eligible sample of item (d) still binding. No grid change is
+proposed or adopted here.
+
+(g) **Exact work required before the GO condition can be evaluated (ordered).** (1) Reviewer sign-off on the
+M2 mathematics + owner acceptance of the gate-semantics change (item (b)). (2) N2/O2 coordinated
+split-eligibility resolution (item (c)). (3) Exact complete-rule recalculation under the adopted rule,
+including per-split training checks (§11 item 14; item (e)). (4) O1–O5 coordinated resolution including
+adoption of the O3 floor rule (item (d)) and any grid re-anchoring, all frozen before Phase 1. (5) G6b
+calibration: `γ*` recalibrated to the full-procedure target or the stress-test restatement, with method,
+seed and Monte Carlo size recorded at the freeze (item (a)). (6) Interval-procedure coverage validation on
+feasible replications (§9 coverage gate). (7) Remaining owner entries: budget ceiling — which under G6b must
+reflect the per-replicate refit economy (the 2026-10-19 timing-only tests are provisional planning evidence,
+not a budget entry) — the `δ*`-power gating decision, DGP acceptance, suite counts, confirmatory-procedure
+choice, ALTERNATIVE fallback and PILOT-DECIDES election (§7 list). (8) Simulation-protocol freeze (Rev F §11
+Stage 1) plus the separate owner authorization for Phase 1.
+
+(h) **Status and boundary.** This section records a proposed resolution package (recommendations + bounded
+deterministic evidence), not an adopted result and not a Phase-1 outcome. Executed analysis scope:
+design-matrix and linear-algebra checks only (no outcomes, no Monte Carlo, no generation), enumerated from
+the exact attainable C levels of Rev F:287; the analysis script and JSON record are kept outside the
+repository (temp paths and SHA-256 hashes recorded in the work-order return; script
+`g6b_5a_m2o3_analysis_20261019.py`; record `g6b_5a_m2o3_analysis_20261019.json`). `β_min = 0.10` and the
+`c*` mapping remain PROVISIONAL (item 19e); the R1 reachability limitation (item 19c) stands unchanged; NC1
+stays closed; NC2, Phase 1, solver generation, hidden-outcome collection, spending and master merge stay
+unauthorized. Focused correction pass (2026-10-19, GPT/ review of this package, no new computations): O3
+floor interpretation (minimum realized eligible sample vs expected-count planning threshold), grid reading
+(upper bounds rule out or leave undetermined; they do not confirm), the explicit complete-rule-unresolved
+status, and the M1 marginal-mean qualification — recorded in items (b)–(f). Only this VDraft was edited for
+this work order; no commit, no push.
+
+## 1. Recommendation in brief
+
+Accept the goal framing. The primary question remains:
+
+> Does the concentration of a solver's diagnostic failures, `C`, predict correctness on unseen inputs beyond
+> the total failure count, `k`, for naturally generated solver bodies?
+
+The natural-solver predictive study should remain the primary route. An engineered mechanistic study is a
+possible alternative or validation route if the natural population cannot provide enough identifiable support
+at an acceptable cost. The two routes answer related but different questions; evidence for one must not be
+presented as evidence for the other.
+
+Before choosing a route, complete the target-translation report that relates the already chosen
+predictive-score target (`δ*`) to the mechanistic signal parameter (`β_min`) used by the `c*` heuristic. Treat
+the approximation in §4 as a sanity check, not as the final conversion. The report derives `β_min` through the
+declared procedure of §5; the submission to its owner is the derived value, not a re-opened candidate menu.
+
+Do **not** redefine NC2 as the v0.3 Phase 1 power simulation. The existing `c*`-heuristic question and the
+v0.3 predictive-procedure validation are separate work products unless the owner explicitly merges them in a
+revised protocol. Phase 1 of v0.3 also remains blocked by unresolved design decisions in Revision F, including
+the §5A conditioning contradiction.
+
+## 2. Terms that must not be conflated
+
+| Symbol  | Meaning in this plan                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | What it is not                                                                                                                                                                                           |
+|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `k`     | Total number of diagnostic probe failures                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | A measure of where failures occur                                                                                                                                                                        |
+| `C`     | Largest family's share of failures; a concentration statistic (Rev F §1: `C = max_j f_j / k`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | The mechanistic variance-like quantity `c` calculated in NC1                                                                                                                                             |
+| `Δ`     | Held-out predictive log-loss improvement: baseline (`k`) minus extended (`k, C`) (Rev F §1 estimand; oracle form = §1 estimand evaluated on DGP truth)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | The mechanistic slope or a threshold-crossing probability                                                                                                                                                |
+| `δ*`    | Existing proposed minimum meaningful predictive gain, `ln(1.5)/20 = 0.020273255405408218` nats per hidden input (owner decision C, Rev F:121)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | A slope on the correctness-probability scale                                                                                                                                                             |
+| `γ`     | Coefficient on raw `C` in Revision F's proposed logit outcome generator, `logit(p) = θ0 + θ1 log(1+k) + γC + u + v` (Rev F:291)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | The same parameter as `β_min` without a specified transformation                                                                                                                                         |
+| `β_min` | The minimum-signal parameter of the mechanistic `c*` heuristic, **in the fixed M3 reference unit `s_ref = 0.12703 exactly`** (engine, `v03p/nc1/nc1_calc.py:19`). The engine anchors fix `s_ref` and the construction of `c`; they do **not** by themselves fix the exact statistical functional of `β_min`. The reading carried here — "the per-body probability-scale change in correctness rate attributable to one unit of the dimensionless normalized channel `x_M3 = (C_i − C̄_{k(i)})/s_ref`, i.e. to a raw within-bucket departure of size `s_ref = 0.12703` (the `s_ref`-normalized within-bucket departure used in the `c` construction; symbol disambiguation below)" — is a **provisional working interpretation inferred from the engine normalization**, not the binding M3 definition; with the texts committed (as-found, unfrozen), the bridge's population functional is **`β_pop`** (A2.3 — the population counterpart of M3's primary slope scale under Revision F's generator, per the confirmed F5-default disposition), carried under the label **PROVISIONAL (source-committed as-found, unfrozen)** (§2.1; source record §8) | `Δ`, `δ*`, or the logit coefficient `γ`; nor "a slope per one within-`k` SD of `C`" — that variant substitutes a scenario-dependent SD for the fixed reference unit (Revision 1 wording, corrected here) |
+| `c`     | NC1 gate statistic (engine, `nc1_calc.py:17-21`): `c = (δ_5²·X_5/t_5 + δ_10²·X_10/t_10)/s_ref²` with `X_k = Σ_{i<j}(g_i−g_j)²`; algebraically, over a realized train block, `c = (t_5·V̂ar₅^{(t)}(C) + t_10·V̂ar₁₀^{(t)}(C))/s_ref² = Σ_i x_{M3,i}²`, where `x_{M3,i} = (C_i − C̄_{k(i)})/s_ref` is the `s_ref`-normalized within-bucket departure and `V̂ar_k^{(t)}` the realized `t`-denominator within-bucket variance (variance-notation rule, A3) — a **body-count-scaled sum of squared dimensionless, `s_ref`-normalized departures**, not a per-body variance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | A directly measured estimate of predictive gain or statistical power                                                                                                                                     |
+| `c*`    | Mechanistic threshold `c* = (1.25/β_min)²` under the M3 addendum's stated construction (`σ_max·z_req = 1.25`; `nc1_calc.py:25-26`). The worked constants (39.0625 / 156.25 / 625) remain **illustrative, not frozen** — M3's own text marks them "not acceptable for freeze" pending its §9 cycle; the §9 dispositions are recorded (source record §8) without freezing the M3 text                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | A directly measured estimate of predictive gain or statistical power                                                                                                                                     |
+
+**Namespace footnote:** In Revision F §5A, `M1/M2/M3` denote candidate resolutions of the conditioning (κ)
+rule for the fitted-model gate. In `v03p/nc1/RUN.txt` and the NC1 verification battery, `M1/M2/M3` denote
+engine mutation tests. These namespaces are unrelated; this document uses `M1/M2/M3` only for the Revision F
+conditioning candidates.
+
+**Symbol disambiguation (Correction A, GPT review of this revision):** Revision F's outcome-model predictor is
+`x_RCS = log(1+k)` (the `θ1·log(1+k)` term, Rev F:291). The M3 mechanistic channel is a distinct quantity: the
+per-body **dimensionless** `s_ref`-normalized within-bucket departure `x_{M3,i} = (C_i − C̄_{k(i)})/s_ref`
+(one full unit of `x_M3` corresponds to a raw within-bucket departure of size `s_ref = 0.12703`; `s_ref` is
+divided into the raw departure exactly once, so `x_M3` carries no further `s_ref` scaling). `β_min`'s slope
+attaches to `x_M3` (provisional working interpretation; the bridge functional is `β_pop` per A2.3, §2.1); it
+must never be mapped to `x_RCS` in any implementation or interpretation — a slope attached to the wrong
+predictor would pass every otherwise-plausible sanity check.
+
+### 2.1 Source precondition for `β_min` (controlling definitions)
+
+**What was missing, and its resolution (owner order, 2026-10-18).** The controlling texts — "engine spec v1
+section 2" and "M3 addendum Rev d" — were, at Revision 2 time, neither checked into the repository nor
+available verbatim in the active conversation, and the implementation order (item 3 / close-out) forbade
+paraphrasing missing controlling text as if it had been retrieved. Under Foued's explicit order of 2026-10-18,
+the two files have since been preserved **byte-exact at `v03p/source/` — as found and not frozen** (full
+SHA-256 hashes, sizes, and last-write times in the source record's §7 provenance addendum): the engine file's
+copy matches its previously recorded hash exactly; the M3 addendum is recorded as-found, no earlier recorded
+hash existing. Reviewer verification of the committed texts (checklist below) and establishment of the exact
+`γ ↔ β_min` functional remain the decisive open items.
+
+**What is preserved verbatim (in-repo anchoring, complete quotation).** From `v03p/nc1/nc1_calc.py` lines
+14–26 at commits `4551cacb`/`906dd351` (file SHA-256
+`c23639b85877161ad97186a6a088655ca7c1cce524aaf0b55464f1653725859d`, rev 3):
+
+```
+Definitions (engine spec v1 section 2, M3 addendum Rev d, A1 rev 3):
+  C levels: k=5 -> {0.2,0.4,0.6,0.8,1.0}; k=10 -> {0.2,0.3,0.4,0.5}
+  integer labels g = C/delta_k: k=5 g in 1..5; k=10 g in 2..5
+  X_k = t_k * sum_i n_i g_i^2 - (sum_i n_i g_i)^2 = sum_{i<j} (g_i-g_j)^2
+  c = (delta_5^2 * X5/t5 + delta_10^2 * X10/t10) / s_ref^2,
+      delta_5^2 = 0.04, delta_10^2 = 0.01, s_ref = 0.12703 exactly
+      => s_ref^2 = 161366209/1e10 ; every c>=tau comparison is done in
+      exact integer arithmetic (see pooled_R0 / ssfloor_x).
+  Engine-spec anchors reproduced as checks:
+      c_floor(t) = delta^2 (t-1)/t / s_ref^2   (min nonzero c at size t)
+      c_ceil(t)  = R_k^2 floor(t^2/4)/t / s_ref^2
+  c* exact values (M3 addendum): c* = (1.25/beta)^2, sigma_max*z_req = 1.25:
+      beta .20 -> 625/16 = 39.0625; .10 -> 156.25; .05 -> 625.00
+```
+
+Supporting code anchors (same file): `SREF2_NUM = 161366209  # s_ref^2 = SREF2_NUM / 1e10  (0.12703^2, exact)`
+(line 103), `DELTA2 = {5: 0.04, 10: 0.01}` (line 106), `CSTAR = (39.0625, 156.25, 625.0)` (line 110),
+`SCENS = ("a-hist", "a-50:50", "c-hist", "c-50:50")` (line 96).
+
+**Consequence (updated 2026-10-18, second pass).** The source-hygiene dependency is closed by the
+owner-ordered byte-exact preservation (above; `v03p/source/`), and the mapping functional is now specified:
+the bridge target is **`β_pop`** (A2.3) — the population counterpart of M3's primary stratified slope
+statistic under Revision F's declared generator — with the average derivative retained strictly as a labeled
+approximation. The mapping remains **PROVISIONAL (source-committed as-found, unfrozen)**: the preserved texts
+are as-found and not frozen, and that status must stay visibly provisional on every affected row (GPT/). The
+numerical bridge computation is owner-authorized (Foued, 2026-10-18; source record §8) and runs in the ordered
+sequence of A2 after this specification commit; it had not run as of this commit.
+
+**Exactly what the source must pin** (mechanical checklist for reviewer verification of the committed
+`v03p/source/` copies, per A2.3):
+
+1. The exact mechanistic channel relative to which `β_min` is measured — its relation to the per-body
+   within-bucket departure `(C_i − C̄_k)` used in the `c` construction (in `s_ref`-normalized units per the
+   engine excerpts; denoted `x_{M3,i}` in this document). **Verified in the committed source**
+   (`r = (I−P_D)C`, `x = r/s_ref`, fixed `s_ref = 0.12703`).
+2. The exact marginal/population functional prescribing `β_min`: the averaging population, whether the slope
+   is a local derivative `γ·p(1−p)` under the declared logistic model or a finite-difference of a population
+   mean, and whether it is evaluated at the null baseline `γ = 0` or at the calibrated effect `γ = γ*`.
+   **Refined 2026-10-18 (GPT/CLAUDE):** the slope is a **linear-projection** functional — M3's stratified
+   within-`k` centered covariance-over-variance statistic — evaluated at the calibrated effect `γ = γ*`; the
+   average derivative need not equal it for the discrete grid-level channel `x_M3`, so the bridge target is
+   `β_pop` (A2.3) and the derivative is retained as a labeled approximation only.
+3. The roles of `σ_max` and `z_req` in `σ_max·z_req = 1.25` and their relation to `β_min` (how the fixed
+   factor `1.25` is assembled). Their roles are recorded in the committed text; the scientific interpretation
+   of `z_req` is **owner-disposed 2026-10-18 (F5 default)**: a pure effect-magnitude factor, no standalone
+   power guarantee (source record §8; §9 note below).
+4. Any sign/scale conventions linking `γ·C` (Revision F outcome model) and `β_min·x_M3` (M3 mechanistic
+   channel) — with the disambiguation that the slope attaches to `x_M3`, the `s_ref`-normalized within-bucket
+   departure, and never to Revision F's `x_RCS = log(1+k)` — including how suite and body random effects enter
+   the definition, if at all. **Partially resolved 2026-10-18:** the scale is per reference SD (owner
+   disposition, source record §8), and the convention statement is pinned in A2.3 (`β_pop` from Revision F's
+   generator on `x_M3`, with suite/body random effects marginalized for `p̄`); the balance of the convention
+   defers to the M3 freeze.
+
+**Committed-source notes on M3 §9 (recorded 2026-10-18; GPT/ and CLAUDE/ reviews of `091041f`).**
+
+- M3's own text marks the worked `c*` constants (39.0625 / 156.25 / 625) **"not acceptable for freeze"** until
+  its §9 owner decisions are recorded; NC1's evaluated threshold grid therefore used illustrative constants,
+  not frozen thresholds.
+- M3 §9 item 1: `z_req` **by itself is not a power guarantee**.
+- M3 §9 item 4: the information argument is **linear**; a logistic M3 treatment would need a model-based
+  measure. Revision F's generator is logistic with random effects, so even a correct `β` mapping does not
+  automatically make `c*` calibrated under that generator (`σ_max = 0.5` errs conservative-side as a
+  worst-case bound on any correctness probability; magnitude unverified) — this is why the bridge reports the
+  gap from the heuristic (A2.3 step d).
+- **Owner disposition (F5 defaults confirmed as written by Foued, 2026-10-18; transcription in source record
+  §8):** β on the **per-reference-SD** scale (correctness-rate units per reference standard deviation of `C`);
+  `z_req` = pure effect-magnitude factor with power handled by calibration (declining any standalone power
+  reading); `σ_max = 0.5` confirmed as the worst-case bound; stratified exact permutation = M3's primary
+  estimator convention. The study's confirmatory-procedure choice (Revision F held-out log-loss comparison vs
+  scale- (i) permutation, §6/§8) is a separate, still-open owner blocker and is not settled by this
+  confirmation. The dispositions concern the contained open questions; the M3 source file itself remains
+  as-found and **unfrozen**.
+
+The companion document `v03p/VDRAFT_M3_SOURCE_DEPENDENCY_2026-10-18.md` records this dependency statement, the
+verbatim anchor provenance, the byte-exact preservation provenance of the committed `v03p/source/` copies (its
+§7), and the owner dispositions and bridge authorization of 2026-10-18 (its §8).
+
+## 3. What is already established, and what is not
+
+### Established design target
+
+The current v0.3-P Revision F draft records the owner's earlier choice `r = 1.5`, operationalized as:
+
+\[
+\delta^* = \frac{\ln (1.5)}{20} \approx 0.0202733
+\]
+
+This is the proposed minimum meaningful *held-out log-loss gain* for prioritizing candidates for an expensive
+confirmation slot. Revision F also explicitly warns that `exp(20Δ)` is a multiplicative score contrast under
+the additive scoring interpretation, not a literal joint-vector likelihood ratio (Rev F:121). This target is
+not a value of `β_min`.
+
+### Established NC1 evaluation grid
+
+Under the current heuristic, the values evaluated in NC1 are:
+
+| `β_min` supplied to heuristic | `c* = (1.25/β_min)²` |
+|------------------------------:|---------------------:|
+|                          0.20 |              39.0625 |
+|                          0.10 |               156.25 |
+|                          0.05 |                  625 |
+
+These three rows are NC1's **evaluation grid** (`CSTAR`, `nc1_calc.py:110`), not the study's design choice:
+the study's design value is `β_min`, derived by the bridge (§5) — per the owner order, not selected from this
+grid. NC1 has been technically validated and its validation loop is closed (`v03p/nc1/RUN.txt` through M1b,
+commit `4551cac`). Its threshold probabilities are conditional on the declared scenario distributions and
+gates at the engine's two-bucket construction over scenarios `("a-hist", "a-50:50", "c-hist", "c-50:50")`
+(`nc1_calc.py:96`) — notably, **no (b)-family scenario was evaluated by NC1** (see A3 scope note). They do not
+establish the distribution of real natural solvers, nor do they constitute power estimates for the v0.3
+predictive procedure.
+
+### Still unknown
+
+The value of `β_min` corresponding to `δ*` across the declared baseline probabilities and within-`k` spreads
+of `C` — derivable through the §5 procedure once the source precondition of §2.1 is met, and provisionally
+expressible under the labeled candidate mapping of A2.3 in the meantime. A single approximate value cannot be
+assumed to apply across all scenario families.
+
+## 4. Preliminary bridge: approximation only
+
+For a probability-scale slope `β_min` under the provisional working interpretation of §2 (per one unit of the
+dimensionless mechanistic channel `x_M3`, equivalently a raw within-bucket departure of size `s_ref`), a
+centered predictor in `x_M3` units with supported-population second moment `Var(x_M3)` — the plain variance of
+the dimensionless normalized channel, computed under the row's declared support/composition rule
+(variance-notation rule in A3) — and a baseline correctness probability near `p`, a small-effect approximation
+for the population log-score gain is:
+
+\[
+\Delta_{\mathrm{oracle}} \approx
+\frac{\beta_{\min}^{2}\,\operatorname{Var} (x_{M3})}{2p (1-p)}.
+\]
+
+At `p ≈ 0.5` (i.e. `p(1−p) = 0.25`) and `Var(x_M3) = 1`, this becomes `Δ ≈ 2β_min²`. Substituting the existing
+`δ*` gives:
+
+\[
+\beta_{\min} \approx \sqrt{\delta^*/2} \approx 0.1007.
+\]
+
+**Unit discipline (Revision 2 correction).** `x_M3` is dimensionless by construction: each raw within-bucket
+departure is divided by the fixed constant `s_ref = 0.12703` exactly once, so `Var(x_M3)` is the plain
+supported-population variance of that normalized channel, computed under the row's declared
+support/composition rule — not a variance "in `s_ref²` units" (the `s_ref²` division has already been applied
+in forming `x_M3`; quoting it again would double-divide — the `s_ref²` factor belongs to the raw→`c` scaling
+in the `c` construction, A1.3) — not `Var(C)` measured in per-within-`k`-SD-of-`C` units, and not an
+unconditioned-DGP variance scaled by an expected bucket size (A1.3 DGP/realized distinction; A3
+variance-notation rule). The number `0.1007` is an illustrative approximation for the `Var(x_M3) = 1`,
+`p(1−p) = 0.25` slice only: it is neither a resolved translation of `δ*` into `β_min` nor a selected
+minimum-signal value, and it is not sheeted into any decision; the submission value comes from the A2
+procedure under the source-defined functional. The approximation can move with baseline probability, the
+`s_ref`-normalized spread of the supported population, the distribution of `k`, the support gate, and the
+nonlinear/random-effects outcome model. It is also a population-oracle approximation, not finite-sample power
+of the fitted procedure.
+
+## 5. Proposed work item A: target-translation report (deriving `β_min`)
+
+**Purpose:** Derive `β_min` from the existing predictive target `δ*` through the declared procedure below,
+replacing the retired candidate grid; and, where the source precondition of §2.1 is met, map the derived value
+to `c* = (1.25/β_min)²` and locate it on NC1's evaluation grid.
+
+### A1. Lock the definitions before calculating
+
+1. **Source precondition first.** The controlling M3 Rev d addendum and engine spec v1 §2 texts must be
+   present and reviewed as committed repository text (see §2.1 and the source document) before any `β_min`
+   value or `c*` mapping is treated as more than **PROVISIONAL (source-committed as-found, unfrozen)**. State
+   after the owner-ordered preservation of 2026-10-18 (Foued) and the same-day dispositions (source record
+   §8): both texts are preserved byte-exact at `v03p/source/` — **as found, not frozen** — the bridge
+   functional is specified as `β_pop` (A2.3), and the M3 §9 open items are owner-disposed per the confirmed F5
+   defaults; reviewer verification of the committed texts and the M3 freeze still gate any provisional→settled
+   transition.
+2. Keep `δ*`, the logit coefficient `γ`, the exact M3-defined `β_min`, and the mechanistic threshold `c*` as
+   four distinct quantities. Do not invent a conversion and do not call a candidate numeric value
+   authoritative.
+3. **Within-`k` variation: identification input, not a redefinition of `β_min`'s unit.** The scientific claim
+   is *incremental prediction beyond `k`*, and the identification channel is within-`k`: a `C` vector varying
+   within one `k`-slice is linearly independent of every `k`-function (Rev F:173), so Revision F's
+   rank-increase condition, §1's `Δ`, and the mechanistic gate statistic all draw on within-`k` variation.
+   `β_min`'s reference unit nevertheless remains the fixed `s_ref = 0.12703`. The spread enters the bridge as
+   inputs to the `c` construction — realized `V̂ar_k^{(t)}` quantities inside the realized identity below,
+   declared-DGP variances `σ_k²` where a row works at the population level (distinction below) — with the M3
+   bucket weighting and body-count scaling stated explicitly:
+    - buckets `k = 5` and `k = 10` only (the construction has no `k = 20` term; `nc1_calc.py:106-111`);
+    - each included bucket contributes its realized within-bucket mass: per-bucket
+      `δ_k²·X_k/t_k = Σ_{i∈bucket k}(C_i − C̄_k)² = t_k·V̂ar_k^{(t)}(C)` — an identity for the realized
+      bucket, where `V̂ar_k^{(t)}(C) = Σ_{i∈bucket k}(C_i − C̄_k)²/t_k` is the realized `t`-denominator
+      within-bucket variance;
+    - the offered mass of a realized train block is the `δ`-weighted sum normalized by the fixed
+      `s_ref² = 0.0161366209`: `c = (t_5·V̂ar₅^{(t)}(C) + t_10·V̂ar₁₀^{(t)}(C))/s_ref²` — algebraic
+      restatement of the engine's own in-repo definition (`nc1_calc.py:17-21`), including its body-count
+      scaling: doubling an included bucket's size doubles that bucket's contribution at fixed realized
+      within-bucket variance;
+    - **DGP variance vs realized variance (Correction B).** The declared-DGP within-`k` variance `σ_k²` — the
+      unconditioned variance of `C` under the declared DGP — is a distinct quantity from the realized
+      `V̂ar_k^{(t)}`: for i.i.d. draws from the unconditioned DGP at a fixed bucket size `t_k`,
+      `E[Σ_{i∈bucket k}(C_i − C̄_k)² | t_k] = (t_k − 1)·σ_k²`, not `t_k·σ_k²` (consistent with the engine's
+      own moment anchor `E[X | t] = t·(t−1)·Var_g`, `nc1_calc.py:389-391`). Support conditioning changes the
+      conditional moments again, and an empty bucket contributes zero to `c`. Consequently the offered mass
+      `E[c]` for every A3 row is computed **under that row's declared support/composition rule** (empty-bucket
+      zeros and support conditioning included), never as `(E[t₅]·σ₅² + E[t₁₀]·σ₁₀²)/s_ref²` or any variant
+      multiplying an expected bucket size by an unconditioned DGP variance. Specification rule only — no
+      computation is authorized now;
+    - the `C` values are the engine's grids (`k=5: {0.2,0.4,0.6,0.8,1.0}` with δ_5 = 0.2;
+      `k=10: {0.2,0.3,0.4,0.5}` with δ_10 = 0.1), which match Revision F's declared DGP exactly (Rev F:287);
+      attainable-value discreteness is handled by the declared uniformity `1/Z(k)` machinery.
+      If the controlling M3 text prescribes any different scale or weighting, that text governs; the
+      difference is documented here and requires reviewer/owner acceptance before adoption.
+4. Separate the population-oracle log-score contrast from the finite-sample score gain of the fitted analysis
+   procedure. Revision F itself says its proposed `γ*` calibration targets the former (Rev F:270, 364); Phase
+   1 would assess the latter.
+
+### A2. Calculate the bridge under declared cases
+
+For each declared outcome baseline and support/composition scenario, including the documented within-range
+alternatives where relevant:
+
+1. Use the declared Revision F outcome model as proposed: `logit(p) = θ0 + θ1·log(1+k) + γC + u + v`, with
+   `u ~ N(0, σ_b²)`, `v ~ N(0, σ_s²)`, soft label `s/20` per (body, suite), `s ~ Binomial(20, p)`; proposed
+   `θ0 = 0`, `θ1 = −1`, `σ_b = σ_s = 1` (Rev F:291). These parameters remain **PROPOSED, not validated** (Rev
+   F:362), inherit the recorded §9.1 upper-tail shortfall (Rev F:623), and require reviewer sign-off and owner
+   acceptance per Rev F §11; every row inherits that status.
+2. Calibrate `γ` (as `γ*`) to the population-oracle target `Δ = δ*` — and, as a sensitivity case matching Rev
+   F's grid, `Δ = 2δ*` — using Revision F's stated convention: bisection on `γ` with tolerance `10⁻⁴` on `Δ`,
+   a fixed calibration seed, and a recorded Monte Carlo size from DGP truth (Rev F:364). A deterministic
+   computation of `Δ(γ)` may substitute **only if** it is separately validated for the bridge's actual `Δ(γ)`
+   over the intended support population before use and the validation is documented here (a γ=0
+   tail-calculations agreement does not by itself validate the bridge's `Δ(γ)` path). Report the method, seed,
+   Monte Carlo/replication size, and attained tolerance per row.
+
+   **Pinned `Δ_oracle` construction (GPT/ review of `cd1ae15`; demanded before benchmark derivation and before
+   any γ* calibration).** The calibration target is Revision F's population-oracle contrast: Rev F §9.1 effect
+   calibration (`PHASE0_DESIGN_2026-10-15_RevF.md:270`) defines the planted effect as "the §1 estimand
+   evaluated on DGP truth at the planted `γ*`", and the §1 estimand (Rev F:101) is
+   `Δ = E[L(baseline) − L(extended)]` over the globally-supported population, equal weight per eligible test
+   cell, with per-input log-loss scoring of the soft-label outcome (Rev F:232). Pinned reading of "evaluated
+   on DGP truth": the **population-limit evaluation of the §7 fitted models** — the baseline (k-only: the
+   committed RCS basis of `log(1+k)`) and the extended `(k, C)` model are each replaced by their
+   infinite-training-limit fits to the DGP at the planted `γ*`, equivalently their log-loss-optimal in-family
+   projections of the true cell conditional (strictly proper scoring rule ⇒ the loss-optimal per-cell
+   prediction is the true cell conditional). Both fitted families omit the random effects, exactly as the
+   study's fitted models do; the true outcome conditional still averages over them. **Both models are refitted
+   at the population level — not held fixed at `(θ0, θ1) = (0, −1)`**: a held-fixed baseline would leave
+   stratum-mean components of `γC` unabsorbed and measure a different estimand; Rev F:237's `f_0(D_train)`,
+   `f_1(D_train)` are trained fits, and their DGP-truth evaluation is their `n → ∞` limit. Pinned consequence,
+   verified against Rev F §5A's verified rank table (Rev F:166-173): the baseline family restricted to a
+   scenario's in-range `k` points has rank exactly = the number of distinct `k` points (2 at scenarios (a)/
+   (c), 3 at (b)), so it spans the full space of stratum-constant functions and the population baseline
+   **absorbs the stratum-specific means of `C`** — the surviving signal channel is the within-stratum `C`
+   -deviation, the same channel M3's residualized slope measures (A2.3). Between-stratum mean effects would
+   enter only under the held-fixed reading this pin rejects. The pin is draft-side and stands until reviewers
+   re-verify it against those Rev F lines; the scenario- (b) NOT DEFINED status (A2.3) is unchanged by it.
+   **Two-`k` confirmation (CLAUDE round-7; verified against Rev F before reliance).** Revision F's §5A
+   verified table (Rev F:166-171) and §9.1 `k`-mixes give: scenarios (a)/ (c) have exactly two in-range `k`
+   values `{5, 10}` (baseline rank exactly 2), scenario (b) has three `{5, 10, 20}` (baseline rank exactly 3).
+   On two strata the pinned five-column RCS restriction spans the full function space on those points (Rev F:
+   173's verified 2×2 minor), so the population baseline reproduces each stratum's mean probability exactly —
+   the property the `Δ_exact` derivation relies on holds for scenarios (a)/ (c). CLAUDE's three-means
+   impossibility statement ("a two-parameter curve cannot match all three stratum means") binds `M1`'s
+   two-parameter `[1, x]` form; under the pinned five-column RCS basis at scenario (b)'s three points the
+   restriction is rank-3 saturated (any three independent functions span all functions on three points), so
+   the mean-reproduction argument adds no new reason against (b) — (b)'s NOT DEFINED status rests on the A2.3
+   population mismatch either way. **Implementation rider (GPT round-7; CLAUDE concurrence).** The
+   population-limit evaluation uses the **unpenalized population optimum**: Revision F's finite-sample fitter
+   carries the fixed ridge penalty `RIDGE = 1e-6` (`study/models.py:9, 65`; Rev F:150, 195), and a bridge
+   implementation must **not** reproduce that fixed penalty on a normalized population loss, where it does not
+   vanish relative to the accumulated objective and would silently break the exact agreement against `q_i`/
+   `q̄_k`; unpenalized predictions are exactly `q_i` and `q̄_k`, and any regularized variant must demonstrate
+   convergence to the unpenalized optimum before use, with the distinction recorded in the implementation and
+   report. **Weights rider.** The independent finite-support reference and the production path use the
+   **same** support-conditioned weights, defined to correspond to Revision F's estimand weighting — equal
+   weight per eligible test cell, which coincides with equal weight per eligible body among eligible cells
+   because every eligible body is scored on every held-out suite (Rev F:232) — and the `C`-grid levels are
+   never treated as equiprobable without justification (A2.3's support-conditioned-weights paragraph governs).
+
+   **Family-constraint clarification for the `σ > 0` calibration (GPT round-8; implementation guard, not a new
+   specification round).** The strictly-proper-scoring statement above — "the loss-optimal per-cell prediction
+   is the true cell conditional" — holds when predictions are optimized independently per cell; it does
+   **not** say that a model constrained to a logistic-regression family reproduces the true cell conditional.
+   For the zero-random-effects check this is harmless: the extended model represents the truth exactly on the
+   declared support, so the finite-support KL benchmark is exact. For the actual generator (`σ_u = σ_v = 1`),
+   the `(u, v)`-marginalized cell probabilities generally have logits **not linear in `C`**, so the extended
+   logistic family does not represent them exactly. Therefore the actual `γ*` calibration: (1) integrates the
+   true cell conditional over the `(u, v)` mixture using the declared numerical method (the `p̄` discipline —
+   Gauss–Hermite node doubling to the declared tolerance plus a seeded Monte Carlo cross-check,
+   `u + v ~ N(0, σ_u² + σ_v²)` under the declared zero-mean independences); (2) fits both model families at
+   their **unpenalized population optima**, each minimizing its **own** population log-loss under the **same**
+   support-conditioned weights; (3) computes `Δ(γ)` from those two optimized predictions — **never** by
+   substituting the true marginal probabilities as the extended model's predictions (at `γ = 0` the truth is a
+   `k`-function and both optima coincide, keeping the `Δ(0) = 0` check valid; for `γ ≠ 0` the extended fit
+   absorbs only what its family allows); (4) uses the exact finite-support KL expression **only** as the
+   independent reference for the zero-RE battery check, never as a shortcut for the `σ_u = σ_v = 1`
+   calibration. Before any result is interpreted, the implementation records: the optimization objective per
+   fit, the convergence criterion, and the achieved residuals. If an implementation simply sets the
+   actual-calibration extended-model predictions equal to the true marginal probabilities, the run stops and
+   the implementation is corrected before any number exists (GPT round-8).
+
+   **Target selection and root convention (owner decision; Foued 2026-10-19, relayed by GPT/; recorded as
+   the selected interpretation of the target deferred by Rev F:270 — not a definition mandated by Revision
+   F).** The bridge's primary population target is **R1**: the population-limit model-family gain
+   `Δ_R1(γ) = L(B_γ) − L(E_γ)`, with `B_γ` and `E_γ` the unpenalized population-optimal fits within the
+   baseline (k-only) and extended `(k, C)` families under the same support-conditioned weights, evaluated
+   against the declared DGP-truth targets — exactly the pinned reading above, now explicitly selected rather
+   than merely proposed. R1 is a population-limit estimand, distinct from the finite-sample performance of
+   the Phase-1 learning procedure (Rev F:270, 364). The `delta_of` oracle-KL quantity ("Oracle-Delta
+   context" in the calibration report) is **R2**, retained as a separately reported diagnostic only: R2 is
+   never substituted for R1, and numerical proximity at the calibration points is not equivalence. The
+   calibrated solution is defined as the **first crossing of `Δ_R1(γ) = δ*` on the designated increasing
+   branch** (the frozen implementation's bracketing convention: start `8.0`, upward extension while the
+   curve rises — `v03p/bridge/calibrate.py:158, 235-265`); **no global uniqueness is claimed**, and the
+   descending-branch crossing of the same equation is recorded with the calibration results (§0.2 item 18).
+
+   **Scope of the stratified benchmark (GPT/ review of `0b31dd4` — verification + warning).** GPT round-6
+   verified the stratified benchmark's mathematics under the battery's stated conditions, recording the boxed
+   leading term `Δ(γ) = (γ²/2)·Σ_{k∈{5,10}} w_k·p_k(1−p_k)·Var_k^{sup}(C) + O(γ³)` with
+   `p_k = logit⁻¹[−log(1+k)] = 1/(k+2)` and the within-stratum difference
+   `p(C) − p̄_k = γ·p_k(1−p_k)·(C − C̄_k) + O(γ²)`. Scope warning carried in every report: this is the
+   benchmark **only for the zero-random-effects check** — the actual generator (`σ_u = σ_v = 1`, Rev F:291)
+   has marginal probabilities and derivatives different from `p_k` and `p_k(1−p_k)`, so the zero-RE check is
+   computed, labeled, and kept explicitly separate from the main `γ*` calibration.
+3. **Compute the bridge target `β_pop` and map to `c*`, in the owner-authorized ordered sequence** (Foued,
+   2026-10-18; source record §8). Per row: (a) calibrate `γ` (as `γ*`) per A2.2; (b) compute `β_pop` on the
+   row's supported population under the definition below; (c) map to `c* = (1.25/β_pop)²` under the confirmed
+   per-reference-SD scale; (d) report the gap between the mapped `c*` and the heuristic's worked constants
+   **and against the owner's nominal reference anchor `c*_ref = 156.25` (`β_min = 0.10` per one fixed
+   reference SD, owner 2026-10-18, §0.2 item 12 — a planning comparison anchor, never a tuning target)** —
+   with no claim that the mapping is calibrated for the logistic generator (the M3 §9-item-4 caveat; §2.1).
+
+   **`β_pop` definition — the effect functional matching M3's primary scale.** M3's primary effect scale is a
+   correctness-rate slope on the `s_ref`-normalized within-`k` channel: the committed source's linear mean
+   model `y = a + τ·1{k=10} + β·x_M3 + e` estimates `β` as a stratified, within-`k`-centered
+   covariance-over-variance slope. The bridge's target is the population counterpart of that statistic under
+   Revision F's declared outcome generator (A2.1 parameters): for a supported body `i`,
+
+   \[
+   \bar p (i) = E_{ (u,v)
+   }\!\left[\operatorname{logit}^{-1}\!\big (\theta_0 + \theta_1\log (1+k (i)) + \gamma\,C_i + u + v\big)\right],
+   \]
+
+   the correctness probability with the suite/body random effects marginalized over the declared mixture, and
+
+   \[
+   \beta_{pop} \;=\; \frac{\sum_{s\in\{5,10\}}\;\sum_{i\in s}\big (x_{M3,i}-\bar x_s\big)\big (\bar p (i)-\bar
+   p_s\big)}{\sum_{s\in\{5,10\}}\;\sum_{i\in s}\big (x_{M3,i}-\bar x_s\big)^{2}},
+   \]
+
+   where `s` strata over `k ∈ {5, 10}` within the row's declared supported population, `x̄_s`, `p̄_s` are
+   within-stratum means, and the support/composition weighting is the row's declared rule (the same family as
+   used for `E[c]`, A1.3/A3). Revision F's `x_RCS = log(1+k)` carries no slope of its own here — it enters
+   `p̄` only through the `θ1·x_RCS` term. Because the `C` grids are discrete, `p̄` is a one-dimensional
+   Gaussian expectation from the declared `(u, v)` marginals and `β_pop` is a finite sum over the support:
+   computable exactly or to stated tolerance. If the committed M3 primary-statistic text prescribes a
+   different aggregation or weighting, that text governs (A1.1); a difference is then documented and gated by
+   reviewer/owner acceptance before adoption.
+
+   **Support-conditioned weights (explicit).** The sums and stratum means in `β_pop` use the **row's
+   support-conditioned distribution of eligible bodies**: the discrete `C` levels are not equiprobable merely
+   because each appears in a grid, and the weights must reflect the row's declared composition and support
+   rule, including the effect of selection on the distribution of `C` (GPT/ review of `1852359`). Caveat
+   carried on every row: under Revision F §5A as drafted the full support rule is contradictory
+   (`P(pass) = 0`, Rev F:175), so the support-conditioned distribution is itself a **bucket-local proxy**;
+   every bridge row therefore keeps the **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE** label, and the bridge
+   makes no claim about what the real study's population looks like (CLAUDE concurrence).
+
+   **Two-bucket scope and scenario (b) — not like-for-like.** `β_pop` estimates M3's slope over the
+   `k ∈ {5, 10}` strata only (M3's committed scope). Scenario (b)'s supported population includes `k = 20`
+   bodies (`C ∈ {0.2, 0.25}`), so for scenario (b) the chain `δ* → γ* → β_pop → c*` would calibrate on one
+   population and then measure the slope on a subset of it — not a direct translation of the same `δ*` target
+   (GPT/ review of `1852359`). Accordingly, for scenario (b) the direct bridge is marked **NOT DEFINED (not
+   like-for-like)** in the bridge report; a `k ∈ {5, 10}`-restricted **sensitivity analysis** — with its own
+   target population and its own `Δ` calibration on the restricted population — may be added only if the (a)/
+   (c) results make it worthwhile, and it is then clearly labeled as restricted, never presented as the full
+   Revision F scenario- (b) target. No `k = 20` quantity is added to NC1 (A2.4); an extension would need
+   separate specification and authorization. This does not hold up the matched-population calculations for
+   scenarios (a) and (c).
+
+   **`p̄` computation discipline (numerical method, per row).** `p̄(i)` is a logistic-normal expectation: the
+   discrete `C` grid makes the population aggregation a finite sum, but the logistic-normal integral itself is
+   not closed-form (GPT/). The report states, per row: the primary method — deterministic Gauss–Hermite
+   quadrature over the combined random-effects scale `s = u + v ~ N(0, σ_u² + σ_v²)` (independence as
+   declared), with node counts doubled until the change in the `p̄`-dependent quantities falls below the
+   declared tolerance — plus a seeded Monte Carlo cross-check with its realized uncertainty; node counts,
+   declared tolerance, and achieved agreement are reported per row. The γ* bisection retains A2.2's convention
+   (tolerance `10⁻⁴` on `Δ`, fixed calibration seed, recorded Monte Carlo size).
+
+   **The average derivative is only a labeled approximation.** The earlier candidate
+   `β_min ≈ γ*·s_ref·E[p̃(1−p̃)]` — an average marginal probability slope per one unit of `x_M3` over the
+   supported population's `(u, v)` mixture — is retained **only** as an approximation reported alongside
+   `β_pop` per row, never as the target: an average derivative equals a linear-projection slope only in
+   special cases (e.g., a Gaussian predictor, by Stein's lemma), while `x_M3` takes a handful of discrete grid
+   levels, so with nonlinear response probabilities, heterogeneous random effects, and support-dependent
+   distributions there is no general agreement between the two (GPT/ review of `091041f`; CLAUDE concurrence).
+
+   **Status label.** Every `β_pop`, mapped `c*`, and gap value carries **PROVISIONAL (source-committed
+   as-found, unfrozen)** — visibly provisional while the M3 source itself is still unfrozen (GPT/); this label
+   supersedes PROVISIONAL-PENDING-SOURCE (§0.2 item 6).
+4. Locate the mapped `c*` values (`β_pop` per A2.3 step c) **only** where NC1 has quantities: NC1's grid is
+   exactly `{39.0625, 156.25, 625}` (`CSTAR`, `nc1_calc.py:110`). For bridge-implied `c*` values off this grid
+   there is no NC1 row, the cell reports "no NC1 row (grid mismatch)", and no new NC1 computation is triggered
+   to fill it.
+5. Report a range/sensitivity across scenarios, not a single pooled value that conceals differences between
+   a-, b-, and c-type populations.
+
+**Pre-run verification battery (written before the run; checks can fail and stop the run).** Following CLAUDE
+(NC1's own history: the `pfull` bug sat in an output until a reviewer found it), the bridge implementation
+carries, specified before any run and reporting, per item, the precise random-effect settings and all tested
+`γ` values used: (i) **zero-random-effects agreement** — with `σ_u = σ_v = 0` and the row's
+support-conditioned eligible-body weights, the implementation's `Δ(γ)` matches the pinned-construction small-
+`γ` benchmark `Δ(γ) ≈ (γ²/2)·Σ_{k∈{5,10}} w_k·p_k(1−p_k)·Var_k^{sup}(C)`, with `p_k = 1/(k+2)` (`θ0 = 0`,
+`θ1 = −1`) and `Var_k^{sup}(C)` the within-stratum variance of `C` under those weights — equivalently GPT's
+stratum-weighted form `Σ_k w_k·β_k(γ)²·Var_k(x_M3)/(2p_k(1−p_k))` with the local stratum slope
+`β_k(γ) = γ·s_ref·p_k(1−p_k)`; the previously written pooled form `Δ ≈ β_pop²·Var(x_M3)/(2p(1−p))` is
+**retired** — it suits a homogeneous baseline probability and slope, which the pooled two-stratum bridge is
+not (`θ1 = −1` gives different stratum baselines, and `β_pop` is a pooled within-stratum slope — GPT/
+round-5); the tested `γ` values (`γ = 0` exact, plus the declared small-`γ` band values) are declared in the
+report. GPT/ round-6 executable-benchmark requirement, adopted as the **primary** check: at each tested `γ`,
+the implementation's `Δ(γ)` is compared to the **exact finite-support benchmark**
+`Δ_exact(γ) = Σ_{k∈{5,10}} w_k·Σ_{i∈k} π_{i|k}·D_KL[Bern(q_i(γ)) ∥ Bern(q̄_k(γ))]`, with
+`q_i(γ) = logit⁻¹(θ0 + θ1·log(1+k_i) + γ·C_i)`, `q̄_k(γ) = Σ_{i∈k} π_{i|k}·q_i(γ)`, and `π_{i|k}` the row's
+support-conditioned body weight within stratum `k` — exact because the extended model represents the truth
+exactly and the optimal refitted baseline predicts the stratum mean probability in the zero-RE case, and
+evaluated **independently**: its `π_{i|k}` comes from a direct closed-form computation of the row's declared
+parameters, not from the production weighting machinery, so the two paths cannot share a faulty weighting; the
+agreement tolerance is pure arithmetic and is declared in the report. The quadratic asymptotic form is
+retained **only as a separate sanity check**, with its observed discrepancy reported across the declared
+small-`γ` band — no unspecified `O(γ³)` remainder bound is relied upon (GPT/ round-6: "`O(γ³)` is not, by
+itself, a numerical bound"). A check failure is never explained away after results appear; (ii) **zero and
+bracket-monotonicity** — `Δ(0) = 0` exactly, and `Δ` is tested for monotonicity over the **declared
+calibration bracket** `[γ_lo, γ_hi]` (the bisection's initial bracket, A2.2) only — not asserted over an
+unspecified range of all `γ` (GPT/ round-5); (iii) **bisection convergence** — the calibration converges to
+the stated `10⁻⁴` tolerance on `Δ`; (iv) **mutation battery** — a deliberately perturbed implementation (e.g.,
+a wrong weighting) must trip at least one check, NC1-style, recorded in the report; the mutation is tested
+against the **independently evaluated** exact finite-support reference of (i), not against production's own
+weighting calculation, which the two paths must not share (GPT/ round-6: a shared weighting could let the
+mutation pass both). A failed check stops the run and is reported as a blocker, never tolerated silently.
+
+**Battery freeze before the run and symmetric stop rule (CLAUDE round-7; GPT/ concurrence).** Before any
+number exists, the review branch records: the battery code (its commit/blob hash), the frozen tested-`γ` list,
+the frozen tolerances, and the frozen declared weight definitions for the battery's population paths — GPT's
+no-post-hoc-adjustment rule is enforceable only against this record. Any tolerance or code change after first
+numbers exist voids the pass and forces a re-run with the original record intact and the original failure
+disclosed. On **every** pass, the report still lists, per check, the observed margin against its tolerance and
+which failure the check would have caught — a pass is never read as stronger than its margins allow (symmetric
+stop rule). **W-DEF amendment (pre-code-freeze, 2026-10-18; disclosed in `BATTERY_SPEC.md` item 3):** the
+bucket predicate follows Revision F:145-148 as the committed A1 source's `S0` rule — `≥ 4` bodies at both
+**observed** `C` extremes of the bucket; the initial freeze declaration's grid-endpoint reading
+(`N_{0.2} ≥ 4 ∧ N_{cmax-grid} ≥ 4`, citing NC1's `f_s1`-backed `F5/F10` as precedent) was a transcription
+error — `f_s1` is NC1's own `S1(m)` proxy, a different rule in NC1's closed scope — caught in the pre-code
+predicate re-verification and corrected before any battery code or number existed; nothing was computed under
+the erroneous reading, and the battery's W2 check now cross-validates against the committed `A1.f_s0(k, n)`
+artifact.
+
+**Precision language:** discrete NC1 probability calculations may be exact under their specified enumerations,
+but the target bridge involves a nonlinear random-effects outcome model and numerical calibration. Unless the
+calculation actually proves a closed form, describe this bridge as a *numerically calibrated mapping with
+declared tolerances*, not simply as "exact."
+
+### A3. Required output
+
+One table with these columns:
+
+| Scenario/support definition | Within-`k` **DGP** variances `σ₅², σ₁₀²` (unconditioned, declared DGP; realized `V̂ar_k^{(t)}` stated separately wherever used) | Expected train sizes `E[t₅], E[t₁₀]` | Offered mass `E[c]` computed under this row's declared support/composition rule (construction normalized by `s_ref²`; A1.3) | Baseline correctness range | Target `Δ` | Calibrated `γ*` | Population slope `β_pop` (labeled derivative approximation alongside) | Mapped `c*` — provisional heuristic comparison, `c* = (1.25/β_pop)²` | NC1 quantity at that threshold | Population/support label | Numerical method/tolerance/status |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|----------------------------|------------|-----------------|-----------------------------------------------------------------------|----------------------------------------------------------------------|--------------------------------|--------------------------|-----------------------------------|
+
+Cell rules:
+
+- **Population and support family declared per row** for every `Δ`, `γ*`, `β_pop`, and spread value (order
+  item 4). Any bucket-local-proxy quantity is labeled **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE** — this
+  applies to `Δ`, `γ`, `β_pop`, and variance entries alike, not to a single trailing column; the complete-rule
+  `P(pass) = 0` as drafted (Rev F §5A) is never glossed. The mapped `c*` cell is a **provisional heuristic
+  comparison under `c* = (1.25/β_pop)²`** — never presented as a frozen M3 minimum-effect decision (GPT/).
+- **Variance-notation rule (Correction B).** Whenever a variance appears in any cell, the cell states which of
+  the two distinct quantities it is: the **DGP variance** `σ_k²` — the unconditioned variance of `C` within
+  bucket `k` under the declared DGP — or the **realized `t`-denominator sample variance**
+  `V̂ar_k^{(t)}(C) = Σ_{i∈bucket k}(C_i − C̄_k)²/t_k`. They are not interchangeable: for i.i.d. draws at a
+  fixed bucket size `t_k`, `E[Σ_i(C_i − C̄_k)² | t_k] = (t_k − 1)·σ_k²`, before support conditioning shifts
+  conditional moments again. `E[c]` is computed under the row's declared support/composition rule, never from
+  expected bucket sizes times unconditioned DGP variances (A1.3).
+- **Scenario (b) scope note:** Revision F scenario (b) includes `k=20` (`C ∈ {0.2, 0.25}`), while NC1's `c`
+  construction has only the `k=5` and `k=10` buckets and NC1 evaluated no (b)-family scenario at all
+  (`nc1_calc.py:96, 106-111`). For scenario (b) the **direct bridge row itself reports
+  `NOT DEFINED (not like-for-like)`** in the `β_pop`/`c*` columns (A2.3 scope rule: `γ*` is calibrated over a
+  population that includes `k = 20`, while `β_pop` estimates over `k ∈ {5, 10}` only); any restricted
+  `k ∈ {5, 10}` sensitivity row carries its own population and its own `Δ` calibration and is clearly labeled
+  restricted. Scenario- (b) rows that do report something write "**no NC1 comparison defined**" in the NC1
+  column at every threshold; filling that gap would require a separately specified and authorized extension (a
+  `k=20` bucket term with its own `δ_20 = 0.05` grid, plus a (b)-family scenario run), not an unapproved extra
+  NC1 run.
+- If the current support rule cannot be defined because the §5A contradiction makes the complete analysis
+  support empty as drafted, the affected rows say so and carry **PROVISIONAL / NOT A COMPLETE-RULE ESTIMATE**.
+  Bucket-local proxy results are never presented as the probability that the full study passes, in line with
+  Revision F's own proxy-labeling language (Rev F:291, 372).
+
+## 6. Proposed work item B: decide what "NC2" is meant to test
+
+Two questions were bundled in the discussion. Keep them distinct in the draft and in any work order.
+
+**Question B1: Is the `c*` heuristic calibrated to the signal scale that matters?**
+
+This is the mechanistic bridge/NC2 question. It asks whether the threshold mapping is too pessimistic or
+optimistic under defined signal models, and what the corresponding `c*`-crossing probabilities are under the
+declared distributions. It does not, by itself, estimate the predictive gain from natural solvers.
+
+**Question B2: Can the proposed `k` versus `k+C` estimator detect `Δ = δ*` with controlled error?**
+
+This is the v0.3 Phase 1 software-simulation question. It requires a frozen simulation DGP, analysis
+procedure, inference target, support/gate rules, interval procedure, Type I error criterion, power criterion,
+and explicit owner authorization after protocol freeze. Revision F §5A currently records a structural
+problem — the conventional condition-number requirement makes the full support rule `P(pass) = 0` as drafted
+(Rev F:175) — so the **§5A M1/M2/M3 resolution and the recalculation of complete-rule probabilities (
+computable only after that resolution; Rev F §11 items 13–14) must precede a meaningful Phase 1 power
+result.** No §5A resolution has been adopted; reviewers recommend, Foued decides (Rev F:625).
+
+Additionally, the two candidate primary analyses must not be blended, and the confirmatory one must be named
+by an owner decision (order item 6; see §8):
+
+- **Revision F's primary proposal:** the held-out per-cell log-loss comparison between the fitted `k`-only
+  (ridge-IRLS) and `k+C` models, equal-weight over eligible test cells, with the two-way cluster bootstrap
+  interval and the `G6a-fix / G6a-id / G6b` inference-target machinery (Rev F:232-242).
+- **The in-chat engine specification's scale- (i) alternative:** an exact stratified permutation test with a
+  probability-slope statistic (in-chat only; not in the repository).
+
+These differ in estimand, calibration, Type I error statement, and power target. The bridge can inform the
+choice; it cannot resolve it automatically.
+
+Hygiene note: `M1/M2/M3` is used above in Revision F's sense (conditioning-rule candidates), per the §2
+namespace footnote; the same three identifiers denote unrelated mutation tests in the NC1 record.
+
+**Recommendation:** Run the target-translation report first. Then decide, on its results, whether a
+mechanistic NC2 calculation is still needed. Do not start the v0.3 Phase 1 simulation by calling it "NC2";
+resolve its separate freeze blockers and authorization boundary first. No solver generation or hidden-outcome
+collection is part of either work item.
+
+## 7. Decision sheet to prepare before simulation results
+
+The report should end with a decision table whose criteria are agreed before any Phase 1 outputs are examined.
+
+| Outcome                                          | Proposed meaning                                                                                                            | Required conditions                                                                                                                                                                                                                                                                                                                                         |
+|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **GO: natural-solver predictive study**          | Proceed to the next separately authorized phase aimed at the primary theory question                                        | Complete-rule support is nonzero and adequate under the adopted protocol; the design is evaluable at the approved budget; the interval procedure controls Type I error and meets the owner-approved power/coverage criteria at the owner-approved target level (**see the `δ*`-power decision below**); projected cost is within the owner-approved ceiling |
+| **ALTERNATIVE: engineered mechanistic study**    | Do not spend the natural-solver budget under the current design; consider a separately chartered controlled-mechanism study | Natural-solver support/power is inadequate at the affordable budget, but the controlled design has a clear, separately stated estimand and can test the mechanism without being misrepresented as evidence about natural solvers                                                                                                                            |
+| **PILOT-DECIDES (optional owner-decision path)** | An intermediate, bounded pilot determines which of the above rows is taken before a full committed spend                    | Only if the owner elects the pilot path in advance; its pass criterion must be registered before pilot outputs are examined (same pre-registration discipline as §8's two-threshold-set rule, Rev F:248); the pilot's result then feeds the GO/ALTERNATIVE/STOP decision without adding authorization of its own                                            |
+| **STOP / redesign decision**                     | Neither route currently justifies the planned cost, or neither has a valid, evaluable design                                | State the failed gate and what it implies for feasibility; do not claim that a failed feasibility gate falsifies the scientific theory                                                                                                                                                                                                                      |
+
+**Standing caveat for every row:** GO, or passing the feasibility gate or an elected pilot's gate, authorizes
+only the next separately approved step. It does **not** confirm the scientific theory, and it never authorizes
+a later phase automatically (Rev F §8 authorization sequence; order item 9).
+
+The following are **owner decisions still required before a protocol freeze**, not numbers for reviewers or
+agents to guess:
+
+- Maximum affordable budget, expressed as attempts, hidden suites, and/or a monetary ceiling.
+- Minimum acceptable Phase 1 power and the Type I error ceiling — **and the new decision whether power at `δ*`
+  is gated.** Revision F's binding claim mapping gates power at `2δ*` and reports power at `δ*` without gating
+  it ("Power AT δ* is reported, not gated", Rev F:268). The GO row above must not silently promote the
+  reported-only `δ*` power into a gated requirement: either retain Revision F's existing criterion, or adopt a
+  changed `δ*`-gated criterion as an explicit, owner-approved change recorded in the protocol.
+- The final suite-count choice, consistent with Revision F's derived minimum constraints.
+- The confirmatory-procedure choice between Revision F's held-out log-loss comparison and the engine-spec
+  scale- (i) stratified-permutation alternative (order item 6; §6/§8).
+- Whether an ALTERNATIVE mechanistic study is an acceptable fallback and what result it must deliver to be
+  useful.
+- Whether to elect the optional PILOT-DECIDES path and, if so, its pre-registered pass criterion.
+- G6b / §5A / O3 closure package (§0.3): G6b recorded as the intended inference target (target selection
+  only); M2 recommended for §5A (conditional — the structural rank/condition-number impossibility is
+  removed in principle, the exact complete-rule probability remains unrecalculated); the O3 rule proposed
+  as a minimum realized eligible sample size of 39 plus an expected-count planning threshold (39/2000), with
+  NOT-EVALUABLE / INCOMPLETE dispositions. The GO row's "complete-rule support ... adequate" and "the design
+  is evaluable at the approved budget" conditions remain NOT MET / unresolved at the drafted grid: the gated
+  cell is ruled out under the expected-count rule and no other size is confirmed by an upper bound alone
+  (§0.3(e)–(f)); §0.3(g) lists the exact closure order.
+
+**Sequencing note (CLAUDE, 2026-10-18).** The bridge report's numbers cannot be turned into a GO /
+ALTERNATIVE / STOP reading until this section's budget ceiling and minimum `δ*`-power decisions are recorded:
+they are not needed to RUN the bridge, but they must be set down before the numbers are examined, so the
+decision rule cannot bend to fit them. A rough ceiling suffices for the first reading (attempts and/or
+monetary). The owner's entry is recorded here when given, dated, before the bridge report is examined.
+Governance note (GPT/ round-6): both the §8-transcription confirmation and this entry remain **outstanding
+owner items** — they are not inferable from nonresponse and are recorded as outstanding until given; the
+written bridge authorization stands regardless. **Owner update (Foued, 2026-10-18):** the outstanding
+ceiling / minimum-`δ*`-power inputs are needed **before the results are interpreted as GO / ALTERNATIVE /
+STOP, not before calculating them** — the battery and bridge calculation therefore proceed; this entry remains
+outstanding until the owner records it here, dated, before any bridge report is examined.
+
+Existing Revision F candidate budgets (`150` feasibility attempts and `600` confirmatory attempts) are not
+treated as final spend approval. The design itself says they require owner approval.
+
+## 8. Required protocol blockers and authorization boundaries
+
+Before the v0.3 predictive procedure can be simulated, the review must close the relevant Revision F items, at
+minimum:
+
+1. §5A's M1/M2/M3 matrix/conditioning resolution and recalculation of complete-rule support probabilities
+   (owner decision + reviewer verification; Rev F §11 items 13–14). Status 2026-10-19: M2 recommended
+   conditionally (§0.3(b)); recalculation recipe and remaining inputs recorded (§0.3(e)).
+2. Coordinated O1–O5 resolution, including attempt-versus-valid/unique-body budgeting and the
+   support/replication-grid mapping.
+3. G6 inference-target choice and the calibration/coverage-truth method. Status 2026-10-19: G6b recorded as
+   the intended objective (target selection only — §0.3(a)); the calibration recalibration method remains
+   open.
+4. Support and split eligibility rules, including training-block/test-block behavior.
+5. Predeclared FPR, power, coverage, and "not evaluable" criteria — including the `δ*`-power gating decision
+   (§7) and the confirmatory-procedure choice (§6). Status 2026-10-19: the O3 rule is proposed as a minimum
+   realized eligible sample size of 39 plus an expected-count planning threshold (§0.3(d)); the drafted
+   gated cell is ruled out under the expected-count rule and no other size is confirmed by an upper bound
+   alone (§0.3(f)).
+6. Owner approval of the estimand narrowing, DGP parameters, suite counts, budget, and proposed decision rule.
+
+Authorization sequence remains:
+
+1. Review and revise this VDraft.
+2. Commit the controlling M3 Rev d / engine spec v1 §2 source texts into the repository (the §2.1
+   precondition); owner approves the target-translation computation and the precise work order.
+3. Review the bridge report; decide whether NC2 is justified.
+4. Resolve and review the v0.3 simulation-protocol blockers; freeze only after sign-off and owner approval.
+5. Obtain separate explicit owner authorization before Phase 1 simulation.
+6. Obtain separate authorization for each later study phase. Passing a gate never authorizes the next phase
+   automatically.
+
+NC1 remains closed — no rerun of NC1 computations is authorized to fill threshold-grid gaps or scenario- (b)
+gaps. Its source artifacts and results are not reopened by this plan. NC2 remains held until explicitly
+authorized. Phase 1 remains unauthorized until its protocol freeze and separate authorization. Solver
+generation and hidden-outcome collection remain unauthorized.
+
+## 9. Review questions
+
+Reviewers should respond to these specific questions and to the change record rather than reopening unrelated
+provenance checks:
+
+1. Does the revised `β_min` framing (fixed `s_ref = 0.12703` unit; within-`k` variation as identification
+   input with explicit bucket weighting and body-count scaling in A1.3) match the controlling M3 definition
+   once its text is committed? If the committed text prescribes anything different, it governs and the bridge
+   re-ghosts accordingly.
+2. Is the target bridge's population-oracle estimand correctly aligned with Revision F under the pinned
+   calibration convention (A2.2), and is the candidate mapping of A2.3 correctly quarantined as
+   non-authoritative pending the source?
+3. Is the distinction between the mechanistic NC2 question and v0.3 Phase 1 power/Type I error validation
+   correctly stated, including the newly added confirmatory-procedure blocker?
+4. Are the GO / ALTERNATIVE / PILOT-DECIDES / STOP conditions logically complete without claiming that a
+   feasibility failure falsifies the theory, and is the `δ*`-power decision correctly routed to the owner?
+5. Are there any scientific blockers to the bridge calculation itself beyond the §0.1 list, as distinct from
+   blockers to Phase 1 or real data collection?
+6. Does the source document `v03p/VDRAFT_M3_SOURCE_DEPENDENCY_2026-10-18.md` correctly delimit what is
+   preserved verbatim versus what remains an unresolved document dependency?
+
+## 10. Source anchors
+
+- v0.3-P Phase 0 Design, Revision F, especially §§1, 3, 5–5B, 7, 9–12, on branch snapshot `4551cac`:
+  `v03p/PHASE0_DESIGN_2026-10-15_RevF.md` (quoted anchors: :121, :164-175, :232-242, :248, :257-272, :
+  281-287, :291, :362, :364, :623, :625).
+- NC1 rev-3 report on branch snapshot `4551cac`: `v03p/nc1/nc1_report.md`.
+- NC1 engine definition of `c* = (1.25/β)²`, the `c` construction, `s_ref = 0.12703` exactly, `CSTAR`, and
+  `SCENS`: `v03p/nc1/nc1_calc.py` (lines 14-26, 96, 103-110).
+- NC1 RUN record through M1b: `v03p/nc1/RUN.txt`, commit `4551cac`.
+- Owner implementation order for this revision: `v03p/VDRAFT_IMPLEMENTATION_ORDER_2026-10-18.md`, commit
+  `906dd351e647d3d28a70ae16a01070e34fdca8a6`.
+- Source-dependency record (M3 Rev d / engine spec v1 §2): `v03p/VDRAFT_M3_SOURCE_DEPENDENCY_2026-10-18.md`
+  (created by this revision).
+
+**Status line (updated 2026-10-19).** This VDraft (Revision 2) is a proposal produced under the owner
+implementation order. Its `β_min` numerical mapping is **PROVISIONAL (source-committed as-found, unfrozen)**;
+the `β_min = 0.10` anchor and the `c*` interpretation remain **PROVISIONAL** — no `θ1` /
+random-effect-variance / weighting / normalization sensitivity analyses have been conducted, and numerical
+calibration precision does not validate the threshold. **Completed numerical work:** the verification battery
+is COMPLETE (standing record `BATTERY_REPORT_2026-10-18.md`, commit `4618f31`); the Γ\* calibration is
+COMPLETE (standing record `CALIBRATION_REPORT_2026-10-18.md`; first record `199d30c`, amended record
+`05f9a40`, under freeze `8a1b5ab`; blob chain `c100a5e` → `999e1b1` → `dd87ef0` → `8a1b5ab`, hashes inside
+the report). **Target decisions recorded 2026-10-19** (§0.2 item 19; definitions in A2.2): R1 selected as the
+primary population target; R2 (`delta_of`) a diagnostic only; the `2δ*` power requirement RETAINED, with the
+peak shortfall recorded as a declared-domain reachability limitation of the current proposed generator — not
+a Phase-1 result (Phase 1 has not run). The bounded root audit (2026-10-19) is complete: the rising root
+reproduced bit-identically per row, and the descending-branch crossing was located (item 18). **Outstanding
+scientific decision:** the bridge **decision reading** has not been produced — the §7 budget-ceiling and
+minimum-`δ*`-power entry remains outstanding and must be recorded here, dated, before any bridge report is
+examined as GO / ALTERNATIVE / STOP. The bridge report remains a separate product under its own review; NC1
+stays closed; NC2 and Phase 1 stay held; no other phase is authorized by this document.
+
+**Decision-package status (2026-10-19, second work order: resolve G6/§5A/O3; Foued via GPT/; correction
+pass applied same day per GPT/ review).** G6b is recorded as the intended inference target (target selection
+only — no execution authorization); §5A has a recommended resolution (M2, conditional on reviewer sign-off
+plus owner acceptance): M2 removes the structural rank/condition-number impossibility in principle, but the
+exact complete-rule support probability remains unrecalculated and §5A/O3 and the GO condition remain
+unresolved. The O3 rule is proposed as (i) a minimum realized eligible sample size of 39 for the coverage
+criterion to be attainable at all (all-success case under the drafted 92.5% CP rule) and (ii) an
+expected-count planning threshold of 39/2000 per interval-designated cell that guarantees nothing about the
+realized sample; upper bounds on expected eligible counts below 39 rule a cell out (the drafted gated cell,
+scenario (a), `N_b = 120, N_s = 40`), while bounds at or above 39 merely fail to rule sizes out — no size is
+claimed to pass. All of §0.3 is a proposed resolution package with recorded bounded deterministic evidence —
+not adoption, not a Phase-1 result. `β_min = 0.10` / `c*` remain PROVISIONAL; the R1 reachability limitation
+stands; NC1 closed; NC2 / Phase 1 / solver generation / hidden-outcome collection / spending / master merge
+remain unauthorized; no commit, no push.
