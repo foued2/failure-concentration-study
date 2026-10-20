@@ -1,17 +1,20 @@
-# M2 complete-rule feasibility — bounded calculation (2026-10-20)
+# M2 complete-rule feasibility — bounded calculation (2026-10-20, correction pass 1)
 
-**Status:** REVIEW DRAFT / CALCULATION RECORD. Produced under the owner work order
-"IMPLEMENT CLAUDE'S REVIEW AND DELIVER M2 FEASIBILITY DATA" (Foued, 2026-10-20, relayed by
-GPT/). This record does **not** execute G6b, Phase 1, solver generation, or hidden-outcome
-collection; it does **not** adopt M2 or O3; it does **not** authorize simulation, a master merge,
-tags, a protocol freeze, or publication. All numbers below are deterministic calculations under
-the declared support model, except where explicitly labeled as a diagnostic or as unresolved.
+**Status:** REVIEW DRAFT / CORRECTED CALCULATION RECORD. Produced under the owner work orders
+"IMPLEMENT CLAUDE'S REVIEW AND DELIVER M2 FEASIBILITY DATA" and "CORRECT M2 FEASIBILITY BOUNDS AND
+DUPLICATE-RATE SCOPE" (Foued, 2026-10-20, relayed by GPT/ and Claude/). This record does **not**
+execute G6b, Phase 1, solver generation, or hidden-outcome collection; it does **not** adopt M2,
+O3, or a duplicate-rate design; it does **not** authorize simulation, a master merge, tags, a
+protocol freeze, or publication. All numbers below are deterministic calculations under the
+declared support model, except where explicitly labeled as a diagnostic or as unresolved.
 
-**Decision use.** This record answers one bounded question: under the declared Rev F support
-model and the proposed M2 complete rule, how many of `R = 2000` simulated replications would be
-eligible, and is the proposed `κ_eff ≤ 30` gate a material additional constraint? It does not
-translate the answer into a G6b target claim. The target-translation and authorization blockers
-remain in the main decision document.
+**Decision use.** This record answers one bounded question: under the declared Rev F support model
+and the proposed M2 complete rule, what are defensible intervals for the number of eligible
+replications out of `R = 2000`, and which candidate O3 rules can be ruled out? It does not translate
+the answer into a G6b target claim. Support probabilities are intervals from a bounded count box;
+complete-rule probabilities are bounded above by the support upper and below by zero, because no
+cell-wide gate lower bound is established. The target-translation and authorization blockers remain
+in the main decision document.
 
 ---
 
@@ -23,13 +26,15 @@ remain in the main decision document.
 | `v03p/a1/a1_support_comparison.py` | SHA-256 `CF3840F108F82E6739CC01DEEDA1623070E2CEC84EB5059F293C4193D3C96C74` | committed CK support machinery, S0/S1/S2 rules, exact `f_s0` cross-check |
 | `v03p/bridge/battery.py` | SHA-256 `5E952A202FA0335A305A5110A9D810F86731D9ABAA1D69C12E3E71DD57707A05` | DGP constants `TH0=0`, `TH1=−1`, `SIG_B=SIG_S=1`, `MC_SEED=20261018`; A1 import |
 | `study/models.py` | SHA-256 `4E4226FE055DCFDFC4074C77EB5CBF8860F1C747A21DD15DC53A8AF3C6C4C420` | frozen RCS basis / design rows (`rcs_basis`, `KNOTS`) |
-| `v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md` | SHA-256 `CB873A27C7490BD9246864FCE35FDBA3A36DDAA359B166D9F41C44F0066EC301` | current Revision 3 decision entry; the pre-restructure Revision 2 draft is preserved at SHA-256 `24D04F8156866029545615F0FDBC0D7995C7BFB12F9BC039EEB3C66224E2744D` in the review log |
-| `v03p/bridge/m2_complete_rule_feasibility.py` | SHA-256 `D18A5E35D667871175EB0217BC9E0DEE1120E9383847A0FD1991597368B1104C` | main calculation |
-| `v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json` | SHA-256 `A3EE7B35A6F69297D7ED38C3666F244679CF5FDEF1E58070C61B47CD90929193` | machine-readable results |
+| `v03p/VDRAFT_Target_Bridge_and_Research_Decision_2026-10-18.md` | SHA-256 `C1E3D50FB1A5488AF43B6CE3DB0E933A6D6995199DE52B91D23DBC55B27C4FD3` | current Revision 3 decision entry, correction pass 1; the pre-restructure Revision 2 draft is preserved at SHA-256 `24D04F8156866029545615F0FDBC0D7995C7BFB12F9BC039EEB3C66224E2744D` in the review log |
+| `v03p/bridge/m2_complete_rule_feasibility.py` | SHA-256 `D1672A01425665333A9F7B176B7FA259AB257877D2D258E68A33C65868FD2B72` | main calculation |
+| `v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json` | SHA-256 `0FCCC452DE05C85D27ADD6D597758C1F5764CD8E006211FFC398B65DFC6E1A72` | machine-readable results |
+| `v03p/bridge/m2_complete_rule_feasibility_validate.py` | SHA-256 `F83DF288C1E033CF70A317B8F77D89E2DC9AB4D286554B19A2DCF75AB951F38E` | independent validation and report-to-JSON consistency check |
 
-Source files were read, not modified. The calculation uses Python 3.14.5 with NumPy 2.4.6; it does
+Source files were read, not modified. The calculation uses Python 3.14.0 with NumPy 2.4.6; it does
 not import `battery.py` and does not use any sampler. The A1 import was used only for the
-independent `f_s0` cross-check reported in §7.
+independent `f_s0` cross-check reported in §7. The validator also uses the committed A1 support
+functions for exact checks.
 
 ---
 
@@ -50,6 +55,13 @@ independent `f_s0` cross-check reported in §7.
 4. Replications under the declared simulation design are independent; therefore
    `N_eligible ~ Binomial(R, p)` with `R = 2000` and `p = P(complete rule)`. This is the declared
    Phase-1 simulation design, not a claim about a natural-solver population; see §6.
+5. **Duplicate semantics are unresolved.** Rev F §3E defines the estimand over unique canonical
+   solver bodies; §9.1 defines a slot-copy mechanism with `ρ ∈ {0, .25}`; §9.2 lists duplicate rate
+   as a candidate grid factor; §9.3 says the Phase 1 simulation's `N_b` is simulated valid unique
+   bodies and calls attempt-axis duplicate modelling O1. This record therefore reports two arms:
+   fixed unique bodies (`ρ=0`) and attempt slots (`ρ=.25`). The slot arm replaces `N_b` by
+   `M = 1 + Binomial(N_b−1, 1−ρ)` unique bodies, averages `p_support(M)` over the exact `M`
+   distribution, and is a sensitivity arm, not an adopted design or budget basis.
 
 ### 2.2 Support rule (conditions 1–4; A1 S0)
 
@@ -82,88 +94,123 @@ analysis (see §7).
 
 ---
 
-## 3. Exact probability of the conditions 1–4 support
+## 3. Bounded probability of the conditions 1–4 support
 
 The bucket pass probability `f_k(n)` is computed by the exact A1 sum over disjoint
-"observed-minimum/observed-maximum" pairs; it was cross-checked against `a1_support_comparison.f_s0`
-for `k ∈ {5,10,20}` and `n ∈ {8,10,12,16,20,30,60}` (maximum absolute difference `3.9e-15`). The
-cell value is the multinomial sum over in-range bucket counts of `P(≥2 buckets pass)`; the count box
-covers ±8 SD with the omitted tail recorded in the JSON (tail bound `≤1e-12` for the reported cells).
+"observed-minimum/observed-maximum" pairs and was cross-checked against
+`a1_support_comparison.f_s0` for `k ∈ {5,10,20}` and `n ∈ {8,10,12,16,20,30,60}` (maximum absolute
+difference `3.9e-15`). The cell calculation sums over the multinomial in-range bucket counts inside
+a ±8 marginal-SD count box. It returns `p_box`, the omitted count tail, and the interval
 
-`E[N_eligible] = 2000 × P(conditions 1–4)` and `P(N≥39)` is the exact Binomial(2000, p) survival
-probability. The values are **upper bounds** on the complete-rule eligibility (the κ gate can only
-remove replications).
+`p_box ≤ P(conditions 1–4) ≤ p_box + tail`.
 
-### 3.1 Historical Mixes
+The interval is propagated monotonically: `E[N]` and `P(N≥39)` are intervals, and the table reports
+their upper ends where a planning threshold is at issue. The omitted tails are small but are **not**
+uniformly below `1e-12`; examples are `(a)@60: 4.85e-10`, `(b)@60: 5.3e-9`, `(c)@120: 3.4e-9`.
+The complete-rule interval is `[0, P(conditions 1–4 upper)]`, because the κ gate can only reject and
+no cell-wide gate lower bound is established. The O3 readings therefore use the complete-rule
+upper bounds; an upper bound above a threshold is **not** a passing result.
 
-| Scenario | `N_b` | `P(conditions 1–4)` | `E[N]` | `P(N≥39)` |
-|---|---:|---:|---:|---:|
-| (a)-hist | 60 | 5.95865e-6 | 0.012 | 0 |
-| (a)-hist | 113 | 1.11682e-3 | 2.234 | 0 |
-| (a)-hist | 120 | 1.54570e-3 | 3.091 | 0 |
-| (a)-hist | 150 | 4.27948e-3 | 8.559 | 0 |
-| (a)-hist | 240 | 2.18821e-2 | 43.764 | 0.7871 |
-| (a)-hist | 300 | 3.95341e-2 | 79.068 | 1.0 |
-| (a)-hist | 400 | 6.05516e-2 | 121.103 | 1.0 |
-| (a)-hist | 450 | 6.35138e-2 | 127.028 | 1.0 |
-| (a)-hist | 600 | 5.68304e-2 | 113.661 | 1.0 |
-| (b)-hist | 60 | 1.59358e-8 | 3.2e-5 | 0 |
-| (b)-hist | 113 | 1.80977e-5 | 0.036 | 0 |
-| (b)-hist | 120 | 3.01100e-5 | 0.060 | 0 |
-| (b)-hist | 150 | 1.57440e-4 | 0.315 | 0 |
-| (b)-hist | 240 | 1.93939e-3 | 3.879 | 0 |
-| (b)-hist | 300 | 4.93703e-3 | 9.874 | 1.5e-13 |
-| (b)-hist | 400 | 1.38973e-2 | 27.795 | 0.02488 |
-| (b)-hist | 450 | 1.97304e-2 | 39.461 | 0.5514 |
-| (b)-hist | 600 | 3.74210e-2 | 74.842 | 1.0 |
-| (c)-hist | 60 | 1.12449e-11 | 2.2e-8 | 0 |
-| (c)-hist | 113 | 9.55916e-8 | 1.9e-4 | 0 |
-| (c)-hist | 120 | 2.02048e-7 | 4.0e-4 | 0 |
-| (c)-hist | 150 | 2.70990e-6 | 0.005 | 0 |
-| (c)-hist | 240 | 2.26445e-4 | 0.453 | 0 |
-| (c)-hist | 300 | 1.07492e-3 | 2.150 | 0 |
-| (c)-hist | 400 | 4.84527e-3 | 9.691 | 0 |
-| (c)-hist | 450 | 7.83227e-3 | 15.665 | 4.4e-7 |
-| (c)-hist | 600 | 2.04463e-2 | 40.893 | 0.6391 |
+**Table codes.** `both_rules_ruled_out` = both candidate O3 rules (expected count and
+`P(N≥39)≥.95`) are ruled out for that arm. `P_rule_ruled_out` = the candidate probability rule is
+ruled out; the expected-count rule is not certified. `not_certified` = no cell-wide complete-rule
+lower bound, so the cell is not certified; upper bounds above a threshold are not a pass. The tables
+show both duplicate arms; they do not select one.
 
-### 3.2 Mixed / alternative declared mixes (same model)
+### 3.1 Candidate sizes (`N_b ∈ {60, 120}`)
 
-| Scenario | `N_b` | `P(conditions 1–4)` | `E[N]` | `P(N≥39)` |
-|---|---:|---:|---:|---:|
-| (a)-50:50 | 120 | 4.64258e-3 | 9.286 | 0 |
-| (a)-50:50 | 150 | 1.33406e-2 | 26.681 | 0.01424 |
-| (a)-50:50 | 240 | 5.03884e-2 | 100.777 | 1.0 |
-| (a)-50:50 | 300 | 7.09409e-2 | 141.882 | 1.0 |
-| (a)-50:50 | 400 | 8.69873e-2 | 173.975 | 1.0 |
-| (b)-thirds | 240 | 8.52122e-3 | 17.042 | 3.2e-6 |
-| (b)-thirds | 300 | 2.12567e-2 | 42.513 | 0.728 |
-| (b)-thirds | 400 | 4.93287e-2 | 98.657 | 1.0 |
-| (b)-thirds | 450 | 6.46969e-2 | 129.394 | 1.0 |
-| (b)-thirds | 600 | 1.11332e-1 | 222.664 | 1.0 |
-| (c)-50:50 | 240 | 3.35945e-4 | 0.672 | 0 |
-| (c)-50:50 | 300 | 1.67498e-3 | 3.350 | 0 |
-| (c)-50:50 | 400 | 8.18069e-3 | 16.361 | 1.2e-6 |
-| (c)-50:50 | 450 | 1.35214e-2 | 27.043 | 0.01719 |
-| (c)-50:50 | 600 | 3.38088e-2 | 67.618 | 1.0 |
-| (d) | 120 | — | — | — (no in-range buckets; structural zero) |
+| Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 |
+|---|---|---:|---:|---:|---|
+| a-hist / 60 | rho=0 unique | [5.9587e-06, 5.9591e-06] | 0.0119 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 60 | rho=.25 slots | [2.6547e-07, 2.6662e-07] | 5.3323e-04 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 120 | rho=0 unique | [1.5457e-03, 1.5457e-03] | 3.0914 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 120 | rho=.25 slots | [2.7310e-04, 2.7310e-04] | 0.5462 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 60 | rho=0 unique | [1.5936e-08, 2.1208e-08] | 4.2417e-05 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 60 | rho=.25 slots | [4.3897e-10, 2.8445e-08] | 5.6890e-05 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 120 | rho=0 unique | [3.0110e-05, 3.0113e-05] | 0.0602 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 120 | rho=.25 slots | [2.3715e-06, 2.3761e-06] | 0.0048 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 60 | rho=0 unique | [1.1245e-11, 3.0697e-08] | 6.1394e-05 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 60 | rho=.25 slots | [1.9281e-13, 3.6839e-08] | 7.3679e-05 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 120 | rho=0 unique | [2.0205e-07, 2.0546e-07] | 4.1092e-04 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 120 | rho=.25 slots | [6.0974e-09, 1.2322e-08] | 2.4644e-05 | 0.0000e+00 | both_rules_ruled_out |
 
-The full 7-scenario × 9-size table is in the JSON. Scenario (d) has no in-range bucket and is
-characterization-only.
+Only `60` and `120` are Rev F candidate body counts. They are both far below the O3 planning
+thresholds in both arms.
 
-### 3.3 Immediate feasibility readings (conditions 1–4 only)
+### 3.2 Proposed planning/decision sizes
 
-- `(a)@120`: `E[N] = 3.09`, so the O3 expected-count planning rule (`E[N] ≥ 39`) is **ruled out**.
-  This is the same verdict recorded in the accepted 2026-10-19 decision package; it is not a
+`113, 150, 240, 300, 400, 450, 600` are proposed O1 re-anchoring/planning sensitivities, not
+adopted grid values. `113` and `450` are near the expected unique counts for `150` and `600` slots
+at `ρ=0.25` (112.75 and 450.25).
+
+| Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 |
+|---|---|---:|---:|---:|---|
+| a-hist / 113 | rho=0 unique | [1.1168e-03, 1.1168e-03] | 2.2336 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 113 | rho=.25 slots | [1.7458e-04, 1.7458e-04] | 0.3492 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 150 | rho=0 unique | [4.2795e-03, 4.2795e-03] | 8.5590 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 150 | rho=.25 slots | [1.1258e-03, 1.1258e-03] | 2.2515 | 0.0000e+00 | both_rules_ruled_out |
+| a-hist / 240 | rho=0 unique | [2.1882e-02, 2.1882e-02] | 43.7642 | 0.7871 | P_rule_ruled_out |
+| a-hist / 240 | rho=.25 slots | [8.5722e-03, 8.5722e-03] | 17.1444 | 3.6427e-06 | both_rules_ruled_out |
+| a-hist / 300 | rho=0 unique | [3.9534e-02, 3.9534e-02] | 79.0682 | 1.0000 | not_certified |
+| a-hist / 300 | rho=.25 slots | [1.8040e-02, 1.8040e-02] | 36.0804 | 0.3340 | both_rules_ruled_out |
+| a-hist / 400 | rho=0 unique | [6.0552e-02, 6.0552e-02] | 121.1031 | 1.0000 | not_certified |
+| a-hist / 400 | rho=.25 slots | [3.9576e-02, 3.9576e-02] | 79.1525 | 1.0000 | not_certified |
+| a-hist / 450 | rho=0 unique | [6.3514e-02, 6.3514e-02] | 127.0276 | 1.0000 | not_certified |
+| a-hist / 450 | rho=.25 slots | [4.9602e-02, 4.9602e-02] | 99.2050 | 1.0000 | not_certified |
+| a-hist / 600 | rho=0 unique | [5.6830e-02, 5.6830e-02] | 113.6608 | 1.0000 | not_certified |
+| a-hist / 600 | rho=.25 slots | [6.3434e-02, 6.3434e-02] | 126.8681 | 1.0000 | not_certified |
+| b-hist / 113 | rho=0 unique | [1.8098e-05, 1.8099e-05] | 0.0362 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 113 | rho=.25 slots | [1.2766e-06, 1.2824e-06] | 0.0026 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 150 | rho=0 unique | [1.5744e-04, 1.5744e-04] | 0.3149 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 150 | rho=.25 slots | [1.8911e-05, 1.8914e-05] | 0.0378 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 240 | rho=0 unique | [1.9394e-03, 1.9394e-03] | 3.8788 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 240 | rho=.25 slots | [4.8355e-04, 4.8355e-04] | 0.9671 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 300 | rho=0 unique | [4.9370e-03, 4.9370e-03] | 9.8741 | 1.4910e-13 | both_rules_ruled_out |
+| b-hist / 300 | rho=.25 slots | [1.4676e-03, 1.4676e-03] | 2.9351 | 0.0000e+00 | both_rules_ruled_out |
+| b-hist / 400 | rho=0 unique | [1.3897e-02, 1.3897e-02] | 27.7947 | 0.02488 | both_rules_ruled_out |
+| b-hist / 400 | rho=.25 slots | [4.9729e-03, 4.9729e-03] | 9.9458 | 5.5567e-13 | both_rules_ruled_out |
+| b-hist / 450 | rho=0 unique | [1.9730e-02, 1.9730e-02] | 39.4607 | 0.5514 | P_rule_ruled_out |
+| b-hist / 450 | rho=.25 slots | [7.7867e-03, 7.7867e-03] | 15.5735 | 3.8105e-07 | both_rules_ruled_out |
+| b-hist / 600 | rho=0 unique | [3.7421e-02, 3.7421e-02] | 74.8419 | 1.0000 | not_certified |
+| b-hist / 600 | rho=.25 slots | [1.9767e-02, 1.9767e-02] | 39.5340 | 0.5560 | P_rule_ruled_out |
+| c-hist / 113 | rho=0 unique | [9.5592e-08, 9.8056e-08] | 1.9611e-04 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 113 | rho=.25 slots | [2.7019e-09, 1.0009e-08] | 2.0018e-05 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 150 | rho=0 unique | [2.7099e-06, 2.7118e-06] | 0.0054 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 150 | rho=.25 slots | [1.0780e-07, 1.1124e-07] | 2.2248e-04 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 240 | rho=0 unique | [2.2645e-04, 2.2645e-04] | 0.4529 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 240 | rho=.25 slots | [1.9249e-05, 1.9250e-05] | 0.0385 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 300 | rho=0 unique | [1.0749e-03, 1.0749e-03] | 2.1498 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 300 | rho=.25 slots | [1.4017e-04, 1.4017e-04] | 0.2803 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 400 | rho=0 unique | [4.8453e-03, 4.8453e-03] | 9.6905 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 400 | rho=.25 slots | [1.0916e-03, 1.0916e-03] | 2.1833 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 450 | rho=0 unique | [7.8323e-03, 7.8323e-03] | 15.6645 | 4.3872e-07 | both_rules_ruled_out |
+| c-hist / 450 | rho=.25 slots | [2.1446e-03, 2.1446e-03] | 4.2893 | 0.0000e+00 | both_rules_ruled_out |
+| c-hist / 600 | rho=0 unique | [2.0446e-02, 2.0446e-02] | 40.8927 | 0.6391 | P_rule_ruled_out |
+| c-hist / 600 | rho=.25 slots | [7.8631e-03, 7.8631e-03] | 15.7261 | 4.8221e-07 | both_rules_ruled_out |
+
+### 3.3 Immediate feasibility readings
+
+- `(a)@120`: the complete-rule expected-count upper is `3.091` in the fixed-unique arm and `0.546`
+  in the slot arm, so the O3 expected-count planning rule (`E[N] ≥ 39`) is **ruled out**. The
+  candidate probability rule is also ruled out. This is a bounded negative result, not a
   probabilistic impossibility proof.
-- `(a)@240`: `E[N] = 43.76` (meets the expected-count threshold) but `P(N≥39) = 0.787 < 0.95`.
-  The expected-count threshold and the candidate 95% probability rule are **not interchangeable**.
-- `(a)@300` and larger: both `E[N] ≥ 39` and the candidate `P(N≥39) ≥ 0.95` are met.
-- `(b)@450`: `E[N] = 39.46` but `P(N≥39) = 0.551`; `(b)@600`: `E[N] = 74.84`, `P = 1.0`.
-- `(c)@600`: `E[N] = 40.89` but `P(N≥39) = 0.639` — a further case where the expected-count rule is
-  not the probability rule.
-
-These are eligibility readings under the declared model; they are not G6b target attainability
-claims and not study authorization.
+- `(a)@240`: fixed-unique `E[N] ≤ 43.764` and `P(N≥39) ≤ 0.787 < 0.95`; the candidate probability
+  rule is **ruled out**, while the expected-count rule is not certified. The slot arm rules out both.
+  The two O3 rules are **not interchangeable**.
+- `(a)@300`: fixed-unique upper bounds exceed both thresholds (`E[N] ≤ 79.068`,
+  `P(N≥39) ≤ 1.0`), but the cell is **not certified** because the complete-rule lower bound is 0.
+  An upper bound above a threshold is not a pass. The slot arm at 300 rules out both rules.
+- `(b)@450`: fixed-unique `E[N] ≤ 39.461` and `P(N≥39) ≤ 0.551`; the probability rule is ruled out,
+  the expected-count rule is not certified. The slot arm rules out both.
+- `(b)@600`: fixed-unique is not certified (`E[N] ≤ 74.842`, `P(N≥39) ≤ 1.0`); the slot arm rules
+  out the probability rule (`E[N] ≤ 39.534`, `P(N≥39) ≤ 0.556`) but not the expected-count rule.
+- `(c)@600`: fixed-unique `E[N] ≤ 40.893`, `P(N≥39) ≤ 0.639`; the probability rule is ruled out,
+  the expected-count rule is not certified. The slot arm rules out both.
+- **No cell is certified and no cell is declared GO.** The shipped JSON contains all 7 scenarios ×
+  9 sizes (55 cells) with both arms and intervals; the tables above show the decision-relevant
+  candidate and planning sizes. The alternative declared mixes are in the JSON and are not adopted.
+- These are eligibility readings under the declared model; they are not G6b target attainability
+  claims and not study authorization.
 
 ---
 
@@ -244,12 +291,12 @@ not a substitute for an exact bound.
 
 ### 5.4 Status of the complete-rule probability at the decision cells
 
-- **Two-bucket (a)/(c) cells:** the gate is not material. The exact minimal-support violation is
-  zero; the population κ is ~2.3; a spot exact count-box computation at `(a)@600` (modal counts,
-  ±6 SD) gave a violation probability of `7.1e-28`, and the omitted count tail is below `1e-9`.
-  The complete-rule probability is therefore equal to the conditions 1–4 value to within a
-  correction far below the reported digits. This is a bounded statement, not a claim that every
-  cell was re-enumerated.
+- **Two-bucket (a)/(c) cells:** **no cell-wide complete-rule lower bound is established.** The
+  exact minimal-support violation is zero; the population κ is ~2.3; a spot exact count-box
+  computation at `(a)@600` (modal counts, ±6 SD) gave a violation probability of `7.1e-28`, with
+  omitted count tail below `1e-9`. These are local/small-support diagnostics, not a certificate
+  that every (a)/(c) cell has a gate violation probability near zero. The complete-rule interval in
+  §3 is therefore `[0, P(conditions 1–4 upper)]`; the cells are `NOT CERTIFIED`.
 - **Three-bucket (b) cells:** the exact design-weighted violation is tiny at the enumerable
   supports (above), but the **large-`n` complete-rule probability is not identified** by this
   bounded calculation. The gate is controlled by the near-collinearity of the RCS basis at
@@ -258,8 +305,9 @@ not a substitute for an exact bound.
   conditions 1–4 value is therefore an **upper bound** for the b cells, and the lower bound is not
   established. No b cell is certified by this record, and the b `P(N≥39)` values in §3 are upper
   bounds.
-- **No cell is declared GO by this record.** The `(a)` cells at `≥300` meet the candidate
-  planning arithmetic, but the target mapping and the remaining protocol blockers are unchanged.
+- **No cell is declared GO by this record.** The `(a)` cells at `≥300` have upper bounds above the
+  candidate planning thresholds, but upper bounds are not passes; the target mapping and the
+  remaining protocol blockers are unchanged.
 
 ---
 
@@ -275,12 +323,12 @@ not a substitute for an exact bound.
   the minimum and four at the maximum, so every passing bucket has exactly two distinct levels and
   the minimum-variance configuration; the number of distinct levels is not a free variable. At
   `(10,10,10)` the exact enumeration shows 158,938 passing patterns (design mass 8.56e-3) and the
-  full distinct-level/variance distribution is available in the JSON; the gate-violating tail is
-  `6.2e-13` of total mass.
+  gate-violating tail is `6.2e-13` of total mass. The JSON records the enumeration totals, not a
+  full pattern-level distribution and not a cell-wide certificate.
 - **Large cells:** the distribution was not exactly enumerated at `N_b ≥ 240`; the structural
   floor and the support conditions are the defensible statements. The design-weighted gate
-  calculation at larger cells is the unresolved item in §5.4 for (b); for (a)/(c) the gate
-  correction is negligible.
+  calculation at larger cells is unresolved for (b); for (a)/(c) the local evidence is small but
+  does not establish a cell-wide lower bound.
 
 ---
 
@@ -290,28 +338,45 @@ not a substitute for an exact bound.
    the committed `v03p/a1/a1_support_comparison.py::f_s0` for `k ∈ {5,10,20}` and
    `n ∈ {8,10,12,16,20,30,60}`. Maximum absolute difference: `3.9e-15`. This validates the
    probability weights, the disjoint extreme-pair decomposition, and the normalization.
-2. **Independent exhaustive validator.** `v03p/bridge/m2_complete_rule_feasibility_validate.py`
-   deliberately does not import the main module. It rebuilds the CK weights from A1, enumerates each
-   pattern with its own multinomial pmf, materializes body-level design rows, and computes κ by
-   direct SVD. It reproduces `(8,8)` `P_pass = 0.002201961702875565` vs `0.002201961702875571`;
-   `(8,8,8)` `P_pass = 0.0022525697236770456` vs `0.002252569723677053` and
+2. **Independent exhaustive validator.**
+   `v03p/bridge/m2_complete_rule_feasibility_validate.py` deliberately does not import the main
+   module. It rebuilds the CK weights from A1, enumerates each pattern with its own multinomial
+   pmf, materializes body-level design rows, and computes κ by direct SVD. It reproduces `(8,8)`
+   `P_pass = 0.002201961702875565` vs `0.002201961702875571`; `(8,8,8)`
+   `P_pass = 0.0022525697236770456` vs `0.002252569723677053` and
    `P_viol = 2.0817479950533463e-11` vs `2.0817479950533467e-11`; and the three κ spot checks agree
    to `≤8.6e-14`. All checks pass. The validator does not independently enumerate `(10,10,10)`;
    that value remains covered by the main calculation's mass and conjunction checks.
-3. **κ implementation check.** The Gram/sufficient-statistics implementation reproduces the three
+3. **Exact support containment at selected cells.** The validator enumerates the full bucket-count
+   distribution without the ±8-SD box for `(a)@60`, `(a)@120`, `(b)@60`, `(c)@60`, `(c)@120` and
+   checks that each JSON support interval contains the exact value and that the omitted outside-box
+   mass does not exceed the recorded tail. Exact values: `(a)@60 5.95865571915921e-06`,
+   `(a)@120 0.0015456987610085503`, `(b)@60 1.5936729430186873e-08`,
+   `(c)@60 1.126742005422155e-11`, `(c)@120 2.0204892952003243e-07`.
+4. **Duplicate-mixture containment.** For `(a)@60` at `ρ=.25`, the validator enumerates the exact
+   `M` distribution and support mixture. `P_mixture_exact = 2.6546846320586415e-07`; the JSON lower
+   endpoint is `2.654681888642656e-07`; the exact value is contained.
+5. **Cell schema and O3 labels.** The validator checks all 55 cells: interval algebra
+   (`p_box ≤ p_upper`, support/complete upper equality, zero lower bounds), monotone `E` and
+   `P(N≥39)`, duplicate aliases and `M_mean`, tail-mixture bookkeeping, and the three allowed O3
+   labels. No schema errors were found.
+6. **κ implementation check.** The Gram/sufficient-statistics implementation reproduces the three
    recorded 2026-10-19 κ values to `≤8.6e-13` (§5.1).
-4. **Exact enumeration mass checks.** The small-support enumerations sum to `1 − O(1e-12)` over all
+7. **Exact enumeration mass checks.** The small-support enumerations sum to `1 − O(1e-12)` over all
    patterns (§5.2); the complete-rule conjunction is evaluated on the same enumerated objects as
    the pass rule.
-5. **Unit test command.** `python -B v03p/bridge/m2_complete_rule_feasibility.py` regenerates the
-   JSON and the printed cell table. The script is deterministic; it uses no random seed. The
-   independent validator is run with
-   `python -B v03p/bridge/m2_complete_rule_feasibility_validate.py` and exits `0` when all checks
+8. **Report-to-JSON consistency.** The validator parses the candidate and planning tables in §3 and
+   checks the rounded interval endpoints, complete-rule upper bounds, and O3 codes against the JSON.
+9. **Commands.** `py -3.14 -B v03p/bridge/m2_complete_rule_feasibility.py` regenerates the JSON and
+   the printed cell table. The script is deterministic; it uses no random seed. The independent
+   validator is run with
+   `py -3.14 -B v03p/bridge/m2_complete_rule_feasibility_validate.py` and exits `0` when all checks
    agree.
 
-**Not validated:** the large-`n` three-bucket κ distribution (unresolved, §5.4); the realized
-power/FPR and eligibility-conditional error rates (not run, §8); the natural-solver sampling
-distribution (not available in this task).
+**Not validated:** the large-`n` three-bucket κ distribution (unresolved, §5.4); cell-wide
+complete-rule lower bounds at any cell; exact enumeration of every cell; the realized power/FPR and
+eligibility-conditional error rates (not run, §8); the natural-solver sampling distribution (not
+available in this task).
 
 ---
 
@@ -325,6 +390,8 @@ The following are **required before any Phase 1 execution** but were not compute
   `NOT EVALUABLE` as a distinct state; do not count ineligible replications as correct decisions or
   as successful tests.
 - The natural-solver vs engineered-support distinction is not resolved by this calculation.
+- If the attempt-slot arm were ever adopted, report eligible/attempted and unique-body denominators
+  separately; the `ρ=.25` mixture is not interchangeable with a fixed unique-body `N_b`.
 
 No correctness outcome, solver generation, or hidden outcome was simulated or collected.
 
@@ -357,49 +424,60 @@ untrained `k` remain an unresolved generalization issue, not a result settled by
 1. The declared support model is a simulation design, not a natural-solver distribution. The
    `Binomial(2000, p)` count model is the declared Phase-1 design, not a claim of independent
    Bernoulli eligibility in nature.
-2. The exact large-`n` three-bucket complete-rule probability is not identified (§5.4). The report
-   does not convert the upper bound into a passing claim.
-3. The κ gate is a proposed M2 resolution; it is not adopted. Rev F §5A remains unresolved, and the
+2. Support probabilities are bounded by a count box, not exact; the omitted tails are small but not
+   uniformly below `1e-12`. Every reported `E[N]` and `P(N≥39)` is an interval endpoint, and the
+   tables show the upper ends.
+3. The exact large-`n` three-bucket complete-rule probability is not identified (§5.4), and no
+   cell-wide complete-rule lower bound is established for (a)/(c) either. The report does not
+   convert an upper bound into a passing claim.
+4. Rev F's duplicate-rate semantics conflict (§9.2 vs §9.3). Both `ρ=0` and `ρ=.25` arms are
+   reported; neither is adopted, and no attempt-budget or timing projection is based on the slot
+   arm.
+5. The κ gate is a proposed M2 resolution; it is not adopted. Rev F §5A remains unresolved, and the
    M2 recommendation still requires reviewer sign-off and owner acceptance as a gate-semantics
    change.
-4. The O3 floor/planning rule is a candidate; this record does not adopt it. The 39 floor is not an
+6. The O3 floor/planning rule is a candidate; this record does not adopt it. The 39 floor is not an
    expected-count rule and is not a guarantee.
-5. The calculation is outcome-blind and says nothing about FPR, power, or natural-solver effect
+7. The calculation is outcome-blind and says nothing about FPR, power, or natural-solver effect
    sizes.
-6. No G6b execution, Phase 1, solver generation, hidden-outcome collection, or broad sensitivity
+8. No G6b execution, Phase 1, solver generation, hidden-outcome collection, or broad sensitivity
    sweep was performed. No master merge, tag, freeze, or publication is authorized.
 
 ---
 
 ## 11. Recommended owner decisions
 
-1. **M2:** accept or reject the proposed `κ_eff ≤ 30` gate as a gate-semantics change, with the
-   reviewer sign-off still required. The (a)/(c) evidence is non-material; the (b) complete-rule
-   probability is not certified at large `n`.
-2. **O3:** choose the planning rule — expected count `E[N] ≥ 39`, candidate `P(N≥39) ≥ 0.95`, or
+1. **Duplicate semantics:** resolve Rev F §9.2 (duplicate rate as a candidate grid factor) versus
+   §9.3 (`N_b` as unique bodies; attempt-axis duplicate modelling under O1), including the attempt
+   axis and budget. Until resolved, neither arm is a design basis.
+2. **M2:** accept or reject the proposed `κ_eff ≤ 30` gate as a gate-semantics change, with the
+   reviewer sign-off still required. No cell has a complete-rule lower bound; the (a)/(c) evidence
+   is local and the (b) complete-rule probability is not certified at large `n`.
+3. **O3:** choose the planning rule — expected count `E[N] ≥ 39`, candidate `P(N≥39) ≥ 0.95`, or
    neither — and confirm whether 39 remains the realized-count floor. The two rules differ at
-   `(a)@240`, `(b)@450`, and `(c)@600`.
-3. **Target:** resolve the G6b target mapping/recalibration, or explicitly adopt an
+   `(a)@240`, `(b)@450`, and `(c)@600`; no cell is certified.
+4. **Target:** resolve the G6b target mapping/recalibration, or explicitly adopt an
    engineered-support target with a defensible estimand and intervention design. The R1 finding
    alone cannot establish or falsify G6b attainability.
-4. **Phase 1:** keep Phase 1 unauthorized until the target mapping, the M2/O3 dispositions, the
-   confirmatory-procedure choice, the budget/power decision, and the eligibility-conditional
-   operating-characteristic plan are resolved.
+5. **Phase 1:** keep Phase 1 unauthorized until the target mapping, the duplicate-axis decision,
+   the M2/O3 dispositions, the confirmatory-procedure choice, the budget/power decision, and the
+   eligibility-conditional operating-characteristic plan are resolved.
 
 ---
 
 ## 12. Reproduction and boundaries
 
 ```
-python -B v03p/bridge/m2_complete_rule_feasibility.py
-python -B v03p/bridge/m2_complete_rule_feasibility_validate.py
+py -3.14 -B v03p/bridge/m2_complete_rule_feasibility.py
+py -3.14 -B v03p/bridge/m2_complete_rule_feasibility_validate.py
 ```
 
 The main script writes `v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json` and prints the
 cell table. It does not write outside `v03p/bridge/`, does not touch frozen sources, and does not
 sample. The validator does not import the main module and exits `0` when its independent
-enumeration and κ checks agree. The `(b)` large-`n` gate remains the documented unresolved item;
-no GO is claimed.
+enumeration, schema, duplicate-mixture, exact-support, and report-table checks agree. The `(b)`
+large-`n` gate and the cell-wide complete-rule lower bound remain documented unresolved items; no GO
+is claimed.
 
 ---
 

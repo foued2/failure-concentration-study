@@ -1,12 +1,13 @@
 # VDraft: Target Bridge and Research Decision Plan — Revision 3 (decision entry)
 
 **Date:** 2026-10-20
-**Status:** REVIEW DRAFT ONLY (Revision 3). Decision entry for the 2026-10-20 owner work order
-("IMPLEMENT CLAUDE'S REVIEW AND DELIVER M2 FEASIBILITY DATA", Foued via GPT/). This document is
-**not frozen**. It does not grant NC2, Phase 1, G6b execution, solver generation, hidden-outcome
+**Status:** REVIEW DRAFT ONLY (Revision 3, correction pass 1). Decision entry for the 2026-10-20
+owner work orders ("IMPLEMENT CLAUDE'S REVIEW AND DELIVER M2 FEASIBILITY DATA" and "CORRECT M2
+FEASIBILITY BOUNDS AND DUPLICATE-RATE SCOPE", Foued via GPT/ and Claude/). This document is **not
+frozen**. It does not grant NC2, Phase 1, G6b execution, solver generation, hidden-outcome
 collection, a master merge, tags, a protocol freeze, or publication. The full review history is
-preserved in `v03p/VDRAFT_REVIEW_LOG_2026-10-20.md`; the bounded M2 feasibility calculation is in
-`v03p/bridge/M2_COMPLETE_RULE_FEASIBILITY_2026-10-20.md` and its JSON.
+preserved in `v03p/VDRAFT_REVIEW_LOG_2026-10-20.md`; the corrected bounded M2 feasibility
+calculation is in `v03p/bridge/M2_COMPLETE_RULE_FEASIBILITY_2026-10-20.md` and its JSON.
 
 ---
 
@@ -42,9 +43,9 @@ preserved in `v03p/VDRAFT_REVIEW_LOG_2026-10-20.md`; the bounded M2 feasibility 
 
 | Status | Item |
 |---|---|
-| Established | `δ* = ln(1.5)/20 = 0.020273255405408218`; NC1 evaluation grid `c* ∈ {39.0625, 156.25, 625}` as an evaluation grid only; M2 identifiability facts (null-space dimension 3 for (a)/(c) and 2 for (b); rank increase +1 on every admissible pattern); exact conditions 1–4 eligibility under the declared support model (2026-10-20 calculation); `κ_eff` implementation validated against the 2026-10-19 spot values. |
-| Untested | G6b target attainment; finite-sample power/FPR; natural-solver eligibility and effect sizes; complete-rule probability for the three-bucket (b) design at large `n`; the engineered-support estimand. |
-| Blocked | G6b target mapping/recalibration; the `β_min` value from `δ*` (source-mapping provisional); M2 adoption; O3 planning-rule choice; confirmatory-procedure choice; budget/power decision; Phase 1 authorization. |
+| Established | `δ* = ln(1.5)/20 = 0.020273255405408218`; NC1 evaluation grid `c* ∈ {39.0625, 156.25, 625}` as an evaluation grid only; M2 identifiability facts (null-space dimension 3 for (a)/(c) and 2 for (b); rank increase +1 on every admissible pattern); bounded conditions 1–4 eligibility intervals and both duplicate-rate arms under the declared support model (2026-10-20 corrected calculation); `κ_eff` implementation validated against the 2026-10-19 spot values. |
+| Untested | G6b target attainment; finite-sample power/FPR; natural-solver eligibility and effect sizes; complete-rule probability for the three-bucket (b) design at large `n`; cell-wide complete-rule lower bounds for any cell; the engineered-support estimand. |
+| Blocked | G6b target mapping/recalibration; the `β_min` value from `δ*` (source-mapping provisional); M2 adoption; O3 planning-rule choice; duplicate-rate/attempt-axis semantics (Rev F §9.2 vs §9.3); confirmatory-procedure choice; budget/power decision; Phase 1 authorization. |
 
 ### 0.4 Terminal interpretations (use these labels)
 
@@ -60,13 +61,15 @@ A failed feasibility gate is **not** falsification of the underlying scientific 
 ### 0.5 Current decision and immediate next action
 
 **Current status: GO remains blocked; NO-GO is not established; the study is INCONCLUSIVE / NOT
-EVALUABLE as currently specified; Phase 1 is not authorized.** The 2026-10-20 calculation sharpens
-the feasibility picture (below) but does not resolve the target mapping or the (b) complete-rule
-probability. The immediate next actions are the owner decisions in §7, in this order:
+EVALUABLE as currently specified; Phase 1 is not authorized.** The corrected 2026-10-20 calculation
+sharpens the feasibility picture (below) but does not resolve the target mapping, the complete-rule
+probability, or the duplicate-rate semantics. The immediate next actions are the owner decisions in
+§7, in this order:
 
 1. Resolve the G6b target mapping/recalibration (or adopt an engineered-support target with an
    approved estimand).
-2. Decide M2 adoption (with reviewer sign-off) and the O3 planning rule.
+2. Resolve the O1 duplicate-rate/attempt-axis semantics (Rev F §9.2 vs §9.3) and decide M2 adoption
+   (with reviewer sign-off) and the O3 planning rule.
 3. Decide the confirmatory procedure and the budget/power rule.
 4. Only then consider a separate Phase 1 authorization.
 
@@ -75,13 +78,16 @@ probability. The immediate next actions are the owner decisions in §7, in this 
 ## 1. Recommendation in brief
 
 Keep the natural-solver predictive study as the primary route. Do not redefine NC2 as the v0.3
-Phase 1 power simulation. Do not execute G6b or Phase 1. The 2026-10-20 eligibility calculation
-shows that the proposed O3 expected-count rule rules out `(a)@120` and that `(a)@300+` meets the
-candidate planning arithmetic; it also shows that the expected-count rule and the candidate
-`P(N≥39) ≥ 0.95` rule are not interchangeable. The proposed M2 gate is non-material for the
-two-bucket (a)/(c) design; for the three-bucket (b) design the large-`n` complete-rule probability
-remains **unidentified**, so no (b) cell is certified. None of this authorizes a GO or a Phase 1
-run.
+Phase 1 power simulation. Do not execute G6b or Phase 1. The corrected 2026-10-20 calculation shows
+that the proposed O3 expected-count rule rules out `(a)@120`; that no cell is certified under the
+complete rule because no cell-wide complete-rule lower bound is established; and that the
+expected-count rule and the candidate `P(N≥39) ≥ 0.95` rule are not interchangeable. Support-only
+upper bounds at `(a)@300+` exceed the planning thresholds, but an upper bound above a threshold is
+not a passing result. The two-bucket (a)/(c) gate evidence is local and small at the enumerated
+supports, not a cell-wide certificate; for the three-bucket (b) design the large-`n` complete-rule probability
+remains **unidentified**. The `ρ=0.25` attempt-slot arm is less favorable than the fixed-unique-body
+arm at the candidate and many planning sizes; the Rev F duplicate-rate semantics are unresolved. None
+of this authorizes a GO or a Phase 1 run.
 
 ---
 
@@ -127,8 +133,9 @@ as having an earlier date.
   has dimension 3 for (a)/(c) and 2 for (b); trained-`k` rows are orthogonal to the null space; the
   rank increase is +1 on every admissible pattern. These are linear-algebra facts, not target
   attainability.
-- The exact conditions 1–4 eligibility results under the declared support model (2026-10-20), and
-  the bounded κ evidence. See §5 and the feasibility record.
+- The bounded conditions 1–4 eligibility intervals and both duplicate-rate arms under the declared
+  support model (2026-10-20 corrected calculation), and the local κ evidence. See §5 and the
+  feasibility record.
 
 ### Still unknown
 
@@ -136,7 +143,9 @@ as having an earlier date.
   within-`k` spreads of `C`; the exact `γ ↔ β_min` functional.
 - The G6b finite-procedure target mapping and the realized attainability of the target.
 - The natural-solver population distribution, natural eligibility, and natural effect sizes.
-- The large-`n` three-bucket complete-rule probability (§5.3).
+- The large-`n` three-bucket complete-rule probability and any cell-wide complete-rule lower bound
+  (§5.3).
+- The Rev F duplicate-rate semantics: fixed unique-body `N_b` versus attempt-slot copying (§5.1).
 - The FPR/power conditional on eligibility and the operational outcome profile.
 
 ---
@@ -162,13 +171,15 @@ finite-sample G6b procedure. In particular:
 
 > GO remains blocked: under the proposed O3 expected-count planning rule, the required `(a)@120`
 > cell is ruled out because `E[N_eligible] ≤ 3.09 < 39`; this does not establish that 39 realized
-> eligible replications are probabilistically impossible. O3 rule adoption and the exact
-> complete-rule support probability remain unresolved.
+> eligible replications are probabilistically impossible. O3 rule adoption and the cell-wide
+> complete-rule lower bound remain unresolved.
 
 The phrase "unattainable" in the earlier draft is scoped only to a realized eligible count `< 39`
 under the all-success CP bound; it is not a claim that the support or the G6b target is
-impossible. The 2026-10-20 feasibility record makes the `(a)@120` reading exact (3.09 expected) and
-adds the probability-rule distinction below.
+impossible. The corrected 2026-10-20 feasibility record bounds the support-only `(a)@120` expected
+count at `≤ 3.09` (and the complete-rule expected count at no more than that), which is enough to
+rule out the expected-count planning rule for that cell; it adds the probability-rule distinction
+below.
 
 ---
 
@@ -179,23 +190,49 @@ The full calculation, assumptions, validation, and limitations are in
 summary. The model is the declared Rev F §9.1 simulation support (A1 CK marginals, independent
 replications, `R = 2000`), not the natural-solver population.
 
-### 5.1 Exact conditions 1–4 eligibility (selection of the grid)
+### 5.1 Bounded conditions 1–4 eligibility and duplicate arms
 
-| Scenario / `N_b` | `E[N_eligible]` (exact) | `P(N≥39)` | Reading |
-|---|---:|---:|---|
-| (a)@120 | 3.09 | 0 | Ruled out by the expected-count rule |
-| (a)@240 | 43.76 | 0.787 | Meets `E≥39`; fails candidate `P≥0.95` |
-| (a)@300 | 79.07 | 1.0 | Meets both candidate rules |
-| (a)@450 | 127.03 | 1.0 | Meets both; near the high point of the curve |
-| (b)@450 | 39.46 | 0.551 | Meets `E≥39`; fails candidate `P≥0.95` |
-| (b)@600 | 74.84 | 1.0 | Meets both (upper bound; see §5.3) |
-| (c)@600 | 40.89 | 0.639 | Meets `E≥39`; fails candidate `P≥0.95` |
+The corrected calculation reports an interval
+`p_box ≤ P(conditions 1–4) ≤ p_box + tail`, where the tail is all count-box mass omitted by the
+±8-SD truncation. The interval is propagated monotonically to `E[N]` and `P(N≥39)`. The complete rule
+adds `κ_eff ≤ 30`; the gate can only reject, so this record reports
+`0 ≤ P(complete rule) ≤ P(conditions 1–4 upper)` and does not claim a cell-wide complete-rule lower
+bound. The complete-rule expected-count and probability upper bounds are used for the O3 readings;
+an upper bound above a threshold does **not** certify the cell.
 
-The expected-count rule and the candidate `P(N≥39) ≥ 0.95` rule differ materially at `(a)@240`,
-`(b)@450`, and `(c)@600`. Under `Binomial(2000, p)`, the 95% probability rule needs `p ≥ 0.024831`;
-the expected-count rule needs `p ≥ 0.0195`. The O3 floor of 39 is a floor on the **realized**
-eligible count; it is not a guarantee and not an expected-count rule. Sensitivity: 90% CP → 29;
-95% CP → 59.
+**Duplicate scope.** The fixed-unique-body arm treats `N_b` as unique canonical bodies (Rev F §9.3).
+The attempt-slot arm treats `N_b` as generated slots; each slot after the first copies an earlier
+body with probability `ρ=0.25`, so `M = 1 + Binomial(N_b−1, 0.75)` unique bodies and the support
+probability is `E_M[p(M)]` (Rev F §9.1 and §3E). Rev F §9.2 lists duplicate rate as a grid factor,
+while §9.3 says the Phase 1 simulation's `N_b` is simulated valid unique bodies and duplicate-rate
+modelling at the attempt axis is O1. That conflict is unresolved: both arms are shown, neither is
+adopted, and no attempt-budget or timing projection is drawn from the slot arm.
+
+| Scenario / `N_b` | Arm | `P(conditions 1–4)` interval | Complete-rule `E[N]` upper | Complete-rule `P(N≥39)` upper | O3 reading |
+|---|---|---:|---:|---:|---|
+| (a)@120 | `ρ=0` unique | 1.546e-3–1.546e-3 | 3.091 | 0 | Both candidate rules ruled out |
+| (a)@120 | `ρ=.25` slots | 2.731e-4–2.731e-4 | 0.546 | 0 | Both candidate rules ruled out |
+| (a)@240 | `ρ=0` unique | 2.188e-2–2.188e-2 | 43.764 | 0.787 | `P(N≥39)≥.95` ruled out; expected count not certified |
+| (a)@240 | `ρ=.25` slots | 8.572e-3–8.572e-3 | 17.144 | 3.6e-6 | Both candidate rules ruled out |
+| (a)@300 | `ρ=0` unique | 3.953e-2–3.953e-2 | 79.068 | 1.000 | Not certified; complete-rule lower bound is 0 |
+| (a)@300 | `ρ=.25` slots | 1.804e-2–1.804e-2 | 36.080 | 0.334 | Both candidate rules ruled out |
+| (b)@450 | `ρ=0` unique | 1.973e-2–1.973e-2 | 39.461 | 0.551 | `P(N≥39)≥.95` ruled out; expected count not certified |
+| (b)@450 | `ρ=.25` slots | 7.787e-3–7.787e-3 | 15.573 | 3.8e-7 | Both candidate rules ruled out |
+| (b)@600 | `ρ=0` unique | 3.742e-2–3.742e-2 | 74.842 | 1.000 | Not certified; complete-rule lower bound is 0 |
+| (b)@600 | `ρ=.25` slots | 1.977e-2–1.977e-2 | 39.534 | 0.556 | `P(N≥39)≥.95` ruled out; expected count not certified |
+| (c)@600 | `ρ=0` unique | 2.045e-2–2.045e-2 | 40.893 | 0.639 | `P(N≥39)≥.95` ruled out; expected count not certified |
+| (c)@600 | `ρ=.25` slots | 7.863e-3–7.863e-3 | 15.726 | 4.8e-7 | Both candidate rules ruled out |
+
+The two candidate O3 rules differ at `(a)@240`, `(b)@450`, and `(c)@600` in the fixed-unique arm.
+Under `Binomial(2000, p)`, the 95% probability rule needs `p ≥ 0.024831`; the expected-count rule
+needs `p ≥ 0.0195`. The O3 floor of 39 is a floor on the **realized** eligible count; it is not a
+guarantee and not an expected-count rule. Sensitivity: 90% CP → 29; 95% CP → 59.
+
+The calculation covers 7 scenarios × 9 sizes, with both arms, in the companion JSON. Only `60` and
+`120` are Rev F candidate body counts. `113, 150, 240, 300, 400, 450, 600` are proposed O1
+re-anchoring/planning sensitivities, not adopted grid values; `113` and `450` are close to the
+expected unique counts for `150` and `600` slots at `ρ=0.25` (112.75 and 450.25), which is why they
+appear in the historical discussion. No size is adopted or claimed to pass.
 
 ### 5.2 O3 arithmetic
 
@@ -206,9 +243,11 @@ eligible count; it is not a guarantee and not an expected-count rule. Sensitivit
 
 ### 5.3 The κ gate
 
-- **Two-bucket (a)/(c):** the gate is not material. Population κ is ~2.26–2.29; the exact
-  minimal-support violation is zero; a spot exact count-box computation at `(a)@600` gave a
-  violation probability of `7.1e-28` with an omitted tail below `1e-9`.
+- **Two-bucket (a)/(c):** no cell-wide complete-rule lower bound is established. The population κ
+  is ~2.26–2.29; the exact minimal-support violation is zero; a spot exact count-box computation at
+  `(a)@600` gave a violation probability of `7.1e-28` with an omitted tail below `1e-9`. These are
+  local and small-support diagnostics, not a cell-wide certificate. The complete rule therefore
+  remains `NOT CERTIFIED` at every (a)/(c) cell; the gate is *not* declared non-material.
 - **Three-bucket (b):** the design-weighted violation is tiny at the enumerable supports
   (`9.2e-9` of passing mass at `(8,8,8)`; `7.3e-11` at `(10,10,10)`), and the population κ is
   ~11.3–12.4 (margin ~2.4× below the gate). **The large-`n` complete-rule probability is not
@@ -229,11 +268,11 @@ eligible count; it is not a guarantee and not an expected-count rule. Sensitivit
 - **Exact small-support distribution:** at `n_k=8`, conditions 3–4 force exactly four bodies at
   the minimum and four at the maximum, so every passing bucket has exactly two distinct levels and
   the minimum-variance configuration. At `(10,10,10)` the exact design-weighted enumeration covers
-  158,938 passing patterns; the gate-violating tail is `6.2e-13` of total mass. The full
-  distinct-level/variance distribution is in the JSON.
+  158,938 passing patterns; the gate-violating tail is `6.2e-13` of total mass. The JSON records the
+  enumeration totals, not a cell-wide certificate and not the full pattern distribution.
 - **Large cells:** the distribution was not exactly enumerated at `N_b ≥ 240`; the structural floor
-  and the support conditions are the defensible statements. The gate correction is the unresolved
-  item in §5.3 for (b); for (a)/(c) it is negligible.
+  and the support conditions are the defensible statements. No cell-wide complete-rule lower bound
+  is established for (a)/(c) or (b); the local evidence in §5.3 does not certify any cell.
 - **Eligibility is not informativeness.** Passing the support rule does not guarantee that the
   fitted contrast is informative; the rank/conditioning diagnostics and the `κ_eff` gate are
   separate from the eligibility count. Do not report eligible counts as effective information.
@@ -268,12 +307,13 @@ untrained `k` remain an unresolved generalization issue, not a result settled by
 | # | Decision | Options / needed input | Current status |
 |---|---|---|---|
 | 1 | G6b target mapping | Map/recalibrate the full-procedure target, or adopt an engineered target with an approved estimand | **Blocked**; primary blocker |
-| 2 | M2 adoption | Accept the `κ_eff ≤ 30` gate as a gate-semantics change (reviewer sign-off required), reject it, or defer | Not adopted; (a)/(c) non-material, (b) large-`n` unresolved |
-| 3 | O3 planning rule | `E[N] ≥ 39`, candidate `P(N≥39) ≥ 0.95`, or neither; confirm the 39 realized-count floor | Not adopted; the rules differ at `(a)@240`, `(b)@450`, `(c)@600` |
+| 2 | M2 adoption | Accept the `κ_eff ≤ 30` gate as a gate-semantics change (reviewer sign-off required), reject it, or defer | Not adopted; no cell-wide complete-rule lower bound; (a)/(c) evidence local only, (b) large-`n` unresolved |
+| 3 | O3 planning rule | `E[N] ≥ 39`, candidate `P(N≥39) ≥ 0.95`, or neither; confirm the 39 realized-count floor | Not adopted; the rules differ at `(a)@240`, `(b)@450`, `(c)@600`; no cell certified |
 | 4 | Confirmatory procedure | Rev F held-out log-loss comparison vs the scale-(i) stratified-permutation procedure | Open |
 | 5 | Budget / power | Decide whether power at `δ*` is gated, and the planning budget | Open; post-examination timing evidence only |
 | 6 | Untrained-`k` claim | Restrict the default claim to trained `k`-levels, or approve a separate untrained-`k` target | Recommend restriction |
 | 7 | Phase 1 authorization | Separate explicit authorization after 1–6 and the operating-characteristic plan | **Not granted** |
+| 8 | O1 duplicate-rate semantics | Resolve Rev F §9.2 (duplicate rate as grid factor) versus §9.3 (unique-body `N_b`; attempt-axis modeling under O1); choose the attempt axis and budget | Not resolved; both arms reported, neither adopted |
 
 **Before Phase 1, the protocol must specify:** FPR and power **conditional on eligibility**, with
 explicit denominators; the eligibility + operational outcome profile over all attempted
@@ -293,7 +333,10 @@ are not counted as correct decisions. No Phase 1 run or outcome-rate estimation 
   protocol freeze is authorized.
 - The `β_min = 0.10` anchor is provisional; the `β_pop` mapping and `c*` conversion are
   provisional.
-- M2 and O3 are **not adopted**.
+- M2 and O3 are **not adopted**. No cell is certified under the complete rule; support-only upper
+  bounds above a threshold are not passing results.
+- The Rev F duplicate-rate/attempt-axis semantics are unresolved; the `ρ=0.25` slot arm is a
+  sensitivity arm, not an adopted design or budget basis.
 - No additional broad parameter sweep is authorized by this record.
 - A failed feasibility gate must not be presented as falsification of the underlying scientific
   hypothesis.
@@ -308,10 +351,12 @@ Phase 1, G6b, or solver generation.
 
 1. Is the G6b target mapping now specified, or should the study adopt the engineered-support target
    under a new estimand? (Owner decision 1.)
-2. Is the `κ_eff ≤ 30` gate accepted as a gate-semantics change, given that the (a)/(c) gate is
-   non-material and the (b) large-`n` probability is not certified? (Owner decision 2.)
+2. Is the `κ_eff ≤ 30` gate accepted as a gate-semantics change, given that no cell has a complete-
+   rule lower bound, the (a)/(c) evidence is local rather than cell-wide, and the (b) large-`n`
+   probability is not certified? (Owner decision 2.)
 3. Which planning rule governs the design: expected count, candidate probability, or neither?
-   (Owner decision 3.)
+   (Owner decision 3.) Does the owner resolve Rev F §9.2 versus §9.3 on duplicates before any
+   attempt-budget or timing claim? (Owner decision 8.)
 4. Does the `0.1007` illustration have any remaining decision role? (Recommendation: none; retain
    only as an assumptions-labeled sanity check.)
 5. Are the untrained-`k` claims restricted to trained levels? (Owner decision 6.)
@@ -332,6 +377,7 @@ The full sequence of prior review rounds, disagreements, and dispositions is pre
 | M3 ridge / `β_min` source | Rev F:185 | M3 reference unit `s_ref = 0.12703` |
 | G6b objective | Rev F:239 | Full-procedure target; not execution authorization |
 | O3 / support floor | Rev F:257–272 | 39 realized-count floor; planning rule |
+| Duplicate scope | Rev F §3E, §9.1, §9.2, §9.3 | Unique canonical bodies; `ρ∈{0,.25}` slot-copy mechanism; unresolved attempt-axis reading |
 | Levels `k ∈ {5,10,20}` | Rev F:287 | In-range support |
 | CK / S0 / S1 / S2 / `f_s0` | `v03p/a1/a1_support_comparison.py` | Committed support machinery |
 | DGP constants `TH0=0`, `TH1=−1`, `SIG_B=SIG_S=1` | `v03p/bridge/battery.py:41–48`, `:69–70` | Declared generator anchors |
@@ -359,3 +405,8 @@ resolution has been adopted.
   results and the three terminal interpretations, and adds the natural/engineered target section.
   No computation, solver run, Phase 1, or authorization was added beyond the bounded feasibility
   calculation.
+- **Revision 3 correction pass 1 (2026-10-20):** applies the GPT/ and Claude/ correction work order:
+  count-box intervals replace exact claims; complete-rule probability is bounded above by the
+  support upper with no cell-wide lower bound; the `ρ=0` unique-body and `ρ=.25` attempt-slot arms
+  are reported side by side; O3 readings are corrected; the Rev F §9.2/§9.3 duplicate-semantics
+  conflict is recorded. No new sampling, solver run, Phase 1, or authorization.

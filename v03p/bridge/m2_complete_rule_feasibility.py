@@ -1,43 +1,45 @@
-"""M2 complete-rule feasibility under the declared support model.
+"""Bounded M2 complete-rule feasibility under the declared support model.
 
-Work order: "IMPLEMENT CLAUDE'S REVIEW AND DELIVER M2 FEASIBILITY DATA"
-(2026-10-20, Foued via GPT/). Deterministic, bounded calculation only: no
-sampling, no generation, no hidden outcomes, no Phase 1 execution.
+Work order: "CORRECT M2 FEASIBILITY BOUNDS AND DUPLICATE-RATE SCOPE"
+(2026-10-20, Foued via GPT/ and Claude/). Deterministic, bounded calculation
+only: no sampling, no generation, no hidden outcomes, no Phase 1 execution.
 
 Declared support model (Rev F section 9.1; same marginals as the committed
 `v03p/a1/a1_support_comparison.py`):
   * each simulated body independently draws k from the scenario categorical
     mix SCEN (in-range k in {5, 10, 20}; k = 0/25 are outside the support);
   * conditional on k, C is uniform over the feasible 6-family count vectors
-    (each family count 0..5, counts summing to k);
-  * a replication generates N_b bodies; eligibility is a deterministic,
-    outcome-blind function of the realized body multiset (support conditions
-    plus the proposed M2 gate);
-  * replications under the declared simulation design are independent, so the
-    number of eligible replications out of R = 2000 is Binomial(R, p).
+    (each family count 0..5, counts summing to k).
 
-Support rule (Rev F section 9.2 / A1 S0; conditions 1-4):
-  per in-range bucket: n >= 8, >= 2 distinct C values, >= 4 bodies at the
-  observed minimum C and >= 4 at the observed maximum C; the analysis
-  support requires >= 2 in-range buckets to pass.
+Support rule (Rev F conditions 1-4): per in-range bucket n >= 8, at least two
+distinct C values, and at least four bodies at each observed extreme; at least
+two in-range buckets must pass.
 
-Complete rule under the proposed M2 resolution (Rev F section 5A):
-  conditions 1-4 (rank-increase is implied by conditions 3-4) AND
-  kappa_eff <= 30 on the column-standardized extended design matrix, with
-  body-level rows, intercept unstandardized, non-intercept columns centered
-  and scaled to unit population SD over the in-support rows, rank tolerance
-  1e-9 (relative to the largest singular value), kappa_eff = s_1 / s_r.
+Bounding statement (corrected):
+  * The support probability is computed over a bounded multinomial count box.
+    The omitted mass T is recorded; the true support probability is bounded by
+    p_box <= p_support <= p_box + T. Intervals are propagated monotonically to
+    E[N_eligible] and P(N_eligible >= 39).
+  * The complete rule adds kappa_eff <= 30. The cell table does NOT compute a
+    cell-wide complete-rule lower bound. Its upper bound is the support upper
+    bound (the gate can only reject); its lower bound is 0. Cells are labelled
+    NOT CERTIFIED unless a negative bound rules a candidate rule out. Exact
+    gate-violation enumeration is reported separately for the small supports
+    where it is feasible and is not a cell-wide certificate.
+  * The conditional uniform-CK model is an engineered support model, not the
+    natural-solver population.
 
-Bounded exactness statement:
-  P(pass) is exact for conditions 1-4 at every cell.
-  P(pass AND kappa_eff > 30) is computed exactly over a count box covering
-  all but an explicitly computed multinomial tail. Inside the box, all
-  patterns with kappa_eff > 30 are enumerated: kappa_eff > 30 implies the
-  pooled within-bucket share of C variance is below 1/150 (Frobenius bound),
-  hence every included bucket's within-bucket variance is below
-  0.001067 * n / n_k; the enumeration keeps exactly those patterns.
-  Outside the box the violation probability is bounded by the tail mass.
-  The reported complete-rule interval is therefore rigorous, not an estimate.
+Duplicate semantics:
+  * Rev F section 9.3 says the Phase 1 simulation's N_b is simulated valid
+    unique bodies by construction, and duplicate-rate modelling at the
+    attempt axis is O1. That is the fixed-unique-body (rho=0) arm.
+  * Rev F section 9.1 also declares an attempt/slot copy mechanism: each slot
+    after the first copies an earlier slot with probability rho. If N_b denotes
+    generated slots and support counts unique canonical bodies, then
+    M = 1 + Binomial(N_b - 1, 1 - rho) and the rho=0.25 support probability is
+    E_M[p_support(M)]. Both readings are computed and separately labelled;
+    the document records the unresolved semantics rather than choosing one.
+  * Neither arm changes the estimand or authorizes Phase 1.
 
 Outputs: printed summary plus `m2_complete_rule_feasibility_2026-10-20.json`.
 """
@@ -51,11 +53,13 @@ import numpy as np
 R_REPS = 2000
 TAU_RANK = 1e-9
 KAPPA_MAX = 30.0
-FROB = 6.0
-WFRAC_CUT = FROB / (KAPPA_MAX * KAPPA_MAX)
 GAP = {5: 0.2, 10: 0.1, 20: 0.05}
 INRANGE = {5, 10, 20}
 SIZES = [60, 113, 120, 150, 240, 300, 400, 450, 600]
+CANDIDATE_SIZES = {60, 120}
+DUPLICATE_RATES = (0.0, 0.25)
+O3_FLOOR = 39
+O3_PROB_TARGET = 0.95
 SCENARIOS = {
     "a-hist": {0: 0.80, 5: 0.10, 10: 0.05, 25: 0.05},
     "a-50:50": {0: 0.80, 5: 0.075, 10: 0.075, 25: 0.05},
@@ -174,6 +178,8 @@ def f_s0(k, n):
 
 
 FTAB = {k: [f_s0(k, n) for n in range(0, max(SIZES) + 1)] for k in INRANGE}
+LFACT_NP = np.asarray(LFACT, dtype=np.float64)
+FTAB_NP = {k: np.asarray(FTAB[k], dtype=np.float64) for k in INRANGE}
 
 
 def count_vectors(n, v):
@@ -261,167 +267,243 @@ def kappa_from_stats(ks, ns, s1s, s2s):
     return math.sqrt(lam[0] / lam[rank - 1])
 
 
-def kept_patterns(k, n, vt):
-    vals, probs = CK[k]
-    V = len(vals)
+_SUPPORT_CACHE = {}
+
+
+def _box_ranges(nb, means, sds):
     out = []
-    for i in range(V):
-        for j in range(i + 1, V):
-            r = vals[j] - vals[i]
-            if 2.0 * r * r / n >= vt:
-                continue
-            for cnt in count_vectors(n, j - i + 1):
-                full = [0] * V
-                for t, c in enumerate(cnt):
-                    full[i + t] = c
-                if not bucket_pass(k, full):
-                    continue
-                st = pattern_stats(k, full)
-                if st is None:
-                    continue
-                s1, s2, lp = st
-                if s2 / n - (s1 / n) ** 2 < vt:
-                    out.append((s1, s2, lp))
+    for mean, sd in zip(means, sds):
+        out.append((max(0, int(math.floor(mean - 8.0 * sd))),
+                    min(nb, int(math.ceil(mean + 8.0 * sd)))))
     return out
 
 
-_KEEP_CACHE = {}
+def support_cell(scenario, nb):
+    """Bounded count-box support calculation for exactly nb unique bodies.
 
+    Returns p_box and tail such that p_box <= P(conditions 1-4) <= p_box + tail.
+    The count box covers +/- 8 marginal SDs for every in-range bucket; all
+    configurations outside it are charged to the tail, whether or not they
+    would pass.
+    """
+    key = (scenario, int(nb))
+    cached = _SUPPORT_CACHE.get(key)
+    if cached is not None:
+        return cached
 
-def kept_cached(k, n, vt):
-    key = (k, n, round(vt, 12))
-    hit = _KEEP_CACHE.get(key)
-    if hit is None:
-        hit = kept_patterns(k, n, vt)
-        _KEEP_CACHE[key] = hit
-    return hit
-
-
-def subset_violation(ks, ns, probs_log):
-    n = sum(ns)
-    lists = []
-    for i, k in enumerate(ks):
-        vt = WFRAC_CUT * n / ns[i]
-        lists.append(kept_cached(k, ns[i], vt))
-    if any(not L for L in lists):
-        return 0.0
-    acc = 0.0
-    if len(ks) == 1:
-        return 0.0
-    if len(ks) == 2:
-        A, B = lists
-        s1a = np.array([x[0] for x in A])
-        s2a = np.array([x[1] for x in A])
-        lpa = np.array([x[2] for x in A])
-        s1b = np.array([x[0] for x in B])
-        s2b = np.array([x[1] for x in B])
-        lpb = np.array([x[2] for x in B])
-        S1 = s1a[:, None] + s1b[None, :]
-        S2 = s2a[:, None] + s2b[None, :]
-        tot = S2 / n - (S1 / n) ** 2
-        W = (S2 - (s1a[:, None] ** 2 / ns[0] + s1b[None, :] ** 2 / ns[1])) / n
-        mask = (tot > 0) & (W < tot / (1.0 / WFRAC_CUT))
-        if not mask.any():
-            return 0.0
-        LP = lpa[:, None] + lpb[None, :]
-        cand = np.argwhere(mask)
-        for a, b in cand:
-            kk = kappa_from_stats(ks, ns, [s1a[a], s1b[b]], [s2a[a], s2b[b]])
-            if kk > KAPPA_MAX:
-                acc += math.exp(LP[a, b])
-        return acc
-    A, B, C = lists
-    for ia, (s1a, s2a, lpa) in enumerate(A):
-        for ib, (s1b, s2b, lpb) in enumerate(B):
-            for ic, (s1c, s2c, lpc) in enumerate(C):
-                S1 = s1a + s1b + s1c
-                S2 = s2a + s2b + s2c
-                tot = S2 / n - (S1 / n) ** 2
-                if tot <= 0.0:
-                    continue
-                W = (S2 - (s1a * s1a / ns[0] + s1b * s1b / ns[1]
-                          + s1c * s1c / ns[2])) / n
-                if W >= tot / (1.0 / WFRAC_CUT):
-                    continue
-                kk = kappa_from_stats(ks, ns, [s1a, s1b, s1c],
-                                      [s2a, s2b, s2c])
-                if kk > KAPPA_MAX:
-                    acc += math.exp(lpa + lpb + lpc)
-    return acc
-
-
-def log_multinom(n, parts, probs):
-    t = LFACT[n]
-    for x, p in zip(parts, probs):
-        t -= LFACT[x]
-        if x:
-            if p <= 0.0:
-                return float("-inf")
-            t += x * math.log(p)
-    return t
-
-
-def cell(scenario, nb):
     scen = SCENARIOS[scenario]
     ks = [k for k in sorted(scen) if k in INRANGE]
-    if not ks:
-        return {"scenario": scenario, "N_b": nb, "structural": "no in-range buckets"}
+    if len(ks) < 2:
+        out = {
+            "scenario": scenario,
+            "N_b": int(nb),
+            "in_range_buckets": ks,
+            "p_box": 0.0,
+            "tail": 1.0,
+            "box_mass": 0.0,
+            "box_count": 0,
+            "structural": ("no in-range buckets" if not ks
+                           else "fewer than two in-range buckets"),
+        }
+        _SUPPORT_CACHE[key] = out
+        return out
+
     probs = [scen[k] for k in ks]
     p_other = 1.0 - sum(probs)
     means = [nb * p for p in probs]
     sds = [math.sqrt(nb * p * (1.0 - p)) for p in probs]
-    box = []
-    for m, s in zip(means, sds):
-        box.append((max(0, int(math.floor(m - 8 * s))),
-                    min(nb, int(math.ceil(m + 8 * s)))))
-    subsets = []
-    m = len(ks)
-    for mask in range(1, 1 << m):
-        if bin(mask).count("1") >= 2:
-            subsets.append([i for i in range(m) if mask & (1 << i)])
+    boxes = _box_ranges(nb, means, sds)
+    ranges = [np.arange(lo, hi + 1, dtype=np.int64) for lo, hi in boxes]
+    log_probs = [math.log(p) for p in probs]
+    log_other = math.log(p_other) if p_other > 0.0 else None
 
-    def iterate(idx, cur, rem):
-        if idx == len(ks):
-            yield tuple(cur)
-            return
-        lo, hi = box[idx]
-        hi = min(hi, rem)
-        for x in range(lo, hi + 1):
-            yield from iterate(idx + 1, cur + [x], rem - x)
+    if len(ks) == 2:
+        A, B = np.meshgrid(ranges[0], ranges[1], indexing="ij")
+        A = A.ravel()
+        B = B.ravel()
+        O = nb - A - B
+        mask = O >= 0
+        if log_other is None:
+            mask &= (O == 0)
+        A, B, O = A[mask], B[mask], O[mask]
+        if A.size == 0:
+            logp = np.empty(0)
+        else:
+            logp = (LFACT_NP[nb] - LFACT_NP[A] - LFACT_NP[B] - LFACT_NP[O]
+                    + A * log_probs[0] + B * log_probs[1])
+            if log_other is not None:
+                logp = logp + O * log_other
+        f0 = FTAB_NP[ks[0]][A]
+        f1 = FTAB_NP[ks[1]][B]
+        q = f0 * f1
+    else:
+        A, B, C = np.meshgrid(ranges[0], ranges[1], ranges[2], indexing="ij")
+        A = A.ravel()
+        B = B.ravel()
+        C = C.ravel()
+        O = nb - A - B - C
+        mask = O >= 0
+        if log_other is None:
+            mask &= (O == 0)
+        A, B, C, O = A[mask], B[mask], C[mask], O[mask]
+        if A.size == 0:
+            logp = np.empty(0)
+        else:
+            logp = (LFACT_NP[nb] - LFACT_NP[A] - LFACT_NP[B] - LFACT_NP[C]
+                    - LFACT_NP[O] + A * log_probs[0] + B * log_probs[1]
+                    + C * log_probs[2])
+            if log_other is not None:
+                logp = logp + O * log_other
+        f0 = FTAB_NP[ks[0]][A]
+        f1 = FTAB_NP[ks[1]][B]
+        f2 = FTAB_NP[ks[2]][C]
+        q = f0 * f1 + f0 * f2 + f1 * f2 - 2.0 * f0 * f1 * f2
 
-    p_pass = 0.0
-    box_mass = 0.0
-    for parts in iterate(0, [], nb):
-        ntot = sum(parts)
-        n_other = nb - ntot
-        if n_other < 0:
-            continue
-        lp = log_multinom(nb, list(parts) + [n_other],
-                          probs + [p_other] if p_other > 0 else probs + [0.0])
-        if lp <= -745.0:
-            continue
-        w = math.exp(lp)
-        box_mass += w
-        fs = [FTAB[k][n] for k, n in zip(ks, parts)]
-        pairs = sum(fs[i] * fs[j] for i in range(len(fs))
-                    for j in range(i + 1, len(fs)))
-        q = pairs
-        if len(fs) == 3:
-            q -= 2.0 * fs[0] * fs[1] * fs[2]
-        p_pass += w * q
-    tail = max(0.0, 1.0 - box_mass)
-    return {
+    w = np.zeros_like(logp)
+    valid = logp > -745.0
+    w[valid] = np.exp(logp[valid])
+    p_box = float(np.sum(w * q)) if w.size else 0.0
+    box_mass = float(np.sum(w)) if w.size else 0.0
+    p_box = max(0.0, min(1.0, p_box))
+    tail = max(0.0, min(1.0, 1.0 - box_mass))
+    out = {
         "scenario": scenario,
-        "N_b": nb,
+        "N_b": int(nb),
         "in_range_buckets": ks,
-        "P_pass_conditions_1_4": p_pass,
-        "box_tail_bound": tail,
-        "E_eligible_conditions_1_4": R_REPS * p_pass,
-        "P_N_ge_39_conditions_1_4": binom_sf(38, R_REPS, p_pass),
-        "complete_rule_status": ("gate_non_binding_two_level" if len(ks) == 2
-                                 else "unresolved_three_level"),
+        "p_box": p_box,
+        "tail": tail,
+        "box_mass": box_mass,
+        "box_count": int(w.size),
+        "box_ranges": {str(k): [int(lo), int(hi)]
+                       for k, (lo, hi) in zip(ks, boxes)},
+    }
+    _SUPPORT_CACHE[key] = out
+    return out
+
+
+def _arm_record(p_lower, p_upper):
+    p_lower = max(0.0, min(1.0, p_lower))
+    p_upper = max(p_lower, min(1.0, p_upper))
+    e_lower = R_REPS * p_lower
+    e_upper = R_REPS * p_upper
+    pn_lower = binom_sf(O3_FLOOR - 1, R_REPS, p_lower)
+    pn_upper = binom_sf(O3_FLOOR - 1, R_REPS, p_upper)
+    complete_e_upper = R_REPS * p_upper
+    complete_pn_upper = binom_sf(O3_FLOOR - 1, R_REPS, p_upper)
+    expected_status = ("ruled_out" if complete_e_upper < O3_FLOOR
+                       else "not_certified")
+    probability_status = ("ruled_out" if complete_pn_upper < O3_PROB_TARGET
+                          else "not_certified")
+    if expected_status == "ruled_out" and probability_status == "ruled_out":
+        overall = "both_candidate_rules_ruled_out"
+    elif expected_status == "ruled_out":
+        overall = "expected_count_rule_ruled_out"
+    elif probability_status == "ruled_out":
+        overall = "probability_rule_ruled_out"
+    else:
+        overall = "not_certified_no_complete_rule_lower_bound"
+    return {
+        "P_support_lower": p_lower,
+        "P_support_upper": p_upper,
+        "E_support_lower": e_lower,
+        "E_support_upper": e_upper,
+        "P_N_ge_39_support_lower": pn_lower,
+        "P_N_ge_39_support_upper": pn_upper,
+        "P_complete_lower": 0.0,
+        "P_complete_upper": p_upper,
+        "E_complete_lower": 0.0,
+        "E_complete_upper": complete_e_upper,
+        "P_N_ge_39_complete_lower": 0.0,
+        "P_N_ge_39_complete_upper": complete_pn_upper,
+        "o3_expected_count_status": expected_status,
+        "o3_probability_status": probability_status,
+        "o3_label": overall,
     }
 
+
+def _duplicate_support(scenario, nb, rho):
+    p_lower = 0.0
+    tail_mix = 0.0
+    mass = 0.0
+    new_prob = 1.0 - rho
+    for m in range(1, nb + 1):
+        pmf = binom_pmf(nb - 1, m - 1, new_prob)
+        if pmf == 0.0:
+            continue
+        base = support_cell(scenario, m)
+        if base.get("structural"):
+            return {
+                "rho": rho,
+                "N_b_semantics": "attempt_slots",
+                "structural": base["structural"],
+            }
+        p_lower += pmf * base["p_box"]
+        tail_mix += pmf * base["tail"]
+        mass += pmf
+    mass = min(1.0, mass)
+    omitted = max(0.0, 1.0 - mass)
+    p_upper = min(1.0, p_lower + tail_mix + omitted)
+    return {
+        "rho": rho,
+        "N_b_semantics": "attempt_slots",
+        "M_formula": "M = 1 + Binomial(N_b - 1, 1 - rho)",
+        "M_mean": 1.0 + (nb - 1) * new_prob,
+        "M_sd": math.sqrt((nb - 1) * rho * new_prob),
+        "mixture_mass_covered": mass,
+        "mixture_omitted_mass": omitted,
+        "p_lower": p_lower,
+        "p_upper": p_upper,
+        "tail_mixture": tail_mix,
+    }
+
+
+def cell(scenario, nb):
+    base = support_cell(scenario, nb)
+    size_class = "candidate" if nb in CANDIDATE_SIZES else "planning_sensitivity"
+    note = None
+    if nb == 113:
+        note = "approximately E[M] for 150 slots at rho=0.25 (112.75)"
+    elif nb == 450:
+        note = "approximately E[M] for 600 slots at rho=0.25 (450.25)"
+    if base.get("structural"):
+        return {
+            "scenario": scenario,
+            "N_b": int(nb),
+            "size_class": size_class,
+            "size_note": note,
+            "in_range_buckets": base["in_range_buckets"],
+            "structural": base["structural"],
+            "arms": {
+                "fixed_unique_rho_0": {"rho": 0.0,
+                                       "N_b_semantics": "unique_bodies",
+                                       "status": "structural_zero"},
+                "attempt_copy_rho_0_25": {"rho": 0.25,
+                                          "N_b_semantics": "attempt_slots",
+                                          "status": "structural_zero"},
+            },
+        }
+
+    fixed = _arm_record(base["p_box"], base["p_box"] + base["tail"])
+    fixed.update({"rho": 0.0, "N_b_semantics": "unique_bodies"})
+    duplicate = _duplicate_support(scenario, nb, 0.25)
+    if "structural" in duplicate:
+        duplicate["status"] = "structural_zero"
+    else:
+        duplicate.update(_arm_record(duplicate["p_lower"], duplicate["p_upper"]))
+    return {
+        "scenario": scenario,
+        "N_b": int(nb),
+        "size_class": size_class,
+        "size_note": note,
+        "in_range_buckets": base["in_range_buckets"],
+        "box_count": base["box_count"],
+        "box_mass": base["box_mass"],
+        "box_tail_bound": base["tail"],
+        "arms": {
+            "fixed_unique_rho_0": fixed,
+            "attempt_copy_rho_0_25": duplicate,
+        },
+    }
 
 
 def ck_moments(k):
@@ -556,18 +638,43 @@ def main():
     out = {
         "meta": {
             "date": "2026-10-20",
+            "calculation_version": "2026-10-20-correction-1",
             "model": "Rev F 9.1 declared support: k ~ SCEN, C|k uniform over feasible 6-family vectors; bodies iid per replication; R=2000 independent replications",
             "support_rule": "Rev F conditions 1-4 (S0) per in-range bucket; >=2 buckets pass",
+            "support_interval": "p_box <= P(conditions 1-4) <= p_box + (1 - box_mass); propagated monotonically to E and P(N_ge_39)",
+            "complete_rule_interval": "0 <= P(conditions 1-4 AND kappa_eff <= 30) <= P(conditions 1-4 upper); no cell-wide lower bound is computed",
             "m2_gate": "kappa_eff <= 30 on column-standardized extended matrix; rank tol 1e-9; body rows",
             "tau_rank": TAU_RANK,
             "kappa_max": KAPPA_MAX,
-            "frobenius_within_frac_cut": WFRAC_CUT,
             "ck_z": CK_Z,
             "ck_probs": {str(k): list(zip(CK[k][0], CK[k][1])) for k in CK},
             "reps": R_REPS,
+            "size_classes": {
+                "candidate": [60, 120],
+                "planning_sensitivity": [113, 150, 240, 300, 400, 450, 600],
+                "note": "113 and 450 are near E[M] for 150 and 600 slots at rho=0.25; none of the planning sizes is an adopted Rev F grid value",
+            },
+            "duplicate_scope": {
+                "conflict": "Rev F 9.2 lists duplicate rate as a grid factor; Rev F 9.3 says Phase 1 N_b is simulated valid unique bodies and duplicate-rate modelling at the attempt axis is O1",
+                "arms": [
+                    {"rho": 0.0, "N_b_semantics": "unique_bodies",
+                     "source": "Rev F 9.3 fixed-unique-body reading"},
+                    {"rho": 0.25, "N_b_semantics": "attempt_slots",
+                     "source": "Rev F 9.1 slot-copy mechanism; M = 1 + Binomial(N_b - 1, 1 - rho)"},
+                ],
+                "resolution": "unresolved; both arms reported, no design adopted",
+            },
+            "o3_rules": {
+                "floor_realized_count": O3_FLOOR,
+                "expected_count_threshold": O3_FLOOR,
+                "expected_count_p_threshold": O3_FLOOR / float(R_REPS),
+                "probability_target": O3_PROB_TARGET,
+                "probability_p_threshold": required_p_for_prob(
+                    O3_FLOOR, O3_PROB_TARGET, R_REPS),
+            },
         },
         "o3_floor": floor_summary(),
-        "required_p_95": required_p_for_prob(39, 0.95, R_REPS),
+        "required_p_95": required_p_for_prob(O3_FLOOR, O3_PROB_TARGET, R_REPS),
         "population_kappa": [population_kappa(x) for x in
                              ("a-hist", "b-hist", "b-thirds", "c-hist")],
         "small_support_gate": [
@@ -583,9 +690,17 @@ def main():
         for nb in SIZES:
             if scenario == "d" and nb != 120:
                 continue
-            out["cells"].append(cell(scenario, nb))
-            print(scenario, nb, out["cells"][-1].get("P_pass_conditions_1_4"),
-                  out["cells"][-1].get("P_complete_lower"), flush=True)
+            rec = cell(scenario, nb)
+            out["cells"].append(rec)
+            if "arms" in rec and "fixed_unique_rho_0" in rec["arms"]:
+                f = rec["arms"]["fixed_unique_rho_0"]
+                d = rec["arms"]["attempt_copy_rho_0_25"]
+                print(scenario, nb,
+                      "rho0", f.get("P_support_lower"), f.get("P_support_upper"),
+                      "rho.25", d.get("P_support_lower"), d.get("P_support_upper"),
+                      "labels", f.get("o3_label"), d.get("o3_label"), flush=True)
+            else:
+                print(scenario, nb, rec.get("structural"), flush=True)
     with open("v03p/bridge/m2_complete_rule_feasibility_2026-10-20.json", "w",
               encoding="utf-8") as fh:
         json.dump(out, fh, indent=1, sort_keys=True)
