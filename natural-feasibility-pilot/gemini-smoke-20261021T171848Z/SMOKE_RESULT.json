@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "stage": "sandbox_smoke",
+  "run": "gemini-smoke-20261021T171848Z",
+  "provider": "Google Gemini API",
+  "model": "gemini-3.5-flash-lite",
+  "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+  "generation_config": {
+    "temperature": 1.0,
+    "maxOutputTokens": 4096
+  },
+  "body_id": "9644ca012b24cab65bfc816983486d06d27a813a33bf5d97edfd942d52f800e6",
+  "source_screen": {
+    "accepted": true,
+    "reasons": []
+  },
+  "diagnostic_pass_count": 30,
+  "diagnostic_total": 30,
+  "evaluation_correct_count": 20,
+  "evaluation_total": 20,
+  "request_count": 1,
+  "pilot_started": false,
+  "smoke_criteria": "source accepted; 30/30 diagnostic rows complete and pass; 20/20 evaluation rows complete and correct",
+  "halt_reason": null
+}
