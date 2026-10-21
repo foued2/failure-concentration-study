@@ -30,10 +30,11 @@ from study.features import concentration, family_counts
 CAP = 100
 RUN_LABEL = "natural-pilot-gemini"
 PROVIDER = "Google Gemini API"
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash-lite"
 ENDPOINT_HOST = "generativelanguage.googleapis.com"
 ENDPOINT_PATH = f"/v1beta/models/{MODEL}:generateContent"
 GENERATION_CONFIG = {"temperature": 1.0, "maxOutputTokens": 4096}
+MODEL_AMENDMENT = PILOT / "FOLLOWUP_MODEL_AMENDMENT_2026-10-21.md"
 PROVIDER_BLOCK_MARKERS = ("usage limit", "rate limit", "quota", "too many requests", "hard block")
 HALT_STATES = {"HALTED_GENERATION_USAGE_LIMIT", "HALTED_GENERATION_FAILURE"}
 POPULATION = (f"{PROVIDER}, model {MODEL}, one exact SSSP prompt per attempt; "
@@ -319,6 +320,9 @@ def main() -> None:
         "population_changed": True, "not_equivalent_to_codex_population": True,
         "authorization_amendment": "natural-feasibility-pilot/FOLLOWUP_PROVIDER_AMENDMENT_2026-10-21.md",
         "authorization_amendment_sha256": hashlib.sha256((PILOT / "FOLLOWUP_PROVIDER_AMENDMENT_2026-10-21.md").read_text(encoding="utf-8").encode("utf-8")).hexdigest(),
+        "model_amendment": str(MODEL_AMENDMENT.relative_to(REPO)),
+        "model_amendment_sha256": hashlib.sha256(MODEL_AMENDMENT.read_text(encoding="utf-8").encode("utf-8")).hexdigest(),
+        "model_change_reason": "gemini-2.5-flash returned HTTP 503 UNAVAILABLE (high demand); one bounded model switch to gemini-3.5-flash-lite.",
         "frozen_protocol_commit": "74cd419", "decision_memo_commit": "dd5be4a",
         "smoke_result": str(smoke_result), "smoke_result_sha256": smoke_sha,
         "attempt_cap": CAP, "evaluation_input_count": 20, "diagnostic_probe_count": 30,

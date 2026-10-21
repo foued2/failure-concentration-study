@@ -18,6 +18,7 @@ import run_gemini_pilot as pilot
 import run_generated_smoke as pipeline
 
 AMENDMENT = PILOT / "FOLLOWUP_PROVIDER_AMENDMENT_2026-10-21.md"
+MODEL_AMENDMENT = PILOT / "FOLLOWUP_MODEL_AMENDMENT_2026-10-21.md"
 
 
 def save_json(path: Path, value) -> None:
@@ -41,6 +42,9 @@ def main() -> None:
         "api_key_env": "GEMINI_API_KEY", "backend_version": None, "immutable_snapshot": None,
         "authorization_amendment": str(AMENDMENT.relative_to(REPO)),
         "authorization_amendment_sha256": hashlib.sha256(AMENDMENT.read_text(encoding="utf-8").encode("utf-8")).hexdigest(),
+        "model_amendment": str(MODEL_AMENDMENT.relative_to(REPO)),
+        "model_amendment_sha256": hashlib.sha256(MODEL_AMENDMENT.read_text(encoding="utf-8").encode("utf-8")).hexdigest(),
+        "model_change_reason": "The gemini-2.5-flash smoke returned HTTP 503 UNAVAILABLE; this is one bounded model switch.",
         "frozen_protocol_commit": "74cd419", "decision_memo_commit": "dd5be4a",
         "request_count": 1, "pilot_cap": 100, "smoke_separate_from_pilot": True,
         "smoke_criteria": "source accepted; 30/30 diagnostic rows complete and pass; 20/20 evaluation rows complete and correct; complete SDK records",
