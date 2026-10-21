@@ -1,0 +1,48 @@
+{
+  "run_id": "natural-pilot-gemini-20261021T172103Z",
+  "checked_at_utc": "2026-10-21T18:23:56.254521+00:00",
+  "integrity_manifest": "INTEGRITY.json",
+  "hash_checks": {
+    "prompt_file_raw": true,
+    "attempts": true,
+    "pilot_results": true,
+    "source_policy": true,
+    "diagnostic_battery": true,
+    "evaluation_bank": true,
+    "generation_pipeline": true,
+    "pilot_runner": true,
+    "sandbox_pipeline": true,
+    "sandbox_adapter": true,
+    "sandbox_supervisor": true,
+    "provider_amendment": true,
+    "model_amendment": true,
+    "smoke_result_raw": true,
+    "smoke_result_text_normalized": true,
+    "prompt_canonical": true
+  },
+  "all_hashes_match": true,
+  "prompt_consistent_across_attempts": true,
+  "provider_model_consistent": true,
+  "attempt_count": 100,
+  "generation_requests": 100,
+  "generation_failures": 0,
+  "source_screen_accepted": 100,
+  "duplicate_skipped": 75,
+  "complete_bodies": 25,
+  "unique_complete_bodies": 25,
+  "complete_record_files_present": true,
+  "all_complete_have_30_diag": true,
+  "all_complete_have_20_eval": true,
+  "all_diagnostic_zero_failures": true,
+  "all_evaluation_20_of_20": true,
+  "k_values": [
+    0
+  ],
+  "C_values": [
+    0.0
+  ],
+  "fixed_k_contrasts": 0,
+  "feasibility_demonstrated": false,
+  "state": "FEASIBILITY_NOT_DEMONSTRATED_WITHIN_CAP",
+  "status": "PASS"
+}
