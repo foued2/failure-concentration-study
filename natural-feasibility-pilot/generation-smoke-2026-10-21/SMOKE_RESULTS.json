@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "model_generation_attempts": 0,
+  "separate_generation_smoke_requests": 1,
+  "body_id": "46a85d96e3ad7af2f90857ce36f4885f1d2a2126a429286ef061b101ee3339c1",
+  "diagnostic_rows": 30,
+  "evaluation_rows": 20,
+  "family_counts": {
+    "F1": 0,
+    "F2": 0,
+    "F3": 0,
+    "F4": 0,
+    "F5": 0,
+    "F6": 0
+  },
+  "k": 0,
+  "C": 0.0,
+  "evaluation_correct": 20,
+  "generation_wall_seconds_approx": 21.185804843902588,
+  "complete_50_input_runner_wall_seconds_approx": 66.6018476486206,
+  "diagnostic_capture_wall_from_source_timestamp_seconds": 34.76999878883362,
+  "evaluation_capture_wall_from_diagnostic_capture_seconds": 31.831848859786987,
+  "worker_ms_sum": 33679.0,
+  "worker_ms_mean": 673.58,
+  "worker_ms_min": 625.0,
+  "worker_ms_max": 1055.0,
+  "estimated_100_attempts_hours": 2.438545902570089,
+  "estimate_assumption": "linear repetition of this one CLI request and one 50-input runner; excludes between-attempt variation, retries (none allowed), and external contention",
+  "timing_caveat": "Suite wall time is reconstructed from host file timestamps because the first orchestrator crashed during report construction after both complete captures were retained; it includes runner setup before/around the sessions and may omit final Sandbox shutdown after the last capture.",
+  "orchestrator_issue": "Initial postprocessing indexed evaluation rows by probe_id although the retained evaluation bank identifies them by hid. Both Sandbox sessions and complete captures had finished; host records were then reconstructed offline from retained raw captures, with no solver re-execution.",
+  "source_screen": {
+    "accepted": true,
+    "reasons": []
+  },
+  "full_suite_inputs_visible_inside_guest": true,
+  "reference_oracle_mapped": false,
+  "host_recomputed_all_labels_features": true,
+  "model_prompt_included_test_inputs": false
+}

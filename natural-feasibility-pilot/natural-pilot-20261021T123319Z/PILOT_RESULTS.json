@@ -1,0 +1,43 @@
+{
+  "state": "HALTED_GENERATION_USAGE_LIMIT",
+  "attempt_count": 100,
+  "attempt_cap": 100,
+  "generation_requests": 100,
+  "model_written_generation_attempts": 39,
+  "generation_failures": 61,
+  "distinct_canonical_bodies": 15,
+  "excluded_or_not_executed": 90,
+  "summary": {
+    "eligible_executed_bodies": 10,
+    "fixed_k_contrasts": [],
+    "support_by_k_C": {
+      "0": {
+        "0.0": {
+          "attempts": 10,
+          "distinct_bodies": 10,
+          "evaluation_correct_counts": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20
+          ]
+        }
+      }
+    },
+    "feasibility_demonstrated": false
+  },
+  "predictive_model_fitted": false,
+  "halt_reason": "Codex CLI usage limit reached at attempt 40; attempts 41-100 failed before any model output. The 100-request cap is exhausted, so this is an infrastructure halt, not a test of the generator through the planned cap. The provider message reports availability after 2026-11-19 18:55.",
+  "population": "Codex CLI 0.160.1, --model gpt-6-luna, one exact SSSP prompt per attempt; backend snapshot unavailable",
+  "caveat": "Exploratory feasibility only. Full suite inputs are visible inside their respective guest session; static screen is not a security guarantee.",
+  "feasibility_criterion_met": false,
+  "accounting_rule": "All 100 generation requests count against the current cap. The 61 usage-limit failures are generation-request attempts, not solver bodies or solver outcomes.",
+  "scientific_interpretation": "The preregistered feasibility criterion was not met: no eligible fixed-k contrast with two different C values was observed. Generator feasibility remains inconclusive because the provider usage limit prevented 61 of 100 requests from producing outputs. All ten complete bodies had k=0, C=0, and 20/20 evaluation correctness; this is not evidence that concentration cannot predict correctness and is not a scientific falsification claim.",
+  "closure": "Current run closed at 100 generation requests. Any follow-up must be separately identified and separately authorized with its own cap after the provider reset."
+}

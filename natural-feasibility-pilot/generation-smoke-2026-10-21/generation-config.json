@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-21",
+  "codex_cli_version": "0.160.1",
+  "model_selector": "gpt-6-luna",
+  "backend_version": null,
+  "immutable_snapshot": null,
+  "sampling_settings": "not exposed; defaults unavailable",
+  "invocation": "codex exec --ephemeral --sandbox read-only --model gpt-6-luna --json --output-last-message <file>",
+  "scope": "one trivial task smoke request, not a pilot attempt",
+  "generation_inputs_exposed": false
+}

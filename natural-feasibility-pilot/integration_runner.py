@@ -27,6 +27,7 @@ MAX_SOLVER_STDOUT_BYTES = 64 * 1024
 EXPECTED_FILENAME = "capture.json"
 TRANSPORT_KEYS = {"schema", "nonce", "case_id", "probe_rows"}
 ROW_KEYS = {"probe_id", "status", "exit_code", "timed_out", "tree_terminated", "stdout_b64", "stderr_b64"}
+ROW_KEYS_WITH_TIMING = ROW_KEYS | {"elapsed_ms"}
 
 
 class CaptureRejected(ValueError):
@@ -65,8 +66,10 @@ def parse_transport(raw: bytes, expected_nonce: str, expected_case_id: str) -> d
         raise CaptureRejected(f"transport must contain exactly {expected_rows} probe rows")
     seen: set[str] = set()
     for row in doc["probe_rows"]:
-        if not isinstance(row, dict) or set(row) != ROW_KEYS:
+        if not isinstance(row, dict) or frozenset(row) not in {frozenset(ROW_KEYS), frozenset(ROW_KEYS_WITH_TIMING)}:
             raise CaptureRejected("probe row has missing or unexpected fields")
+        if "elapsed_ms" in row and (isinstance(row["elapsed_ms"], bool) or not isinstance(row["elapsed_ms"], (int, float)) or row["elapsed_ms"] < 0):
+            raise CaptureRejected("elapsed_ms must be a non-negative number")
         if not isinstance(row["probe_id"], str) or row["probe_id"] in seen:
             raise CaptureRejected("probe identity is invalid or duplicated")
         seen.add(row["probe_id"])

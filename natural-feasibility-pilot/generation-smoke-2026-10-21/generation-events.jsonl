@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a15e6e-4605-7352-ac64-2d77cc329171"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"import heapq\n\ndef solve(n, edges, s, t):\n    graph = [[] for _ in range(n)]\n    for u, v, w in edges:\n        graph[u].append((v, w))\n\n    distances = [float(\"inf\")] * n\n    distances[s] = 0\n    queue = [(0, s)]\n\n    while queue:\n        distance, u = heapq.heappop(queue)\n        if distance != distances[u]:\n            continue\n        if u == t:\n            return distance\n        for v, weight in graph[u]:\n            candidate = distance + weight\n            if candidate < distances[v]:\n                distances[v] = candidate\n                heapq.heappush(queue, (candidate, v))\n\n    return -1"}}
+{"type":"turn.completed","usage":{"input_tokens":13204,"cached_input_tokens":11136,"cache_write_input_tokens":0,"output_tokens":158,"reasoning_output_tokens":0}}

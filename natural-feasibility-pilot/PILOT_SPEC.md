@@ -2,7 +2,9 @@
 
 ## Status
 
-Readiness status: **`HOLD_RUNNER_INTEGRATION_INCOMPLETE`**. The historical MIMO procedure below remains preserved as historical evidence; the proposed pilot population is now a separately declared Codex CLI generation procedure. No model-written solver has been generated or executed. The full Python diagnostic/evaluation integration gate did not complete, so this specification is proposed but not frozen for collection.
+Readiness status: **`READY_FOR_BOUNDED_EXPLORATORY_PILOT`**, with explicitly weaker, non-adversarial input-isolation expectations. The historical MIMO procedure below remains preserved as historical evidence; the pilot population is the separately declared Codex CLI generation procedure. One generated smoke body completed the full diagnostic and evaluation banks through the Python Sandbox runner. This authorizes only the bounded feasibility collection described here, not predictive analysis or a confirmatory study.
+
+Collection status (2026-10-21): **`HALTED_GENERATION_USAGE_LIMIT`**. The 100-request cap was reached, but only 39 requests returned model output; requests 40-100 failed before producing a body because the Codex CLI reported a usage limit. Fifteen distinct canonical bodies were generated and 10 completed both banks. This is an infrastructure halt, not a feasibility conclusion. See `natural-pilot-20261021T123319Z/PILOT_RESULTS.json`.
 
 ## Target and claim boundary
 
@@ -40,12 +42,12 @@ The machine-readable field requirements and allowed statuses are in `record_sche
 
 ## Execution boundary
 
-The direct `study.features.load_solver` importer is not suitable for untrusted code. The existing Windows Sandbox workflow has passed prior bounded tests for disabled networking and host integration, Python runtime launch, one-input visibility, process-tree timeout, and a 128 MiB worker memory limit. Those tests do not establish resistance to every Sandbox escape. The latest attempt to connect this path to the complete 30-probe battery failed: the host saw progress through 25/30 inputs for the first controlled body, then timed out waiting for 30/30 before any capture was finalized. The separate 20-input evaluation path was not reached. See `FINAL_RUNNER_READINESS_2026-10-21.md` and retained attempts in `python-pipeline-integration/streamed-run-*`. Therefore no complete Python diagnostic/evaluation runner has passed, and generated code remains disabled.
+The direct `study.features.load_solver` importer is not used. The suite-level Windows Sandbox runner passed one generated smoke body over all 30 diagnostic probes and the separate 20-input evaluation bank. It launches a fresh Python worker for each input, with networking disabled, a 10-second worker timeout, a 128 MiB Job Object memory limit, and host-side oracle, label, and feature calculations. The whole current suite is guest-readable during that suite's session; source scanning is a best-effort screen and not a security boundary. The runner does not expose the oracle, reference outputs, host records, repository, or credentials as mapped folders. This weaker input-secrecy standard is accepted for exploratory feasibility only; results must not be described as securely blinded against a solver that can inspect its session's mounted suite. Earlier failed streaming attempts remain retained in `python-pipeline-integration/streamed-run-*` and are not treated as pilot evidence.
 
 ## Limits and decision rules
 
-- Maximum generation attempts: 100; actual attempts: 0.
-- Maximum distinct evaluation inputs: 100; planned bank: 20, not executed.
+- Maximum generation attempts: 100; actual generation requests: 100 (39 model outputs; 61 usage-limit failures).
+- Maximum distinct evaluation inputs: 100; planned bank: 20; executed for 10 complete bodies.
 - Diagnostic probes per body: 30.
 - No replacement sampling, expanded caps, model fitting, predictive-effect analysis, concentration-metric selection, or confirmatory inference.
 - Feasibility is demonstrated only if some eligible fixed-`k` comparison has two different `C` values, each supported by at least two distinct canonical bodies, and independently scored correctness varies meaningfully across those bodies, with input separation and record-integrity checks passing.
@@ -53,4 +55,4 @@ The direct `study.features.load_solver` importer is not suitable for untrusted c
 
 ## Reproduction status
 
-The diagnostic seed and 20-input evaluation bank are specified above. The Codex CLI route is callable for text-only smoke output, but the full Python runner gate failed before completing the first 30-probe calibration batch. This specification therefore records **GENERATION NOT EXECUTED**, **NATURAL-SOLVER EVALUATION NOT EXECUTED**, and **`HOLD_RUNNER_INTEGRATION_INCOMPLETE`**. No pilot collection may begin until the end-to-end Python diagnostic and separate evaluation workflow completes and its retained records are validated.
+The diagnostic seed and 20-input evaluation bank are specified above. The Codex CLI generated one trivial SSSP smoke body; it was not a pilot attempt. The host recovered 30/30 diagnostic rows and 20/20 evaluation rows, independently computed all labels, and reconstructed the feature vector. The smoke had `k=0`, `C=0`, and 20/20 evaluation cases correct; this checks the runner and says nothing about concentration prediction. See `generation-smoke-2026-10-21/SMOKE_REPORT.md`. One initial report-building KeyError occurred after both complete captures had been retained; the host-side finalizer reconstructed records from those captures without re-executing the solver. The runner is ready for the bounded feasibility pilot under the disclosed input-visibility limitation. Model backend/snapshot identity remains unavailable.

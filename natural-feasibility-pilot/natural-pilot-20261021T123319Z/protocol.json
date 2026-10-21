@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-21T12:33:19.559891+00:00",
+  "model": "gpt-6-luna",
+  "codex_cli_version": "0.160.1",
+  "backend_version": null,
+  "immutable_snapshot": null,
+  "attempt_cap": 100,
+  "evaluation_input_count": 20,
+  "diagnostic_probe_count": 30,
+  "timeout_ms_per_worker": 10000,
+  "worker_memory_limit_bytes": 134217728,
+  "networking": "disabled in Windows Sandbox",
+  "generation_prompt_contains_test_inputs": false,
+  "containment_disclosure": "Source screen is best-effort; full phase-specific input suite is guest-readable during its Sandbox session."
+}
