@@ -1,0 +1,55 @@
+{
+  "run_id": "natural-pilot-gemini-20261021T172103Z",
+  "state": "FEASIBILITY_NOT_DEMONSTRATED_WITHIN_CAP",
+  "attempt_count": 100,
+  "attempt_cap": 100,
+  "generation_requests": 100,
+  "model_written_generation_attempts": 100,
+  "generation_failures": 0,
+  "distinct_canonical_bodies": 25,
+  "excluded_or_not_executed": 75,
+  "summary": {
+    "eligible_executed_bodies": 25,
+    "fixed_k_contrasts": [],
+    "support_by_k_C": {
+      "0": {
+        "0.0": {
+          "attempts": 25,
+          "distinct_bodies": 25,
+          "evaluation_correct_counts": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20
+          ]
+        }
+      }
+    },
+    "feasibility_demonstrated": false
+  },
+  "predictive_model_fitted": false,
+  "halt_reason": null,
+  "population": "Google Gemini API, model gemini-3.5-flash-lite, one exact SSSP prompt per attempt; backend snapshot unavailable",
+  "caveat": "Exploratory feasibility only. Full suite inputs are visible inside their respective guest session; static screen is not a security guarantee."
+}

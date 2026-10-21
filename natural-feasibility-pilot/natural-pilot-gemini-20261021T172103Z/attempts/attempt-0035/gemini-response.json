@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "import heapq\n\ndef solve(n, edges, s, t):\n    graph = [[] for _ in range(n)]\n    for u, v, w in edges:\n        graph[u].append((v, w))\n    \n    distances = [float('inf')] * n\n    distances[s] = 0\n    pq = [(0, s)]\n    \n    while pq:\n        d, u = heapq.heappop(pq)\n        \n        if d \u003e distances[u]:\n            continue\n            \n        if u == t:\n            return d\n            \n        for v, w in graph[u]:\n            new_d = d + w\n            if new_d \u003c distances[v]:\n                distances[v] = new_d\n                heapq.heappush(pq, (new_d, v))\n                \n    return distances[t] if distances[t] != float('inf') else -1",
+            "thoughtSignature": "EmAKXgFpFH0T9JlUPW/JIMX2XhRSu9EOf9cb2k+B5bowhB0ex7Zx6+b00GXd7lzK8A7RWz7iE5hy1rp1q1IycZB0jOg2cIKQB7TrmWAKDdsCH4T+vNNSv3cdyZnWMUBujJw="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 183,
+    "candidatesTokenCount": 212,
+    "totalTokenCount": 395,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 183
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "1fjYao69N-qBxs0P0arY-Qg"
+}

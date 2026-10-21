@@ -1,0 +1,29 @@
+{
+  "run_id": "natural-pilot-gemini-20261021T172103Z",
+  "validated_at_utc": "2026-10-21T18:02:03.326053+00:00",
+  "model": "Google Gemini API, model gemini-3.5-flash-lite, one exact SSSP prompt per attempt; backend snapshot unavailable",
+  "attempts": 100,
+  "generation_requests": 100,
+  "generation_failures": 0,
+  "source_screen_accepted": 100,
+  "distinct_canonical_bodies": 25,
+  "duplicate_skipped": 75,
+  "complete_bodies": 25,
+  "runner_errors": 0,
+  "all_complete_have_30_diagnostic_rows": true,
+  "all_complete_have_20_evaluation_rows": true,
+  "all_diagnostic_rows_pass": true,
+  "all_evaluation_rows_correct": true,
+  "k_values": [
+    0
+  ],
+  "C_values": [
+    0.0
+  ],
+  "eligible_fixed_k_contrasts": 0,
+  "feasibility_demonstrated": false,
+  "state": "FEASIBILITY_NOT_DEMONSTRATED_WITHIN_CAP",
+  "predictive_model_fitted": false,
+  "record_integrity": "PASS",
+  "all_checks_pass": true
+}

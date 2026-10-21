@@ -1,0 +1,1444 @@
+{
+  "records": [
+    {
+      "phase": "diagnostic",
+      "probe_id": "F1_0",
+      "family": "F1",
+      "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            1,
+            2,
+            11
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": -1,
+      "oracle_output": -1,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "LTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 696
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F1_1",
+      "family": "F1",
+      "input_id": "acbe8e9d213945c495bdee0675821ed4b648a24a856b24470274b06c243e1c85",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            1,
+            2,
+            12
+          ],
+          [
+            2,
+            3,
+            13
+          ]
+        ],
+        "n": 5,
+        "s": 0,
+        "t": 4
+      },
+      "status": "pass",
+      "solver_output": -1,
+      "oracle_output": -1,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "LTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 680
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F1_2",
+      "family": "F1",
+      "input_id": "83ec371ee2d8c725ea090975fef00970f17b8a9a7fce55a16ebf7f0e874f3f16",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            12
+          ],
+          [
+            1,
+            2,
+            13
+          ],
+          [
+            2,
+            3,
+            14
+          ],
+          [
+            3,
+            4,
+            15
+          ]
+        ],
+        "n": 6,
+        "s": 0,
+        "t": 5
+      },
+      "status": "pass",
+      "solver_output": -1,
+      "oracle_output": -1,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "LTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 681
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F1_3",
+      "family": "F1",
+      "input_id": "8f3be0defdc1ced7883ebec276893d55a062a285d4093d599ed99fc77d870f7f",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            13
+          ],
+          [
+            1,
+            2,
+            14
+          ],
+          [
+            2,
+            3,
+            15
+          ],
+          [
+            3,
+            4,
+            16
+          ],
+          [
+            4,
+            5,
+            17
+          ]
+        ],
+        "n": 7,
+        "s": 0,
+        "t": 6
+      },
+      "status": "pass",
+      "solver_output": -1,
+      "oracle_output": -1,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "LTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 605
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F1_4",
+      "family": "F1",
+      "input_id": "ee7b3ebc2cb3ad053591564a726a7e2582be5a1d4eb08cccab180861b1241890",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            14
+          ],
+          [
+            1,
+            2,
+            15
+          ],
+          [
+            2,
+            3,
+            16
+          ],
+          [
+            3,
+            4,
+            17
+          ],
+          [
+            4,
+            5,
+            18
+          ],
+          [
+            5,
+            6,
+            19
+          ]
+        ],
+        "n": 8,
+        "s": 0,
+        "t": 7
+      },
+      "status": "pass",
+      "solver_output": -1,
+      "oracle_output": -1,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "LTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 601
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F2_0",
+      "family": "F2",
+      "input_id": "9095726bda1f752bcf861edd3e38a981b9b0b5031df3e947c77c2c13ec4afa57",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 7,
+      "oracle_output": 7,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "Nw0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 621
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F2_1",
+      "family": "F2",
+      "input_id": "b1f634a20d0483dc94995a55d0cfe66b17f090a25cf833aca1ab891137370cea",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            5
+          ],
+          [
+            3,
+            4,
+            6
+          ]
+        ],
+        "n": 5,
+        "s": 0,
+        "t": 4
+      },
+      "status": "pass",
+      "solver_output": 15,
+      "oracle_output": 15,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTUNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 598
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F2_2",
+      "family": "F2",
+      "input_id": "9ad78ab1d850619d2f066b608e14f1254cbcb45e8c9690f9cbf4aaf847ef6828",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            6
+          ],
+          [
+            3,
+            4,
+            7
+          ],
+          [
+            4,
+            5,
+            8
+          ]
+        ],
+        "n": 6,
+        "s": 0,
+        "t": 5
+      },
+      "status": "pass",
+      "solver_output": 26,
+      "oracle_output": 26,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MjYNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 597
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F2_3",
+      "family": "F2",
+      "input_id": "a1022168e67ca5034c733ed9039c5619e417ad5d4b22dfeca89faf70703cce62",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            7
+          ],
+          [
+            3,
+            4,
+            8
+          ],
+          [
+            4,
+            5,
+            9
+          ],
+          [
+            5,
+            6,
+            10
+          ]
+        ],
+        "n": 7,
+        "s": 0,
+        "t": 6
+      },
+      "status": "pass",
+      "solver_output": 40,
+      "oracle_output": 40,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NDANCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 615
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F2_4",
+      "family": "F2",
+      "input_id": "9d089dca783bcfaa98164b2edb7dab884f94680d6bdc31fabe461e16c5bbea18",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            7
+          ],
+          [
+            2,
+            3,
+            8
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            4,
+            5,
+            10
+          ],
+          [
+            5,
+            6,
+            11
+          ],
+          [
+            6,
+            7,
+            12
+          ]
+        ],
+        "n": 8,
+        "s": 0,
+        "t": 7
+      },
+      "status": "pass",
+      "solver_output": 57,
+      "oracle_output": 57,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NTcNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 613
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F3_0",
+      "family": "F3",
+      "input_id": "87390512e8c57432eda833bbce213da3661666e54619659f1e34955c2f373dd5",
+      "input": {
+        "edges": [
+          [
+            0,
+            3,
+            2
+          ],
+          [
+            0,
+            3,
+            10
+          ],
+          [
+            0,
+            1,
+            20
+          ],
+          [
+            1,
+            2,
+            21
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 2,
+      "oracle_output": 2,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "Mg0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 597
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F3_1",
+      "family": "F3",
+      "input_id": "005d7c1209e838d68e6ad1115dd9010c9ddc9adb53bb269dc0eaab61f30f9578",
+      "input": {
+        "edges": [
+          [
+            0,
+            4,
+            3
+          ],
+          [
+            0,
+            4,
+            11
+          ],
+          [
+            0,
+            1,
+            21
+          ],
+          [
+            1,
+            2,
+            22
+          ],
+          [
+            2,
+            3,
+            23
+          ]
+        ],
+        "n": 5,
+        "s": 0,
+        "t": 4
+      },
+      "status": "pass",
+      "solver_output": 3,
+      "oracle_output": 3,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "Mw0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 609
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F3_2",
+      "family": "F3",
+      "input_id": "836e2a873d5981e3d560a513ad9d53df662adfa41846db3c3d2d6cd0c354750b",
+      "input": {
+        "edges": [
+          [
+            0,
+            5,
+            4
+          ],
+          [
+            0,
+            5,
+            12
+          ],
+          [
+            0,
+            1,
+            22
+          ],
+          [
+            1,
+            2,
+            23
+          ],
+          [
+            2,
+            3,
+            24
+          ],
+          [
+            3,
+            4,
+            25
+          ]
+        ],
+        "n": 6,
+        "s": 0,
+        "t": 5
+      },
+      "status": "pass",
+      "solver_output": 4,
+      "oracle_output": 4,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NA0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 589
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F3_3",
+      "family": "F3",
+      "input_id": "dd93f38c4134c8d9017111596c1699b74cc1f2b806c7bcb627aed4f4ec5ca972",
+      "input": {
+        "edges": [
+          [
+            0,
+            6,
+            5
+          ],
+          [
+            0,
+            6,
+            13
+          ],
+          [
+            0,
+            1,
+            23
+          ],
+          [
+            1,
+            2,
+            24
+          ],
+          [
+            2,
+            3,
+            25
+          ],
+          [
+            3,
+            4,
+            26
+          ],
+          [
+            4,
+            5,
+            27
+          ]
+        ],
+        "n": 7,
+        "s": 0,
+        "t": 6
+      },
+      "status": "pass",
+      "solver_output": 5,
+      "oracle_output": 5,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NQ0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 601
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F3_4",
+      "family": "F3",
+      "input_id": "f4dd5a9cf254cdcdba450d5d1754da53cac198c06e1c0113379f4cbee3e77759",
+      "input": {
+        "edges": [
+          [
+            0,
+            7,
+            6
+          ],
+          [
+            0,
+            7,
+            14
+          ],
+          [
+            0,
+            1,
+            24
+          ],
+          [
+            1,
+            2,
+            25
+          ],
+          [
+            2,
+            3,
+            26
+          ],
+          [
+            3,
+            4,
+            27
+          ],
+          [
+            4,
+            5,
+            28
+          ],
+          [
+            5,
+            6,
+            29
+          ]
+        ],
+        "n": 8,
+        "s": 0,
+        "t": 7
+      },
+      "status": "pass",
+      "solver_output": 6,
+      "oracle_output": 6,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "Ng0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 620
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F4_0",
+      "family": "F4",
+      "input_id": "7addc51ed81bcca7fb2eaf85b04f612b9d1e2e491b846eb5840fca1a02b21ee6",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            1,
+            1,
+            50
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 9,
+      "oracle_output": 9,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "OQ0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 607
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F4_1",
+      "family": "F4",
+      "input_id": "02ed181a6285b58d9f232558e756b5fcf9742bea421e3ef5c259530c3f6d3f94",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            5
+          ],
+          [
+            3,
+            4,
+            6
+          ],
+          [
+            1,
+            1,
+            51
+          ]
+        ],
+        "n": 5,
+        "s": 0,
+        "t": 4
+      },
+      "status": "pass",
+      "solver_output": 18,
+      "oracle_output": 18,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTgNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 612
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F4_2",
+      "family": "F4",
+      "input_id": "96fa1c07ad36b801b9d7fdbcf06be27ab7d2ee5e7a038e59571f4a2952c62753",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            6
+          ],
+          [
+            3,
+            4,
+            7
+          ],
+          [
+            4,
+            5,
+            8
+          ],
+          [
+            1,
+            1,
+            52
+          ]
+        ],
+        "n": 6,
+        "s": 0,
+        "t": 5
+      },
+      "status": "pass",
+      "solver_output": 30,
+      "oracle_output": 30,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MzANCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 600
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F4_3",
+      "family": "F4",
+      "input_id": "9a5487536f74d09ec6fec912f96f6aadd449791373d1a6e370054bfa700b23d1",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            7
+          ],
+          [
+            3,
+            4,
+            8
+          ],
+          [
+            4,
+            5,
+            9
+          ],
+          [
+            5,
+            6,
+            10
+          ],
+          [
+            1,
+            1,
+            53
+          ]
+        ],
+        "n": 7,
+        "s": 0,
+        "t": 6
+      },
+      "status": "pass",
+      "solver_output": 45,
+      "oracle_output": 45,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NDUNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 596
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F4_4",
+      "family": "F4",
+      "input_id": "edb3798cec039827d4068e234c70733ba75fb7de4cf9ce6241a0d669e5e5724c",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            1,
+            2,
+            7
+          ],
+          [
+            2,
+            3,
+            8
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            4,
+            5,
+            10
+          ],
+          [
+            5,
+            6,
+            11
+          ],
+          [
+            6,
+            7,
+            12
+          ],
+          [
+            1,
+            1,
+            54
+          ]
+        ],
+        "n": 8,
+        "s": 0,
+        "t": 7
+      },
+      "status": "pass",
+      "solver_output": 63,
+      "oracle_output": 63,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NjMNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 599
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F5_0",
+      "family": "F5",
+      "input_id": "e49ffe390dea45507f8507bffdb477a0ae2832bf76e7b4bbb65d9f6ce2f96961",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            3
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 5,
+      "oracle_output": 5,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "NQ0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 599
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F5_1",
+      "family": "F5",
+      "input_id": "df49a40d23ecb7abf526c941864649b0c33ae16b6b727da1627de9a0976bc2dc",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 7,
+      "oracle_output": 7,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "Nw0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 582
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F5_2",
+      "family": "F5",
+      "input_id": "70748d01f24b15e28560b7aa14509f86e8e7556a441a4e750ac85bcc6318ff3b",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            3,
+            6
+          ],
+          [
+            0,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            5
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 9,
+      "oracle_output": 9,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "OQ0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 591
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F5_3",
+      "family": "F5",
+      "input_id": "dfc5c4ec0652b0d4a1723b4d87fccb93e4466951d3f3587a7806239c7a515119",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            3,
+            7
+          ],
+          [
+            0,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            6
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 11,
+      "oracle_output": 11,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 592
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F5_4",
+      "family": "F5",
+      "input_id": "6f41fb12bc0029177f02f288c977fcbe7707dbb69a392e36ed53abf40635dcc5",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            3,
+            8
+          ],
+          [
+            0,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            7
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 13,
+      "oracle_output": 13,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTMNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 598
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F6_0",
+      "family": "F6",
+      "input_id": "e30732d5d715dbb91b803be5fa6007b04eb6609c402e7e72b1d87ca10ee10793",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            3
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 9,
+      "oracle_output": 9,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "OQ0K",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 609
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F6_1",
+      "family": "F6",
+      "input_id": "7cbf13cf78f50d93a32cef9fb759bf9491da528c7e737efa8b03ce7d0d44d472",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 12,
+      "oracle_output": 12,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTINCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 598
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F6_2",
+      "family": "F6",
+      "input_id": "03a8a7b7d939556559703504fad70d8e31923ad3930cc3af93e86084ab3f7a3e",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            5
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 15,
+      "oracle_output": 15,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTUNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 588
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F6_3",
+      "family": "F6",
+      "input_id": "ca5b2d761f4c17d649ead43ad5bec3d65a9135c5d1d8bc45879873da1efc6e8d",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            6
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 18,
+      "oracle_output": 18,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MTgNCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 603
+    },
+    {
+      "phase": "diagnostic",
+      "probe_id": "F6_4",
+      "family": "F6",
+      "input_id": "b46fab8b3df2de6097032226e9b0538cc6e438a1e82d20d2c24ce051d78dc487",
+      "input": {
+        "edges": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            1,
+            2,
+            7
+          ],
+          [
+            2,
+            3,
+            7
+          ]
+        ],
+        "n": 4,
+        "s": 0,
+        "t": 3
+      },
+      "status": "pass",
+      "solver_output": 21,
+      "oracle_output": 21,
+      "correct": true,
+      "error": null,
+      "raw_stdout_b64": "MjENCg==",
+      "raw_stderr_b64": "",
+      "exit_code": 0,
+      "timed_out": false,
+      "tree_terminated": true,
+      "worker_elapsed_ms": 599
+    }
+  ],
+  "family_counts": {
+    "F1": 0,
+    "F2": 0,
+    "F3": 0,
+    "F4": 0,
+    "F5": 0,
+    "F6": 0
+  },
+  "family_counts_ordered": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "k": 0,
+  "C": 0.0,
+  "eligible": true,
+  "suite_wall_seconds": 35.828055799996946
+}
