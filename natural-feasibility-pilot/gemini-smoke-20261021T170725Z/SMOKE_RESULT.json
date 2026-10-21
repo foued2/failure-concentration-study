@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "stage": "generation",
+  "run": "gemini-smoke-20261021T170725Z",
+  "provider": "Google Gemini API",
+  "model": "gemini-2.5-flash",
+  "failure_kind": "provider_error",
+  "generation_status": "generation_failed",
+  "http_status": 503,
+  "request_count": 1,
+  "pilot_started": false,
+  "halt_reason": "Gemini smoke generation failed; no pilot was started."
+}

@@ -1,0 +1,16 @@
+{
+  "attempt_id": "attempt-0001",
+  "generation_order": 1,
+  "provider": "Google Gemini API",
+  "model": "gemini-2.5-flash",
+  "invoked_at_utc": "2026-10-21T17:07:25.463070+00:00",
+  "finished_at_utc": "2026-10-21T17:07:27.253853+00:00",
+  "generation_elapsed_seconds": 1.7793333000008715,
+  "generation_http_status": 503,
+  "generation_finish_reason": null,
+  "generation_status": "generation_failed",
+  "execution_status": "not_run",
+  "attempt_directory": "attempts\\attempt-0001",
+  "exclusion_reason": "generation_failed",
+  "generation_failure_kind": "provider_error"
+}

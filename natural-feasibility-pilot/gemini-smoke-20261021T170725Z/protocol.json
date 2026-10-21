@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-21T17:07:25.460537+00:00",
+  "stage": "gemini_smoke",
+  "provider": "Google Gemini API",
+  "model": "gemini-2.5-flash",
+  "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+  "generation_config": {
+    "temperature": 1.0,
+    "maxOutputTokens": 4096
+  },
+  "api_key_env": "GEMINI_API_KEY",
+  "backend_version": null,
+  "immutable_snapshot": null,
+  "authorization_amendment": "natural-feasibility-pilot\\FOLLOWUP_PROVIDER_AMENDMENT_2026-10-21.md",
+  "authorization_amendment_sha256": "7712f22eb2648d9bcf20d796421c8965159eac32faeb2792a39bfc554e6e632f",
+  "frozen_protocol_commit": "74cd419",
+  "decision_memo_commit": "dd5be4a",
+  "request_count": 1,
+  "pilot_cap": 100,
+  "smoke_separate_from_pilot": true,
+  "smoke_criteria": "source accepted; 30/30 diagnostic rows complete and pass; 20/20 evaluation rows complete and correct; complete SDK records",
+  "containment_disclosure": "Source screen is best-effort; full phase-specific input suite is guest-readable during its Sandbox session."
+}
