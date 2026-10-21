@@ -1,0 +1,35 @@
+{
+  "diagnostic_generator": "study.probes.make_probe_suite",
+  "edge_fixture_integrity": {
+    "all_expected_present": true,
+    "counts": {
+      "e0": 1,
+      "e1": 1,
+      "e2": 1,
+      "e3": 1,
+      "e4": 1
+    },
+    "duplicates": [],
+    "passed": true,
+    "unknown_fixture_ids": []
+  },
+  "evaluation_count": 20,
+  "evaluation_distribution": "15 random graphs plus 5 existing edge templates",
+  "evaluation_generator": "study.instances.make_hidden_suite(seed, m_count=20)",
+  "integrity": {
+    "diagnostic_count": 30,
+    "diagnostic_duplicates": [],
+    "diagnostic_evaluation_overlap": [],
+    "evaluation_count": 20,
+    "evaluation_duplicates": [],
+    "passed": true
+  },
+  "records": {
+    "diagnostic_battery.json": "b37bbb8654c3ebb1cda8fc34c1400b79c845166ebb5c564b8354cba2a8ee7470",
+    "edge_fixture_integrity.json": "64b82593979fa2e91275e398767af312dc00aa0be3bbfba012fd85342d0bf78f",
+    "evaluation_bank.json": "316cfd836a4b9efd4a5ebb9892cf249af4625b2af021ec681b6c86f335d23f48",
+    "input_integrity.json": "b374be3e9cb2e835095207b47fb4ab157730e01407f1eace15b83d4fef841fb7"
+  },
+  "seed": 20261020,
+  "status": "INPUTS_PREPARED_NO_SOLVER_EXECUTION"
+}

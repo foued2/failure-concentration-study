@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "record_types": {
+    "generation_attempt": {
+      "required": [
+        "attempt_id", "generation_order", "provider_metadata", "prompt_config_ref",
+        "raw_output", "body_id", "duplicate_of_attempt_id", "parsing_status",
+        "execution_status", "failure_reason"
+      ],
+      "statuses": {
+        "parsing_status": ["not_assessed", "parsed", "parse_failed"],
+        "execution_status": ["not_run", "executable", "execution_failed"]
+      },
+      "identity_rule": "attempt_id is unique per ordered call; body_id is SHA-256 of source after newline normalization; duplicate attempts remain separate records"
+    },
+    "diagnostic_probe": {
+      "required": [
+        "attempt_id", "body_id", "probe_id", "family", "variant", "input_id",
+        "status", "solver_output", "oracle_output", "error", "timeout_seconds"
+      ],
+      "statuses": ["pass", "wrong", "invalid", "error", "timeout", "not_run"],
+      "feature_rule": "Exactly one row per each of 30 probes in the frozen family-major order; error/timeout/invalid/wrong count as failure; incomplete battery has no k/C"
+    },
+    "evaluation_input": {
+      "required": ["input_id", "hid", "n", "edges", "s", "t"],
+      "identity_rule": "input_id is SHA-256 of canonical JSON for n, edges, s, t"
+    },
+    "evaluation_outcome": {
+      "required": [
+        "attempt_id", "body_id", "input_id", "status", "solver_output",
+        "oracle_output", "correct", "error", "timeout_seconds"
+      ],
+      "statuses": ["complete", "error", "timeout", "not_run"],
+      "rule": "Complete records retain raw solver/oracle outputs and boolean correctness; each body/input pair is separately identified"
+    }
+  },
+  "feature_record": {
+    "required": ["attempt_id", "body_id", "family_counts", "k", "C", "eligible"],
+    "family_order": ["F1", "F2", "F3", "F4", "F5", "F6"],
+    "invariant": "k equals sum of six family_counts; C equals max(family_counts)/k for k>0 and 0 for k=0"
+  }
+}

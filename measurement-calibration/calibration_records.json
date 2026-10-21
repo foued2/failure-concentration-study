@@ -1,0 +1,1182 @@
+{
+  "cases": [
+    {
+      "C": 0.0,
+      "case_id": "all_pass_reference",
+      "controlled_failure_probe_ids": [],
+      "expected_C": 0.0,
+      "expected_k": 0,
+      "family_counts": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0
+      },
+      "k": 0,
+      "matches_expected": true,
+      "probe_records": [
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+          "probe_id": "F1_0",
+          "solver_output": -1,
+          "variant": 0
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "acbe8e9d213945c495bdee0675821ed4b648a24a856b24470274b06c243e1c85",
+          "probe_id": "F1_1",
+          "solver_output": -1,
+          "variant": 1
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "83ec371ee2d8c725ea090975fef00970f17b8a9a7fce55a16ebf7f0e874f3f16",
+          "probe_id": "F1_2",
+          "solver_output": -1,
+          "variant": 2
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "8f3be0defdc1ced7883ebec276893d55a062a285d4093d599ed99fc77d870f7f",
+          "probe_id": "F1_3",
+          "solver_output": -1,
+          "variant": 3
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "ee7b3ebc2cb3ad053591564a726a7e2582be5a1d4eb08cccab180861b1241890",
+          "probe_id": "F1_4",
+          "solver_output": -1,
+          "variant": 4
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9095726bda1f752bcf861edd3e38a981b9b0b5031df3e947c77c2c13ec4afa57",
+          "probe_id": "F2_0",
+          "solver_output": 7,
+          "variant": 0
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F2",
+          "input_id": "b1f634a20d0483dc94995a55d0cfe66b17f090a25cf833aca1ab891137370cea",
+          "probe_id": "F2_1",
+          "solver_output": 15,
+          "variant": 1
+        },
+        {
+          "expected_output": 26,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9ad78ab1d850619d2f066b608e14f1254cbcb45e8c9690f9cbf4aaf847ef6828",
+          "probe_id": "F2_2",
+          "solver_output": 26,
+          "variant": 2
+        },
+        {
+          "expected_output": 40,
+          "failed": false,
+          "family": "F2",
+          "input_id": "a1022168e67ca5034c733ed9039c5619e417ad5d4b22dfeca89faf70703cce62",
+          "probe_id": "F2_3",
+          "solver_output": 40,
+          "variant": 3
+        },
+        {
+          "expected_output": 57,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9d089dca783bcfaa98164b2edb7dab884f94680d6bdc31fabe461e16c5bbea18",
+          "probe_id": "F2_4",
+          "solver_output": 57,
+          "variant": 4
+        },
+        {
+          "expected_output": 2,
+          "failed": false,
+          "family": "F3",
+          "input_id": "87390512e8c57432eda833bbce213da3661666e54619659f1e34955c2f373dd5",
+          "probe_id": "F3_0",
+          "solver_output": 2,
+          "variant": 0
+        },
+        {
+          "expected_output": 3,
+          "failed": false,
+          "family": "F3",
+          "input_id": "005d7c1209e838d68e6ad1115dd9010c9ddc9adb53bb269dc0eaab61f30f9578",
+          "probe_id": "F3_1",
+          "solver_output": 3,
+          "variant": 1
+        },
+        {
+          "expected_output": 4,
+          "failed": false,
+          "family": "F3",
+          "input_id": "836e2a873d5981e3d560a513ad9d53df662adfa41846db3c3d2d6cd0c354750b",
+          "probe_id": "F3_2",
+          "solver_output": 4,
+          "variant": 2
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F3",
+          "input_id": "dd93f38c4134c8d9017111596c1699b74cc1f2b806c7bcb627aed4f4ec5ca972",
+          "probe_id": "F3_3",
+          "solver_output": 5,
+          "variant": 3
+        },
+        {
+          "expected_output": 6,
+          "failed": false,
+          "family": "F3",
+          "input_id": "f4dd5a9cf254cdcdba450d5d1754da53cac198c06e1c0113379f4cbee3e77759",
+          "probe_id": "F3_4",
+          "solver_output": 6,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F4",
+          "input_id": "7addc51ed81bcca7fb2eaf85b04f612b9d1e2e491b846eb5840fca1a02b21ee6",
+          "probe_id": "F4_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F4",
+          "input_id": "02ed181a6285b58d9f232558e756b5fcf9742bea421e3ef5c259530c3f6d3f94",
+          "probe_id": "F4_1",
+          "solver_output": 18,
+          "variant": 1
+        },
+        {
+          "expected_output": 30,
+          "failed": false,
+          "family": "F4",
+          "input_id": "96fa1c07ad36b801b9d7fdbcf06be27ab7d2ee5e7a038e59571f4a2952c62753",
+          "probe_id": "F4_2",
+          "solver_output": 30,
+          "variant": 2
+        },
+        {
+          "expected_output": 45,
+          "failed": false,
+          "family": "F4",
+          "input_id": "9a5487536f74d09ec6fec912f96f6aadd449791373d1a6e370054bfa700b23d1",
+          "probe_id": "F4_3",
+          "solver_output": 45,
+          "variant": 3
+        },
+        {
+          "expected_output": 63,
+          "failed": false,
+          "family": "F4",
+          "input_id": "edb3798cec039827d4068e234c70733ba75fb7de4cf9ce6241a0d669e5e5724c",
+          "probe_id": "F4_4",
+          "solver_output": 63,
+          "variant": 4
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F5",
+          "input_id": "e49ffe390dea45507f8507bffdb477a0ae2832bf76e7b4bbb65d9f6ce2f96961",
+          "probe_id": "F5_0",
+          "solver_output": 5,
+          "variant": 0
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F5",
+          "input_id": "df49a40d23ecb7abf526c941864649b0c33ae16b6b727da1627de9a0976bc2dc",
+          "probe_id": "F5_1",
+          "solver_output": 7,
+          "variant": 1
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F5",
+          "input_id": "70748d01f24b15e28560b7aa14509f86e8e7556a441a4e750ac85bcc6318ff3b",
+          "probe_id": "F5_2",
+          "solver_output": 9,
+          "variant": 2
+        },
+        {
+          "expected_output": 11,
+          "failed": false,
+          "family": "F5",
+          "input_id": "dfc5c4ec0652b0d4a1723b4d87fccb93e4466951d3f3587a7806239c7a515119",
+          "probe_id": "F5_3",
+          "solver_output": 11,
+          "variant": 3
+        },
+        {
+          "expected_output": 13,
+          "failed": false,
+          "family": "F5",
+          "input_id": "6f41fb12bc0029177f02f288c977fcbe7707dbb69a392e36ed53abf40635dcc5",
+          "probe_id": "F5_4",
+          "solver_output": 13,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F6",
+          "input_id": "e30732d5d715dbb91b803be5fa6007b04eb6609c402e7e72b1d87ca10ee10793",
+          "probe_id": "F6_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 12,
+          "failed": false,
+          "family": "F6",
+          "input_id": "7cbf13cf78f50d93a32cef9fb759bf9491da528c7e737efa8b03ce7d0d44d472",
+          "probe_id": "F6_1",
+          "solver_output": 12,
+          "variant": 1
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F6",
+          "input_id": "03a8a7b7d939556559703504fad70d8e31923ad3930cc3af93e86084ab3f7a3e",
+          "probe_id": "F6_2",
+          "solver_output": 15,
+          "variant": 2
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F6",
+          "input_id": "ca5b2d761f4c17d649ead43ad5bec3d65a9135c5d1d8bc45879873da1efc6e8d",
+          "probe_id": "F6_3",
+          "solver_output": 18,
+          "variant": 3
+        },
+        {
+          "expected_output": 21,
+          "failed": false,
+          "family": "F6",
+          "input_id": "b46fab8b3df2de6097032226e9b0538cc6e438a1e82d20d2c24ce051d78dc487",
+          "probe_id": "F6_4",
+          "solver_output": 21,
+          "variant": 4
+        }
+      ]
+    },
+    {
+      "C": 1.0,
+      "case_id": "k4_one_family",
+      "controlled_failure_probe_ids": [
+        "F1_0",
+        "F1_1",
+        "F1_2",
+        "F1_3"
+      ],
+      "expected_C": 1.0,
+      "expected_k": 4,
+      "family_counts": {
+        "F1": 4,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0
+      },
+      "k": 4,
+      "matches_expected": true,
+      "probe_records": [
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+          "probe_id": "F1_0",
+          "solver_output": 0,
+          "variant": 0
+        },
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "acbe8e9d213945c495bdee0675821ed4b648a24a856b24470274b06c243e1c85",
+          "probe_id": "F1_1",
+          "solver_output": 0,
+          "variant": 1
+        },
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "83ec371ee2d8c725ea090975fef00970f17b8a9a7fce55a16ebf7f0e874f3f16",
+          "probe_id": "F1_2",
+          "solver_output": 0,
+          "variant": 2
+        },
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "8f3be0defdc1ced7883ebec276893d55a062a285d4093d599ed99fc77d870f7f",
+          "probe_id": "F1_3",
+          "solver_output": 0,
+          "variant": 3
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "ee7b3ebc2cb3ad053591564a726a7e2582be5a1d4eb08cccab180861b1241890",
+          "probe_id": "F1_4",
+          "solver_output": -1,
+          "variant": 4
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9095726bda1f752bcf861edd3e38a981b9b0b5031df3e947c77c2c13ec4afa57",
+          "probe_id": "F2_0",
+          "solver_output": 7,
+          "variant": 0
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F2",
+          "input_id": "b1f634a20d0483dc94995a55d0cfe66b17f090a25cf833aca1ab891137370cea",
+          "probe_id": "F2_1",
+          "solver_output": 15,
+          "variant": 1
+        },
+        {
+          "expected_output": 26,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9ad78ab1d850619d2f066b608e14f1254cbcb45e8c9690f9cbf4aaf847ef6828",
+          "probe_id": "F2_2",
+          "solver_output": 26,
+          "variant": 2
+        },
+        {
+          "expected_output": 40,
+          "failed": false,
+          "family": "F2",
+          "input_id": "a1022168e67ca5034c733ed9039c5619e417ad5d4b22dfeca89faf70703cce62",
+          "probe_id": "F2_3",
+          "solver_output": 40,
+          "variant": 3
+        },
+        {
+          "expected_output": 57,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9d089dca783bcfaa98164b2edb7dab884f94680d6bdc31fabe461e16c5bbea18",
+          "probe_id": "F2_4",
+          "solver_output": 57,
+          "variant": 4
+        },
+        {
+          "expected_output": 2,
+          "failed": false,
+          "family": "F3",
+          "input_id": "87390512e8c57432eda833bbce213da3661666e54619659f1e34955c2f373dd5",
+          "probe_id": "F3_0",
+          "solver_output": 2,
+          "variant": 0
+        },
+        {
+          "expected_output": 3,
+          "failed": false,
+          "family": "F3",
+          "input_id": "005d7c1209e838d68e6ad1115dd9010c9ddc9adb53bb269dc0eaab61f30f9578",
+          "probe_id": "F3_1",
+          "solver_output": 3,
+          "variant": 1
+        },
+        {
+          "expected_output": 4,
+          "failed": false,
+          "family": "F3",
+          "input_id": "836e2a873d5981e3d560a513ad9d53df662adfa41846db3c3d2d6cd0c354750b",
+          "probe_id": "F3_2",
+          "solver_output": 4,
+          "variant": 2
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F3",
+          "input_id": "dd93f38c4134c8d9017111596c1699b74cc1f2b806c7bcb627aed4f4ec5ca972",
+          "probe_id": "F3_3",
+          "solver_output": 5,
+          "variant": 3
+        },
+        {
+          "expected_output": 6,
+          "failed": false,
+          "family": "F3",
+          "input_id": "f4dd5a9cf254cdcdba450d5d1754da53cac198c06e1c0113379f4cbee3e77759",
+          "probe_id": "F3_4",
+          "solver_output": 6,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F4",
+          "input_id": "7addc51ed81bcca7fb2eaf85b04f612b9d1e2e491b846eb5840fca1a02b21ee6",
+          "probe_id": "F4_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F4",
+          "input_id": "02ed181a6285b58d9f232558e756b5fcf9742bea421e3ef5c259530c3f6d3f94",
+          "probe_id": "F4_1",
+          "solver_output": 18,
+          "variant": 1
+        },
+        {
+          "expected_output": 30,
+          "failed": false,
+          "family": "F4",
+          "input_id": "96fa1c07ad36b801b9d7fdbcf06be27ab7d2ee5e7a038e59571f4a2952c62753",
+          "probe_id": "F4_2",
+          "solver_output": 30,
+          "variant": 2
+        },
+        {
+          "expected_output": 45,
+          "failed": false,
+          "family": "F4",
+          "input_id": "9a5487536f74d09ec6fec912f96f6aadd449791373d1a6e370054bfa700b23d1",
+          "probe_id": "F4_3",
+          "solver_output": 45,
+          "variant": 3
+        },
+        {
+          "expected_output": 63,
+          "failed": false,
+          "family": "F4",
+          "input_id": "edb3798cec039827d4068e234c70733ba75fb7de4cf9ce6241a0d669e5e5724c",
+          "probe_id": "F4_4",
+          "solver_output": 63,
+          "variant": 4
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F5",
+          "input_id": "e49ffe390dea45507f8507bffdb477a0ae2832bf76e7b4bbb65d9f6ce2f96961",
+          "probe_id": "F5_0",
+          "solver_output": 5,
+          "variant": 0
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F5",
+          "input_id": "df49a40d23ecb7abf526c941864649b0c33ae16b6b727da1627de9a0976bc2dc",
+          "probe_id": "F5_1",
+          "solver_output": 7,
+          "variant": 1
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F5",
+          "input_id": "70748d01f24b15e28560b7aa14509f86e8e7556a441a4e750ac85bcc6318ff3b",
+          "probe_id": "F5_2",
+          "solver_output": 9,
+          "variant": 2
+        },
+        {
+          "expected_output": 11,
+          "failed": false,
+          "family": "F5",
+          "input_id": "dfc5c4ec0652b0d4a1723b4d87fccb93e4466951d3f3587a7806239c7a515119",
+          "probe_id": "F5_3",
+          "solver_output": 11,
+          "variant": 3
+        },
+        {
+          "expected_output": 13,
+          "failed": false,
+          "family": "F5",
+          "input_id": "6f41fb12bc0029177f02f288c977fcbe7707dbb69a392e36ed53abf40635dcc5",
+          "probe_id": "F5_4",
+          "solver_output": 13,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F6",
+          "input_id": "e30732d5d715dbb91b803be5fa6007b04eb6609c402e7e72b1d87ca10ee10793",
+          "probe_id": "F6_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 12,
+          "failed": false,
+          "family": "F6",
+          "input_id": "7cbf13cf78f50d93a32cef9fb759bf9491da528c7e737efa8b03ce7d0d44d472",
+          "probe_id": "F6_1",
+          "solver_output": 12,
+          "variant": 1
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F6",
+          "input_id": "03a8a7b7d939556559703504fad70d8e31923ad3930cc3af93e86084ab3f7a3e",
+          "probe_id": "F6_2",
+          "solver_output": 15,
+          "variant": 2
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F6",
+          "input_id": "ca5b2d761f4c17d649ead43ad5bec3d65a9135c5d1d8bc45879873da1efc6e8d",
+          "probe_id": "F6_3",
+          "solver_output": 18,
+          "variant": 3
+        },
+        {
+          "expected_output": 21,
+          "failed": false,
+          "family": "F6",
+          "input_id": "b46fab8b3df2de6097032226e9b0538cc6e438a1e82d20d2c24ce051d78dc487",
+          "probe_id": "F6_4",
+          "solver_output": 21,
+          "variant": 4
+        }
+      ]
+    },
+    {
+      "C": 0.5,
+      "case_id": "k4_two_families",
+      "controlled_failure_probe_ids": [
+        "F1_0",
+        "F1_1",
+        "F2_0",
+        "F2_1"
+      ],
+      "expected_C": 0.5,
+      "expected_k": 4,
+      "family_counts": {
+        "F1": 2,
+        "F2": 2,
+        "F3": 0,
+        "F4": 0,
+        "F5": 0,
+        "F6": 0
+      },
+      "k": 4,
+      "matches_expected": true,
+      "probe_records": [
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+          "probe_id": "F1_0",
+          "solver_output": 0,
+          "variant": 0
+        },
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "acbe8e9d213945c495bdee0675821ed4b648a24a856b24470274b06c243e1c85",
+          "probe_id": "F1_1",
+          "solver_output": 0,
+          "variant": 1
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "83ec371ee2d8c725ea090975fef00970f17b8a9a7fce55a16ebf7f0e874f3f16",
+          "probe_id": "F1_2",
+          "solver_output": -1,
+          "variant": 2
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "8f3be0defdc1ced7883ebec276893d55a062a285d4093d599ed99fc77d870f7f",
+          "probe_id": "F1_3",
+          "solver_output": -1,
+          "variant": 3
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "ee7b3ebc2cb3ad053591564a726a7e2582be5a1d4eb08cccab180861b1241890",
+          "probe_id": "F1_4",
+          "solver_output": -1,
+          "variant": 4
+        },
+        {
+          "expected_output": 7,
+          "failed": true,
+          "family": "F2",
+          "input_id": "9095726bda1f752bcf861edd3e38a981b9b0b5031df3e947c77c2c13ec4afa57",
+          "probe_id": "F2_0",
+          "solver_output": 8,
+          "variant": 0
+        },
+        {
+          "expected_output": 15,
+          "failed": true,
+          "family": "F2",
+          "input_id": "b1f634a20d0483dc94995a55d0cfe66b17f090a25cf833aca1ab891137370cea",
+          "probe_id": "F2_1",
+          "solver_output": 16,
+          "variant": 1
+        },
+        {
+          "expected_output": 26,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9ad78ab1d850619d2f066b608e14f1254cbcb45e8c9690f9cbf4aaf847ef6828",
+          "probe_id": "F2_2",
+          "solver_output": 26,
+          "variant": 2
+        },
+        {
+          "expected_output": 40,
+          "failed": false,
+          "family": "F2",
+          "input_id": "a1022168e67ca5034c733ed9039c5619e417ad5d4b22dfeca89faf70703cce62",
+          "probe_id": "F2_3",
+          "solver_output": 40,
+          "variant": 3
+        },
+        {
+          "expected_output": 57,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9d089dca783bcfaa98164b2edb7dab884f94680d6bdc31fabe461e16c5bbea18",
+          "probe_id": "F2_4",
+          "solver_output": 57,
+          "variant": 4
+        },
+        {
+          "expected_output": 2,
+          "failed": false,
+          "family": "F3",
+          "input_id": "87390512e8c57432eda833bbce213da3661666e54619659f1e34955c2f373dd5",
+          "probe_id": "F3_0",
+          "solver_output": 2,
+          "variant": 0
+        },
+        {
+          "expected_output": 3,
+          "failed": false,
+          "family": "F3",
+          "input_id": "005d7c1209e838d68e6ad1115dd9010c9ddc9adb53bb269dc0eaab61f30f9578",
+          "probe_id": "F3_1",
+          "solver_output": 3,
+          "variant": 1
+        },
+        {
+          "expected_output": 4,
+          "failed": false,
+          "family": "F3",
+          "input_id": "836e2a873d5981e3d560a513ad9d53df662adfa41846db3c3d2d6cd0c354750b",
+          "probe_id": "F3_2",
+          "solver_output": 4,
+          "variant": 2
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F3",
+          "input_id": "dd93f38c4134c8d9017111596c1699b74cc1f2b806c7bcb627aed4f4ec5ca972",
+          "probe_id": "F3_3",
+          "solver_output": 5,
+          "variant": 3
+        },
+        {
+          "expected_output": 6,
+          "failed": false,
+          "family": "F3",
+          "input_id": "f4dd5a9cf254cdcdba450d5d1754da53cac198c06e1c0113379f4cbee3e77759",
+          "probe_id": "F3_4",
+          "solver_output": 6,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F4",
+          "input_id": "7addc51ed81bcca7fb2eaf85b04f612b9d1e2e491b846eb5840fca1a02b21ee6",
+          "probe_id": "F4_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F4",
+          "input_id": "02ed181a6285b58d9f232558e756b5fcf9742bea421e3ef5c259530c3f6d3f94",
+          "probe_id": "F4_1",
+          "solver_output": 18,
+          "variant": 1
+        },
+        {
+          "expected_output": 30,
+          "failed": false,
+          "family": "F4",
+          "input_id": "96fa1c07ad36b801b9d7fdbcf06be27ab7d2ee5e7a038e59571f4a2952c62753",
+          "probe_id": "F4_2",
+          "solver_output": 30,
+          "variant": 2
+        },
+        {
+          "expected_output": 45,
+          "failed": false,
+          "family": "F4",
+          "input_id": "9a5487536f74d09ec6fec912f96f6aadd449791373d1a6e370054bfa700b23d1",
+          "probe_id": "F4_3",
+          "solver_output": 45,
+          "variant": 3
+        },
+        {
+          "expected_output": 63,
+          "failed": false,
+          "family": "F4",
+          "input_id": "edb3798cec039827d4068e234c70733ba75fb7de4cf9ce6241a0d669e5e5724c",
+          "probe_id": "F4_4",
+          "solver_output": 63,
+          "variant": 4
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F5",
+          "input_id": "e49ffe390dea45507f8507bffdb477a0ae2832bf76e7b4bbb65d9f6ce2f96961",
+          "probe_id": "F5_0",
+          "solver_output": 5,
+          "variant": 0
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F5",
+          "input_id": "df49a40d23ecb7abf526c941864649b0c33ae16b6b727da1627de9a0976bc2dc",
+          "probe_id": "F5_1",
+          "solver_output": 7,
+          "variant": 1
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F5",
+          "input_id": "70748d01f24b15e28560b7aa14509f86e8e7556a441a4e750ac85bcc6318ff3b",
+          "probe_id": "F5_2",
+          "solver_output": 9,
+          "variant": 2
+        },
+        {
+          "expected_output": 11,
+          "failed": false,
+          "family": "F5",
+          "input_id": "dfc5c4ec0652b0d4a1723b4d87fccb93e4466951d3f3587a7806239c7a515119",
+          "probe_id": "F5_3",
+          "solver_output": 11,
+          "variant": 3
+        },
+        {
+          "expected_output": 13,
+          "failed": false,
+          "family": "F5",
+          "input_id": "6f41fb12bc0029177f02f288c977fcbe7707dbb69a392e36ed53abf40635dcc5",
+          "probe_id": "F5_4",
+          "solver_output": 13,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F6",
+          "input_id": "e30732d5d715dbb91b803be5fa6007b04eb6609c402e7e72b1d87ca10ee10793",
+          "probe_id": "F6_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 12,
+          "failed": false,
+          "family": "F6",
+          "input_id": "7cbf13cf78f50d93a32cef9fb759bf9491da528c7e737efa8b03ce7d0d44d472",
+          "probe_id": "F6_1",
+          "solver_output": 12,
+          "variant": 1
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F6",
+          "input_id": "03a8a7b7d939556559703504fad70d8e31923ad3930cc3af93e86084ab3f7a3e",
+          "probe_id": "F6_2",
+          "solver_output": 15,
+          "variant": 2
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F6",
+          "input_id": "ca5b2d761f4c17d649ead43ad5bec3d65a9135c5d1d8bc45879873da1efc6e8d",
+          "probe_id": "F6_3",
+          "solver_output": 18,
+          "variant": 3
+        },
+        {
+          "expected_output": 21,
+          "failed": false,
+          "family": "F6",
+          "input_id": "b46fab8b3df2de6097032226e9b0538cc6e438a1e82d20d2c24ce051d78dc487",
+          "probe_id": "F6_4",
+          "solver_output": 21,
+          "variant": 4
+        }
+      ]
+    },
+    {
+      "C": 0.25,
+      "case_id": "k4_four_families",
+      "controlled_failure_probe_ids": [
+        "F1_0",
+        "F2_0",
+        "F3_0",
+        "F4_0"
+      ],
+      "expected_C": 0.25,
+      "expected_k": 4,
+      "family_counts": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "F5": 0,
+        "F6": 0
+      },
+      "k": 4,
+      "matches_expected": true,
+      "probe_records": [
+        {
+          "expected_output": -1,
+          "failed": true,
+          "family": "F1",
+          "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+          "probe_id": "F1_0",
+          "solver_output": 0,
+          "variant": 0
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "acbe8e9d213945c495bdee0675821ed4b648a24a856b24470274b06c243e1c85",
+          "probe_id": "F1_1",
+          "solver_output": -1,
+          "variant": 1
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "83ec371ee2d8c725ea090975fef00970f17b8a9a7fce55a16ebf7f0e874f3f16",
+          "probe_id": "F1_2",
+          "solver_output": -1,
+          "variant": 2
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "8f3be0defdc1ced7883ebec276893d55a062a285d4093d599ed99fc77d870f7f",
+          "probe_id": "F1_3",
+          "solver_output": -1,
+          "variant": 3
+        },
+        {
+          "expected_output": -1,
+          "failed": false,
+          "family": "F1",
+          "input_id": "ee7b3ebc2cb3ad053591564a726a7e2582be5a1d4eb08cccab180861b1241890",
+          "probe_id": "F1_4",
+          "solver_output": -1,
+          "variant": 4
+        },
+        {
+          "expected_output": 7,
+          "failed": true,
+          "family": "F2",
+          "input_id": "9095726bda1f752bcf861edd3e38a981b9b0b5031df3e947c77c2c13ec4afa57",
+          "probe_id": "F2_0",
+          "solver_output": 8,
+          "variant": 0
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F2",
+          "input_id": "b1f634a20d0483dc94995a55d0cfe66b17f090a25cf833aca1ab891137370cea",
+          "probe_id": "F2_1",
+          "solver_output": 15,
+          "variant": 1
+        },
+        {
+          "expected_output": 26,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9ad78ab1d850619d2f066b608e14f1254cbcb45e8c9690f9cbf4aaf847ef6828",
+          "probe_id": "F2_2",
+          "solver_output": 26,
+          "variant": 2
+        },
+        {
+          "expected_output": 40,
+          "failed": false,
+          "family": "F2",
+          "input_id": "a1022168e67ca5034c733ed9039c5619e417ad5d4b22dfeca89faf70703cce62",
+          "probe_id": "F2_3",
+          "solver_output": 40,
+          "variant": 3
+        },
+        {
+          "expected_output": 57,
+          "failed": false,
+          "family": "F2",
+          "input_id": "9d089dca783bcfaa98164b2edb7dab884f94680d6bdc31fabe461e16c5bbea18",
+          "probe_id": "F2_4",
+          "solver_output": 57,
+          "variant": 4
+        },
+        {
+          "expected_output": 2,
+          "failed": true,
+          "family": "F3",
+          "input_id": "87390512e8c57432eda833bbce213da3661666e54619659f1e34955c2f373dd5",
+          "probe_id": "F3_0",
+          "solver_output": 3,
+          "variant": 0
+        },
+        {
+          "expected_output": 3,
+          "failed": false,
+          "family": "F3",
+          "input_id": "005d7c1209e838d68e6ad1115dd9010c9ddc9adb53bb269dc0eaab61f30f9578",
+          "probe_id": "F3_1",
+          "solver_output": 3,
+          "variant": 1
+        },
+        {
+          "expected_output": 4,
+          "failed": false,
+          "family": "F3",
+          "input_id": "836e2a873d5981e3d560a513ad9d53df662adfa41846db3c3d2d6cd0c354750b",
+          "probe_id": "F3_2",
+          "solver_output": 4,
+          "variant": 2
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F3",
+          "input_id": "dd93f38c4134c8d9017111596c1699b74cc1f2b806c7bcb627aed4f4ec5ca972",
+          "probe_id": "F3_3",
+          "solver_output": 5,
+          "variant": 3
+        },
+        {
+          "expected_output": 6,
+          "failed": false,
+          "family": "F3",
+          "input_id": "f4dd5a9cf254cdcdba450d5d1754da53cac198c06e1c0113379f4cbee3e77759",
+          "probe_id": "F3_4",
+          "solver_output": 6,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": true,
+          "family": "F4",
+          "input_id": "7addc51ed81bcca7fb2eaf85b04f612b9d1e2e491b846eb5840fca1a02b21ee6",
+          "probe_id": "F4_0",
+          "solver_output": 10,
+          "variant": 0
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F4",
+          "input_id": "02ed181a6285b58d9f232558e756b5fcf9742bea421e3ef5c259530c3f6d3f94",
+          "probe_id": "F4_1",
+          "solver_output": 18,
+          "variant": 1
+        },
+        {
+          "expected_output": 30,
+          "failed": false,
+          "family": "F4",
+          "input_id": "96fa1c07ad36b801b9d7fdbcf06be27ab7d2ee5e7a038e59571f4a2952c62753",
+          "probe_id": "F4_2",
+          "solver_output": 30,
+          "variant": 2
+        },
+        {
+          "expected_output": 45,
+          "failed": false,
+          "family": "F4",
+          "input_id": "9a5487536f74d09ec6fec912f96f6aadd449791373d1a6e370054bfa700b23d1",
+          "probe_id": "F4_3",
+          "solver_output": 45,
+          "variant": 3
+        },
+        {
+          "expected_output": 63,
+          "failed": false,
+          "family": "F4",
+          "input_id": "edb3798cec039827d4068e234c70733ba75fb7de4cf9ce6241a0d669e5e5724c",
+          "probe_id": "F4_4",
+          "solver_output": 63,
+          "variant": 4
+        },
+        {
+          "expected_output": 5,
+          "failed": false,
+          "family": "F5",
+          "input_id": "e49ffe390dea45507f8507bffdb477a0ae2832bf76e7b4bbb65d9f6ce2f96961",
+          "probe_id": "F5_0",
+          "solver_output": 5,
+          "variant": 0
+        },
+        {
+          "expected_output": 7,
+          "failed": false,
+          "family": "F5",
+          "input_id": "df49a40d23ecb7abf526c941864649b0c33ae16b6b727da1627de9a0976bc2dc",
+          "probe_id": "F5_1",
+          "solver_output": 7,
+          "variant": 1
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F5",
+          "input_id": "70748d01f24b15e28560b7aa14509f86e8e7556a441a4e750ac85bcc6318ff3b",
+          "probe_id": "F5_2",
+          "solver_output": 9,
+          "variant": 2
+        },
+        {
+          "expected_output": 11,
+          "failed": false,
+          "family": "F5",
+          "input_id": "dfc5c4ec0652b0d4a1723b4d87fccb93e4466951d3f3587a7806239c7a515119",
+          "probe_id": "F5_3",
+          "solver_output": 11,
+          "variant": 3
+        },
+        {
+          "expected_output": 13,
+          "failed": false,
+          "family": "F5",
+          "input_id": "6f41fb12bc0029177f02f288c977fcbe7707dbb69a392e36ed53abf40635dcc5",
+          "probe_id": "F5_4",
+          "solver_output": 13,
+          "variant": 4
+        },
+        {
+          "expected_output": 9,
+          "failed": false,
+          "family": "F6",
+          "input_id": "e30732d5d715dbb91b803be5fa6007b04eb6609c402e7e72b1d87ca10ee10793",
+          "probe_id": "F6_0",
+          "solver_output": 9,
+          "variant": 0
+        },
+        {
+          "expected_output": 12,
+          "failed": false,
+          "family": "F6",
+          "input_id": "7cbf13cf78f50d93a32cef9fb759bf9491da528c7e737efa8b03ce7d0d44d472",
+          "probe_id": "F6_1",
+          "solver_output": 12,
+          "variant": 1
+        },
+        {
+          "expected_output": 15,
+          "failed": false,
+          "family": "F6",
+          "input_id": "03a8a7b7d939556559703504fad70d8e31923ad3930cc3af93e86084ab3f7a3e",
+          "probe_id": "F6_2",
+          "solver_output": 15,
+          "variant": 2
+        },
+        {
+          "expected_output": 18,
+          "failed": false,
+          "family": "F6",
+          "input_id": "ca5b2d761f4c17d649ead43ad5bec3d65a9135c5d1d8bc45879873da1efc6e8d",
+          "probe_id": "F6_3",
+          "solver_output": 18,
+          "variant": 3
+        },
+        {
+          "expected_output": 21,
+          "failed": false,
+          "family": "F6",
+          "input_id": "b46fab8b3df2de6097032226e9b0538cc6e438a1e82d20d2c24ce051d78dc487",
+          "probe_id": "F6_4",
+          "solver_output": 21,
+          "variant": 4
+        }
+      ]
+    }
+  ],
+  "instrument": "study.probes.make_probe_suite + study.features.run_probes/family_counts/concentration",
+  "natural_solver_evidence": false,
+  "observation_type": "trusted hand-written targeted-failure software fixtures; not generated solvers",
+  "predictive_analysis_performed": false,
+  "probe_count": 30,
+  "seed": 20261021,
+  "status": "CONTROLLED_MEASUREMENT_CALIBRATION_ONLY"
+}
