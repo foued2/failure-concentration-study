@@ -1,0 +1,1 @@
+{"schema":1,"nonce":"df547a6c56cf430d96373dccc856152a","case_id":"fixture_crash","probe_rows":[{"probe_id":"F1_0","status":"crash","exit_code":71,"timed_out":false,"tree_terminated":true,"stdout_b64":"","stderr_b64":""}]}

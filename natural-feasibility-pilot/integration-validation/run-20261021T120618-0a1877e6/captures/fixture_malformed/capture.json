@@ -1,0 +1,1 @@
+{"schema":1,"nonce":"92a00858942c4878bbf86a84207940e2","case_id":"fixture_malformed","probe_rows":[{"probe_id":"F1_0","status":"complete","exit_code":0,"timed_out":false,"tree_terminated":true,"stdout_b64":"e25vdC1qc29u","stderr_b64":""}]}

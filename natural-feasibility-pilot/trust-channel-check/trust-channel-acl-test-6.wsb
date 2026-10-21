@@ -1,0 +1,25 @@
+﻿<Configuration>
+  <VGpu>Disable</VGpu>
+  <Networking>Disable</Networking>
+  <ProtectedClient>Enable</ProtectedClient>
+  <ClipboardRedirection>Disable</ClipboardRedirection>
+  <AudioInput>Disable</AudioInput>
+  <VideoInput>Disable</VideoInput>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <MemoryInMB>2048</MemoryInMB>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\Users\pakla\PycharmProjects\failure-concentration-study\natural-feasibility-pilot\trust-channel-check\guest-input</HostFolder>
+      <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\trust-input</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Users\pakla\PycharmProjects\failure-concentration-study\natural-feasibility-pilot\trust-channel-check\guest-output-acl-test-6</HostFolder>
+      <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\trust-output</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File C:\Users\WDAGUtilityAccount\Desktop\trust-input\guest_privilege_test-acl-test-6.ps1</Command>
+  </LogonCommand>
+</Configuration>

@@ -1,0 +1,37 @@
+[
+  {
+    "input": {
+      "edges": [
+        [
+          0,
+          1,
+          10
+        ],
+        [
+          1,
+          2,
+          11
+        ]
+      ],
+      "n": 4,
+      "s": 0,
+      "t": 3
+    },
+    "oracle_output": -1,
+    "solver_output": null,
+    "correct": false,
+    "status": "invalid",
+    "error": "worker output is not one strict integer",
+    "raw_stdout_b64": "LTENCg==",
+    "raw_stderr_b64": "",
+    "tree_terminated": true,
+    "timed_out": false,
+    "exit_code": 0,
+    "body_name": "pattern_zero",
+    "body_id": "214b10028c9538acb78635a072586c22649a5fe706433e92d3aa16195e8f682a",
+    "probe_id": "F1_0",
+    "family": "F1",
+    "input_id": "ab6a68c54673d7448933dc1e7966cf87ea4b712c0cf75c367d7fcf9d5d48b4bc",
+    "raw_capture_path": "guest-captures\\diag-pattern_zero-F1_0\\capture.json"
+  }
+]

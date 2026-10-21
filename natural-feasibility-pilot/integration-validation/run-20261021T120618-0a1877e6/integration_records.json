@@ -1,0 +1,139 @@
+{
+  "case_count": 11,
+  "cases": [
+    {
+      "capture_path": "captures\\fixture_normal\\capture.json",
+      "capture_sha256": "8b600a2dc2d1947156244c79e193a7d2ed844e56092d32912b48c224b3e78e6c",
+      "case_id": "fixture_normal",
+      "reason": "supervisor recorded complete; tree_terminated=true",
+      "result": "PASS"
+    },
+    {
+      "C": 0.0,
+      "authoritative_path": "authoritative\\pattern_zero.json",
+      "authoritative_sha256": "1eeea78991711588ec9defde74c86b7c490de061ef9df088c4e91e932ef6125d",
+      "capture_path": "captures\\pattern_zero\\capture.json",
+      "capture_sha256": "e0767ce9bd352ec788e4a80d00fd8e8940c8eb4d3cf49e65eed8e642e269e95a",
+      "case_id": "pattern_zero",
+      "family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 0,
+      "reason": "host validation and expected behavior matched",
+      "result": "PASS"
+    },
+    {
+      "C": 1.0,
+      "authoritative_path": "authoritative\\pattern_one_family.json",
+      "authoritative_sha256": "75a74844a237fa9950de7b73ad37b905099814af0d660986113bba225d182c96",
+      "capture_path": "captures\\pattern_one_family\\capture.json",
+      "capture_sha256": "efa954d789e4407f2eb427848b35a3e9d2bc9638fa4493ba1ae448307e3b0d54",
+      "case_id": "pattern_one_family",
+      "family_counts": [
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 4,
+      "reason": "host validation and expected behavior matched",
+      "result": "PASS"
+    },
+    {
+      "C": 0.5,
+      "authoritative_path": "authoritative\\pattern_two_families.json",
+      "authoritative_sha256": "fd156ebc2d97b9123ef612c3d331f6ad6cf9691d648f2c0db59f9a44e8dae36f",
+      "capture_path": "captures\\pattern_two_families\\capture.json",
+      "capture_sha256": "c10a32c3bc5f5e254d139004df3c8d6463d0f92e6898564d580847b6ac588204",
+      "case_id": "pattern_two_families",
+      "family_counts": [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 4,
+      "reason": "host validation and expected behavior matched",
+      "result": "PASS"
+    },
+    {
+      "C": 0.25,
+      "authoritative_path": "authoritative\\pattern_four_families.json",
+      "authoritative_sha256": "b33878ba9eaaa72b9ae37dd1611248fb8b1b5a7c13957f3bce485662682bcdbc",
+      "capture_path": "captures\\pattern_four_families\\capture.json",
+      "capture_sha256": "8bc8569ed43657d5fcc2a02170658fe15b7d916f55dba7ad86d0562de328c446",
+      "case_id": "pattern_four_families",
+      "family_counts": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "k": 4,
+      "reason": "host validation and expected behavior matched",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_timeout_tree\\capture.json",
+      "capture_sha256": "5791812cdc389a7ecb890699409ded8add170c7effeb10a6905b377c31319d04",
+      "case_id": "fixture_timeout_tree",
+      "reason": "supervisor recorded timeout; tree_terminated=true",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_crash\\capture.json",
+      "capture_sha256": "3c8199136d7e62bbeb1764ff458b05b69785bb4429f4e2f2d4cdaaa6ee67f8ad",
+      "case_id": "fixture_crash",
+      "reason": "supervisor recorded crash; tree_terminated=true",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_malformed\\capture.json",
+      "capture_sha256": "9cb9e3c6d79c86afa2d1479c56daaf2c7fd4329a8c9d58cfd0ee0454dc572a73",
+      "case_id": "fixture_malformed",
+      "reason": "unsafe stdout rejected: worker output is not one strict integer",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_oversized\\capture.json",
+      "capture_sha256": "6e644a0f821d0fdfe6100d512a31abb3822f82d9f2b07e326a5a3f87418892a5",
+      "case_id": "fixture_oversized",
+      "reason": "unsafe stdout rejected: bounded stdout limit exceeded",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_forged_claims\\capture.json",
+      "capture_sha256": "5b53b4c48d5ee7261eaac654618573dbcc0d76ddc6b858283cc5b526eebb4e30",
+      "case_id": "fixture_forged_claims",
+      "reason": "unsafe stdout rejected: worker output is not one strict integer",
+      "result": "PASS"
+    },
+    {
+      "capture_path": "captures\\fixture_unexpected_sidecar\\capture.json",
+      "capture_sha256": "fa7c230df2e60eda672c5e02efe465d52b2ae916f1c0b195a8cdc35362507d7f",
+      "case_id": "fixture_unexpected_sidecar",
+      "reason": "unsafe output rejected: unexpected or missing output file",
+      "result": "PASS"
+    }
+  ],
+  "evaluation_bank_mounted": false,
+  "generated_solver_attempts": 0,
+  "generated_solver_execution_authorized": false,
+  "generic_python_solver_runner_validated": false,
+  "natural_solver_outcomes": 0,
+  "pass_count": 11,
+  "runner_scope": "hand_built_PowerShell_control_fixture_only",
+  "sandbox_sessions": 11,
+  "status": "CONTROLLED_SANDBOX_INTEGRATION_ONLY"
+}

@@ -1,0 +1,10 @@
+{
+  "source": "host_reconstruction_from_untrusted_capture",
+  "nonce": "b9232725fa974d6c825675adc4b5708f",
+  "normal_fixture_expected_answer": 42,
+  "normal_fixture_stdout": "42",
+  "normal_fixture_correct": true,
+  "k": null,
+  "C": null,
+  "note": "No diagnostic battery or oracle was mounted; this readiness check validates only transport and input visibility."
+}

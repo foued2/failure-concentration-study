@@ -1,0 +1,81 @@
+{
+  "scope": "hand-built controlled software fixtures only",
+  "model_calls": 0,
+  "generation_attempts": 0,
+  "diagnostic_count": 30,
+  "evaluation_count": 20,
+  "diagnostic_evaluation_overlap": 0,
+  "patterns": {
+    "pattern_zero": {
+      "body_id": "214b10028c9538acb78635a072586c22649a5fe706433e92d3aa16195e8f682a",
+      "failed_probe_ids": [],
+      "expected_family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 0,
+      "expected_C": 0.0
+    },
+    "pattern_one_family": {
+      "body_id": "99924458f87bbb7d5193e7cfd05d2b783cc98103ba418cd598f054be59a52ada",
+      "failed_probe_ids": [
+        "F1_0",
+        "F1_1",
+        "F1_2",
+        "F1_3"
+      ],
+      "expected_family_counts": [
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 1.0
+    },
+    "pattern_two_families": {
+      "body_id": "ecc4dffa5ad0e9cd5f80fa9d5bfc0426529c8d833b2d5aecb046fbacfdc525a5",
+      "failed_probe_ids": [
+        "F1_0",
+        "F1_1",
+        "F2_0",
+        "F2_1"
+      ],
+      "expected_family_counts": [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 0.5
+    },
+    "pattern_four_families": {
+      "body_id": "4751b8eda47e10914bb8e4a28f61c00cb88a3f74644cb36432b73c459f150dcb",
+      "failed_probe_ids": [
+        "F1_0",
+        "F2_0",
+        "F3_0",
+        "F4_0"
+      ],
+      "expected_family_counts": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 0.25
+    }
+  }
+}

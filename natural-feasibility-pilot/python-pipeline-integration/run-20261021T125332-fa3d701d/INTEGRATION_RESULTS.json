@@ -1,0 +1,126 @@
+{
+  "status": "FAIL_OR_INCOMPLETE",
+  "scope": "controlled_python_software_calibration_only",
+  "model_generated_code_executed": false,
+  "generation_attempts": 0,
+  "solver_outcomes": 0,
+  "sandbox_sessions": 1,
+  "diagnostic_inputs_per_pattern": 30,
+  "evaluation_inputs_per_pattern": 20,
+  "worker_mapped_full_diagnostic_battery": false,
+  "worker_mapped_full_evaluation_bank": false,
+  "worker_mapped_oracle_or_host_records": false,
+  "host_computed_oracle_and_features": true,
+  "patterns": {
+    "pattern_zero": {
+      "diagnostic_rows": 1,
+      "family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 0,
+      "C": 0.0,
+      "expected_family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 0,
+      "expected_C": 0.0,
+      "pattern_pass": false,
+      "evaluation_rows": 0,
+      "evaluation_correct_count": 0,
+      "evaluation_all_pass": false
+    },
+    "pattern_one_family": {
+      "diagnostic_rows": 0,
+      "family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 0,
+      "C": 0.0,
+      "expected_family_counts": [
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 1.0,
+      "pattern_pass": false,
+      "evaluation_rows": 0,
+      "evaluation_correct_count": 0,
+      "evaluation_all_pass": false
+    },
+    "pattern_two_families": {
+      "diagnostic_rows": 0,
+      "family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 0,
+      "C": 0.0,
+      "expected_family_counts": [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 0.5,
+      "pattern_pass": false,
+      "evaluation_rows": 0,
+      "evaluation_correct_count": 0,
+      "evaluation_all_pass": false
+    },
+    "pattern_four_families": {
+      "diagnostic_rows": 0,
+      "family_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "k": 0,
+      "C": 0.0,
+      "expected_family_counts": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "expected_k": 4,
+      "expected_C": 0.25,
+      "pattern_pass": false,
+      "evaluation_rows": 0,
+      "evaluation_correct_count": 0,
+      "evaluation_all_pass": false
+    }
+  },
+  "protocol_controls": {},
+  "qualification": "This tests controlled fixture behavior and the measured boundary. It does not test natural solvers, predictive value, or resistance to Sandbox escapes."
+}

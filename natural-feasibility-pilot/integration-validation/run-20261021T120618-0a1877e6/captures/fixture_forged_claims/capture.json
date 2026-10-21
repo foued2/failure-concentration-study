@@ -1,0 +1,1 @@
+{"schema":1,"nonce":"bf25b2437de94f22b9e56034f052f1ef","case_id":"fixture_forged_claims","probe_rows":[{"probe_id":"F1_0","status":"complete","exit_code":0,"timed_out":false,"tree_terminated":true,"stdout_b64":"eyJhbnN3ZXIiOjAsImNvcnJlY3QiOnRydWUsImZhbWlseV9jb3VudHMiOlswLDAsMCwwLDAsMF0sImsiOjAsIkMiOjB9","stderr_b64":""}]}

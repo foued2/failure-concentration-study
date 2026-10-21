@@ -2,11 +2,27 @@
 
 ## Status
 
-Terminal status: **`BLOCKED_GENERATION_UNAVAILABLE`**. Implementation, input preparation, and synthetic software checks only. **Generation and solver evaluation were not executed.** The recorded generator was an MIMO session, not an executable local generator. No equivalent provider tool is available in this environment. No outputs have been fabricated or substituted.
+Readiness status: **`HOLD_RUNNER_INTEGRATION_INCOMPLETE`**. The historical MIMO procedure below remains preserved as historical evidence; the proposed pilot population is now a separately declared Codex CLI generation procedure. No model-written solver has been generated or executed. The full Python diagnostic/evaluation integration gate did not complete, so this specification is proposed but not frozen for collection.
 
 ## Target and claim boundary
 
-The target is the output population of the single generation procedure recorded in `specs/generator_spec.json`: 20 one-shot implementations in one MIMO session using `opencode/mimo-v2.6-flash-free`, its recorded SSSP prompt and strategy directives, provider-default temperature/top-p, the stated Python function contract, and retention in generation order without revision or best-of selection. The authorized 100-attempt cap is an absolute ceiling, not a reason to repeat or extend this recorded 20-attempt procedure without an explicit generation rule. The provider exposes no immutable model snapshot. Recovering invocation access would not make the original model version exactly reproducible. This narrowly defined procedure is not asserted to represent all naturally generated solvers. The original invocation mechanism is unavailable, so this pilot made zero generation calls.
+The historical target recorded in `specs/generator_spec.json` was `opencode/mimo-v2.6-flash-free`; its invocation mechanism is unavailable. It is not the target of the proposed pilot below and no claim is made that the new procedure reproduces it.
+
+### Proposed generation procedure (not yet activated)
+
+- **Population:** solver bodies returned by individual one-shot requests to the authenticated Codex CLI procedure below. This is a new, procedure-specific output population, not a representative sample of all naturally generated solvers and not a reproduction of MIMO.
+- **Date declared:** 2026-10-21.
+- **CLI:** Codex CLI `0.160.1`; model selector `gpt-6-luna`; invocation pattern `codex exec --ephemeral --sandbox read-only --model gpt-6-luna --json` with the following exact user prompt supplied as the task text. The preceding `Reply exactly OK...` request was a text-only interface smoke check and is not a generation attempt.
+- **Exact one-shot prompt:**
+
+  > Write one Python implementation of a function `solve(n, edges, s, t)` that computes the shortest path distance from node `s` to node `t` in a directed graph with non-negative integer edge weights. Nodes are integers `0` through `n-1`. `edges` is a list of `(u, v, w)` tuples; parallel edges and self-loops may occur. Return the minimum total weight of any directed path from `s` to `t` as an integer, or `-1` if `t` is unreachable. Make the function self-contained and use only the Python standard library. Do not read files, access the network, or print. Return only Python source code defining `solve`, with no Markdown fences, explanation, example usage, or tests. Write the first solution that comes to mind; do not self-review or revise it.
+
+- **Output contract:** a single source response defining `solve(n: int, edges: list[tuple[int,int,int]], s: int, t: int) -> int`, returning `-1` for unreachable. Parse failures and any additional text are retained as invalid attempts; no retries or replacement sampling.
+- **Available settings:** model selector is explicit; `--ephemeral`, `--sandbox read-only`, and JSON response mode are used. No temperature, top-p, seed, or backend snapshot setting was exposed in the recorded CLI interface; those values are unavailable/default and will not be guessed. Provider authentication is the existing logged-in Codex CLI session; no credential values are recorded.
+- **Model identity limitation:** `gpt-6-luna` is the CLI model slug only. Backend model version and immutable snapshot are unavailable, so exact model reproducibility is not claimed.
+- **Generation rule:** one CLI request per ordered attempt, at most 100 attempts, with no retry, prompt tuning, outcome-driven selection, or replacement sampling. The prompt and this procedure must be reviewed against the actual runner before the first request.
+
+The generation interface has passed only one text-only smoke request. It has not yet returned a solver body through the pilot runner. Therefore the proposed population is specified but has zero observations and is not yet authorized for collection by this specification.
 
 Correctness, if collection is later performed, means per-input agreement with `study.sssp.dijkstra_ref`; raw solver and oracle outputs must be retained. Evaluation inputs are separate from diagnostic probes. The pilot's target is a shared bank of new inputs for the generated bodies. It does not establish generalization to every input or to other solver-generation processes.
 
@@ -24,7 +40,7 @@ The machine-readable field requirements and allowed statuses are in `record_sche
 
 ## Execution boundary
 
-The existing `study.features.load_solver` imports generated Python directly into the audit process and provides no timeout or isolation. It is not suitable for untrusted generated code. Host inspection found Windows 10 Pro with a hypervisor present, but no `WindowsSandbox.exe`, Docker or Podman command/runtime, or registered WSL distribution. WSL itself is installed, but no isolated Linux environment is configured. Querying Windows optional-feature state requires elevation and was not possible; no isolation capability was therefore confirmed. No solver fixtures, including timeout, crash, invalid-output, or workspace-escape attempts, were run. Before collection, an enforceable disposable sandbox/container with filesystem/network containment, hard execution/resource limits, and cleanup must be made available and its boundary tested. A Python subprocess timeout alone is not considered a security sandbox.
+The direct `study.features.load_solver` importer is not suitable for untrusted code. The existing Windows Sandbox workflow has passed prior bounded tests for disabled networking and host integration, Python runtime launch, one-input visibility, process-tree timeout, and a 128 MiB worker memory limit. Those tests do not establish resistance to every Sandbox escape. The latest attempt to connect this path to the complete 30-probe battery failed: the host saw progress through 25/30 inputs for the first controlled body, then timed out waiting for 30/30 before any capture was finalized. The separate 20-input evaluation path was not reached. See `FINAL_RUNNER_READINESS_2026-10-21.md` and retained attempts in `python-pipeline-integration/streamed-run-*`. Therefore no complete Python diagnostic/evaluation runner has passed, and generated code remains disabled.
 
 ## Limits and decision rules
 
@@ -37,4 +53,4 @@ The existing `study.features.load_solver` imports generated Python directly into
 
 ## Reproduction status
 
-The generation specification and prompt are referenced from the frozen local generator spec; the seed, instrument, and evaluation bank are specified above. No original MIMO invocation mechanism was found in the available tools or local command environment. The pilot therefore records **GENERATION NOT EXECUTED**, **EVALUATION NOT EXECUTED**, and terminal status **`BLOCKED_GENERATION_UNAVAILABLE`**. Exact model reproducibility remains unavailable even if the invocation path is later recovered, because no immutable provider snapshot was recorded.
+The diagnostic seed and 20-input evaluation bank are specified above. The Codex CLI route is callable for text-only smoke output, but the full Python runner gate failed before completing the first 30-probe calibration batch. This specification therefore records **GENERATION NOT EXECUTED**, **NATURAL-SOLVER EVALUATION NOT EXECUTED**, and **`HOLD_RUNNER_INTEGRATION_INCOMPLETE`**. No pilot collection may begin until the end-to-end Python diagnostic and separate evaluation workflow completes and its retained records are validated.

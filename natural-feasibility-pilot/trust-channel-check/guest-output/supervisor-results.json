@@ -1,0 +1,17 @@
+﻿{
+    "run_as":  "D988DD58-CC1A-4\\WDAGUtilityAccount",
+    "tests":  [
+
+              ],
+    "limitations":  [
+                        "Some or all identity references could not be translated."
+                    ],
+    "summary":  {
+                    "total":  0,
+                    "passed":  0,
+                    "failed":  0
+                },
+    "hostOutputChannel":  "C:\\Users\\WDAGUtilityAccount\\Desktop\\trust-output",
+    "workerAccount":  "fc_trust_worker",
+    "aclApplied":  null
+}

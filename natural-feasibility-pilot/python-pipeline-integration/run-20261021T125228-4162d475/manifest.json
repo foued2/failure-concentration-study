@@ -1,0 +1,17 @@
+{
+  "run_id": "run-20261021T125228-4162d475",
+  "result_file": "INTEGRATION_RESULTS.json",
+  "status": "FAIL_OR_INCOMPLETE",
+  "capture_count": 1,
+  "host_records": [
+    "diagnostic-pattern_four_families.json",
+    "diagnostic-pattern_one_family.json",
+    "diagnostic-pattern_two_families.json",
+    "diagnostic-pattern_zero.json",
+    "evaluation-pattern_four_families.json",
+    "evaluation-pattern_one_family.json",
+    "evaluation-pattern_two_families.json",
+    "evaluation-pattern_zero.json",
+    "protocol-controls.json"
+  ]
+}

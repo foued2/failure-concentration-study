@@ -1,0 +1,287 @@
+{
+  "C": 0.25,
+  "case_id": "pattern_four_families",
+  "family_counts": {
+    "F1": 1,
+    "F2": 1,
+    "F3": 1,
+    "F4": 1,
+    "F5": 0,
+    "F6": 0
+  },
+  "k": 4,
+  "probe_rows": [
+    {
+      "error": null,
+      "failed": true,
+      "family": "F1",
+      "probe_id": "F1_0",
+      "solver_output": 0,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F1",
+      "probe_id": "F1_1",
+      "solver_output": -1,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F1",
+      "probe_id": "F1_2",
+      "solver_output": -1,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F1",
+      "probe_id": "F1_3",
+      "solver_output": -1,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F1",
+      "probe_id": "F1_4",
+      "solver_output": -1,
+      "status": "complete",
+      "variant": 4
+    },
+    {
+      "error": null,
+      "failed": true,
+      "family": "F2",
+      "probe_id": "F2_0",
+      "solver_output": 8,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F2",
+      "probe_id": "F2_1",
+      "solver_output": 15,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F2",
+      "probe_id": "F2_2",
+      "solver_output": 26,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F2",
+      "probe_id": "F2_3",
+      "solver_output": 40,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F2",
+      "probe_id": "F2_4",
+      "solver_output": 57,
+      "status": "complete",
+      "variant": 4
+    },
+    {
+      "error": null,
+      "failed": true,
+      "family": "F3",
+      "probe_id": "F3_0",
+      "solver_output": 3,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F3",
+      "probe_id": "F3_1",
+      "solver_output": 3,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F3",
+      "probe_id": "F3_2",
+      "solver_output": 4,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F3",
+      "probe_id": "F3_3",
+      "solver_output": 5,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F3",
+      "probe_id": "F3_4",
+      "solver_output": 6,
+      "status": "complete",
+      "variant": 4
+    },
+    {
+      "error": null,
+      "failed": true,
+      "family": "F4",
+      "probe_id": "F4_0",
+      "solver_output": 10,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F4",
+      "probe_id": "F4_1",
+      "solver_output": 18,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F4",
+      "probe_id": "F4_2",
+      "solver_output": 30,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F4",
+      "probe_id": "F4_3",
+      "solver_output": 45,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F4",
+      "probe_id": "F4_4",
+      "solver_output": 63,
+      "status": "complete",
+      "variant": 4
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F5",
+      "probe_id": "F5_0",
+      "solver_output": 5,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F5",
+      "probe_id": "F5_1",
+      "solver_output": 7,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F5",
+      "probe_id": "F5_2",
+      "solver_output": 9,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F5",
+      "probe_id": "F5_3",
+      "solver_output": 11,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F5",
+      "probe_id": "F5_4",
+      "solver_output": 13,
+      "status": "complete",
+      "variant": 4
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F6",
+      "probe_id": "F6_0",
+      "solver_output": 9,
+      "status": "complete",
+      "variant": 0
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F6",
+      "probe_id": "F6_1",
+      "solver_output": 12,
+      "status": "complete",
+      "variant": 1
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F6",
+      "probe_id": "F6_2",
+      "solver_output": 15,
+      "status": "complete",
+      "variant": 2
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F6",
+      "probe_id": "F6_3",
+      "solver_output": 18,
+      "status": "complete",
+      "variant": 3
+    },
+    {
+      "error": null,
+      "failed": false,
+      "family": "F6",
+      "probe_id": "F6_4",
+      "solver_output": 21,
+      "status": "complete",
+      "variant": 4
+    }
+  ],
+  "source": "host_reconstructed_from_untrusted_raw_capture",
+  "worker_claims_used": false
+}

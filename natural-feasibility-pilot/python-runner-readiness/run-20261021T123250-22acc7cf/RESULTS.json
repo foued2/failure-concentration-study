@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "generation_attempts": 0,
+  "solver_outcomes": 0,
+  "checks": [
+    {
+      "check": "python_runtime_and_current_input",
+      "result": "PASS",
+      "detail": "status=complete, stdout=b'42\\r\\n'"
+    },
+    {
+      "check": "input_isolation",
+      "result": "PASS",
+      "detail": "{\"accessible_protected_names\": [], \"host_project_path_exists\": false}"
+    },
+    {
+      "check": "guest_forgery_is_untrusted",
+      "result": "PASS",
+      "detail": "worker attempted the exact capture filename; supervisor replaced it with nonce-bound eight-case capture; host trusted records remained host-owned; worker files=['forged-extra.json', 'python-capture.json']"
+    },
+    {
+      "check": "malformed_output_retained_as_raw_untrusted_bytes",
+      "result": "PASS",
+      "detail": "raw=b'\\xff\\xfe\\xfa\\n'; host does not parse it as a record"
+    },
+    {
+      "check": "oversized_output_capped",
+      "result": "PASS",
+      "detail": "status=overflow; overflow=True; cap=65536"
+    },
+    {
+      "check": "crash_recorded",
+      "result": "PASS",
+      "detail": "status=crash; exit=73"
+    },
+    {
+      "check": "timeout_kills_entire_python_process_tree",
+      "result": "PASS",
+      "detail": "timed_out=True; child_pid=7076; tree_terminated=True"
+    },
+    {
+      "check": "job_memory_limit_enforced",
+      "result": "PASS",
+      "detail": "status=crash; exit=1; job_limit=128 MiB; attempted=256 MiB"
+    },
+    {
+      "check": "guest_sidecar_detected_as_untrusted",
+      "result": "PASS",
+      "detail": "unexpected guest files=['forged-extra.json']; only the deliberate harmless forgery is expected"
+    },
+    {
+      "check": "readonly_input_mount_unchanged",
+      "result": "PASS",
+      "detail": "Host-side input fixture hashes match after Sandbox exit"
+    }
+  ],
+  "sandbox_capture_sha256": "e51851e6ab70845c7ac266b06c7f3f5e5c2e328618ab0ffb437eebcf78b8a5f6",
+  "host_record_sha256": "825948882f41ae30a04fe0bb53a877694a85fe3c76eea476256703c772f19cdc",
+  "privacy_boundary": "single current input plus Python runtime and harmless fixture; no project, probes, evaluation inputs, oracle, or prior records mapped",
+  "runner_status": "pilot_not_authorized_by_this_check"
+}

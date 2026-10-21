@@ -1,0 +1,46 @@
+﻿{
+    "run_as":  "D988DD58-CC1A-4\\WDAGUtilityAccount",
+    "tests":  [
+                  {
+                      "name":  "Supervisor can create and read its result channel",
+                      "passed":  true,
+                      "detail":  "Supervisor created protected canary records."
+                  },
+                  {
+                      "name":  "Separate worker identity completed access checks",
+                      "passed":  false,
+                      "detail":  "exit=1; no worker result"
+                  },
+                  {
+                      "name":  "Supervisor channel records remain unchanged",
+                      "passed":  true,
+                      "detail":  "Supervisor re-read canaries after worker exit."
+                  },
+                  {
+                      "name":  "Read-only mounted runner and input remain unchanged",
+                      "passed":  false,
+                      "detail":  "Host fixture bytes checked after worker exit."
+                  },
+                  {
+                      "name":  "Job timeout terminates worker and descendant",
+                      "passed":  false,
+                      "detail":  "timeout=False; parentGone=True; childGone=False; childStarted=False"
+                  },
+                  {
+                      "name":  "Job memory cap applies to separate worker",
+                      "passed":  false,
+                      "detail":  "cap=128MiB; plannedAllocation=256MiB; workerStatus=NO_STATUS; completed=True"
+                  }
+              ],
+    "limitations":  [
+
+                    ],
+    "summary":  {
+                    "total":  6,
+                    "passed":  2,
+                    "failed":  4
+                },
+    "hostOutputChannel":  "C:\\Users\\WDAGUtilityAccount\\Desktop\\trust-output",
+    "workerAccount":  "fc_trust_worker",
+    "aclApplied":  true
+}

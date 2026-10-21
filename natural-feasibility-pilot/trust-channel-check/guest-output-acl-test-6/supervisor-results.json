@@ -1,0 +1,71 @@
+﻿{
+    "run_as":  "D988DD58-CC1A-4\\WDAGUtilityAccount",
+    "tests":  [
+                  {
+                      "name":  "Supervisor can create and read its result channel",
+                      "passed":  true,
+                      "detail":  "Supervisor created protected canary records."
+                  },
+                  {
+                      "name":  "Separate worker identity is unprivileged",
+                      "passed":  true,
+                      "detail":  "D988DD58-CC1A-4\\fc_trust_worker"
+                  },
+                  {
+                      "name":  "Worker cannot read supervisor result channel",
+                      "passed":  false,
+                      "detail":  "read=True"
+                  },
+                  {
+                      "name":  "Worker cannot overwrite, delete, or forge channel records",
+                      "passed":  false,
+                      "detail":  "overwriteDenied=False; deleteDenied=True; forgeDenied=False"
+                  },
+                  {
+                      "name":  "Worker cannot modify trusted runner or input",
+                      "passed":  true,
+                      "detail":  "runnerDenied=True; inputDenied=True"
+                  },
+                  {
+                      "name":  "Worker cannot write protected system path",
+                      "passed":  true,
+                      "detail":  "systemWriteDenied=True"
+                  },
+                  {
+                      "name":  "Worker can write within its designated workspace",
+                      "passed":  true,
+                      "detail":  "workspaceWrite=True"
+                  },
+                  {
+                      "name":  "Supervisor channel records remain unchanged",
+                      "passed":  false,
+                      "detail":  "Supervisor re-read canaries after worker exit."
+                  },
+                  {
+                      "name":  "Read-only mounted runner and input remain unchanged",
+                      "passed":  true,
+                      "detail":  "Harness hash and input marker checked after worker exit."
+                  },
+                  {
+                      "name":  "Job timeout terminates worker and descendant",
+                      "passed":  true,
+                      "detail":  "timeout=True; parentGone=True; childGone=True; childStarted=True; stderr="
+                  },
+                  {
+                      "name":  "Job memory cap applies to separate worker",
+                      "passed":  true,
+                      "detail":  "cap=128MiB; plannedAllocation=256MiB; workerStatus=LIMIT:2; completed=True; stderr="
+                  }
+              ],
+    "limitations":  [
+
+                    ],
+    "summary":  {
+                    "total":  11,
+                    "passed":  8,
+                    "failed":  3
+                },
+    "hostOutputChannel":  "C:\\Users\\WDAGUtilityAccount\\Desktop\\trust-output",
+    "workerAccount":  "fc_trust_worker",
+    "aclApplied":  true
+}

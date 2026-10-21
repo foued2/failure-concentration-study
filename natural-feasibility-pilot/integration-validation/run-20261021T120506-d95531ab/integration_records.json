@@ -1,0 +1,16 @@
+{
+  "case_count": 1,
+  "cases": [
+    {
+      "case_id": "fixture_normal",
+      "reason": "supervisor recorded complete; tree_terminated=true",
+      "result": "PASS"
+    }
+  ],
+  "evaluation_bank_mounted": false,
+  "generated_solver_attempts": 0,
+  "natural_solver_outcomes": 0,
+  "pass_count": 1,
+  "sandbox_sessions": 1,
+  "status": "CONTROLLED_SANDBOX_INTEGRATION_ONLY"
+}

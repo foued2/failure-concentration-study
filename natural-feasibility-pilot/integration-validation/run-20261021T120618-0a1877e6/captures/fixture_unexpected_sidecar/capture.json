@@ -1,0 +1,1 @@
+{"schema":1,"nonce":"32083222885241e49118cbb5c6ace68d","case_id":"fixture_unexpected_sidecar","probe_rows":[{"probe_id":"F1_0","status":"complete","exit_code":0,"timed_out":false,"tree_terminated":true,"stdout_b64":"LTEK","stderr_b64":""}]}

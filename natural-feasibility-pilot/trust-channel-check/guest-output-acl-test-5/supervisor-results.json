@@ -1,0 +1,71 @@
+﻿{
+    "run_as":  "D988DD58-CC1A-4\\WDAGUtilityAccount",
+    "tests":  [
+                  {
+                      "name":  "Supervisor can create and read its result channel",
+                      "passed":  true,
+                      "detail":  "Supervisor created protected canary records."
+                  },
+                  {
+                      "name":  "Separate worker identity is unprivileged",
+                      "passed":  true,
+                      "detail":  "D988DD58-CC1A-4\\fc_trust_worker"
+                  },
+                  {
+                      "name":  "Worker cannot read supervisor result channel",
+                      "passed":  false,
+                      "detail":  "read=True"
+                  },
+                  {
+                      "name":  "Worker cannot overwrite, delete, or forge channel records",
+                      "passed":  false,
+                      "detail":  "overwriteDenied=False; deleteDenied=True; forgeDenied=False"
+                  },
+                  {
+                      "name":  "Worker cannot modify trusted runner or input",
+                      "passed":  true,
+                      "detail":  "runnerDenied=True; inputDenied=True"
+                  },
+                  {
+                      "name":  "Worker cannot write protected system path",
+                      "passed":  true,
+                      "detail":  "systemWriteDenied=True"
+                  },
+                  {
+                      "name":  "Worker can write within its designated workspace",
+                      "passed":  true,
+                      "detail":  "workspaceWrite=True"
+                  },
+                  {
+                      "name":  "Supervisor channel records remain unchanged",
+                      "passed":  false,
+                      "detail":  "Supervisor re-read canaries after worker exit."
+                  },
+                  {
+                      "name":  "Read-only mounted runner and input remain unchanged",
+                      "passed":  true,
+                      "detail":  "Harness hash and input marker checked after worker exit."
+                  },
+                  {
+                      "name":  "Job timeout terminates worker and descendant",
+                      "passed":  false,
+                      "detail":  "timeout=False; parentGone=True; childGone=False; childStarted=False; stderr=At C:\\Users\\fc_trust_worker\\work\\tree-worker.ps1:3 char:27\r\n+ [IO.File]::WriteAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\child.pid\u0027\u0027,  ...\r\n+                           ~\r\nMissing \u0027)\u0027 in method call.\r\nAt C:\\Users\\fc_trust_worker\\work\\tree-worker.ps1:3 char:27\r\n+ ... le]::WriteAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\child.pid\u0027\u0027, $child ...\r\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\nUnexpected token \u0027C:\\Users\\fc_trust_worker\\work\\child.pid\u0027\u0027\u0027 in expression or statement.\r\nAt C:\\Users\\fc_trust_worker\\work\\tree-worker.ps1:3 char:68\r\n+ ... e]::WriteAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\child.pid\u0027\u0027, $child. ...\r\n+                                                                 ~\r\nMissing argument in parameter list.\r\nAt C:\\Users\\fc_trust_worker\\work\\tree-worker.ps1:3 char:90\r\n+ ... xt(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\child.pid\u0027\u0027, $child.Id.ToString())\r\n+                                                                         ~\r\nUnexpected token \u0027)\u0027 in expression or statement.\r\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : MissingEndParenthesisInMethodCall\r\n \r\n"
+                  },
+                  {
+                      "name":  "Job memory cap applies to separate worker",
+                      "passed":  false,
+                      "detail":  "cap=128MiB; plannedAllocation=256MiB; workerStatus=NO_STATUS; completed=True; stderr=At C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:142\r\n+ ... +; Start-Sleep -Milliseconds 40 }; [IO.File]::WriteAllText(\u0027\u0027C:\\Users ...\r\n+                                                                  ~\r\nMissing \u0027)\u0027 in method call.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:142\r\n+ ... teAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"ALLOC ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\nUnexpected token \u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027\u0027 in expression or statement.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:191\r\n+ ... eAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"ALLOCA ...\r\n+                                                                 ~\r\nMissing argument in parameter list.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:5\r\n+ try { for ($i=0; $i -lt 8; $i++) { $blocks.Add([byte[]]::new(33554432 ...\r\n+     ~\r\nMissing closing \u0027}\u0027 in statement block or type definition.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:211\r\n+ ... Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"ALLOCATED:$count\") }\r\n+                                                                       ~\r\nThe Try statement is missing its Catch or Finally block.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:211\r\n+ ... Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"ALLOCATED:$count\") }\r\n+                                                                       ~\r\nUnexpected token \u0027)\u0027 in expression or statement.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:3 char:213\r\n+ ... Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"ALLOCATED:$count\") }\r\n+                                                                         ~\r\nUnexpected token \u0027}\u0027 in expression or statement.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:4 char:58\r\n+ catch [OutOfMemoryException] { [IO.File]::WriteAllText(\u0027\u0027C:\\Users\\fc_ ...\r\n+                                                          ~\r\nMissing \u0027)\u0027 in method call.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:4 char:58\r\n+ ... teAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"LIMIT ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\nUnexpected token \u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027\u0027 in expression or statement.\r\nAt C:\\Users\\fc_trust_worker\\work\\memory-worker.ps1:4 char:107\r\n+ ... eAllText(\u0027\u0027C:\\Users\\fc_trust_worker\\work\\memory-status.txt\u0027\u0027, \"LIMIT: ...\r\n+                                                                 ~\r\nMissing argument in parameter list.\r\nNot all parse errors were reported.  Correct the reported errors and try again.\r\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : MissingEndParenthesisInMethodCall\r\n \r\n"
+                  }
+              ],
+    "limitations":  [
+
+                    ],
+    "summary":  {
+                    "total":  11,
+                    "passed":  6,
+                    "failed":  5
+                },
+    "hostOutputChannel":  "C:\\Users\\WDAGUtilityAccount\\Desktop\\trust-output",
+    "workerAccount":  "fc_trust_worker",
+    "aclApplied":  true
+}
