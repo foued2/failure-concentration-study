@@ -1,0 +1,21 @@
+{
+  "run_id": "natural-pilot-followup-20261021T164204Z",
+  "state": "HALTED_GENERATION_USAGE_LIMIT",
+  "attempt_count": 1,
+  "attempt_cap": 100,
+  "generation_requests": 1,
+  "model_written_generation_attempts": 0,
+  "generation_failures": 1,
+  "distinct_canonical_bodies": 0,
+  "excluded_or_not_executed": 1,
+  "summary": {
+    "eligible_executed_bodies": 0,
+    "fixed_k_contrasts": [],
+    "support_by_k_C": {},
+    "feasibility_demonstrated": false
+  },
+  "predictive_model_fitted": false,
+  "halt_reason": "Codex CLI reported a usage limit on the availability request; recorded and halted immediately without retry.",
+  "population": "Codex CLI 0.160.1, --model gpt-6-luna, one exact SSSP prompt per attempt; backend snapshot unavailable",
+  "caveat": "Exploratory feasibility only. Full suite inputs are visible inside their respective guest session; static screen is not a security guarantee."
+}

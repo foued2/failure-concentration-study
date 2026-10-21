@@ -1,0 +1,18 @@
+{
+  "run_id": "natural-pilot-followup-20261021T164204Z",
+  "run_dir": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\natural-feasibility-pilot\\natural-pilot-followup-20261021T164204Z",
+  "state": "HALTED_GENERATION_USAGE_LIMIT",
+  "generation_status": "generation_failed",
+  "failure_kind": "usage_limit",
+  "exit_code": 1,
+  "response_present": false,
+  "elapsed_seconds": 8.034704600002442,
+  "body_id": null,
+  "source_screen": null,
+  "invoked_at_utc": "2026-10-21T16:42:04.368268+00:00",
+  "finished_at_utc": "2026-10-21T16:42:12.405318+00:00",
+  "request_count": 1,
+  "attempt_cap": 100,
+  "settings_status_check": "No local CLI usage-status command; the single availability request is the operational check.",
+  "halt_reason": "Codex CLI reported a usage limit on the availability request; recorded and halted immediately without retry."
+}

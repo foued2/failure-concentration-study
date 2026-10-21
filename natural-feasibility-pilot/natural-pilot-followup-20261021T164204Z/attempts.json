@@ -1,0 +1,16 @@
+[
+  {
+    "attempt_id": "attempt-0001",
+    "generation_order": 1,
+    "invoked_at_utc": "2026-10-21T16:42:04.368268+00:00",
+    "generated_at_utc": "2026-10-21T16:42:12.405318+00:00",
+    "generation_elapsed_seconds": 8.034704600002442,
+    "generation_status": "generation_failed",
+    "execution_status": "not_run",
+    "attempt_directory": "attempts\\attempt-0001",
+    "exclusion_reason": "generation_failed",
+    "generation_failure_kind": "usage_limit",
+    "diagnostic": null,
+    "evaluation_summary": null
+  }
+]
