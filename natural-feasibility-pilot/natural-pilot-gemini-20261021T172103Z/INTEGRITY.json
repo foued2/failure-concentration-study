@@ -1,0 +1,23 @@
+{
+  "run_id": "natural-pilot-gemini-20261021T172103Z",
+  "checked_at_utc": "2026-10-21T18:06:05.368223+00:00",
+  "sha256": {
+    "prompt_file_raw": "dfa7189748220a68d4bc14f1ddbc7ceab08b56c862efdcec65fc06cefa313043",
+    "attempts": "6132e673cdc69b4a18c112f6fd1ae184fa57d4c95008d97a42945543091ca8b7",
+    "pilot_results": "7664e3c08671b284f3b20f3a58155fba4524480dc5d1fe4c8113f985d1d4f47d",
+    "source_policy": "d7f82876d581f795730cb54ed90a09408adc65bcf999e16171006ed1cc8b314a",
+    "diagnostic_battery": "b37bbb8654c3ebb1cda8fc34c1400b79c845166ebb5c564b8354cba2a8ee7470",
+    "evaluation_bank": "316cfd836a4b9efd4a5ebb9892cf249af4625b2af021ec681b6c86f335d23f48",
+    "generation_pipeline": "0b295d8a986a461581942555112f18dd8fae06b4a6ecdcf30c9eed77b9f57448",
+    "pilot_runner": "0ff76b9a25a77ac1fed77247bec8355fac5d0288532857625c0743d9f01f3223",
+    "sandbox_pipeline": "645567303cda8507e0cc2609fee2b3e0c600287f4e2aaae14a5f2bc0ba2013d8",
+    "sandbox_adapter": "f5cfc17a2da3bf73d266e3a85ca133f5d0ac10d15df05700161377c6b8f7e9d1",
+    "sandbox_supervisor": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+    "provider_amendment": "7712f22eb2648d9bcf20d796421c8965159eac32faeb2792a39bfc554e6e632f",
+    "model_amendment": "8a4bf8c9c879bd31ad7eb850105d530c37206df7f6f93bc34b3345dd28cc4e1d",
+    "smoke_result_raw": "27138927205f0eaa83bb85cfbf549212a1207b1fc62e35612a0678d658d2a3a8",
+    "smoke_result_text_normalized": "8609bed8f4a836ebe962f2af2d41a01eb03f567a5df9ee1079986ce496920238",
+    "prompt_canonical": "80fced548f905786d3d59f7e981fffd6e48628f9ada51a48356b338743664379"
+  },
+  "hash_note": "Raw hashes cover files on disk. The pilot protocol records the text-normalized smoke-result hash; both smoke hashes are included. The canonical prompt hash is the one recorded in the generation request."
+}
