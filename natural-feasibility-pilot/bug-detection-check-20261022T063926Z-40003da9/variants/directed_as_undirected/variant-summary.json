@@ -1,0 +1,62 @@
+{
+  "caught_by_diagnostic": false,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "adds reverse edges to a directed graph",
+  "diagnostic": {
+    "C": 0.0,
+    "failed": 0,
+    "failed_probe_ids": [],
+    "family_counts": {
+      "F1": 0,
+      "F2": 0,
+      "F3": 0,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 0,
+    "rows": 30,
+    "status_counts": {
+      "pass": 30
+    },
+    "wall_seconds": 36.49068669999542
+  },
+  "evaluation": {
+    "correct": 11,
+    "failed": 9,
+    "failed_probe_ids": [
+      "r1",
+      "r3",
+      "r4",
+      "r5",
+      "r6",
+      "r7",
+      "r10",
+      "r11",
+      "r13"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 11,
+      "wrong": 9
+    },
+    "wall_seconds": 29.930727800005116
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 536,
+    "source_sha256": "8c11101767b649c24778e10c87bb6e140649e0369aaff653dd2bf8841e3e6072"
+  },
+  "status": "executed",
+  "variant": "directed_as_undirected"
+}

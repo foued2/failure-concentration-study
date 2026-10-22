@@ -1,0 +1,58 @@
+{
+  "caught_by_diagnostic": false,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "returns when the target is first discovered, before later relaxation",
+  "diagnostic": {
+    "C": 0.0,
+    "failed": 0,
+    "failed_probe_ids": [],
+    "family_counts": {
+      "F1": 0,
+      "F2": 0,
+      "F3": 0,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 0,
+    "rows": 30,
+    "status_counts": {
+      "pass": 30
+    },
+    "wall_seconds": 36.03594190000149
+  },
+  "evaluation": {
+    "correct": 15,
+    "failed": 5,
+    "failed_probe_ids": [
+      "r0",
+      "r2",
+      "r6",
+      "r11",
+      "r12"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 15,
+      "wrong": 5
+    },
+    "wall_seconds": 30.083734400002868
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 561,
+    "source_sha256": "28ef750afbbcac199ae31466c4424c92d4b55269ec246915d962566fa3d989df"
+  },
+  "status": "executed",
+  "variant": "early_return_on_target_push"
+}

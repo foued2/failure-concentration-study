@@ -1,0 +1,65 @@
+{
+  "caught_by_diagnostic": true,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "returns 0 instead of -1 for an unreachable target",
+  "diagnostic": {
+    "C": 1.0,
+    "failed": 5,
+    "failed_probe_ids": [
+      "F1_0",
+      "F1_1",
+      "F1_2",
+      "F1_3",
+      "F1_4"
+    ],
+    "family_counts": {
+      "F1": 5,
+      "F2": 0,
+      "F3": 0,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 5,
+    "rows": 30,
+    "status_counts": {
+      "pass": 25,
+      "wrong": 5
+    },
+    "wall_seconds": 36.649035399997956
+  },
+  "evaluation": {
+    "correct": 15,
+    "failed": 5,
+    "failed_probe_ids": [
+      "r3",
+      "r5",
+      "r7",
+      "r10",
+      "e1"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 15,
+      "wrong": 5
+    },
+    "wall_seconds": 30.702822799998103
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 503,
+    "source_sha256": "708b4f3549c86e44facf2e4c192a545cdeadfd796019988793f700059bdc0185"
+  },
+  "status": "executed",
+  "variant": "unreachable_wrong_sentinel"
+}

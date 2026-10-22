@@ -1,0 +1,604 @@
+{
+  "finished_utc": "2026-10-22T06:48:27Z",
+  "model_calls": 0,
+  "no_model_calls": true,
+  "protocol": {
+    "bank_sizes": {
+      "diagnostic": 30,
+      "evaluation": 20
+    },
+    "criteria": {
+      "diagnostic_caught": "k > 0",
+      "evaluation_caught": "correct < 20",
+      "reference_control": "30/30 diagnostic passes and 20/20 evaluation correctness"
+    },
+    "input_hashes": {
+      "diagnostic_battery.json": "b37bbb8654c3ebb1cda8fc34c1400b79c845166ebb5c564b8354cba2a8ee7470",
+      "evaluation_bank.json": "316cfd836a4b9efd4a5ebb9892cf249af4625b2af021ec681b6c86f335d23f48"
+    },
+    "model_calls": 0,
+    "no_model_calls": true,
+    "panel_sha256": "ba1a2528aa117f08f238194eded670cb9e2473d2533bac65ffd40ddd61b09844",
+    "protocol_sha256": "d461d2b22e5d844ecfbb159eb873df5d05ed35766302866689c2de048efb66b8",
+    "purpose": "hand-built SSSP defect coverage check against the frozen banks",
+    "run_id": "bug-detection-check-20261022T063926Z-40003da9",
+    "schema": 1,
+    "source_hashes": {
+      "bug_detection_variants.py": "2c03eb5b4d8a8c434b1cb4ac2520b04c22a2aeb52fd516b2e1fd2f5c859e0917",
+      "integration_runner.py": "fc48467319f48f90bc9d7f00da69c1c9eb8e46c72848a05a436785cdd8a77b32",
+      "protocol": "d461d2b22e5d844ecfbb159eb873df5d05ed35766302866689c2de048efb66b8",
+      "python_adapter.py": "f5cfc17a2da3bf73d266e3a85ca133f5d0ac10d15df05700161377c6b8f7e9d1",
+      "run_bug_detection_check.py": "aad95b16dad0710e84f2496c5c8f3f4c2d7a9daa291ea9688a564aa01c397b6f",
+      "run_generated_smoke.py": "0b295d8a986a461581942555112f18dd8fae06b4a6ecdcf30c9eed77b9f57448",
+      "run_python_pipeline_integration.py": "645567303cda8507e0cc2609fee2b3e0c600287f4e2aaae14a5f2bc0ba2013d8",
+      "sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+      "source_policy.py": "d7f82876d581f795730cb54ed90a09408adc65bcf999e16171006ed1cc8b314a"
+    },
+    "started_utc": "2026-10-22T06:39:26Z"
+  },
+  "reference_control": "PASS",
+  "run_id": "bug-detection-check-20261022T063926Z-40003da9",
+  "schema": 1,
+  "scope": "Hand-built defect coverage only. No model-generated solver was requested or executed. A caught defect supports only the claim that these frozen banks detected this specific hand-built defect. It is not evidence that natural solvers concentrate failures or that C predicts correctness.",
+  "started_utc": "2026-10-22T06:39:26Z",
+  "status": "COMPLETE",
+  "summary": {
+    "caught_by_both": [
+      "unreachable_wrong_sentinel",
+      "skip_zero_weight_edges",
+      "last_parallel_edge",
+      "bfs_unweighted"
+    ],
+    "caught_by_diagnostic": [
+      "unreachable_wrong_sentinel",
+      "skip_zero_weight_edges",
+      "last_parallel_edge",
+      "reject_self_loops",
+      "bfs_unweighted"
+    ],
+    "caught_by_either": [
+      "unreachable_wrong_sentinel",
+      "skip_zero_weight_edges",
+      "last_parallel_edge",
+      "reject_self_loops",
+      "bfs_unweighted",
+      "early_return_on_target_push",
+      "directed_as_undirected"
+    ],
+    "caught_by_evaluation": [
+      "unreachable_wrong_sentinel",
+      "skip_zero_weight_edges",
+      "last_parallel_edge",
+      "bfs_unweighted",
+      "early_return_on_target_push",
+      "directed_as_undirected"
+    ],
+    "diagnostic_only": [
+      "reject_self_loops"
+    ],
+    "evaluation_only": [
+      "early_return_on_target_push",
+      "directed_as_undirected"
+    ],
+    "executed_faulty_variants": 7,
+    "faulty_variants": 7,
+    "missed_by_both": []
+  },
+  "total_wall_seconds": 541.7072103999963,
+  "variants": [
+    {
+      "caught_by_diagnostic": false,
+      "caught_by_either": false,
+      "caught_by_evaluation": false,
+      "defect": "none; correct reference control",
+      "diagnostic": {
+        "C": 0.0,
+        "failed": 0,
+        "failed_probe_ids": [],
+        "family_counts": {
+          "F1": 0,
+          "F2": 0,
+          "F3": 0,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 0,
+        "rows": 30,
+        "status_counts": {
+          "pass": 30
+        },
+        "wall_seconds": 41.66796040000918
+      },
+      "evaluation": {
+        "correct": 20,
+        "failed": 0,
+        "failed_probe_ids": [],
+        "rows": 20,
+        "status_counts": {
+          "pass": 20
+        },
+        "wall_seconds": 31.64706030000525
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 504,
+        "source_sha256": "c242e45b4d33528cde0314469b975ab26fb55679c334c1d66e720492bf4c44fc"
+      },
+      "status": "executed",
+      "variant": "reference_dijkstra"
+    },
+    {
+      "caught_by_diagnostic": true,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "returns 0 instead of -1 for an unreachable target",
+      "diagnostic": {
+        "C": 1.0,
+        "failed": 5,
+        "failed_probe_ids": [
+          "F1_0",
+          "F1_1",
+          "F1_2",
+          "F1_3",
+          "F1_4"
+        ],
+        "family_counts": {
+          "F1": 5,
+          "F2": 0,
+          "F3": 0,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 5,
+        "rows": 30,
+        "status_counts": {
+          "pass": 25,
+          "wrong": 5
+        },
+        "wall_seconds": 36.649035399997956
+      },
+      "evaluation": {
+        "correct": 15,
+        "failed": 5,
+        "failed_probe_ids": [
+          "r3",
+          "r5",
+          "r7",
+          "r10",
+          "e1"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 15,
+          "wrong": 5
+        },
+        "wall_seconds": 30.702822799998103
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 503,
+        "source_sha256": "708b4f3549c86e44facf2e4c192a545cdeadfd796019988793f700059bdc0185"
+      },
+      "status": "executed",
+      "variant": "unreachable_wrong_sentinel"
+    },
+    {
+      "caught_by_diagnostic": true,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "omits zero-weight edges from the graph",
+      "diagnostic": {
+        "C": 1.0,
+        "failed": 5,
+        "failed_probe_ids": [
+          "F2_0",
+          "F2_1",
+          "F2_2",
+          "F2_3",
+          "F2_4"
+        ],
+        "family_counts": {
+          "F1": 0,
+          "F2": 5,
+          "F3": 0,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 5,
+        "rows": 30,
+        "status_counts": {
+          "pass": 25,
+          "wrong": 5
+        },
+        "wall_seconds": 36.55257030000212
+      },
+      "evaluation": {
+        "correct": 16,
+        "failed": 4,
+        "failed_probe_ids": [
+          "r2",
+          "r8",
+          "r12",
+          "e2"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 16,
+          "wrong": 4
+        },
+        "wall_seconds": 30.30334969999967
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 527,
+        "source_sha256": "3050a15333b3eabcf6aecb212ab91f74ae11e6071e6df271ad3fe073072321d2"
+      },
+      "status": "executed",
+      "variant": "skip_zero_weight_edges"
+    },
+    {
+      "caught_by_diagnostic": true,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "keeps only the last parallel edge for each node pair",
+      "diagnostic": {
+        "C": 1.0,
+        "failed": 5,
+        "failed_probe_ids": [
+          "F3_0",
+          "F3_1",
+          "F3_2",
+          "F3_3",
+          "F3_4"
+        ],
+        "family_counts": {
+          "F1": 0,
+          "F2": 0,
+          "F3": 5,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 5,
+        "rows": 30,
+        "status_counts": {
+          "pass": 25,
+          "wrong": 5
+        },
+        "wall_seconds": 35.9676724000019
+      },
+      "evaluation": {
+        "correct": 19,
+        "failed": 1,
+        "failed_probe_ids": [
+          "e3"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 19,
+          "wrong": 1
+        },
+        "wall_seconds": 30.550893599996925
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 504,
+        "source_sha256": "ac781adca9db1e086b62ce4c92fdc4090c741fc925552a306450a17413ed9a2c"
+      },
+      "status": "executed",
+      "variant": "last_parallel_edge"
+    },
+    {
+      "caught_by_diagnostic": true,
+      "caught_by_either": true,
+      "caught_by_evaluation": false,
+      "defect": "raises on a valid graph containing a self-loop",
+      "diagnostic": {
+        "C": 1.0,
+        "failed": 5,
+        "failed_probe_ids": [
+          "F4_0",
+          "F4_1",
+          "F4_2",
+          "F4_3",
+          "F4_4"
+        ],
+        "family_counts": {
+          "F1": 0,
+          "F2": 0,
+          "F3": 0,
+          "F4": 5,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 5,
+        "rows": 30,
+        "status_counts": {
+          "crash": 5,
+          "pass": 25
+        },
+        "wall_seconds": 37.052795600000536
+      },
+      "evaluation": {
+        "correct": 20,
+        "failed": 0,
+        "failed_probe_ids": [],
+        "rows": 20,
+        "status_counts": {
+          "pass": 20
+        },
+        "wall_seconds": 30.090712899997015
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 591,
+        "source_sha256": "07da4504c8db31b42e23f781f277d310c937288bf6b90e43cc001d0e856cd228"
+      },
+      "status": "executed",
+      "variant": "reject_self_loops"
+    },
+    {
+      "caught_by_diagnostic": true,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "ignores edge weights and returns unweighted hop count",
+      "diagnostic": {
+        "C": 0.2,
+        "failed": 25,
+        "failed_probe_ids": [
+          "F2_0",
+          "F2_1",
+          "F2_2",
+          "F2_3",
+          "F2_4",
+          "F3_0",
+          "F3_1",
+          "F3_2",
+          "F3_3",
+          "F3_4",
+          "F4_0",
+          "F4_1",
+          "F4_2",
+          "F4_3",
+          "F4_4",
+          "F5_0",
+          "F5_1",
+          "F5_2",
+          "F5_3",
+          "F5_4",
+          "F6_0",
+          "F6_1",
+          "F6_2",
+          "F6_3",
+          "F6_4"
+        ],
+        "family_counts": {
+          "F1": 0,
+          "F2": 5,
+          "F3": 5,
+          "F4": 5,
+          "F5": 5,
+          "F6": 5
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 25,
+        "rows": 30,
+        "status_counts": {
+          "pass": 5,
+          "wrong": 25
+        },
+        "wall_seconds": 36.09051909999107
+      },
+      "evaluation": {
+        "correct": 5,
+        "failed": 15,
+        "failed_probe_ids": [
+          "r0",
+          "r1",
+          "r2",
+          "r4",
+          "r6",
+          "r8",
+          "r9",
+          "r11",
+          "r12",
+          "r13",
+          "r14",
+          "e0",
+          "e2",
+          "e3",
+          "e4"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 5,
+          "wrong": 15
+        },
+        "wall_seconds": 29.68931829999201
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 421,
+        "source_sha256": "77143c44ae572b0b0a540bc0cfb2c93826f8c2b82c71bd958af7e6ffb2142d8d"
+      },
+      "status": "executed",
+      "variant": "bfs_unweighted"
+    },
+    {
+      "caught_by_diagnostic": false,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "returns when the target is first discovered, before later relaxation",
+      "diagnostic": {
+        "C": 0.0,
+        "failed": 0,
+        "failed_probe_ids": [],
+        "family_counts": {
+          "F1": 0,
+          "F2": 0,
+          "F3": 0,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 0,
+        "rows": 30,
+        "status_counts": {
+          "pass": 30
+        },
+        "wall_seconds": 36.03594190000149
+      },
+      "evaluation": {
+        "correct": 15,
+        "failed": 5,
+        "failed_probe_ids": [
+          "r0",
+          "r2",
+          "r6",
+          "r11",
+          "r12"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 15,
+          "wrong": 5
+        },
+        "wall_seconds": 30.083734400002868
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 561,
+        "source_sha256": "28ef750afbbcac199ae31466c4424c92d4b55269ec246915d962566fa3d989df"
+      },
+      "status": "executed",
+      "variant": "early_return_on_target_push"
+    },
+    {
+      "caught_by_diagnostic": false,
+      "caught_by_either": true,
+      "caught_by_evaluation": true,
+      "defect": "adds reverse edges to a directed graph",
+      "diagnostic": {
+        "C": 0.0,
+        "failed": 0,
+        "failed_probe_ids": [],
+        "family_counts": {
+          "F1": 0,
+          "F2": 0,
+          "F3": 0,
+          "F4": 0,
+          "F5": 0,
+          "F6": 0
+        },
+        "family_order": [
+          "F1",
+          "F2",
+          "F3",
+          "F4",
+          "F5",
+          "F6"
+        ],
+        "k": 0,
+        "rows": 30,
+        "status_counts": {
+          "pass": 30
+        },
+        "wall_seconds": 36.49068669999542
+      },
+      "evaluation": {
+        "correct": 11,
+        "failed": 9,
+        "failed_probe_ids": [
+          "r1",
+          "r3",
+          "r4",
+          "r5",
+          "r6",
+          "r7",
+          "r10",
+          "r11",
+          "r13"
+        ],
+        "rows": 20,
+        "status_counts": {
+          "pass": 11,
+          "wrong": 9
+        },
+        "wall_seconds": 29.930727800005116
+      },
+      "screen": {
+        "accepted": true,
+        "reasons": [],
+        "source_bytes": 536,
+        "source_sha256": "8c11101767b649c24778e10c87bb6e140649e0369aaff653dd2bf8841e3e6072"
+      },
+      "status": "executed",
+      "variant": "directed_as_undirected"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "caught_by_diagnostic": false,
+  "caught_by_either": false,
+  "caught_by_evaluation": false,
+  "defect": "none; correct reference control",
+  "diagnostic": {
+    "C": 0.0,
+    "failed": 0,
+    "failed_probe_ids": [],
+    "family_counts": {
+      "F1": 0,
+      "F2": 0,
+      "F3": 0,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 0,
+    "rows": 30,
+    "status_counts": {
+      "pass": 30
+    },
+    "wall_seconds": 41.66796040000918
+  },
+  "evaluation": {
+    "correct": 20,
+    "failed": 0,
+    "failed_probe_ids": [],
+    "rows": 20,
+    "status_counts": {
+      "pass": 20
+    },
+    "wall_seconds": 31.64706030000525
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 504,
+    "source_sha256": "c242e45b4d33528cde0314469b975ab26fb55679c334c1d66e720492bf4c44fc"
+  },
+  "status": "executed",
+  "variant": "reference_dijkstra"
+}

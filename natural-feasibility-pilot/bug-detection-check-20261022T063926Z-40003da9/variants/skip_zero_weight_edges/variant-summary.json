@@ -1,0 +1,64 @@
+{
+  "caught_by_diagnostic": true,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "omits zero-weight edges from the graph",
+  "diagnostic": {
+    "C": 1.0,
+    "failed": 5,
+    "failed_probe_ids": [
+      "F2_0",
+      "F2_1",
+      "F2_2",
+      "F2_3",
+      "F2_4"
+    ],
+    "family_counts": {
+      "F1": 0,
+      "F2": 5,
+      "F3": 0,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 5,
+    "rows": 30,
+    "status_counts": {
+      "pass": 25,
+      "wrong": 5
+    },
+    "wall_seconds": 36.55257030000212
+  },
+  "evaluation": {
+    "correct": 16,
+    "failed": 4,
+    "failed_probe_ids": [
+      "r2",
+      "r8",
+      "r12",
+      "e2"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 16,
+      "wrong": 4
+    },
+    "wall_seconds": 30.30334969999967
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 527,
+    "source_sha256": "3050a15333b3eabcf6aecb212ab91f74ae11e6071e6df271ad3fe073072321d2"
+  },
+  "status": "executed",
+  "variant": "skip_zero_weight_edges"
+}

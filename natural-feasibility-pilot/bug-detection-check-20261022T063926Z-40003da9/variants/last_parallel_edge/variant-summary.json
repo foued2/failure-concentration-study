@@ -1,0 +1,61 @@
+{
+  "caught_by_diagnostic": true,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "keeps only the last parallel edge for each node pair",
+  "diagnostic": {
+    "C": 1.0,
+    "failed": 5,
+    "failed_probe_ids": [
+      "F3_0",
+      "F3_1",
+      "F3_2",
+      "F3_3",
+      "F3_4"
+    ],
+    "family_counts": {
+      "F1": 0,
+      "F2": 0,
+      "F3": 5,
+      "F4": 0,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 5,
+    "rows": 30,
+    "status_counts": {
+      "pass": 25,
+      "wrong": 5
+    },
+    "wall_seconds": 35.9676724000019
+  },
+  "evaluation": {
+    "correct": 19,
+    "failed": 1,
+    "failed_probe_ids": [
+      "e3"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 19,
+      "wrong": 1
+    },
+    "wall_seconds": 30.550893599996925
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 504,
+    "source_sha256": "ac781adca9db1e086b62ce4c92fdc4090c741fc925552a306450a17413ed9a2c"
+  },
+  "status": "executed",
+  "variant": "last_parallel_edge"
+}

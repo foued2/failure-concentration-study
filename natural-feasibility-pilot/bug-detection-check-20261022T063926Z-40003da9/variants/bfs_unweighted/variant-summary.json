@@ -1,0 +1,95 @@
+{
+  "caught_by_diagnostic": true,
+  "caught_by_either": true,
+  "caught_by_evaluation": true,
+  "defect": "ignores edge weights and returns unweighted hop count",
+  "diagnostic": {
+    "C": 0.2,
+    "failed": 25,
+    "failed_probe_ids": [
+      "F2_0",
+      "F2_1",
+      "F2_2",
+      "F2_3",
+      "F2_4",
+      "F3_0",
+      "F3_1",
+      "F3_2",
+      "F3_3",
+      "F3_4",
+      "F4_0",
+      "F4_1",
+      "F4_2",
+      "F4_3",
+      "F4_4",
+      "F5_0",
+      "F5_1",
+      "F5_2",
+      "F5_3",
+      "F5_4",
+      "F6_0",
+      "F6_1",
+      "F6_2",
+      "F6_3",
+      "F6_4"
+    ],
+    "family_counts": {
+      "F1": 0,
+      "F2": 5,
+      "F3": 5,
+      "F4": 5,
+      "F5": 5,
+      "F6": 5
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 25,
+    "rows": 30,
+    "status_counts": {
+      "pass": 5,
+      "wrong": 25
+    },
+    "wall_seconds": 36.09051909999107
+  },
+  "evaluation": {
+    "correct": 5,
+    "failed": 15,
+    "failed_probe_ids": [
+      "r0",
+      "r1",
+      "r2",
+      "r4",
+      "r6",
+      "r8",
+      "r9",
+      "r11",
+      "r12",
+      "r13",
+      "r14",
+      "e0",
+      "e2",
+      "e3",
+      "e4"
+    ],
+    "rows": 20,
+    "status_counts": {
+      "pass": 5,
+      "wrong": 15
+    },
+    "wall_seconds": 29.68931829999201
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 421,
+    "source_sha256": "77143c44ae572b0b0a540bc0cfb2c93826f8c2b82c71bd958af7e6ffb2142d8d"
+  },
+  "status": "executed",
+  "variant": "bfs_unweighted"
+}

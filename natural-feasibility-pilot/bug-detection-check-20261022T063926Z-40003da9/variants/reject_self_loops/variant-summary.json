@@ -1,0 +1,58 @@
+{
+  "caught_by_diagnostic": true,
+  "caught_by_either": true,
+  "caught_by_evaluation": false,
+  "defect": "raises on a valid graph containing a self-loop",
+  "diagnostic": {
+    "C": 1.0,
+    "failed": 5,
+    "failed_probe_ids": [
+      "F4_0",
+      "F4_1",
+      "F4_2",
+      "F4_3",
+      "F4_4"
+    ],
+    "family_counts": {
+      "F1": 0,
+      "F2": 0,
+      "F3": 0,
+      "F4": 5,
+      "F5": 0,
+      "F6": 0
+    },
+    "family_order": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6"
+    ],
+    "k": 5,
+    "rows": 30,
+    "status_counts": {
+      "crash": 5,
+      "pass": 25
+    },
+    "wall_seconds": 37.052795600000536
+  },
+  "evaluation": {
+    "correct": 20,
+    "failed": 0,
+    "failed_probe_ids": [],
+    "rows": 20,
+    "status_counts": {
+      "pass": 20
+    },
+    "wall_seconds": 30.090712899997015
+  },
+  "screen": {
+    "accepted": true,
+    "reasons": [],
+    "source_bytes": 591,
+    "source_sha256": "07da4504c8db31b42e23f781f277d310c937288bf6b90e43cc001d0e856cd228"
+  },
+  "status": "executed",
+  "variant": "reject_self_loops"
+}

@@ -1,0 +1,34 @@
+{
+  "bank_sizes": {
+    "diagnostic": 30,
+    "evaluation": 20
+  },
+  "criteria": {
+    "diagnostic_caught": "k > 0",
+    "evaluation_caught": "correct < 20",
+    "reference_control": "30/30 diagnostic passes and 20/20 evaluation correctness"
+  },
+  "input_hashes": {
+    "diagnostic_battery.json": "b37bbb8654c3ebb1cda8fc34c1400b79c845166ebb5c564b8354cba2a8ee7470",
+    "evaluation_bank.json": "316cfd836a4b9efd4a5ebb9892cf249af4625b2af021ec681b6c86f335d23f48"
+  },
+  "model_calls": 0,
+  "no_model_calls": true,
+  "panel_sha256": "ba1a2528aa117f08f238194eded670cb9e2473d2533bac65ffd40ddd61b09844",
+  "protocol_sha256": "d461d2b22e5d844ecfbb159eb873df5d05ed35766302866689c2de048efb66b8",
+  "purpose": "hand-built SSSP defect coverage check against the frozen banks",
+  "run_id": "bug-detection-check-20261022T063926Z-40003da9",
+  "schema": 1,
+  "source_hashes": {
+    "bug_detection_variants.py": "2c03eb5b4d8a8c434b1cb4ac2520b04c22a2aeb52fd516b2e1fd2f5c859e0917",
+    "integration_runner.py": "fc48467319f48f90bc9d7f00da69c1c9eb8e46c72848a05a436785cdd8a77b32",
+    "protocol": "d461d2b22e5d844ecfbb159eb873df5d05ed35766302866689c2de048efb66b8",
+    "python_adapter.py": "f5cfc17a2da3bf73d266e3a85ca133f5d0ac10d15df05700161377c6b8f7e9d1",
+    "run_bug_detection_check.py": "aad95b16dad0710e84f2496c5c8f3f4c2d7a9daa291ea9688a564aa01c397b6f",
+    "run_generated_smoke.py": "0b295d8a986a461581942555112f18dd8fae06b4a6ecdcf30c9eed77b9f57448",
+    "run_python_pipeline_integration.py": "645567303cda8507e0cc2609fee2b3e0c600287f4e2aaae14a5f2bc0ba2013d8",
+    "sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+    "source_policy.py": "d7f82876d581f795730cb54ed90a09408adc65bcf999e16171006ed1cc8b314a"
+  },
+  "started_utc": "2026-10-22T06:39:26Z"
+}
