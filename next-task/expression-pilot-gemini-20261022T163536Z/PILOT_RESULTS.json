@@ -1,0 +1,119 @@
+{
+  "attempt_count": 30,
+  "caveat": "Exploratory feasibility only. Expected values and oracle data are host-side. The guest can read the other expressions in its current suite; the static screen is a best-effort policy, not a security boundary.",
+  "distinct_canonical_bodies": 21,
+  "duplicates": 6,
+  "eligible_executed_bodies": 19,
+  "feasibility_demonstrated": false,
+  "fixed_k_contrasts": [
+    {
+      "C_values": [
+        1.0
+      ],
+      "cross_C_contrasts": [],
+      "distinct_bodies_by_C": {
+        "1.0": 9
+      },
+      "evaluation_correct_counts_by_C": {
+        "1.0": {
+          "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e": 28,
+          "1873a80b916cc0e55e4095ee6b15897341ae346d7a69bf4d30b8f2f812d5bc46": 28,
+          "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9": 28,
+          "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8": 28,
+          "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a": 28,
+          "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66": 28,
+          "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f": 28,
+          "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12": 28,
+          "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c": 28
+        }
+      },
+      "k": 2
+    },
+    {
+      "C_values": [
+        0.16666666666666666
+      ],
+      "cross_C_contrasts": [],
+      "distinct_bodies_by_C": {
+        "0.16666666666666666": 3
+      },
+      "evaluation_correct_counts_by_C": {
+        "0.16666666666666666": {
+          "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53": 0,
+          "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb": 0,
+          "f1f6a1e7e29c859ff917a3d0d0b8d3e8a8df662a5cbd9c63518bafbe5a66ff03": 0
+        }
+      },
+      "k": 30
+    }
+  ],
+  "generation_elapsed_seconds": 2269.8298295999994,
+  "generation_failures": 3,
+  "generation_requests": 30,
+  "halt_reason": null,
+  "missing_conditions": [
+    "REPEATED_K_BUT_NO_C_SEPARATION"
+  ],
+  "model_written_generation_attempts": 27,
+  "planned_attempts": 30,
+  "predictive_model_fitted": false,
+  "run_id": "expression-pilot-gemini-20261022T163536Z",
+  "runner_errors": 0,
+  "schema": 1,
+  "source_rejected": 2,
+  "state": "REPEATED_K_BUT_NO_C_SEPARATION",
+  "support_by_k_C": {
+    "0": {
+      "0.0": {
+        "attempts": 6,
+        "distinct_bodies": 6,
+        "evaluation_correct_counts": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ]
+      }
+    },
+    "2": {
+      "1.0": {
+        "attempts": 9,
+        "distinct_bodies": 9,
+        "evaluation_correct_counts": [
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28,
+          28
+        ]
+      }
+    },
+    "30": {
+      "0.16666666666666666": {
+        "attempts": 3,
+        "distinct_bodies": 3,
+        "evaluation_correct_counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "7": {
+      "0.7142857142857143": {
+        "attempts": 1,
+        "distinct_bodies": 1,
+        "evaluation_correct_counts": [
+          23
+        ]
+      }
+    }
+  },
+  "validation_errors": []
+}

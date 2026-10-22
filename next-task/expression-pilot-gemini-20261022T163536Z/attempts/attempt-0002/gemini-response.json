@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "def solve(expr):\n    def tokenize(s):\n        tokens = []\n        i = 0\n        while i \u003c len(s):\n            c = s[i]\n            if c.isspace():\n                i += 1\n            elif c in \"+-*/()\":\n                tokens.append(c)\n                i += 1\n            elif c.isdigit():\n                start = i\n                while i \u003c len(s) and s[i].isdigit():\n                    i += 1\n                tokens.append(int(s[start:i]))\n            else:\n                i += 1\n        return tokens\n\n    tokens = tokenize(expr)\n    \n    # Preprocess unary minus\n    processed = []\n    expect_unary = True\n    for i, tok in enumerate(tokens):\n        if tok == '(':\n            processed.append(tok)\n            expect_unary = True\n        elif tok == ')':\n            processed.append(tok)\n            expect_unary = False\n        elif tok in '+-':\n            if expect_unary:\n                if tok == '-':\n                    processed.append('UNARY_MINUS')\n                # Ignore unary plus\n            else:\n                processed.append(tok)\n                expect_unary = True\n        else:\n            processed.append(tok)\n            expect_unary = False\n\n    # Convert to postfix using Shunting-yard\n    output = []\n    stack = []\n    precedence = {'+': 1, '-': 1, '*': 2, 'UNARY_MINUS': 3}\n\n    for tok in processed:\n        if isinstance(tok, int):\n            output.append(tok)\n        elif tok in precedence:\n            while (stack and stack[-1] in precedence and \n                   precedence[stack[-1]] \u003e= precedence[tok] and \n                   tok != 'UNARY_MINUS'):\n                output.append(stack.pop())\n            stack.append(tok)\n        elif tok == '(':\n            stack.append(tok)\n        elif tok == ')':\n            while stack and stack[-1] != '(':\n                output.append(stack.pop())\n            if stack and stack[-1] == '(':\n                stack.pop()\n\n    while stack:\n        output.append(stack.pop())\n\n    # Evaluate postfix\n    eval_stack = []\n    for tok in output:\n        if isinstance(tok, int):\n            eval_stack.append(tok)\n        elif tok == 'UNARY_MINUS':\n            val = eval_stack.pop()\n            eval_stack.append(-val)\n        else:\n            b = eval_stack.pop()\n            a = eval_stack.pop()\n            if tok == '+':\n                eval_stack.append(a + b)\n            elif tok == '-':\n                eval_stack.append(a - b)\n            elif tok == '*':\n                eval_stack.append(a * b)\n\n    return eval_stack[0] if eval_stack else 0",
+            "thoughtSignature": "EmAKXgFpFH0TBZcZhoc/nCtEXmpWERBK3S0aI83at1XQrEXK1Jk4J5TgwQ5deYnHO9E4KCgTC5zne+vFsVNQtbtYIX4vW7bZxJrAAkTIvMHULHiAt6DFgR3/sEFK8p56L/M="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 142,
+    "candidatesTokenCount": 681,
+    "totalTokenCount": 823,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "ZzvaavniJpbY28oPkbm5wQc"
+}

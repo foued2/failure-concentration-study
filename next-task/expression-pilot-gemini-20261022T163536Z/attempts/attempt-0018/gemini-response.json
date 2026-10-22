@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "def solve(expr):\n    def tokenize(s):\n        tokens = []\n        i = 0\n        while i \u003c len(s):\n            c = s[i]\n            if c.isspace():\n                i += 1\n            elif c in \"+-*/()\":\n                tokens.append(c)\n                i += 1\n            elif c.isdigit():\n                start = i\n                while i \u003c len(s) and s[i].isdigit():\n                    i += 1\n                tokens.append(int(s[start:i]))\n            else:\n                i += 1\n        return tokens\n\n    tokens = tokenize(expr)\n    \n    def parse_expr(tokens, i):\n        node, i = parse_term(tokens, i)\n        while i \u003c len(tokens) and tokens[i] in ('+', '-'):\n            op = tokens[i]\n            next_node, i = parse_term(tokens, i + 1)\n            if op == '+':\n                node += next_node\n            else:\n                node -= next_node\n        return node, i\n\n    def parse_term(tokens, i):\n        node, i = parse_factor(tokens, i)\n        while i \u003c len(tokens) and tokens[i] == '*':\n            next_node, i = parse_factor(tokens, i + 1)\n            node *= next_node\n        return node, i\n\n    def parse_factor(tokens, i):\n        if i \u003c len(tokens) and tokens[i] == '-':\n            val, i = parse_factor(tokens, i + 1)\n            return -val, i\n        elif i \u003c len(tokens) and tokens[i] == '+':\n            return parse_factor(tokens, i + 1)\n        elif i \u003c len(tokens) and tokens[i] == '(':\n            val, i = parse_expr(tokens, i + 1)\n            if i \u003c len(tokens) and tokens[i] == ')':\n                i += 1\n            return val, i\n        elif i \u003c len(tokens) and isinstance(tokens[i], int):\n            return tokens[i], i + 1\n        return 0, i\n\n    val, _ = parse_expr(tokens, 0)\n    return val",
+            "thoughtSignature": "EmAKXgFpFH0THVpz+uqioQ8+uqbSPvJV0Ec+eNJHdNNfOucSOq/PE412y/WhDYE/HrNitho4t29gut92u10g6hLPdiDRM88nZqZ1E4HEimgHkE29kHYkTnWCfm4wfl0Tf2o="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 142,
+    "candidatesTokenCount": 522,
+    "totalTokenCount": 664,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "5kDaat6iDpbY28oPkbm5wQc"
+}

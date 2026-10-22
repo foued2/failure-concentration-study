@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "import ast\n\ndef solve(expr):\n    class SafeEval(ast.NodeVisitor):\n        def visit(self, node):\n            if isinstance(node, ast.Expression):\n                return self.visit(node.body)\n            elif isinstance(node, ast.Constant) and isinstance(node.value, int):\n                return node.value\n            elif isinstance(node, ast.BinOp):\n                left = self.visit(node.left)\n                right = self.visit(node.right)\n                if isinstance(node.op, ast.Add):\n                    return left + right\n                elif isinstance(node.op, ast.Sub):\n                    return left - right\n                elif isinstance(node.op, ast.Mult):\n                    return left * right\n                else:\n                    raise ValueError(\"Unsupported operator\")\n            elif isinstance(node, ast.UnaryOp):\n                operand = self.visit(node.operand)\n                if isinstance(node.op, ast.UAdd):\n                    return +operand\n                elif isinstance(node.op, ast.USub):\n                    return -operand\n                else:\n                    raise ValueError(\"Unsupported unary operator\")\n            else:\n                raise ValueError(\"Unsupported expression\")\n\n    tree = ast.parse(expr, mode='eval')\n    return SafeEval().visit(tree)",
+            "thoughtSignature": "EmAKXgFpFH0TlZlf9sCnOracm83I0bwMuqOo/1tSvre190ByG92s+VLABEmYFh16GjAo28MIWS2Abm8fQgiisXSVd/7arDbK98+Rb0DPKxWeuPEYmBhOH2d57SLFGHp5Kig="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 142,
+    "candidatesTokenCount": 292,
+    "totalTokenCount": 434,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "ST_aaoy3BI3jvdIPppnj0Qk"
+}

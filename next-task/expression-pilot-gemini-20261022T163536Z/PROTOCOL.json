@@ -1,0 +1,50 @@
+{
+  "attempt_cap": 30,
+  "backend_identity_note": "Backend snapshot/version is unavailable; no exact reproducibility claim.",
+  "backend_snapshot": null,
+  "bank_hashes": {
+    "FREEZE.json": "a7b13f2049b0c0939d082fb0fd033fae20cb8ed57ef06a4720e0d093094fd839",
+    "diagnostic.json": "ca1ba993ba3bcc6c3c2d011c49cd51e0f5eb32ff8f8cb0421768553c47507847",
+    "evaluation.json": "e227c24d9bfea7f734b3a249015d33f15d3a2619e62ff5f3a4d8a557e163946d"
+  },
+  "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+  "expected_values_guest_visible": false,
+  "generation_config": {
+    "maxOutputTokens": 4096,
+    "temperature": 1.0
+  },
+  "guest_payload_fields": [
+    "probe_id",
+    "input.expr"
+  ],
+  "model": "gemini-3.5-flash-lite",
+  "no_replacement_sampling": true,
+  "no_retries": true,
+  "output_contract": "exact int; type(value) is int",
+  "planned_attempts": 30,
+  "prompt_matches_preregistration": true,
+  "prompt_sha256": "6796c14b29d0157fc618f51c4d4de90f8143857e620f94f2e332449aee143dff",
+  "provider": "Google Gemini API",
+  "repository_commit": "1ee7eef4f838af9ac3c2c71adedb2faabb5185fe",
+  "run_id": "expression-pilot-gemini-20261022T163536Z",
+  "runner_sha256": "e3100ad1a0a75cde3f66aa782aa659981e166984bc4ea932a2b651248a3f4977",
+  "schema": 1,
+  "source_hashes": {
+    "03A_PREREGISTRATION_AMENDMENT_2026-10-22.md": "da6bcc25453fd0e5caf3f2cf3227b6c52b5a3b5be6519158444292c409c25be9",
+    "03B_OUTPUT_CONTRACT_AMENDMENT_2026-10-22.md": "6d727823547c1fe5e81a146166d88b59a41643008e195f7ea67e5ae100172a8a",
+    "03C_PILOT_LAUNCH_PRECONDITIONS_2026-10-22.md": "85e2679b86ec903d452bb0a9842a1d1bbfb63b8f5f561246fe512abac7b3d2af",
+    "03_PILOT_PREREGISTRATION_2026-10-22.md": "a79c248b738331843327ab01542b259f2922555d67d83dbd4f30be160d19ff06",
+    "expression_task.py": "f2032f88639e39e80ba5d805225239e68c2e0b4ad4496f0b4d467edea9d4bb9c",
+    "integration_runner.py": "fc48467319f48f90bc9d7f00da69c1c9eb8e46c72848a05a436785cdd8a77b32",
+    "pipeline_expression_strict/python_adapter.py": "d7a96e7d59f92f86858a29104c74a141bb9debeb9a85d9d98b58cd11cce55a67",
+    "pipeline_expression_strict/sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+    "run_expression_pilot.py": "e3100ad1a0a75cde3f66aa782aa659981e166984bc4ea932a2b651248a3f4977",
+    "run_generated_smoke.py": "0b295d8a986a461581942555112f18dd8fae06b4a6ecdcf30c9eed77b9f57448",
+    "source_policy.py": "d7f82876d581f795730cb54ed90a09408adc65bcf999e16171006ed1cc8b314a"
+  },
+  "started_utc": "2026-10-22T16:35:36.085120+00:00",
+  "strict_adapter": "pipeline_expression_strict/python_adapter.py",
+  "strict_adapter_sha256": "d7a96e7d59f92f86858a29104c74a141bb9debeb9a85d9d98b58cd11cce55a67",
+  "task_id": "expression_eval_v1",
+  "wrong_return_type_scoring": "failed answer in the input family; not ineligible"
+}

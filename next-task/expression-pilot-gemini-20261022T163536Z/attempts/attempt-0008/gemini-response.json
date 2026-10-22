@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "def solve(expr):\n    def tokenize(s):\n        tokens = []\n        i = 0\n        while i \u003c len(s):\n            c = s[i]\n            if c.isspace():\n                i += 1\n            elif c in \"+-*/()\":\n                tokens.append(c)\n                i += 1\n            elif c.isdigit():\n                start = i\n                while i \u003c len(s) and s[i].isdigit():\n                    i += 1\n                tokens.append(int(s[start:i]))\n            else:\n                i += 1\n        return tokens\n\n    tokens = tokenize(expr)\n    \n    def parse_expr(tokens):\n        # We can use Shunting-yard or recursive descent.\n        # Let's do recursive descent for E = T ((+|-) T)*\n        # T = F ((*|/) F)*\n        # F = (E) | -F | +F | number\n        \n        idx = 0\n        \n        def peek():\n            nonlocal idx\n            if idx \u003c len(tokens):\n                return tokens[idx]\n            return None\n\n        def consume():\n            nonlocal idx\n            if idx \u003c len(tokens):\n                tok = tokens[idx]\n                idx += 1\n                return tok\n            return None\n\n        def parse_factor():\n            tok = peek()\n            if tok == '(':\n                consume()\n                val = parse_expression()\n                consume() # ')'\n                return val\n            elif tok == '-':\n                consume()\n                return -parse_factor()\n            elif tok == '+':\n                consume()\n                return parse_factor()\n            elif isinstance(tok, int):\n                consume()\n                return tok\n            return 0\n\n        def parse_term():\n            val = parse_factor()\n            while True:\n                tok = peek()\n                if tok == '*':\n                    consume()\n                    val *= parse_factor()\n                else:\n                    break\n            return val\n\n        def parse_expression():\n            val = parse_term()\n            while True:\n                tok = peek()\n                if tok == '+':\n                    consume()\n                    val += parse_term()\n                elif tok == '-':\n                    consume()\n                    val -= parse_term()\n                else:\n                    break\n            return val\n\n        return parse_expression()\n\n    return parse_expr(tokens)",
+            "thoughtSignature": "EmAKXgFpFH0T2IhWxXCHaXf6NZQHFuHbScEdZ8DWE9eL3/r+R8ljJ06Qf2/HMWYKzYukRwFb35jAB4TwViU5pGI66gCGfywbSJ0TIDiP1iqPMQDG41J5tqKTLkY73AjpOLk="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 142,
+    "candidatesTokenCount": 542,
+    "totalTokenCount": 684,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "vj3aapXmJMOM28oP29-hiQ8"
+}

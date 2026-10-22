@@ -1,0 +1,19 @@
+{
+  "elapsed_seconds": 16.61579090000305,
+  "finish_reason": "STOP",
+  "finished_at_utc": "2026-10-22T17:03:59.570867+00:00",
+  "http_status": 200,
+  "invoked_at_utc": "2026-10-22T17:03:42.954784+00:00",
+  "usage": {
+    "candidatesTokenCount": 329,
+    "promptTokenCount": 142,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard",
+    "totalTokenCount": 471
+  }
+}

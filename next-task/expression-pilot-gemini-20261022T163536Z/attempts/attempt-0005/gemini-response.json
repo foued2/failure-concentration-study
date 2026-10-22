@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```python\ndef solve(expr: str) -\u003e int:\n    def tokenize(s):\n        tokens = []\n        i = 0\n        n = len(s)\n        while i \u003c n:\n            c = s[i]\n            if c.isspace():\n                i += 1\n            elif c in \"+-*/()\":\n                tokens.append(c)\n                i += 1\n            elif c.isdigit():\n                start = i\n                while i \u003c n and s[i].isdigit():\n                    i += 1\n                tokens.append(s[start:i])\n            else:\n                raise ValueError(f\"Unknown character {c}\")\n        return tokens\n\n    tokens = tokenize(expr)\n    \n    # Handle unary minus by replacing or processing during parsing\n    # Actually, let's parse with a standard Pratt parser or recursive descent.\n    \n    pos = 0\n    \n    def peek():\n        if pos \u003c len(tokens):\n            return tokens[pos]\n        return None\n\n    def consume(expected=None):\n        nonlocal pos\n        if pos \u003c len(tokens):\n            t = tokens[pos]\n            if expected and t != expected:\n                raise ValueError(f\"Expected {expected}, got {t}\")\n            pos += 1\n            return t\n        if expected:\n            raise ValueError(f\"Expected {expected}, got EOF\")\n        return None\n\n    def parse_primary():\n        t = peek()\n        if t == '+':\n            consume('+')\n            return parse_primary()\n        if t == '-':\n            consume('-')\n            return -parse_primary()\n        if t == '(':\n            consume('(')\n            node = parse_expr()\n            consume(')')\n            return node\n        if t is not None and t.isdigit():\n            consume()\n            return int(t)\n        raise ValueError(f\"Unexpected token {t}\")\n\n    def parse_term():\n        node = parse_primary()\n        while peek() == '*':\n            consume('*')\n            node = node * parse_primary()\n        return node\n\n    def parse_expr():\n        node = parse_term()\n        while True:\n            t = peek()\n            if t == '+':\n                consume('+')\n                node = node + parse_term()\n            elif t == '-':\n                consume('-')\n                node = node - parse_term()\n            else:\n                break\n        return node\n\n    result = parse_expr()\n    if pos \u003c len(tokens):\n        raise ValueError(\"Trailing tokens\")\n    return result\n```",
+            "thoughtSignature": "EmAKXgFpFH0TIpRZiPFAiP7ei/T/w4QgwgUQYHUj8O0vSgCmGIzVQUu58BtOe3sjSNKZ0nZeSpW3BuQWIDNEjvsrAVupvg06zrdET3HMjOsRW5+kccXeYeeDo2rh0gczWt4="
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 142,
+    "candidatesTokenCount": 583,
+    "totalTokenCount": 725,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 142
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "jTzaao-5J7yu28oPuImJ2QY"
+}

@@ -1,0 +1,12 @@
+{
+  "api_key_env": "GEMINI_API_KEY",
+  "api_key_present": true,
+  "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+  "generation_config": {
+    "maxOutputTokens": 4096,
+    "temperature": 1.0
+  },
+  "model": "gemini-3.5-flash-lite",
+  "prompt_sha256": "6796c14b29d0157fc618f51c4d4de90f8143857e620f94f2e332449aee143dff",
+  "provider": "Google Gemini API"
+}

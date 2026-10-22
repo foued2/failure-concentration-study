@@ -1,0 +1,6 @@
+{
+  "body": "{\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n",
+  "http_status": 503,
+  "invoked_at_utc": "2026-10-22T17:12:02.439253+00:00",
+  "reason": "Service Unavailable"
+}
