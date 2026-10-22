@@ -1,0 +1,35 @@
+{
+  "diagnostic": {
+    "family_counts": {
+      "F1": 5,
+      "F2": 5,
+      "F3": 5,
+      "F4": 5,
+      "F5": 5,
+      "F6": 5
+    },
+    "path": "diagnostic.json",
+    "records": 30,
+    "sha256": "ca1ba993ba3bcc6c3c2d011c49cd51e0f5eb32ff8f8cb0421768553c47507847"
+  },
+  "disjointness": "exact expression strings are disjoint across banks",
+  "evaluation": {
+    "family_counts": {
+      "F1": 5,
+      "F2": 5,
+      "F3": 5,
+      "F4": 5,
+      "F5": 5,
+      "F6": 5
+    },
+    "path": "evaluation.json",
+    "records": 30,
+    "sha256": "e227c24d9bfea7f734b3a249015d33f15d3a2619e62ff5f3a4d8a557e163946d"
+  },
+  "graph_or_expression_overlap": false,
+  "no_model_calls": true,
+  "oracle": "recursive-descent and independent AST evaluator agree on every record",
+  "schema": 1,
+  "status": "BUILT_NOT_FROZEN",
+  "task_id": "expression_eval_v1"
+}

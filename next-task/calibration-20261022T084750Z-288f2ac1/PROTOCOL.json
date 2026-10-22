@@ -1,0 +1,44 @@
+{
+  "bank_sizes": {
+    "diagnostic": 30,
+    "evaluation": 30
+  },
+  "criteria": {
+    "cross_family": "no non-target family failures",
+    "faulty_target_diagnostic": "all five target-family probes fail",
+    "faulty_target_evaluation": "all five target-family inputs fail",
+    "reference_control": "30/30 diagnostic passes and 30/30 evaluation inputs correct",
+    "transport": "every row is tree-terminated and not timed out"
+  },
+  "generation_attempts": 0,
+  "input_hashes": {
+    "FREEZE.json": "a7b13f2049b0c0939d082fb0fd033fae20cb8ed57ef06a4720e0d093094fd839",
+    "diagnostic.json": "ca1ba993ba3bcc6c3c2d011c49cd51e0f5eb32ff8f8cb0421768553c47507847",
+    "evaluation.json": "e227c24d9bfea7f734b3a249015d33f15d3a2619e62ff5f3a4d8a557e163946d"
+  },
+  "model_calls": 0,
+  "no_model_calls": true,
+  "panel_sha256": "4792c9bfdb98a13c05684e5a9bff1e3856f2908ff4603de4cd3a441dbe1f8465",
+  "purpose": "hand-built expression defect coverage check against the frozen banks",
+  "run_id": "calibration-20261022T084750Z-288f2ac1",
+  "schema": 1,
+  "source_hashes": {
+    "banks/FREEZE.json": "a7b13f2049b0c0939d082fb0fd033fae20cb8ed57ef06a4720e0d093094fd839",
+    "banks/diagnostic.json": "ca1ba993ba3bcc6c3c2d011c49cd51e0f5eb32ff8f8cb0421768553c47507847",
+    "banks/evaluation.json": "e227c24d9bfea7f734b3a249015d33f15d3a2619e62ff5f3a4d8a557e163946d",
+    "build_expression_banks.py": "5b5c62099af8451bc37da2acb88f8c6ce8f961711975d55f7e211071ab701d59",
+    "calibration_protocol": "993a19259dc2f8ed5fd0b0457f73910b9991b1b70e8a619d14474f053cdaf9ad",
+    "expression_mutants.py": "5d220a48f9521be3147a82af07d9b080fed886d60293fae6ee0429422f7ddbea",
+    "expression_task.py": "f2032f88639e39e80ba5d805225239e68c2e0b4ad4496f0b4d467edea9d4bb9c",
+    "freeze_expression_banks.py": "7521ba99593d793e32a3075c94a14142ddb6c84e803cfafbaadb0b1a488e3a71",
+    "integration_runner.py": "fc48467319f48f90bc9d7f00da69c1c9eb8e46c72848a05a436785cdd8a77b32",
+    "pipeline_expression/python_adapter.py": "26386694d6e9fad827f67a7e03deb3778392e078b76d7ce6cafbf0d1bd074dab",
+    "pipeline_expression/sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+    "python-pipeline-integration/python_adapter.py": "f5cfc17a2da3bf73d266e3a85ca133f5d0ac10d15df05700161377c6b8f7e9d1",
+    "python-pipeline-integration/sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b",
+    "run_expression_calibration.py": "3e2504dc357cdeef195bbc82c863367fa6da7054967dca15bbacb9c5404cb840",
+    "run_generated_smoke.py": "0b295d8a986a461581942555112f18dd8fae06b4a6ecdcf30c9eed77b9f57448",
+    "source_policy.py": "d7f82876d581f795730cb54ed90a09408adc65bcf999e16171006ed1cc8b314a"
+  },
+  "started_utc": "2026-10-22T08:47:50Z"
+}

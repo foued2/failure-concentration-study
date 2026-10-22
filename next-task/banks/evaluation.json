@@ -1,0 +1,233 @@
+{
+  "bank": "evaluation",
+  "family_names": {
+    "F1": "operator_precedence",
+    "F2": "left_associativity",
+    "F3": "parentheses",
+    "F4": "unary_minus",
+    "F5": "multi_digit_tokenization",
+    "F6": "whitespace"
+  },
+  "family_order": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "records": [
+    {
+      "expected": 11,
+      "expr": "3+4*2",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "hid": "E1_0"
+    },
+    {
+      "expected": 14,
+      "expr": "4+5*2",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "hid": "E1_1"
+    },
+    {
+      "expected": 22,
+      "expr": "3*4+5*2",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "hid": "E1_2"
+    },
+    {
+      "expected": 12,
+      "expr": "8+2*2",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "hid": "E1_3"
+    },
+    {
+      "expected": 13,
+      "expr": "7+2*3",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "hid": "E1_4"
+    },
+    {
+      "expected": 3,
+      "expr": "8-2-3",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "hid": "E2_0"
+    },
+    {
+      "expected": 6,
+      "expr": "9-1-1-1",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "hid": "E2_1"
+    },
+    {
+      "expected": 1,
+      "expr": "6-2-3",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "hid": "E2_2"
+    },
+    {
+      "expected": 2,
+      "expr": "8-3-2-1",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "hid": "E2_3"
+    },
+    {
+      "expected": 2,
+      "expr": "7-1-2-2",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "hid": "E2_4"
+    },
+    {
+      "expected": 6,
+      "expr": "8-(3-1)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "hid": "E3_0"
+    },
+    {
+      "expected": 5,
+      "expr": "7-(1+1)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "hid": "E3_1"
+    },
+    {
+      "expected": 5,
+      "expr": "9-(2+2)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "hid": "E3_2"
+    },
+    {
+      "expected": 7,
+      "expr": "6-(1-(1+1))",
+      "family": "F3",
+      "family_name": "parentheses",
+      "hid": "E3_3"
+    },
+    {
+      "expected": 7,
+      "expr": "8-(3-(1+1))",
+      "family": "F3",
+      "family_name": "parentheses",
+      "hid": "E3_4"
+    },
+    {
+      "expected": -3,
+      "expr": "-5+2",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "hid": "E4_0"
+    },
+    {
+      "expected": -6,
+      "expr": "-3-3",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "hid": "E4_1"
+    },
+    {
+      "expected": 3,
+      "expr": "-1+4",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "hid": "E4_2"
+    },
+    {
+      "expected": -4,
+      "expr": "-4+0",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "hid": "E4_3"
+    },
+    {
+      "expected": -10,
+      "expr": "-2-8",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "hid": "E4_4"
+    },
+    {
+      "expected": 17,
+      "expr": "13+4",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "hid": "E5_0"
+    },
+    {
+      "expected": 6,
+      "expr": "11-5",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "hid": "E5_1"
+    },
+    {
+      "expected": 100,
+      "expr": "98+2",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "hid": "E5_2"
+    },
+    {
+      "expected": 26,
+      "expr": "30-4",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "hid": "E5_3"
+    },
+    {
+      "expected": 230,
+      "expr": "200+30",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "hid": "E5_4"
+    },
+    {
+      "expected": 7,
+      "expr": " 3 + 4 ",
+      "family": "F6",
+      "family_name": "whitespace",
+      "hid": "E6_0"
+    },
+    {
+      "expected": 11,
+      "expr": "5 + 6",
+      "family": "F6",
+      "family_name": "whitespace",
+      "hid": "E6_1"
+    },
+    {
+      "expected": 5,
+      "expr": "2+ 3",
+      "family": "F6",
+      "family_name": "whitespace",
+      "hid": "E6_2"
+    },
+    {
+      "expected": 7,
+      "expr": " 8 - 1 ",
+      "family": "F6",
+      "family_name": "whitespace",
+      "hid": "E6_3"
+    },
+    {
+      "expected": 4,
+      "expr": "4 + 0",
+      "family": "F6",
+      "family_name": "whitespace",
+      "hid": "E6_4"
+    }
+  ],
+  "schema": 1,
+  "task_id": "expression_eval_v1"
+}

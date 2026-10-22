@@ -1,0 +1,233 @@
+{
+  "bank": "diagnostic",
+  "family_names": {
+    "F1": "operator_precedence",
+    "F2": "left_associativity",
+    "F3": "parentheses",
+    "F4": "unary_minus",
+    "F5": "multi_digit_tokenization",
+    "F6": "whitespace"
+  },
+  "family_order": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "records": [
+    {
+      "expected": 14,
+      "expr": "2+3*4",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "probe_id": "F1_0"
+    },
+    {
+      "expected": 11,
+      "expr": "5+2*3",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "probe_id": "F1_1"
+    },
+    {
+      "expected": 10,
+      "expr": "6+1*4",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "probe_id": "F1_2"
+    },
+    {
+      "expected": 11,
+      "expr": "9+1*2",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "probe_id": "F1_3"
+    },
+    {
+      "expected": 26,
+      "expr": "2*3+4*5",
+      "family": "F1",
+      "family_name": "operator_precedence",
+      "probe_id": "F1_4"
+    },
+    {
+      "expected": 4,
+      "expr": "9-3-2",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "probe_id": "F2_0"
+    },
+    {
+      "expected": 2,
+      "expr": "8-1-2-3",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "probe_id": "F2_1"
+    },
+    {
+      "expected": 3,
+      "expr": "7-2-2",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "probe_id": "F2_2"
+    },
+    {
+      "expected": 2,
+      "expr": "9-4-2-1",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "probe_id": "F2_3"
+    },
+    {
+      "expected": 0,
+      "expr": "6-1-2-3",
+      "family": "F2",
+      "family_name": "left_associativity",
+      "probe_id": "F2_4"
+    },
+    {
+      "expected": 8,
+      "expr": "9-(3-2)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "probe_id": "F3_0"
+    },
+    {
+      "expected": 5,
+      "expr": "8-(1+2)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "probe_id": "F3_1"
+    },
+    {
+      "expected": 7,
+      "expr": "9-(1+1)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "probe_id": "F3_2"
+    },
+    {
+      "expected": 7,
+      "expr": "8-(2-1)",
+      "family": "F3",
+      "family_name": "parentheses",
+      "probe_id": "F3_3"
+    },
+    {
+      "expected": 8,
+      "expr": "9-(3-(1+1))",
+      "family": "F3",
+      "family_name": "parentheses",
+      "probe_id": "F3_4"
+    },
+    {
+      "expected": 2,
+      "expr": "-3+5",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "probe_id": "F4_0"
+    },
+    {
+      "expected": -6,
+      "expr": "-2-4",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "probe_id": "F4_1"
+    },
+    {
+      "expected": -3,
+      "expr": "-4+1",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "probe_id": "F4_2"
+    },
+    {
+      "expected": -3,
+      "expr": "-3+0",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "probe_id": "F4_3"
+    },
+    {
+      "expected": -11,
+      "expr": "-2-9",
+      "family": "F4",
+      "family_name": "unary_minus",
+      "probe_id": "F4_4"
+    },
+    {
+      "expected": 15,
+      "expr": "12+3",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "probe_id": "F5_0"
+    },
+    {
+      "expected": 6,
+      "expr": "10-4",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "probe_id": "F5_1"
+    },
+    {
+      "expected": 100,
+      "expr": "99+1",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "probe_id": "F5_2"
+    },
+    {
+      "expected": 20,
+      "expr": "25-5",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "probe_id": "F5_3"
+    },
+    {
+      "expected": 120,
+      "expr": "100+20",
+      "family": "F5",
+      "family_name": "multi_digit_tokenization",
+      "probe_id": "F5_4"
+    },
+    {
+      "expected": 5,
+      "expr": " 2 + 3 ",
+      "family": "F6",
+      "family_name": "whitespace",
+      "probe_id": "F6_0"
+    },
+    {
+      "expected": 9,
+      "expr": "4 + 5",
+      "family": "F6",
+      "family_name": "whitespace",
+      "probe_id": "F6_1"
+    },
+    {
+      "expected": 3,
+      "expr": "1+ 2",
+      "family": "F6",
+      "family_name": "whitespace",
+      "probe_id": "F6_2"
+    },
+    {
+      "expected": 7,
+      "expr": " 9 - 2 ",
+      "family": "F6",
+      "family_name": "whitespace",
+      "probe_id": "F6_3"
+    },
+    {
+      "expected": 3,
+      "expr": "3 + 0",
+      "family": "F6",
+      "family_name": "whitespace",
+      "probe_id": "F6_4"
+    }
+  ],
+  "schema": 1,
+  "task_id": "expression_eval_v1"
+}
