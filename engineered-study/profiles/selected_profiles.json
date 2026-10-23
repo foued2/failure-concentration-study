@@ -1,0 +1,135 @@
+{
+  "family_order": [
+    "ONE_CLOSE",
+    "ONE_OPEN",
+    "THREE_CLOSE",
+    "THREE_OPEN",
+    "FIVE_MIXED",
+    "SEVEN_MIXED"
+  ],
+  "files": {
+    "attainable_cells.csv": "cea55086299bf0f8cf23ba7da94dcbca6dee8b6c11027c1bb99d2cf577c30443",
+    "attainable_profiles.csv": "688639da0051e9b2576f5c969b8b801f6945cb5d7f447ee51b13a638e894adda",
+    "build_profiles.py": "a2867b88731bb8b04b5a76c35b0417242c979b598a8f606dcd16cf2574503c96"
+  },
+  "probe_count_per_family": 5,
+  "schema": 1,
+  "selection_basis": "All nonnegative integer vectors with each family count in 0..5 were enumerated first. Targets use k=5, where C=1 and C=0.2 are both attainable, and rotate the carrier family across all six families. No solver result was used.",
+  "status": "TARGETS_SELECTED_FROM_FEASIBLE_SET_BEFORE_GENERATION",
+  "targets": [
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "ONE_CLOSE",
+      "k": 5,
+      "profile": [
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T0_ONE_CLOSE"
+    },
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "ONE_OPEN",
+      "k": 5,
+      "profile": [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T1_ONE_OPEN"
+    },
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "THREE_CLOSE",
+      "k": 5,
+      "profile": [
+        0,
+        0,
+        5,
+        0,
+        0,
+        0
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T2_THREE_CLOSE"
+    },
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "THREE_OPEN",
+      "k": 5,
+      "profile": [
+        0,
+        0,
+        0,
+        5,
+        0,
+        0
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T3_THREE_OPEN"
+    },
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "FIVE_MIXED",
+      "k": 5,
+      "profile": [
+        0,
+        0,
+        0,
+        0,
+        5,
+        0
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T4_FIVE_MIXED"
+    },
+    {
+      "C": 1.0,
+      "assigned_slots": 20,
+      "carrier_family": "SEVEN_MIXED",
+      "k": 5,
+      "profile": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        5
+      ],
+      "reason": "fixed k=5, maximum attainable concentration; carrier family rotated",
+      "target_id": "T5_SEVEN_MIXED"
+    },
+    {
+      "C": 0.2,
+      "assigned_slots": 30,
+      "carrier_family": null,
+      "k": 5,
+      "profile": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "reason": "fixed k=5, low concentration; one failure in each of five families",
+      "target_id": "T6_SPREAD"
+    }
+  ],
+  "total_allocated_slots": 150,
+  "total_feasible_vectors": 46656
+}

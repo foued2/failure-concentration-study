@@ -1,0 +1,315 @@
+{
+  "family_order": [
+    "ONE_CLOSE",
+    "ONE_OPEN",
+    "THREE_CLOSE",
+    "THREE_OPEN",
+    "FIVE_MIXED",
+    "SEVEN_MIXED"
+  ],
+  "probe_count": 30,
+  "probes": [
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "input": {
+        "text": ")()()()"
+      },
+      "probe_id": "D0_00",
+      "text": ")()()()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "input": {
+        "text": "())()()"
+      },
+      "probe_id": "D0_01",
+      "text": "())()()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "input": {
+        "text": "()(()))"
+      },
+      "probe_id": "D0_02",
+      "text": "()(()))"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "input": {
+        "text": "())(())"
+      },
+      "probe_id": "D0_03",
+      "text": "())(())"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "input": {
+        "text": ")(()())"
+      },
+      "probe_id": "D0_04",
+      "text": ")(()())"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "input": {
+        "text": "()()()("
+      },
+      "probe_id": "D1_00",
+      "text": "()()()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "input": {
+        "text": "(())(()"
+      },
+      "probe_id": "D1_01",
+      "text": "(())(()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "input": {
+        "text": "((())()"
+      },
+      "probe_id": "D1_02",
+      "text": "((())()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "input": {
+        "text": "(()(())"
+      },
+      "probe_id": "D1_03",
+      "text": "(()(())"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "input": {
+        "text": "()(())("
+      },
+      "probe_id": "D1_04",
+      "text": "()(())("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "input": {
+        "text": ")()))()"
+      },
+      "probe_id": "D2_00",
+      "text": ")()))()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "input": {
+        "text": "()())))"
+      },
+      "probe_id": "D2_01",
+      "text": "()())))"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "input": {
+        "text": "(()))))"
+      },
+      "probe_id": "D2_02",
+      "text": "(()))))"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "input": {
+        "text": "())))()"
+      },
+      "probe_id": "D2_03",
+      "text": "())))()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "input": {
+        "text": "))(())("
+      },
+      "probe_id": "D2_04",
+      "text": "))(())("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "input": {
+        "text": "(()))(("
+      },
+      "probe_id": "D3_00",
+      "text": "(()))(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "input": {
+        "text": "()()((("
+      },
+      "probe_id": "D3_01",
+      "text": "()()((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "input": {
+        "text": "((())(("
+      },
+      "probe_id": "D3_02",
+      "text": "((())(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "input": {
+        "text": "())()(("
+      },
+      "probe_id": "D3_03",
+      "text": "())()(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "input": {
+        "text": ")(((())"
+      },
+      "probe_id": "D3_04",
+      "text": ")(((())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "input": {
+        "text": ")((((()"
+      },
+      "probe_id": "D4_00",
+      "text": ")((((()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "input": {
+        "text": "())))))"
+      },
+      "probe_id": "D4_01",
+      "text": "())))))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "input": {
+        "text": ")())((("
+      },
+      "probe_id": "D4_02",
+      "text": ")())((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "input": {
+        "text": "))))())"
+      },
+      "probe_id": "D4_03",
+      "text": "))))())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "input": {
+        "text": ")))((()"
+      },
+      "probe_id": "D4_04",
+      "text": ")))((()"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "input": {
+        "text": ")))(((("
+      },
+      "probe_id": "D5_00",
+      "text": ")))(((("
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "input": {
+        "text": "))))))("
+      },
+      "probe_id": "D5_01",
+      "text": "))))))("
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "input": {
+        "text": ")(((((("
+      },
+      "probe_id": "D5_02",
+      "text": ")(((((("
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "input": {
+        "text": ")))))(("
+      },
+      "probe_id": "D5_03",
+      "text": ")))))(("
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "input": {
+        "text": "))((((("
+      },
+      "probe_id": "D5_04",
+      "text": "))((((("
+    }
+  ],
+  "schema": 1,
+  "task": "paren7_min_insertions"
+}

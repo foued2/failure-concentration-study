@@ -1,0 +1,165 @@
+{
+  "bank_hashes": {
+    "MANIFEST.json": "c5b7ef75b55605110fb4ce6b76b34f557e6a7ddef5c09503b138b04345da4f10",
+    "diagnostic.json": "954be8607889896c2068f21851589060f1ff60ed6347daa24a67dacf0e7a0938",
+    "evaluation.json": "98a370e0cb174ac4dfa67a4b484354f0050b2699186ea6c5ec05c0927655fc6c"
+  },
+  "control_count": 8,
+  "controls": [
+    {
+      "C": null,
+      "S": 1.0,
+      "all_rows_valid": true,
+      "control_id": "reference",
+      "guest_capture_sha256": "dd189a858b014afdcfa75869b0144ebcbd66c7bc2312633a16afd23dd35225cf",
+      "k": 0,
+      "observed_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "profile_match": true,
+      "target_id": null
+    },
+    {
+      "C": 1.0,
+      "S": 0.9081632653061225,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_0",
+      "guest_capture_sha256": "fe162d1bca48ea3b6a2b4e561fc3d1dcc1c07b065c767740b892097c458d001a",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T0_ONE_CLOSE"
+    },
+    {
+      "C": 1.0,
+      "S": 0.9081632653061225,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_1",
+      "guest_capture_sha256": "90706752cd3e517169db084eb908a79f15df6dde5fa42b1511dc4658005a4d1f",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T1_ONE_OPEN"
+    },
+    {
+      "C": 1.0,
+      "S": 0.7653061224489796,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_2",
+      "guest_capture_sha256": "0281e2eb3eba89c189f854b82d744ef59f29e78f50801d879bdea84fcbec97e8",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        0,
+        0,
+        5,
+        0,
+        0,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T2_THREE_CLOSE"
+    },
+    {
+      "C": 1.0,
+      "S": 0.7653061224489796,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_3",
+      "guest_capture_sha256": "9b854ac151e96bbefd932747b51c6f10dd387f4396090fd06f776a78a1baef43",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        0,
+        0,
+        0,
+        5,
+        0,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T3_THREE_OPEN"
+    },
+    {
+      "C": 1.0,
+      "S": 0.6836734693877551,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_4",
+      "guest_capture_sha256": "6092d5a47fa8dc30ecf98641055a5e314df1feab3402efab78931a2292980932",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        5,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T4_FIVE_MIXED"
+    },
+    {
+      "C": 1.0,
+      "S": 0.9693877551020408,
+      "all_rows_valid": true,
+      "control_id": "localized_offbyone_5",
+      "guest_capture_sha256": "c6a2c22ac8251e4133925c978cebbe74e99725bba8c629004b16ebb0aef6dd1b",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        5
+      ],
+      "profile_match": true,
+      "target_id": "T5_SEVEN_MIXED"
+    },
+    {
+      "C": 0.2,
+      "S": 0.8877551020408163,
+      "all_rows_valid": true,
+      "control_id": "spread_palindrome",
+      "guest_capture_sha256": "60e7930a68134baaa44ce3a1043bfc7e3385dc9718be9b881b2110e8fce437e0",
+      "k": 5,
+      "observed_diagnostic_vector": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "profile_match": true,
+      "target_id": "T6_SPREAD"
+    }
+  ],
+  "generated_solvers": 0,
+  "model_calls": 0,
+  "python_base": "C:\\Users\\pakla\\AppData\\Roaming\\uv\\python\\cpython-3.14-windows-x86_64-none",
+  "runner_hashes": {
+    "python_adapter.py": "b037969f022fbdbd9958ef3a5b346ed3768cc3234ec11c9e60195a685ef4dedd",
+    "sandbox_suite_supervisor.ps1": "17011c2cd6e92e490cf7ed258a9b5bdaf30f7b7e0297a2e5cc804af93a2c638b"
+  },
+  "sandbox": "C:\\WINDOWS\\System32\\WindowsSandbox.exe",
+  "schema": 1,
+  "status": "GATE1_CONTROL_EXECUTION_COMPLETE",
+  "total_wall_seconds": 684.5724020999915
+}

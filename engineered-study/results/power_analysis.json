@@ -1,0 +1,70 @@
+{
+  "delta": 0.1,
+  "design": {
+    "C_high": 1.0,
+    "C_low": 0.2,
+    "effect_coding": "high C=1, low C=0; delta is the high-minus-low difference",
+    "generator_identity": "not included in this planning model; the study model adds it as a fixed effect",
+    "high_C_slots": 120,
+    "k": 5,
+    "low_C_slots": 30
+  },
+  "estimator": "difference of mean S between high-C and low-C slots (high-minus-low coded 1/0); one-sided normal test",
+  "gate2_authorized": false,
+  "generated_solvers": 0,
+  "identification_failures": [
+    "the six C=1 targets use six different carrier families, so C is not separated from carrier family",
+    "there is no within-carrier fixed-k contrast between high and low C",
+    "the only C=0.2 target is one spread pattern, not a family-balanced low-C design"
+  ],
+  "model_calls": 0,
+  "notes": [
+    "No empirical residual-SD estimate exists. The table is a sensitivity analysis, not validation.",
+    "Calibration controls are hand-built and do not estimate the study population variance.",
+    "The MDE is analytic for the two-group design and is reported alongside the simulation."
+  ],
+  "power_failures": [
+    "power 0.78565 below 0.80 at residual SD 0.20",
+    "power 0.62135 below 0.80 at residual SD 0.25"
+  ],
+  "schema": 1,
+  "seed": 20261023,
+  "status": "OFFLINE_POWER_AND_IDENTIFICATION_ANALYSIS",
+  "table": [
+    {
+      "mde_at_80_percent": 0.05075495555452265,
+      "n_high": 120,
+      "n_low": 30,
+      "null_rejection_rate": 0.04815,
+      "power_at_delta_0_10": 0.99925,
+      "residual_sd": 0.1
+    },
+    {
+      "mde_at_80_percent": 0.07613243333178396,
+      "n_high": 120,
+      "n_low": 30,
+      "null_rejection_rate": 0.0484,
+      "power_at_delta_0_10": 0.9462,
+      "residual_sd": 0.15
+    },
+    {
+      "mde_at_80_percent": 0.1015099111090453,
+      "n_high": 120,
+      "n_low": 30,
+      "null_rejection_rate": 0.04985,
+      "power_at_delta_0_10": 0.78565,
+      "residual_sd": 0.2
+    },
+    {
+      "mde_at_80_percent": 0.12688738888630663,
+      "n_high": 120,
+      "n_low": 30,
+      "null_rejection_rate": 0.0494,
+      "power_at_delta_0_10": 0.62135,
+      "residual_sd": 0.25
+    }
+  ],
+  "task": "paren7_min_insertions",
+  "trials": 20000,
+  "verdict": "HOLD"
+}

@@ -1,0 +1,121 @@
+{
+  "controls": [
+    {
+      "control_id": "reference",
+      "expected_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "path": "controls/reference.py",
+      "source_sha256": "f929ad4a4c12e4fc0280a643cde34fe730ef66e33fb1b78925373e0a8e6ad441",
+      "target_id": null
+    },
+    {
+      "control_id": "localized_offbyone_0",
+      "expected_diagnostic_vector": [
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "path": "controls/localized_offbyone_0_one_close.py",
+      "source_sha256": "e26311333448def42825ad4343f970ec21e5919499f0e6b7390535a8a5844682",
+      "target_id": "T0_ONE_CLOSE"
+    },
+    {
+      "control_id": "localized_offbyone_1",
+      "expected_diagnostic_vector": [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      "path": "controls/localized_offbyone_1_one_open.py",
+      "source_sha256": "2d49b72ade2c45749562e82875cfd2942ac63f6acd89194fdd067a748dcee9fd",
+      "target_id": "T1_ONE_OPEN"
+    },
+    {
+      "control_id": "localized_offbyone_2",
+      "expected_diagnostic_vector": [
+        0,
+        0,
+        5,
+        0,
+        0,
+        0
+      ],
+      "path": "controls/localized_offbyone_2_three_close.py",
+      "source_sha256": "ea0c8648351c4e92cd2e2d1958d2bb764fc40f7079e99f7e6a7814da83acee0c",
+      "target_id": "T2_THREE_CLOSE"
+    },
+    {
+      "control_id": "localized_offbyone_3",
+      "expected_diagnostic_vector": [
+        0,
+        0,
+        0,
+        5,
+        0,
+        0
+      ],
+      "path": "controls/localized_offbyone_3_three_open.py",
+      "source_sha256": "0d0996ff6eedff4d3cfe4c74f9ce52bdbb5b7ebf1ae89314508a8072ffdbe307",
+      "target_id": "T3_THREE_OPEN"
+    },
+    {
+      "control_id": "localized_offbyone_4",
+      "expected_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        5,
+        0
+      ],
+      "path": "controls/localized_offbyone_4_five_mixed.py",
+      "source_sha256": "c3f9d90bb4cd91f1a27b485712ba417f90a339a7f07a67ef3e548af5c814492f",
+      "target_id": "T4_FIVE_MIXED"
+    },
+    {
+      "control_id": "localized_offbyone_5",
+      "expected_diagnostic_vector": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        5
+      ],
+      "path": "controls/localized_offbyone_5_seven_mixed.py",
+      "source_sha256": "924c21392dd522ea7be20b89a88c442f7acdb67948a5997f0982e0b283a91244",
+      "target_id": "T5_SEVEN_MIXED"
+    },
+    {
+      "control_id": "spread_palindrome",
+      "expected_diagnostic_vector": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "path": "controls/spread_palindrome.py",
+      "source_sha256": "1b81bfd532a2e3874029abbe6942c13f9d8cd87a81b623df82f8d140e997cf79",
+      "target_id": "T6_SPREAD"
+    }
+  ],
+  "description": "The six localized controls add one to the correct answer only in one structural family. The spread control adds one only on palindromic inputs. These are calibration controls, not generated solvers and not evidence for H1a.",
+  "generated_solvers": 0,
+  "model_calls": 0,
+  "schema": 1,
+  "status": "HAND_BUILT_CALIBRATION_CONTROLS_ONLY"
+}

@@ -1,0 +1,776 @@
+{
+  "input_count": 128,
+  "inputs": [
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": "((((((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "(((((()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "((((()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "((((())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "(((()(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(((()()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(((())("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(((()))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "((()((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "((()(()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "((()()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "((()())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "((())(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "((())()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "((()))("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "((())))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "(()(((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(()((()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(()(()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(()(())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(()()(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(()()()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(()())("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "(()()))"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(())((("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(())(()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "(())()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "(())())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "(()))(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "(()))()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "(())))("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "(()))))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "()((((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "()(((()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "()((()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "()((())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "()(()(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "()(()()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "()(())("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "()(()))"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "()()((("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "()()(()"
+    },
+    {
+      "expected": 1,
+      "family": "ONE_OPEN",
+      "family_index": 1,
+      "text": "()()()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "()()())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "()())(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "()())()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "()()))("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "()())))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "())(((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "())((()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "())(()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "())(())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": "())()(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": "())()()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "())())("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "())()))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "()))((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "()))(()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "()))()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "()))())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "())))(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "())))()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "()))))("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "())))))"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": ")(((((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")((((()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")(((()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")(((())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")((()(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")((()()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")((())("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": ")((()))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")(()((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")(()(()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")(()()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": ")(()())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")(())(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": ")(())()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")(()))("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")(())))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")()(((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")()((()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")()(()("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": ")()(())"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_OPEN",
+      "family_index": 3,
+      "text": ")()()(("
+    },
+    {
+      "expected": 1,
+      "family": "ONE_CLOSE",
+      "family_index": 0,
+      "text": ")()()()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")()())("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")()()))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")())((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")())(()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")())()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")())())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")()))(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")()))()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")())))("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")()))))"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": "))((((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))(((()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))((()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))((())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))(()(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))(()()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))(())("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))(()))"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))()((("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))()(()"
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))()()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))()())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))())(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": "))())()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))()))("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))())))"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": ")))(((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))((()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))(()("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")))(())"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))()(("
+    },
+    {
+      "expected": 3,
+      "family": "THREE_CLOSE",
+      "family_index": 2,
+      "text": ")))()()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))())("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))()))"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": "))))((("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))))(()"
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))))()("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": "))))())"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": ")))))(("
+    },
+    {
+      "expected": 5,
+      "family": "FIVE_MIXED",
+      "family_index": 4,
+      "text": ")))))()"
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": "))))))("
+    },
+    {
+      "expected": 7,
+      "family": "SEVEN_MIXED",
+      "family_index": 5,
+      "text": ")))))))"
+    }
+  ],
+  "length": 7,
+  "schema": 1,
+  "task": "paren7_min_insertions"
+}
