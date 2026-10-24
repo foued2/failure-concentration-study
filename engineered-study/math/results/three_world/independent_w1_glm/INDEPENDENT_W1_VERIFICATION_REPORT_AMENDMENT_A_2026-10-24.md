@@ -64,4 +64,21 @@ No byte-level serialization comparison was performed, and none is claimed. (Note
 | Console log `run_500_console.log` | (retained as run evidence) | unchanged |
 | Original report `INDEPENDENT_W1_VERIFICATION_REPORT.md` | `2cd543f662007e7b367b112f442304fa2aa263b7bfe764b9d1936a0adf775b24` | preserved byte-unchanged; wording superseded by this amendment |
 
+## Addendum (post-push, 2026-10-24): line-ending normalization of committed hashes
+
+The hashes in the table above refer to **local working-copy bytes** (as recorded before first execution and at run time). On commit, git normalized CRLF → LF for the two JSON artifacts written through Python text-mode I/O on Windows; all other artifacts (including the run-producing source, whose local bytes are LF) stored byte-identically. Verified against the pushed commit `e7a9a16`:
+
+| Artifact | Local working-copy hash (CRLF) | Committed blob hash (LF) | LF-normalized correspondence |
+|---|---|---|---|
+| `independent_w1_run.json` | `1152b9ad187135da1658c363702d5c77f55bd1ed2a213c7d8293c47c63b6f80e` | `156b0cdeca37650cfd052300d7867be50ff59e83c905f80142adf1447688bfde` | exact (502,577 bytes incl. 14,533 CR → 488,044 LF) |
+| `independent_w1_run.attach.json` | `0ce6afbe09f4074327e59861c805abdc5327946609e8b9cc15d491b3956d62d6` | `f3187295a56ec9502c70689e82a402a9a855d820f3cbd1ddfdc9a0738c8d6510` | exact (same CR count) |
+| `independent_w1_verify.py` | `4454ae9f5bca940f3c8253273d1bf198a70bfe4270b553464401855403542aae` | identical hash in blob | byte-identical |
+| `source_sha256.txt`, `INDEPENDENT_W1_VERIFICATION_REPORT.md`, `run_500_console.log` | as above | identical hash in blob | byte-identical |
+
+Both JSON blob hashes equal the SHA-256 of the local file with CR bytes removed, confirming the two hash variants describe the same content. Analysis results recorded in the JSON are unaffected. This mirrors the convention already in use for the frozen design record ("SHA-256 (UTF-8 bytes returned by GitHub for the committed file)").
+
+## Record (post-push)
+
+Commit `e7a9a16` "Record independent W1 verification run and report" pushed to `origin/research/concentration-math-spec` (parent `780daa5`) with exactly the seven artifacts of this directory. All original/local-only records (`per_trial.json`, `raw/`) remain untracked by design.
+
 Review status remains: reviewed, corrections pending. Disposition unchanged: W1 wiring check FAILED, independently confirmed reproducible; no implementation defect; no further simulation, tuning, or commit; no parameters, seeds, or criteria changed.
