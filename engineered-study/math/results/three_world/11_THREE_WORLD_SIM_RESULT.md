@@ -306,20 +306,20 @@ The W1 domain estimate is `1.96e-6` against a baseline loss of `3.39e-3`, or abo
 
 Mixture gains are between-world composition effects: they are not evidence of a general within-world concentration contribution, because W2 has no usable within-world variation in `C`. The W1 wiring failure remains the governing result; no parameter change or rerun was made to rescue it.
 
-## Release archive
+## Local archive
 
-The per-trial JSON and raw JSONL gzip files are archived as GitHub Release assets, not as ordinary Git blobs. The planned release tag is `three-world-sim-2026-10-24`; the release is tied to the reviewed branch commit. Asset names below are exact.
+The complete per-trial JSON and raw JSONL gzip files remain on the machine that produced the run, under `engineered-study/math/results/three_world/`. They are not in ordinary Git history and were not uploaded to GitHub. The small script, report, and manifest are committed; the checksums below record integrity but do not preserve the data if these local files are lost.
 
-| Release asset | Local file | Bytes | Records | SHA-256 |
+| Local artifact | Path | Bytes | Records | SHA-256 |
 | --- | --- | ---: | ---: | --- |
-| `three_world_per_trial_2026-10-24.json` | `per_trial.json` | 31466869 | 4000 | `b6761998db3a64cecbdc33b05d97625409422ce8919dee9eedfe289ee457556d` |
-| `three_world_raw_W1_2026-10-24.jsonl.gz` | `raw/W1.jsonl.gz` | 108575908 | 2500000 | `544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85` |
-| `three_world_raw_W2_2026-10-24.jsonl.gz` | `raw/W2.jsonl.gz` | 14044132 | 2500000 | `3bbd492660073f03d3fd0fbd35daf7a95747481abd2e1adc2313d19d0a9d992a` |
-| `three_world_raw_W3_2026-10-24.jsonl.gz` | `raw/W3.jsonl.gz` | 110740371 | 2500000 | `464796e595565b7bd23232a6402df388658352147e3ef68b46db5ee4e8e63820` |
-| `three_world_raw_MIX_0_0_2026-10-24.jsonl.gz` | `raw/MIX_0_0.jsonl.gz` | 14380075 | 2500000 | `e08265f97e54e5244c0d5b2925dbaf228bbe8d707e0cd1adae0318c681965b5c` |
-| `three_world_raw_MIX_0_25_2026-10-24.jsonl.gz` | `raw/MIX_0_25.jsonl.gz` | 45765444 | 2500000 | `3a3858bff4e687a070d59451ce64f0984cda9f32f6688390ba65f7eb101bf3d7` |
-| `three_world_raw_MIX_0_5_2026-10-24.jsonl.gz` | `raw/MIX_0_5.jsonl.gz` | 68733468 | 2500000 | `8016aaf8977c47a8ccc6b981a0cda17bd89040a96d627b60a37d7e025e2ccc35` |
-| `three_world_raw_MIX_0_75_2026-10-24.jsonl.gz` | `raw/MIX_0_75.jsonl.gz` | 89522944 | 2500000 | `e3059e0622dd9fcfbd8e70a015e2907bf43448d1bec545c492e61ce98eaf95ce` |
-| `three_world_raw_MIX_1_0_2026-10-24.jsonl.gz` | `raw/MIX_1_0.jsonl.gz` | 108791083 | 2500000 | `1207480625efac2acb1007c3fc924b042fe28cea1d4369e75025bcbcffba6f05` |
+| `per_trial.json` | `per_trial.json` | 31466869 | 4000 | `b6761998db3a64cecbdc33b05d97625409422ce8919dee9eedfe289ee457556d` |
+| `W1.jsonl.gz` | `raw/W1.jsonl.gz` | 108575908 | 2500000 | `544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85` |
+| `W2.jsonl.gz` | `raw/W2.jsonl.gz` | 14044132 | 2500000 | `3bbd492660073f03d3fd0fbd35daf7a95747481abd2e1adc2313d19d0a9d992a` |
+| `W3.jsonl.gz` | `raw/W3.jsonl.gz` | 110740371 | 2500000 | `464796e595565b7bd23232a6402df388658352147e3ef68b46db5ee4e8e63820` |
+| `MIX_0_0.jsonl.gz` | `raw/MIX_0_0.jsonl.gz` | 14380075 | 2500000 | `e08265f97e54e5244c0d5b2925dbaf228bbe8d707e0cd1adae0318c681965b5c` |
+| `MIX_0_25.jsonl.gz` | `raw/MIX_0_25.jsonl.gz` | 45765444 | 2500000 | `3a3858bff4e687a070d59451ce64f0984cda9f32f6688390ba65f7eb101bf3d7` |
+| `MIX_0_5.jsonl.gz` | `raw/MIX_0_5.jsonl.gz` | 68733468 | 2500000 | `8016aaf8977c47a8ccc6b981a0cda17bd89040a96d627b60a37d7e025e2ccc35` |
+| `MIX_0_75.jsonl.gz` | `raw/MIX_0_75.jsonl.gz` | 89522944 | 2500000 | `e3059e0622dd9fcfbd8e70a015e2907bf43448d1bec545c492e61ce98eaf95ce` |
+| `MIX_1_0.jsonl.gz` | `raw/MIX_1_0.jsonl.gz` | 108791083 | 2500000 | `1207480625efac2acb1007c3fc924b042fe28cea1d4369e75025bcbcffba6f05` |
 
-The local files and these hashes are the archival source of truth until upload validation is recorded in the release notes and manifest.
+Local results total about 592 MB. The raw compressed JSONL files account for 560.5 MB and the per-trial JSON for 31.5 MB. The report, manifest, and script are committed; the data files are local-only until a separate archival decision is made.
