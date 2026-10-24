@@ -9,10 +9,16 @@
 
 ## 1. Authorization and scope
 
-This audit was performed under the bounded authorization for a hand-built
-construction audit. It is design and offline analysis only. It did not create
-study solvers, prompts, allocation packets, generator requests, or a new power
-simulation, and it did not change the frozen banks.
+This audit was performed under the bounded construction-audit decision delegated
+by Foued to Claude/GPT and selected by GPT. The conversation contains no separate
+literal "authorize audit" reply from Foued; the authorization basis and sequence
+are recorded in `07_PROCESS_DEVIATIONS.md`. The earlier
+`06_OPTION_B_IDENTIFICATION_AUDIT.md` was produced before that decision and is
+not the later construction-audit report.
+
+It is design and offline analysis only. It did not create study solvers, prompts,
+allocation packets, generator requests, or a new power simulation, and it did not
+change the frozen banks.
 
 The audit asked whether at least two genuinely different, non-lookup defect
 mechanisms can produce matched diagnostic profiles at more than one
@@ -41,6 +47,23 @@ The mechanisms use only text properties and algorithmic rules. They do not
 look up exact input strings, diagnostic membership, or evaluation membership.
 Every output was checked for exact `int` type and compared with
 `core.model.independent_answer` over all 128 inputs.
+
+The audit uses these operational definitions:
+
+- A **mechanism family** is the candidate-name prefix before the first `(`,
+  such as `min_tail` in `min_tail(r=1)` or `close_eq` in `close_eq(5)`.
+- A **distinct mechanism match** is a pair from different families with the
+  same `k=5` diagnostic profile but different full-domain failure sets. A pair
+  with identical full-domain failure sets is treated as an equivalent
+  predicate, not as independent evidence.
+- The threshold values for the `eq`/`ge`/`le` text-statistic candidates are the
+  distinct values of each feature observed in the 30 diagnostic inputs.
+
+The threshold search is therefore informed by the diagnostic bank. It does not
+look up exact diagnostic or evaluation strings and does not use evaluation-set
+membership to define candidates, but the candidate set is not wholly independent
+of the diagnostics. The 257-instance set is bounded and hand-coded; it is not an
+exhaustive search over all possible programs.
 
 For each mechanism the audit recorded:
 
@@ -91,9 +114,10 @@ Eight cross-mechanism profile matches were found. All eight are pairs with
 | `[0,0,0,0,0,5]` | 1.0 | `pair_eq(0)`, `pair_le(0)` |
 | `[2,1,0,1,1,0]` | 0.4 | `closes_suffix_eq(2)`, `last_open_eq(4)` |
 
-These are algebraically equivalent predicates on length-seven strings, not
-independent mechanisms. The number of matches with **different** full-domain
-failure sets is:
+The eight unordered pairs reduce to four unique diagnostic profiles; the
+three-instance groups produce multiple pairings within each group. These are
+algebraically equivalent predicates on length-seven strings, not independent
+mechanisms. The number of matches with **different** full-domain failure sets is:
 
 ```text
 distinct_mechanism_matches = 0
@@ -145,9 +169,13 @@ result.
 ## 6. Reproducibility
 
 - `audit/construction_audit.py` — reproducible audit implementation.
-- `audit/construction_audit.json` — full audit records, including failure-set
-  hashes and all 14 `k=5` profiles.
+- `audit/construction_audit.json` — all 257 candidate records, including each
+  candidate's full failure list, failure-set SHA-256, diagnostic profile, `k`,
+  `C`, evaluation failures, and both scores; it also contains all 14 `k=5`
+  records, the matched-profile summaries, and the operational definitions above.
+- `audit/PROVENANCE_SHA256.txt` — SHA-256 manifest for the 57 study files,
+  computed from the committed Git blobs. The manifest is omitted from its own
+  entries.
 - The audit ran with `PYTHONDONTWRITEBYTECODE=1`; `__pycache__` is excluded from
-  provenance.
-- Corrected provenance list:
-  `C:\Users\pakla\AppData\Local\Temp\opencode\ENGINEERED_STUDY_HASHES_NO_PYCACHE-20261023-161235.txt`.
+  provenance. The earlier local list under `%TEMP%\opencode\` is superseded by
+  the committed manifest.

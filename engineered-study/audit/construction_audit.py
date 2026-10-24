@@ -244,26 +244,18 @@ def main() -> int:
     result = {
         "schema": 1,
         "status": "NEGATIVE_NO_SEPARATION_DEMONSTRATED",
+        "definitions": {
+            "mechanism_family": "the candidate name prefix before the first '('",
+            "distinct_match": "same k=5 diagnostic profile and a different full-domain failure set",
+            "candidate_thresholds": "distinct feature values observed in the 30 diagnostic inputs",
+        },
         "candidate_count": len(records),
         "k5_candidate_count": len(k5),
         "families_with_multiple_k5_profiles": multi,
         "matched_profiles": matches,
         "distinct_mechanism_matches": distinct_matches,
-        "k5_records": [
-            {
-                key: record[key]
-                for key in (
-                    "name",
-                    "diagnostic_profile",
-                    "C",
-                    "evaluation_failures",
-                    "evaluation_score_raw",
-                    "evaluation_score_equal_family",
-                    "failure_count",
-                )
-            }
-            for record in k5
-        ],
+        "records": records,
+        "k5_records": k5,
     }
     output = ROOT / "audit" / "construction_audit.json"
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

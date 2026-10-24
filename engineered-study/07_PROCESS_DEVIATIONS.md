@@ -1,8 +1,9 @@
 # Process deviations
 
-Status: factual log. The original Gate 1 verdict was **HOLD**; the authorized
-bounded construction audit subsequently closed it for this operationalization.
-See `08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`.
+Status: factual log. The original Gate 1 verdict was **HOLD**; the bounded
+construction audit selected through Foued's delegated decision subsequently
+closed it for this operationalization. See
+`08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`.
 
 ## 2026-10-23: Option B audit produced before a recorded authorization
 
@@ -12,6 +13,15 @@ A limited Option B identification audit was recommended in the review
 discussion. The recommendation described design and offline analysis only, with
 no generator prompts, study solvers, allocation packets, generation calls, or
 new power simulation.
+
+### Authorization basis for the later construction audit
+
+Foued instructed Claude/GPT to decide four open items. GPT selected the bounded
+construction audit and described it as authorized. The conversation does not
+contain a separate literal "authorize audit" reply from Foued. The later
+construction audit was performed on the basis of that delegated decision. This
+entry records the actual sequence and basis; it does not assert that a separate
+explicit authorization message exists.
 
 ### Deviation
 
@@ -41,11 +51,12 @@ is evidence about the current operationalization, not proof that H1a is false.
 
 ### Corrective action
 
-The authorized bounded audit was subsequently completed; its negative result is
-recorded in `08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`. No scoring decision,
-budget change, new allocation design, or generation is authorized by that
-result. The earlier note is retained as a design/provenance record and must not
-be treated as the authorized audit report.
+The bounded audit selected through that delegated decision was subsequently
+completed; its negative result is recorded in
+`08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`. No scoring decision, budget change,
+new allocation design, or generation is authorized by that result. The earlier
+note is retained as a design/provenance record and must not be treated as the
+later construction-audit report.
 
 ## 2026-10-23: `selected_profiles.json` historical hash unresolved
 
@@ -57,3 +68,11 @@ old byte identity must not be claimed as recovered.
 A canonical version may be re-frozen later, with the mismatch documented. That
 would establish a new provenance baseline; it would not establish that the old
 bytes were recovered.
+
+## 2026-10-24: committed provenance manifest
+
+`audit/PROVENANCE_SHA256.txt` now records SHA-256 values for the 57 study files,
+computed from the committed Git blobs. It supersedes the local temporary
+`ENGINEERED_STUDY_HASHES_NO_PYCACHE-20261023-161235.txt`, which was outside the
+repository and could not be independently checked from GitHub. The manifest
+omits itself from its 57 entries.

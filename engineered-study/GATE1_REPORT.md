@@ -364,7 +364,8 @@ file-hash differences, but the original bytes are lost, so the report cannot
 prove that those are the only differences. The pre-deletion hash
 (`974fe9cd…`) and current hash (`05f41bf8…`) remain separate records.
 
-- No study solver was generated, no model/API was called, and no commit was made.
+- No study solver was generated and no model/API was called while preparing this
+  report. The later review publication is a separate documentation commit.
 - The repository `README.md` still records the pilot as **TERMINATED — INFEASIBLE**
   and says no continuation is authorized. This Gate 1 HOLD does not revive that
   status or authorize generation.
@@ -376,10 +377,11 @@ prove that those are the only differences. The pre-deletion hash
 
 ## 10. Bounded Option B construction audit outcome
 
-The authorized bounded audit is recorded in
+The bounded audit selected through the delegated decision is recorded in
 `08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`, with reproducible implementation and
 records in `audit/construction_audit.py` and
-`audit/construction_audit.json`.
+`audit/construction_audit.json`. The authorization sequence and basis are stated
+in `07_PROCESS_DEVIATIONS.md`.
 
 The audit evaluated 257 hand-built mechanism instances over all 128 inputs
 against the independent oracle. Fourteen instances produced `k=5`. No mechanism
