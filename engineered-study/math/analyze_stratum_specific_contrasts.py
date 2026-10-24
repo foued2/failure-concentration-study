@@ -140,9 +140,12 @@ def analyze(root: Path, outdir: Path) -> dict[str, Any]:
 
         if nrows != int(spec["records"]):
             raise ValueError(f"Record count mismatch for {setting}: {nrows}")
+        final_hash = sha256(path)
+        if final_hash.lower() != str(spec["sha256"]).lower():
+            raise ValueError(f"SHA-256 changed while reading {path}")
         file_audit.append({
             "setting": setting, "path": str(path), "records": nrows,
-            "bytes": path.stat().st_size, "sha256": sha256(path),
+            "bytes": path.stat().st_size, "sha256": final_hash,
             "manifest_sha256": str(spec["sha256"]),
         })
         total_rows += nrows
