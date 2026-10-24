@@ -1,0 +1,218 @@
+{
+  "design_sha256": "a33b475dedbc66eb2d97e490389f3623f2fea29f6b7a98e6ceefb9536d277fd1",
+  "script_sha256": "d19097434d999764fd913c514ff13344a2bd49b582f98de7bf8fcd02dd089c0a",
+  "base_seed": 20261024,
+  "trials": 500,
+  "cases": 5000,
+  "settings": [
+    "W1",
+    "W2",
+    "W3",
+    "MIX_0_0",
+    "MIX_0_25",
+    "MIX_0_5",
+    "MIX_0_75",
+    "MIX_1_0"
+  ],
+  "parameters": {
+    "diagnostic_probes_per_family": 5,
+    "evaluation_cases_per_family": [
+      9,
+      9,
+      23,
+      23,
+      31,
+      3
+    ],
+    "mixtures": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "W1": {
+      "diagnostic_home": 0.8,
+      "diagnostic_other": 0.05,
+      "evaluation_home": 0.35,
+      "evaluation_other": 0.03
+    },
+    "W2": {
+      "diagnostic_home": 1.0,
+      "diagnostic_other": 0.0,
+      "evaluation_home": 1.0,
+      "evaluation_other": 0.0
+    },
+    "W3": {
+      "diagnostic_home": 0.8,
+      "diagnostic_other": 0.05,
+      "evaluation_home": 0.15,
+      "evaluation_other": 0.15
+    }
+  },
+  "per_trial": {
+    "path": "per_trial.json",
+    "records": 4000,
+    "bytes": 31466869,
+    "sha256": "b6761998db3a64cecbdc33b05d97625409422ce8919dee9eedfe289ee457556d",
+    "asset_name": "three_world_per_trial_2026-10-24.json"
+  },
+  "raw": {
+    "W1": {
+      "path": "raw\\W1.jsonl.gz",
+      "records": 2500000,
+      "bytes": 108575908,
+      "sha256": "544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85",
+      "asset_name": "three_world_raw_W1_2026-10-24.jsonl.gz"
+    },
+    "W2": {
+      "path": "raw\\W2.jsonl.gz",
+      "records": 2500000,
+      "bytes": 14044132,
+      "sha256": "3bbd492660073f03d3fd0fbd35daf7a95747481abd2e1adc2313d19d0a9d992a",
+      "asset_name": "three_world_raw_W2_2026-10-24.jsonl.gz"
+    },
+    "W3": {
+      "path": "raw\\W3.jsonl.gz",
+      "records": 2500000,
+      "bytes": 110740371,
+      "sha256": "464796e595565b7bd23232a6402df388658352147e3ef68b46db5ee4e8e63820",
+      "asset_name": "three_world_raw_W3_2026-10-24.jsonl.gz"
+    },
+    "MIX_0_0": {
+      "path": "raw\\MIX_0_0.jsonl.gz",
+      "records": 2500000,
+      "bytes": 14380075,
+      "sha256": "e08265f97e54e5244c0d5b2925dbaf228bbe8d707e0cd1adae0318c681965b5c",
+      "asset_name": "three_world_raw_MIX_0_0_2026-10-24.jsonl.gz"
+    },
+    "MIX_0_25": {
+      "path": "raw\\MIX_0_25.jsonl.gz",
+      "records": 2500000,
+      "bytes": 45765444,
+      "sha256": "3a3858bff4e687a070d59451ce64f0984cda9f32f6688390ba65f7eb101bf3d7",
+      "asset_name": "three_world_raw_MIX_0_25_2026-10-24.jsonl.gz"
+    },
+    "MIX_0_5": {
+      "path": "raw\\MIX_0_5.jsonl.gz",
+      "records": 2500000,
+      "bytes": 68733468,
+      "sha256": "8016aaf8977c47a8ccc6b981a0cda17bd89040a96d627b60a37d7e025e2ccc35",
+      "asset_name": "three_world_raw_MIX_0_5_2026-10-24.jsonl.gz"
+    },
+    "MIX_0_75": {
+      "path": "raw\\MIX_0_75.jsonl.gz",
+      "records": 2500000,
+      "bytes": 89522944,
+      "sha256": "e3059e0622dd9fcfbd8e70a015e2907bf43448d1bec545c492e61ce98eaf95ce",
+      "asset_name": "three_world_raw_MIX_0_75_2026-10-24.jsonl.gz"
+    },
+    "MIX_1_0": {
+      "path": "raw\\MIX_1_0.jsonl.gz",
+      "records": 2500000,
+      "bytes": 108791083,
+      "sha256": "1207480625efac2acb1007c3fc924b042fe28cea1d4369e75025bcbcffba6f05",
+      "asset_name": "three_world_raw_MIX_1_0_2026-10-24.jsonl.gz"
+    }
+  },
+  "runtime_seconds": 1636.1078433999792,
+  "schema_version": 1,
+  "report": {
+    "path": "11_THREE_WORLD_SIM_RESULT.md",
+    "bytes": 23647,
+    "sha256": "aa17d0aa34a30d213de3b41e04bab674f0b3b25fb50d37395e2ebc67c2c8f262"
+  },
+  "python": {
+    "version": "3.14.0",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26300-SP0"
+  },
+  "implementation": {
+    "path": "engineered-study/math/simulate_worlds.py",
+    "bytes": 51322,
+    "sha256": "d19097434d999764fd913c514ff13344a2bd49b582f98de7bf8fcd02dd089c0a",
+    "commit": null
+  },
+  "design": {
+    "path": "engineered-study/math/10_THREE_WORLD_SIM_DESIGN.md",
+    "sha256": "a33b475dedbc66eb2d97e490389f3623f2fea29f6b7a98e6ceefb9536d277fd1",
+    "commit": "e2a45a5ed83f68c7e2827fb87cf1a6ca3e36ced4"
+  },
+  "design_hash_record": {
+    "path": "engineered-study/math/10_THREE_WORLD_SIM_DESIGN.sha256.txt",
+    "commit": "30f717aac2bd37bac1e96373dcf39091461b2ff2"
+  },
+  "source_review_status": "PENDING independent GPT review; not certified as reviewed",
+  "raw_total_records": 20000000,
+  "release": {
+    "tag": "three-world-sim-2026-10-24",
+    "target_branch": "research/concentration-math-spec",
+    "target_commit": null,
+    "assets": [
+      {
+        "asset_name": "three_world_per_trial_2026-10-24.json",
+        "local_path": "per_trial.json",
+        "bytes": 31466869,
+        "records": 4000,
+        "sha256": "b6761998db3a64cecbdc33b05d97625409422ce8919dee9eedfe289ee457556d"
+      },
+      {
+        "asset_name": "three_world_raw_W1_2026-10-24.jsonl.gz",
+        "local_path": "raw/W1.jsonl.gz",
+        "bytes": 108575908,
+        "records": 2500000,
+        "sha256": "544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85"
+      },
+      {
+        "asset_name": "three_world_raw_W2_2026-10-24.jsonl.gz",
+        "local_path": "raw/W2.jsonl.gz",
+        "bytes": 14044132,
+        "records": 2500000,
+        "sha256": "3bbd492660073f03d3fd0fbd35daf7a95747481abd2e1adc2313d19d0a9d992a"
+      },
+      {
+        "asset_name": "three_world_raw_W3_2026-10-24.jsonl.gz",
+        "local_path": "raw/W3.jsonl.gz",
+        "bytes": 110740371,
+        "records": 2500000,
+        "sha256": "464796e595565b7bd23232a6402df388658352147e3ef68b46db5ee4e8e63820"
+      },
+      {
+        "asset_name": "three_world_raw_MIX_0_0_2026-10-24.jsonl.gz",
+        "local_path": "raw/MIX_0_0.jsonl.gz",
+        "bytes": 14380075,
+        "records": 2500000,
+        "sha256": "e08265f97e54e5244c0d5b2925dbaf228bbe8d707e0cd1adae0318c681965b5c"
+      },
+      {
+        "asset_name": "three_world_raw_MIX_0_25_2026-10-24.jsonl.gz",
+        "local_path": "raw/MIX_0_25.jsonl.gz",
+        "bytes": 45765444,
+        "records": 2500000,
+        "sha256": "3a3858bff4e687a070d59451ce64f0984cda9f32f6688390ba65f7eb101bf3d7"
+      },
+      {
+        "asset_name": "three_world_raw_MIX_0_5_2026-10-24.jsonl.gz",
+        "local_path": "raw/MIX_0_5.jsonl.gz",
+        "bytes": 68733468,
+        "records": 2500000,
+        "sha256": "8016aaf8977c47a8ccc6b981a0cda17bd89040a96d627b60a37d7e025e2ccc35"
+      },
+      {
+        "asset_name": "three_world_raw_MIX_0_75_2026-10-24.jsonl.gz",
+        "local_path": "raw/MIX_0_75.jsonl.gz",
+        "bytes": 89522944,
+        "records": 2500000,
+        "sha256": "e3059e0622dd9fcfbd8e70a015e2907bf43448d1bec545c492e61ce98eaf95ce"
+      },
+      {
+        "asset_name": "three_world_raw_MIX_1_0_2026-10-24.jsonl.gz",
+        "local_path": "raw/MIX_1_0.jsonl.gz",
+        "bytes": 108791083,
+        "records": 2500000,
+        "sha256": "1207480625efac2acb1007c3fc924b042fe28cea1d4369e75025bcbcffba6f05"
+      }
+    ],
+    "validation": "pending"
+  }
+}
