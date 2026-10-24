@@ -1,0 +1,7 @@
+Frozen design: engineered-study/math/10_THREE_WORLD_SIM_DESIGN.md
+Commit containing design: abc6acee8c4dccf1fa4225c6c38001c21a96a88f
+SHA-256 (UTF-8 bytes returned by GitHub for the committed file): bd7276849cdd50b44b7d5ff5abf8a52168091a0fb8468f95e2b8d1d1914c8ade
+Byte count: 18680
+Seed specified in design: 20261024
+Simulation script present at freeze: no
+Scenario run performed before freeze: no
