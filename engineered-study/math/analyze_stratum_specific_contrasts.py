@@ -32,6 +32,8 @@ def sha256(path: Path) -> str:
 
 
 def write_atomic(path: Path, data: str) -> None:
+    if path.exists():
+        raise FileExistsError(f"Refusing to overwrite existing output: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(path.name + ".tmp")
     temp.write_text(data, encoding="utf-8", newline="\n")
@@ -288,10 +290,13 @@ def main() -> int:
     if outdir == root or root not in outdir.parents:
         raise SystemExit("Output directory must be a new subdirectory of the saved archive root.")
     try:
+        report_path = outdir / "STRATUM_SPECIFIC_CONTRASTS_2026-10-24.md"
+        json_path = outdir / "stratum_specific_contrasts_2026-10-24.json"
+        if report_path.exists() or json_path.exists():
+            raise FileExistsError("Output already exists; refusing to overwrite existing analysis results.")
         result = analyze(root, outdir)
-        write_atomic(outdir / "STRATUM_SPECIFIC_CONTRASTS_2026-10-24.md", render(result))
-        write_atomic(outdir / "stratum_specific_contrasts_2026-10-24.json",
-                     json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n")
+        write_atomic(report_path, render(result))
+        write_atomic(json_path, json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n")
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
