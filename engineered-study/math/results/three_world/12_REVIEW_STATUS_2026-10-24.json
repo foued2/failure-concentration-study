@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-24",
+  "source_review_status": "reviewed, corrections pending",
+  "review_state": "reviewed-with-corrections",
+  "reviewers": [
+    "Claude",
+    "GPT"
+  ],
+  "primary_result": "W1 FAILED; preserved unchanged",
+  "original_record": {
+    "report": {
+      "path": "11_THREE_WORLD_SIM_RESULT.md",
+      "bytes": 23632,
+      "sha256": "50b7dc905da90c6b8fe5c6731c6bafa922bc6925d3d135c1e43b5e9a035f57eb",
+      "historical_source_review_status": "PENDING independent review; not certified as reviewed",
+      "note": "Original report preserved unchanged; its status label is historical."
+    },
+    "manifest": {
+      "path": "manifest.json",
+      "bytes": 6243,
+      "sha256": "16af20b8b92856f8a5336737039da43609128caa5eb188ef40e7f3181dca7575",
+      "historical_source_review_status": "PENDING independent GPT review; not certified as reviewed",
+      "note": "Original manifest preserved unchanged; its status label is historical."
+    },
+    "simulation_script": {
+      "path": "engineered-study/math/simulate_worlds.py",
+      "sha256": "d19097434d999764fd913c514ff13344a2bd49b582f98de7bf8fcd02dd089c0a",
+      "note": "Not modified by this correction."
+    }
+  },
+  "correction_record": {
+    "document": {
+      "path": "12_POST_RUN_REVIEW_CORRECTIONS_2026-10-24.md",
+      "bytes": 9911,
+      "sha256": "12fbe1fc804e1d1f1b429501f8fc949860ac17327c0093b5ecbf1f447b666620"
+    },
+    "analysis_script": {
+      "path": "engineered-study/math/analyze_three_world_review.py",
+      "bytes": 17404,
+      "sha256": "a48d4cd2149f704e66c34072c32ee44236066d137a997e4d86171e1365b17d0c"
+    },
+    "metrics": {
+      "path": "12_review_correction_metrics.json",
+      "bytes": 4495401,
+      "sha256": "7d11454fd078f3290ccec645c4c83d282497f61f61b71aa63938d363dde9ddc7"
+    },
+    "overlap_appendix": {
+      "path": "12_overlap_by_k_c.md",
+      "bytes": 17901,
+      "sha256": "82576ed9ddb5de7e932bd8ffc0df308055c33c619374e86b9c811a94f1c79b1d"
+    }
+  },
+  "corrections": {
+    "labels": "W2 labelled unidentifiable; W3 labelled oracle null; W1 remains FAILED; alternate-partition failures added.",
+    "unseen_k": "Measured for every setting, trial, and fold from saved raw records; W1 has 438 affected fold fits and 563 affected eligible cases.",
+    "sensitivity": "W1 represented-k sensitivity computed with original folds and same case subset for both models; original W1 estimate preserved.",
+    "baseline": "The full-cohort baseline label is corrected to k-represented baseline with scored and omitted counts.",
+    "overlap": "Full per-k, per-C case counts are in the overlap appendix.",
+    "failed_checks": "W1 and W3 alternate-partition failures and W1 full-vector equal failure are included."
+  },
+  "pending": [
+    "Final review and sign-off of the correction record.",
+    "A second verified copy of the local-only raw archive."
+  ],
+  "archive": {
+    "storage": "local_only",
+    "total_bytes": 592020294,
+    "raw_hashes_verified_by_correction": true,
+    "upload_status": "not uploaded; no GitHub release assets",
+    "note": "Checksums do not preserve the local data files."
+  }
+}
