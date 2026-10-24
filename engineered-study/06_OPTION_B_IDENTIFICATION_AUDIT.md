@@ -6,8 +6,9 @@ Status: design and offline analysis only. The original Gate 1 verdict was
 solvers, allocation packets, model calls, or simulation runs were produced for
 this note.
 
-Authorization note: this note was produced before an explicit Foued
-authorization decision was recorded. It is logged as a process deviation in
+Authorization note: this note was produced before the delegated
+construction-audit decision was recorded, and no separate explicit Foued
+authorization was recorded for this note. It is logged as a process deviation in
 `07_PROCESS_DEVIATIONS.md`. It is not retroactively authorized, and it does not
 satisfy the construction-audit criterion described below.
 

@@ -5,7 +5,7 @@ construction audit selected through Foued's delegated decision subsequently
 closed it for this operationalization. See
 `08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md`.
 
-## 2026-10-23: Option B audit produced before a recorded authorization
+## 2026-10-23: Option B audit produced before the delegated decision
 
 ### Context
 
@@ -25,10 +25,11 @@ explicit authorization message exists.
 
 ### Deviation
 
-`06_OPTION_B_IDENTIFICATION_AUDIT.md` was produced before an explicit Foued
-authorization decision was recorded. The note was created after the audit was
-recommended, but it was not retroactively authorized. This is logged as a
-process deviation.
+`06_OPTION_B_IDENTIFICATION_AUDIT.md` was produced before the delegated
+construction-audit decision was recorded. The note was created after the audit
+was recommended, but no separate explicit Foued authorization was recorded for
+it, and it was not retroactively authorized. This is logged as a process
+deviation.
 
 ### Scope actually executed
 
