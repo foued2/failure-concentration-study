@@ -181,3 +181,12 @@ This amendment resolves implementation ambiguities found during review. It is pa
 7. **No evaluation-family-only partition claim:** the only planned partition sensitivity is the alternative diagnostic partition in item 2. Repartitioning evaluation labels alone is not a test of concentration's partition sensitivity.
 
 This clarification was committed before creation of the simulation script or any scenario run. It does not change the trial count, seed, score definitions, model families, or interpretation thresholds.
+
+
+## 10. Final estimand clarification (before implementation)
+
+The primary claim is explicitly **conditional on the same total failure count**. Therefore, represent \(k\) as a categorical fixed effect in M0, M0+fam, M1, and M1+fam, not as one numeric linear term. This allows the baseline score relationship to differ at each observed \(k\), and makes the incremental \(C\) comparison consistent with the fixed-\(k\) claim. Report stratum-specific contrasts as descriptive overlap checks.
+
+For the full-vector model \(MF\), use categorical \(k\) plus five of the six family counts (for example \(f_1,\ldots,f_5\)); \(f_6=k-\sum_{j=1}^5 f_j\) is then recovered exactly. This represents the full vector without adding an exactly redundant linear column. Include the same anchor-family indicators and use the same eligible cases and held-out folds as M1+fam. The oracle W3 model uses categorical \(k\), anchor-family indicators, \(C\), and latent defect count.
+
+This is a clarification of the estimator, not a post-result change. It is committed before the simulation script exists and before any world is run.
