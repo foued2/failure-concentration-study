@@ -1,0 +1,16 @@
+Independent verification source: engineered-study/math/results/three_world/independent_w1_glm/independent_w1_verify.py
+Frozen (hash recorded) at: 2026-10-24, before first execution
+Initial frozen SHA-256 (local file bytes): 1afcbe79a2536bca82d53a6e92cea2d6457daec03690a46813fd3fcf8b1a3497
+Initial byte count: 51920
+Correction (documented per work-order rule, before any simulation ran):
+  Initial frozen source crashed at startup (FileNotFoundError) because DESIGN_PATH
+  pointed to math/results/10_THREE_WORLD_SIM_DESIGN.md instead of
+  math/10_THREE_WORLD_SIM_DESIGN.md (script lives one directory deeper than
+  assumed). Single-line path fix only (THREE_WORLD_DIR.parent.parent). No
+  generator, estimator, or comparison logic was touched. No simulation output had
+  been produced by the initial source (crash occurred during input-hash checking).
+Corrected SHA-256 (local file bytes, used for all executed runs):
+  4454ae9f5bca940f3c8253273d1bf198a70bfe4270b553464401855403542aae
+Corrected byte count: 51927
+Implementation basis: independent reimplementation written from the frozen design (10_THREE_WORLD_SIM_DESIGN.md) and the documented verification protocol; does not import simulate_worlds.py or analyze_three_world_review.py; Python standard library only.
+Note per work order: source must not be modified after run results are seen; any further corrections are documented separately.

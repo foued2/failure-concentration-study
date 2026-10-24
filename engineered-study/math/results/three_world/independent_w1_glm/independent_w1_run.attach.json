@@ -1,0 +1,394 @@
+{
+ "task": "GLM independent W1 verification (single bounded verification)",
+ "source_frozen": {
+  "path": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\engineered-study\\math\\results\\three_world\\independent_w1_glm\\independent_w1_verify.py",
+  "bytes": 51927,
+  "sha256": "4454ae9f5bca940f3c8253273d1bf198a70bfe4270b553464401855403542aae",
+  "hash_recorded_before_first_execution": true
+ },
+ "environment": {
+  "python_version": "3.14.0",
+  "python_implementation": "CPython",
+  "python_executable": "C:\\Users\\pakla\\AppData\\Roaming\\uv\\python\\cpython-3.14.0-windows-x86_64-none\\python.exe",
+  "platform": "Windows-11-10.0.26300-SP0"
+ },
+ "runtime": {
+  "started_utc": "2026-10-24T10:31:39.581559+00:00",
+  "ended_utc": "2026-10-24T10:33:31.137832+00:00",
+  "seconds": 111.44765129999723,
+  "trials": 500,
+  "cases_per_trial": 5000,
+  "base_seed": 20261024,
+  "trial_seed_rule": "trial_seed = 20261024 + trial_index, index starts at 0",
+  "full_run": true
+ },
+ "frozen_design_check": {
+  "path": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\engineered-study\\math\\10_THREE_WORLD_SIM_DESIGN.md",
+  "sha256_lf_normalized_expected": "a33b475dedbc66eb2d97e490389f3623f2fea29f6b7a98e6ceefb9536d277fd1",
+  "sha256_lf_normalized_observed": "a33b475dedbc66eb2d97e490389f3623f2fea29f6b7a98e6ceefb9536d277fd1",
+  "lf_normalized_bytes": 19788,
+  "verified": true
+ },
+ "inputs_used_read_only": {
+  "w1_raw": {
+   "path": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\engineered-study\\math\\results\\three_world\\raw\\W1.jsonl.gz",
+   "sha256": "544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85",
+   "matches_manifest": true
+  },
+  "per_trial": {
+   "path": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\engineered-study\\math\\results\\three_world\\per_trial.json",
+   "sha256": "b6761998db3a64cecbdc33b05d97625409422ce8919dee9eedfe289ee457556d",
+   "matches_manifest": true
+  },
+  "review_correction_metrics": {
+   "path": "C:\\Users\\pakla\\PycharmProjects\\failure-concentration-study\\engineered-study\\math\\results\\three_world\\12_review_correction_metrics.json",
+   "sha256": "7d11454fd078f3290ccec645c4c83d282497f61f61b71aa63938d363dde9ddc7"
+  }
+ },
+ "verification_a": {
+  "records_checked": 2500000,
+  "records_matched_strictly": 2500000,
+  "records_with_mismatched_fields": 0,
+  "field_mismatch_counts": {},
+  "float_fields_matched_within_1e12_relative_only": 0,
+  "first_mismatch": null,
+  "trailing_records_after_expected": 0,
+  "expected_records": 2500000,
+  "archive_sha256": "544e920010b23f63b104781966ba3c4b84cd6ef3de47067b02a5e7b83f57ae85",
+  "all_records_matched_strictly": true
+ },
+ "verification_b": {
+  "models_fit": {
+   "M0fam": [],
+   "M1fam": [
+    0
+   ],
+   "PM1fam": [
+    1
+   ]
+  },
+  "feature_map": {
+   "feature_id_0": "C = max(F)/k",
+   "feature_id_1": "C_alt = max(F_alt)/k"
+  },
+  "fitting_notes": "Independent stdlib implementation. X'X assembled exactly per fold for the declared design: intercept + categorical k dummies (reference = smallest observed eligible k of the trial) + five anchor-family indicators (family 6 reference) + the model's feature. Rank deficiency: columns with a non-positive training diagonal (k levels absent from the training folds) are dropped and the fold flagged; the reduced system is solved by own Cholesky when positive definite, otherwise by own Moore-Penrose eigen solver. Held-out squared error is accumulated per test case; loss = SSE / eligible count aggregated over the five folds. The alternate-partition M0+fam design is identical to the primary M0+fam (same k categories and family coding), so the partition comparison reuses that fit with C_alt in place of C.",
+  "primary": {
+   "domain": {
+    "mean": 1.9613467519803966e-06,
+    "low": -1.2420899751200486e-06,
+    "high": 7.581285806617664e-06,
+    "positive_fraction": 0.804,
+    "trials": 500,
+    "positive_trials": 402
+   },
+   "equal": {
+    "mean": 1.914362823589913e-06,
+    "low": -1.8332703626153802e-06,
+    "high": 8.988738208602912e-06,
+    "positive_fraction": 0.754,
+    "trials": 500,
+    "positive_trials": 377
+   }
+  },
+  "primary_losses": {
+   "m0fam_mean": {
+    "domain": 0.0033878403920887938,
+    "equal": 0.003350859520304698
+   },
+   "m1fam_mean": {
+    "domain": 0.003385879045336813,
+    "equal": 0.0033489451574811083
+   },
+   "gain_relative_to_baseline": {
+    "domain": 0.0005789371767809629,
+    "equal": 0.0005713050075629065
+   }
+  },
+  "alternate_partition": {
+   "domain": {
+    "mean": -6.246999292176686e-07,
+    "low": -3.451731479743065e-06,
+    "high": 3.1384100087721974e-06,
+    "positive_fraction": 0.25,
+    "trials": 500,
+    "positive_trials": 125
+   },
+   "equal": {
+    "mean": -6.778654116399202e-07,
+    "low": -3.894306437576631e-06,
+    "high": 2.6533976665879947e-06,
+    "positive_fraction": 0.246,
+    "trials": 500,
+    "positive_trials": 123
+   },
+   "pm1fam_mean": {
+    "domain": 0.003388465092018011,
+    "equal": 0.003351537385716338
+   }
+  },
+  "represented_k_sensitivity": {
+   "domain": {
+    "mean": 1.0362930502466538e-06,
+    "low": -1.6604474258972783e-06,
+    "high": 5.298823179046563e-06,
+    "positive_fraction": 0.716,
+    "trials": 500,
+    "positive_trials": 358
+   },
+   "equal": {
+    "mean": 9.790599446280343e-07,
+    "low": -1.8518794834550793e-06,
+    "high": 6.079745017574371e-06,
+    "positive_fraction": 0.642,
+    "trials": 500,
+    "positive_trials": 321
+   },
+   "represented_cases": 2499386,
+   "m0fam_mean": {
+    "domain": 0.0033789980213903554,
+    "equal": 0.0033418252894216248
+   }
+  },
+  "omitted_k_subset_descriptive": {
+   "cases": 563,
+   "trials_with_cases": 328
+  },
+  "rank_and_unseen_diagnostics": {
+   "deficient_fold_counts_by_model": {
+    "M0fam": 438,
+    "M1fam": 438,
+    "PM1fam": 438
+   },
+   "fold_fits_with_unseen_k": 438,
+   "unseen_k_instances": 481,
+   "affected_eligible_cases": 563,
+   "unseen_k_global_levels": [
+    1,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+   ],
+   "affected_cases_by_k": {
+    "1": 183,
+    "23": 26,
+    "24": 218,
+    "25": 114,
+    "26": 18,
+    "27": 3,
+    "28": 1
+   },
+   "full_baseline_scored_cases": 2499388,
+   "full_baseline_omitted_cases": 612,
+   "full_baseline_omitted_k0": 49
+  },
+  "case_counts": {
+   "eligible_total": 2499949,
+   "k0_total": 51,
+   "total_cases": 2500000,
+   "represented_total": 2499386,
+   "omitted_total": 563
+  },
+  "per_trial_max_abs_error_vs_original": {
+   "delta_pred_domain": 1.0166527772496317e-15,
+   "delta_pred_equal": 7.871495178284342e-16,
+   "l_m0fam_domain": 8.461113754076877e-16,
+   "l_m0fam_equal": 5.516420653606247e-16,
+   "l_m1fam_domain": 9.259086553026208e-16,
+   "l_m1fam_equal": 8.057790545912269e-16,
+   "partition_delta_domain": 2.2595256083377847e-15,
+   "partition_delta_equal": 1.0942358071413237e-15,
+   "partition_m1fam_domain": 2.456368441983159e-15,
+   "partition_m1fam_equal": 1.0200174038743626e-15,
+   "represented_delta_domain": 1.2145456141122459e-15,
+   "represented_delta_equal": 7.727516517910056e-16
+  },
+  "per_trial_digest": {
+   "count_in_full_json": 500,
+   "per_trial_sha256_compact_json": "e6c0b3d9a1657a1a1353262c146067cff26a14a815bd9b33677a4e5b9e4088d7",
+   "first_5": [
+    {
+     "trial": 0,
+     "delta_pred_domain": 2.823918976779538e-06,
+     "delta_pred_equal": 4.917621324295851e-07,
+     "l_m0fam_domain": 0.003303985991584401,
+     "l_m0fam_equal": 0.003330538019447996,
+     "l_m1fam_domain": 0.0033011620726076216,
+     "l_m1fam_equal": 0.003330046257315566,
+     "l_pm1fam_domain": 0.0033038535781666077,
+     "l_pm1fam_equal": 0.003331802694256343,
+     "partition_delta_domain": 1.3241341779348658e-07,
+     "partition_delta_equal": -1.2646748083469106e-06,
+     "represented_delta_domain": 2.823918976779538e-06,
+     "represented_delta_equal": 4.917621324295851e-07,
+     "represented_l0fam_domain": 0.003303985991584401,
+     "represented_l0fam_equal": 0.003330538019447996,
+     "n_eligible": 5000,
+     "n_represented": 5000,
+     "n_k0": 0,
+     "deficient_folds": {
+      "M0fam": 0,
+      "M1fam": 0,
+      "PM1fam": 0
+     },
+     "unseen_folds": 0,
+     "unseen_affected_cases": 0,
+     "unseen_instances": 0
+    },
+    {
+     "trial": 1,
+     "delta_pred_domain": 3.64860920791088e-06,
+     "delta_pred_equal": 3.8010422079111093e-06,
+     "l_m0fam_domain": 0.0034622287571150715,
+     "l_m0fam_equal": 0.0033998074355440283,
+     "l_m1fam_domain": 0.0034585801479071606,
+     "l_m1fam_equal": 0.003396006393336117,
+     "l_pm1fam_domain": 0.0034618657503917333,
+     "l_pm1fam_equal": 0.0034001637969820315,
+     "partition_delta_domain": 3.630067233380885e-07,
+     "partition_delta_equal": -3.5636143800346074e-07,
+     "represented_delta_domain": 2.3765457585917116e-06,
+     "represented_delta_equal": 3.3841761358765373e-06,
+     "represented_l0fam_domain": 0.0034540902172771636,
+     "represented_l0fam_equal": 0.003399389486711163,
+     "n_eligible": 5000,
+     "n_represented": 4999,
+     "n_k0": 0,
+     "deficient_folds": {
+      "M0fam": 1,
+      "M1fam": 1,
+      "PM1fam": 1
+     },
+     "unseen_folds": 1,
+     "unseen_affected_cases": 1,
+     "unseen_instances": 1
+    },
+    {
+     "trial": 2,
+     "delta_pred_domain": 1.0508542605123267e-06,
+     "delta_pred_equal": 1.7852289314517859e-06,
+     "l_m0fam_domain": 0.003160305263118892,
+     "l_m0fam_equal": 0.0032520360731015598,
+     "l_m1fam_domain": 0.0031592544088583797,
+     "l_m1fam_equal": 0.003250250844170108,
+     "l_pm1fam_domain": 0.0031608980065669424,
+     "l_pm1fam_equal": 0.0032527579527341674,
+     "partition_delta_domain": -5.927434480506373e-07,
+     "partition_delta_equal": -7.218796326077212e-07,
+     "represented_delta_domain": 1.0508542605123267e-06,
+     "represented_delta_equal": 1.7852289314517859e-06,
+     "represented_l0fam_domain": 0.003160305263118892,
+     "represented_l0fam_equal": 0.0032520360731015598,
+     "n_eligible": 4999,
+     "n_represented": 4999,
+     "n_k0": 1,
+     "deficient_folds": {
+      "M0fam": 0,
+      "M1fam": 0,
+      "PM1fam": 0
+     },
+     "unseen_folds": 0,
+     "unseen_affected_cases": 0,
+     "unseen_instances": 0
+    },
+    {
+     "trial": 3,
+     "delta_pred_domain": 2.8045293290531958e-06,
+     "delta_pred_equal": 1.7063057133640314e-06,
+     "l_m0fam_domain": 0.00333972249273682,
+     "l_m0fam_equal": 0.0033612678886349263,
+     "l_m1fam_domain": 0.0033369179634077668,
+     "l_m1fam_equal": 0.0033595615829215626,
+     "l_pm1fam_domain": 0.003339816914434141,
+     "l_pm1fam_equal": 0.003361788306577719,
+     "partition_delta_domain": -9.442169732096773e-08,
+     "partition_delta_equal": -5.204179427927613e-07,
+     "represented_delta_domain": 1.8429967799091449e-06,
+     "represented_delta_equal": 9.000126148221429e-07,
+     "represented_l0fam_domain": 0.0033309445531958613,
+     "represented_l0fam_equal": 0.0033546276953304107,
+     "n_eligible": 5000,
+     "n_represented": 4999,
+     "n_k0": 0,
+     "deficient_folds": {
+      "M0fam": 1,
+      "M1fam": 1,
+      "PM1fam": 1
+     },
+     "unseen_folds": 1,
+     "unseen_affected_cases": 1,
+     "unseen_instances": 1
+    },
+    {
+     "trial": 4,
+     "delta_pred_domain": 3.099985422751672e-06,
+     "delta_pred_equal": 3.8145545403480697e-07,
+     "l_m0fam_domain": 0.0034433248215619307,
+     "l_m0fam_equal": 0.003400610719795408,
+     "l_m1fam_domain": 0.003440224836139179,
+     "l_m1fam_equal": 0.0034002292643413733,
+     "l_pm1fam_domain": 0.0034443473639365505,
+     "l_pm1fam_equal": 0.0034016094804649277,
+     "partition_delta_domain": -1.0225423746199169e-06,
+     "partition_delta_equal": -9.987606695197826e-07,
+     "represented_delta_domain": 7.956867005916279e-07,
+     "represented_delta_equal": -4.111245994743658e-07,
+     "represented_l0fam_domain": 0.003414713726424188,
+     "represented_l0fam_equal": 0.0033748071027214495,
+     "n_eligible": 5000,
+     "n_represented": 4998,
+     "n_k0": 0,
+     "deficient_folds": {
+      "M0fam": 1,
+      "M1fam": 1,
+      "PM1fam": 1
+     },
+     "unseen_folds": 1,
+     "unseen_affected_cases": 2,
+     "unseen_instances": 1
+    }
+   ],
+   "note": "full 500-row per_trial array + 36-row reference_comparison are in independent_w1_run.json in the same directory"
+  }
+ },
+ "reference_comparison": [
+  "{\"metric\": \"Primary mean Delta_pred (domain)\", \"reference\": 1.961346752e-06, \"independent\": 1.9613467519803966e-06, \"difference\": -1.96033070147799e-17, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary central 95% interval low (domain)\", \"reference\": -1.242089975e-06, \"independent\": -1.2420899751200486e-06, \"difference\": -1.200484973066943e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary central 95% interval high (domain)\", \"reference\": 7.581285807e-06, \"independent\": 7.581285806617664e-06, \"difference\": -3.823354257975406e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary positive-trial fraction (domain)\", \"reference\": 0.804, \"independent\": 0.804, \"difference\": 0.0, \"tolerance\": 0.002, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary mean Delta_pred (equal)\", \"reference\": 1.914362824e-06, \"independent\": 1.914362823589913e-06, \"difference\": -4.1008718976490686e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary central 95% interval low (equal)\", \"reference\": -1.833270363e-06, \"independent\": -1.8332703626153802e-06, \"difference\": 3.8461987365628544e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary central 95% interval high (equal)\", \"reference\": 8.988738209e-06, \"independent\": 8.988738208602912e-06, \"difference\": -3.970873516069215e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Primary positive-trial fraction (equal)\", \"reference\": 0.754, \"independent\": 0.754, \"difference\": 0.0, \"tolerance\": 0.002, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Eligible cases (k>0)\", \"reference\": 2499949, \"independent\": 2499949, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Mean L(M0+fam) domain baseline\", \"reference\": 0.00338784, \"independent\": 0.0033878403920887938, \"difference\": 3.9208879372421013e-10, \"tolerance\": 1e-07, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Mean L(M0+fam) equal baseline\", \"reference\": 0.00335086, \"independent\": 0.003350859520304698, \"difference\": -4.796953021433958e-10, \"tolerance\": 1e-07, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k mean Delta_pred (domain)\", \"reference\": 1.03629305e-06, \"independent\": 1.0362930502466538e-06, \"difference\": 2.466538766580841e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k 95% interval low (domain)\", \"reference\": -1.660447426e-06, \"independent\": -1.6604474258972783e-06, \"difference\": 1.0272159133766032e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k 95% interval high (domain)\", \"reference\": 5.298823179e-06, \"independent\": 5.298823179046563e-06, \"difference\": 4.65630951764634e-17, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k positive-trial fraction (domain)\", \"reference\": 0.716, \"independent\": 0.716, \"difference\": 0.0, \"tolerance\": 0.002, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k mean Delta_pred (equal)\", \"reference\": 9.790599446e-07, \"independent\": 9.790599446280343e-07, \"difference\": 2.803424945527558e-17, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k 95% interval low (equal)\", \"reference\": -1.851879484e-06, \"independent\": -1.8518794834550793e-06, \"difference\": 5.44920647165925e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k 95% interval high (equal)\", \"reference\": 6.079745018e-06, \"independent\": 6.079745017574371e-06, \"difference\": -4.256289737976024e-16, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k positive-trial fraction (equal)\", \"reference\": 0.642, \"independent\": 0.642, \"difference\": 0.0, \"tolerance\": 0.002, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k eligible cases\", \"reference\": 2499386, \"independent\": 2499386, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k mean L(M0+fam) domain\", \"reference\": 0.003378998, \"independent\": 0.0033789980213903554, \"difference\": 2.1390355632588953e-11, \"tolerance\": 1e-07, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Represented-k mean L(M0+fam) equal\", \"reference\": 0.003341825, \"independent\": 0.0033418252894216248, \"difference\": 2.8942162468709176e-10, \"tolerance\": 1e-07, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition mean Delta (domain)\", \"reference\": -6.247e-07, \"independent\": -6.246999292176686e-07, \"difference\": 7.078233142483254e-14, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition 95% low (domain)\", \"reference\": -3.4517e-06, \"independent\": -3.451731479743065e-06, \"difference\": -3.1479743065105e-11, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition 95% high (domain)\", \"reference\": 3.1384e-06, \"independent\": 3.1384100087721974e-06, \"difference\": 1.0008772197467905e-11, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition mean Delta (equal)\", \"reference\": -6.7787e-07, \"independent\": -6.778654116399202e-07, \"difference\": 4.588360079866786e-12, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition 95% low (equal)\", \"reference\": -3.8943e-06, \"independent\": -3.894306437576631e-06, \"difference\": -6.437576630758746e-12, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Alternate-partition 95% high (equal)\", \"reference\": 2.6534e-06, \"independent\": 2.6533976665879947e-06, \"difference\": -2.3334120051826082e-12, \"tolerance\": 1e-09, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Fold fits with unseen k\", \"reference\": 438, \"independent\": 438, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Unseen-k instances\", \"reference\": 481, \"independent\": 481, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Affected eligible cases (unseen k)\", \"reference\": 563, \"independent\": 563, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Unseen k levels\", \"reference\": [1, 23, 24, 25, 26, 27, 28], \"independent\": [1, 23, 24, 25, 26, 27, 28], \"difference\": null, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Affected cases by k\", \"reference\": {\"1\": 183, \"23\": 26, \"24\": 218, \"25\": 114, \"26\": 18, \"27\": 3, \"28\": 1}, \"independent\": {\"1\": 183, \"23\": 26, \"24\": 218, \"25\": 114, \"26\": 18, \"27\": 3, \"28\": 1}, \"difference\": null, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Full-baseline scored cases\", \"reference\": 2499388, \"independent\": 2499388, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Full-baseline omitted cases\", \"reference\": 612, \"independent\": 612, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}",
+  "{\"metric\": \"Full-baseline omitted k=0 cases\", \"reference\": 49, \"independent\": 49, \"difference\": 0, \"tolerance\": 0, \"status\": \"MATCH\"}"
+ ]
+}
