@@ -384,6 +384,9 @@ def expression() -> dict:
             "validation": "pending",
             "errors": [],
             "body_id": None,
+            "computed_body_id": None,
+            "source_bytes": None,
+            "raw_source_bytes": None,
             "k": None,
             "C": None,
             "diag_crash": None,
@@ -392,6 +395,7 @@ def expression() -> dict:
         }
         paths = {
             "source_screen": attempt_dir / "source-screen.json",
+            "solver_source": attempt_dir / "generated-solver.py",
             "diagnostic": attempt_dir / "host-authoritative" / "diagnostic.json",
             "evaluation": attempt_dir / "host-authoritative" / "evaluation.json",
         }
@@ -414,6 +418,26 @@ def expression() -> dict:
                 rec["errors"].extend(validate_screen(screen, paths["source_screen"]))
                 if isinstance(screen, dict) and isinstance(screen.get("body_id"), str):
                     rec["body_id"] = screen["body_id"]
+        if paths["solver_source"].exists():
+            try:
+                raw_source = paths["solver_source"].read_bytes()
+                source = raw_source.decode("utf-8")
+                normalized = source.replace("\r\n", "\n").replace("\r", "\n")
+                rec["raw_source_bytes"] = len(raw_source)
+                rec["source_bytes"] = len(normalized.encode("utf-8"))
+                rec["computed_body_id"] = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+            except Exception as exc:
+                rec["errors"].append(f"solver_source read error: {exc}")
+            else:
+                if isinstance(screen, dict):
+                    if screen.get("source_bytes") != rec["source_bytes"]:
+                        rec["errors"].append(
+                            f"source_bytes mismatch: screen={screen.get('source_bytes')!r}, actual={rec['source_bytes']}"
+                        )
+                    if rec["body_id"] != rec["computed_body_id"]:
+                        rec["errors"].append(
+                            f"body_id mismatch: screen={rec['body_id']!r}, computed={rec['computed_body_id']!r}"
+                        )
         if paths["diagnostic"].exists():
             try:
                 diag = load_json(paths["diagnostic"])
@@ -516,7 +540,8 @@ def expression() -> dict:
         "valid_attempt_records": len(valid_records),
         "invalid_attempt_records": len(invalid_records),
         "duplicate_conflicts": duplicate_conflicts,
-        "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
+        "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/generated-source/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
+        "source_identity_policy": "The canonical body id is recomputed as SHA-256 of the generated solver source after newline normalization (CRLF and CR to LF), matching pilot_tool.body_id. The source-screen body_id and source_bytes must match the recomputed body id and newline-normalized source byte length; a missing source or mismatch is invalid.",
         "cells": cells,
         "excluded_crashed_bodies": excluded_crashed,
         "attempts": attempt_records,
@@ -597,6 +622,7 @@ def main() -> None:
             continue
         for rel in [
             Path("source-screen.json"),
+            Path("generated-solver.py"),
             Path("host-authoritative") / "diagnostic.json",
             Path("host-authoritative") / "evaluation.json",
         ]:

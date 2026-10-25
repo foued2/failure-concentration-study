@@ -163,10 +163,13 @@ reported 19 eligible executed bodies counts crashed bodies and is not the protoc
 count. Same-`k`, different-`C` pairs: **0**.
 
 The collector examined all 30 attempt directories under fail-closed validation. Nineteen had a
-valid source screen with a documented canonical body identifier, a complete 30-row diagnostic
-suite, and a complete 30-row evaluation suite. Eleven lacked one or more required host records
-and are counted as invalid attempts, not as zero-crash eligible bodies. The 19 validated bodies
-are the same 19 used above; no incomplete record was promoted to eligibility.
+valid source screen, the actual `generated-solver.py`, a complete 30-row diagnostic suite, and a
+complete 30-row evaluation suite. For each of those 19, the recorded `source_bytes` matched the
+newline-normalized source length, and the recorded canonical `body_id` matched the SHA-256 of
+that source recomputed with the frozen `pilot_tool.body_id` convention. Eleven attempts lacked
+one or more required host records and are counted as invalid attempts, not as zero-crash
+eligible bodies. The 19 validated bodies are the same 19 used above; no incomplete or mismatched
+record was promoted to eligibility.
 
 The existing post-hoc audit also found that the nine `k = 2` bodies share one whitespace bug and
 the three `k = 30` bodies are uniform crashes. Source diversity therefore overstates behavioral
@@ -215,7 +218,7 @@ not alter the observed support, but it bounds any future claim of genuine blindi
 
 | Rule | Result |
 | --- | --- |
-| 1. `BLOCKED_DATA_INTEGRITY` | Not triggered for the retained runs. Provenance, family mapping, and evaluation separation are documented and hash-checked. Every expression attempt file used for eligibility is individually hashed and validated; 19 of 30 attempts passed, and the 11 incomplete attempts were excluded rather than treated as valid. The v0.2 confirmatory rows are aggregate-only, so they were excluded from the auditable support rather than inferred. |
+| 1. `BLOCKED_DATA_INTEGRITY` | Not triggered for the retained runs. Provenance, family mapping, and evaluation separation are documented and hash-checked. Every expression source and attempt file used for eligibility is individually hashed and validated; each validated body identifier was recomputed from its generated solver source, 19 of 30 attempts passed, and the 11 incomplete attempts were excluded rather than treated as valid. The v0.2 confirmatory rows are aggregate-only, so they were excluded from the auditable support rather than inferred. |
 | 2. `INFEASIBLE_WITH_CURRENT_DATA` | **Triggered.** Zero eligible same-`k`, different-`C` pairs in every audited dataset. |
 | 3. `VARIATION_EXISTS_BUT_INSUFFICIENT` | Not reached; no qualifying pair exists. |
 | 4. `FEASIBLE_FOR_NEXT_DESIGN_STAGE_ONLY` | Not reached. |
@@ -243,9 +246,10 @@ producing independent partial implementations at the same `k` with different `C`
 ## 9. Artifacts
 
 - `inventory_data.json` — full machine-readable inventory. It includes raw and normalized
-  SHA-256 hashes for every v0.1 and v0.2 solver file, per-attempt hashes for every expression
-  source-screen and host diagnostic/evaluation record, replica mappings, provenance source
-  hashes, and excluded crash/invalid-attempt records.
+  SHA-256 hashes for every v0.1 and v0.2 solver file, per-attempt hashes and byte lengths for
+  every expression generated-solver source, source-screen, and host diagnostic/evaluation
+  record, recomputed source identities, replica mappings, provenance source hashes, and
+  excluded crash/invalid-attempt records.
 - `inventory_table.csv` — flat table of dataset x `k` x `C` support with explicit eligibility
   status; `C` is blank when undefined.
 - `collect_inventory.py` — read-only script used to produce the JSON/CSV. It derives eligibility,

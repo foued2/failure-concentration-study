@@ -923,7 +923,8 @@
       "valid_attempt_records": 19,
       "invalid_attempt_records": 11,
       "duplicate_conflicts": [],
-      "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
+      "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/generated-source/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
+      "source_identity_policy": "The canonical body id is recomputed as SHA-256 of the generated solver source after newline normalization (CRLF and CR to LF), matching pilot_tool.body_id. The source-screen body_id and source_bytes must match the recomputed body id and newline-normalized source byte length; a missing source or mismatch is invalid.",
       "cells": [
         {
           "k": 0,
@@ -1062,6 +1063,9 @@
             "source-screen.json: rejection reasons present"
           ],
           "body_id": "5fa589315cbb3646ce69901d5175b0b2e3dccca94523b4947ff3d7db58554afb",
+          "computed_body_id": "5fa589315cbb3646ce69901d5175b0b2e3dccca94523b4947ff3d7db58554afb",
+          "source_bytes": 1371,
+          "raw_source_bytes": 1413,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1071,6 +1075,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/source-screen.json",
               "sha256": "0b02fb477896738af314cb3737d48dd01efbe95e38768d67c5de511f15e394f7",
               "bytes": 185
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/generated-solver.py",
+              "sha256": "234e7e02c10403a8a7c78590e59d9e811c81edd47da73489e56191bd916d7018",
+              "bytes": 1413
             }
           }
         },
@@ -1079,6 +1088,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
+          "computed_body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
+          "source_bytes": 2541,
+          "raw_source_bytes": 2628,
           "k": 30,
           "C": 0.16666666666666666,
           "diag_crash": 30,
@@ -1088,6 +1100,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/source-screen.json",
               "sha256": "84ad2cc5daea6c9f671d5ef8b42456e7738aac71427467f3aebbec0f92f912d7",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/generated-solver.py",
+              "sha256": "44fd56041bebc6bb402cb23fa9ef09d1e2d0c661813397b304538caf7677f1b8",
+              "bytes": 2628
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/diagnostic.json",
@@ -1106,6 +1123,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "5c3c14c19b83db7523ee7afcb29217542c826272b59ae53f886db1663d6ffc83",
+          "computed_body_id": "5c3c14c19b83db7523ee7afcb29217542c826272b59ae53f886db1663d6ffc83",
+          "source_bytes": 1341,
+          "raw_source_bytes": 1381,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1115,6 +1135,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/source-screen.json",
               "sha256": "d6345e1ecf785959a0b16e244c51518ba3877b2e3089ea98cb6c0842be7d692f",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/generated-solver.py",
+              "sha256": "955484641304e899b33ad54614bb8e9119b876641e58d8b50a7e60636c5d7b4f",
+              "bytes": 1381
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/diagnostic.json",
@@ -1133,6 +1158,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
+          "computed_body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
+          "source_bytes": 1379,
+          "raw_source_bytes": 1420,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1142,6 +1170,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/source-screen.json",
               "sha256": "f2a7d475954fead8a2cf5a0e3ee2861f84684a1ae90fb7c96d13ac21057fcc7f",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/generated-solver.py",
+              "sha256": "d7137fc2129ebeb2b76d200eb85f958bbe75b57a985edf8c771b4252709725c4",
+              "bytes": 1420
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/diagnostic.json",
@@ -1165,6 +1198,9 @@
             "source-screen.json: rejection reasons present"
           ],
           "body_id": "a303011a46a32e08b9f8afb4d39520c285d477af571862cc8b30535f9d4b31a9",
+          "computed_body_id": "a303011a46a32e08b9f8afb4d39520c285d477af571862cc8b30535f9d4b31a9",
+          "source_bytes": 2344,
+          "raw_source_bytes": 2433,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1174,6 +1210,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/source-screen.json",
               "sha256": "f3aeaa9f5933c0df992646ffd1b3b5e6257784912d2d86746dab136227df1c04",
               "bytes": 185
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/generated-solver.py",
+              "sha256": "e077f296bb28d0564745b0b8544779716d32dfae2834bc4759d94534ec152df9",
+              "bytes": 2433
             }
           }
         },
@@ -1182,6 +1223,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
+          "computed_body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
+          "source_bytes": 1384,
+          "raw_source_bytes": 1425,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1191,6 +1235,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/source-screen.json",
               "sha256": "59fa0d38de5e16528812febc137fab66d9bd5c87ed5ad1b9a757b5317538a215",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/generated-solver.py",
+              "sha256": "ec42440f6a3ad39eb2819b49f7dc3f0951b30057cc50edb1493fb2cec5738023",
+              "bytes": 1425
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/diagnostic.json",
@@ -1209,6 +1258,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "computed_body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1218,6 +1270,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/source-screen.json",
               "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/generated-solver.py",
+              "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+              "bytes": 1383
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/diagnostic.json",
@@ -1236,6 +1293,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "0d9fb91e23d861d3bab05cf7345f173bd703decb646548490e77e307c789cd7b",
+          "computed_body_id": "0d9fb91e23d861d3bab05cf7345f173bd703decb646548490e77e307c789cd7b",
+          "source_bytes": 2361,
+          "raw_source_bytes": 2450,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1245,6 +1305,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/source-screen.json",
               "sha256": "4ce5e4f36d9ffdcba959ad89299c2b4dfb34b35c18b70bb65992683db58732c4",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/generated-solver.py",
+              "sha256": "86f35d58a6094547448292d2b7c0e0c868c97fcc16ff442e5f10c04a6c3c642d",
+              "bytes": 2450
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/diagnostic.json",
@@ -1263,6 +1328,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
+          "computed_body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
+          "source_bytes": 1432,
+          "raw_source_bytes": 1466,
           "k": 30,
           "C": 0.16666666666666666,
           "diag_crash": 30,
@@ -1272,6 +1340,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/source-screen.json",
               "sha256": "d207a071785f92a764228b29dcabcdae15ec2bb05e7fd0d5ceb68c10ca2e3554",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/generated-solver.py",
+              "sha256": "b3eb9ad3ed59e95e5476071ec931404bea3e330c483ae6a9e3e64aaf8e27e972",
+              "bytes": 1466
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/diagnostic.json",
@@ -1293,6 +1366,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/host-authoritative/evaluation.json"
           ],
           "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "computed_body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1302,6 +1378,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/source-screen.json",
               "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/generated-solver.py",
+              "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+              "bytes": 1383
             }
           }
         },
@@ -1310,6 +1391,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "computed_body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1319,6 +1403,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/source-screen.json",
               "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/generated-solver.py",
+              "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+              "bytes": 1383
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/diagnostic.json",
@@ -1337,6 +1426,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
+          "computed_body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
+          "source_bytes": 1312,
+          "raw_source_bytes": 1344,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1346,6 +1438,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/source-screen.json",
               "sha256": "aa015021646328ba9fad382435f22b03f404afe5a796e22b349706a5e46aa9d4",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/generated-solver.py",
+              "sha256": "a2ab4f5ccd317620f6458b50fe5e4e629c4ff0c47787fe9bd4fe1c7ff6ef065e",
+              "bytes": 1344
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/diagnostic.json",
@@ -1364,6 +1461,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "computed_body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "source_bytes": 1438,
+          "raw_source_bytes": 1480,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1373,6 +1473,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/source-screen.json",
               "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/generated-solver.py",
+              "sha256": "ce968ec05fc657584258cd657cdf7d72e5d8b2254bededc46a8cc4f86b438944",
+              "bytes": 1480
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/diagnostic.json",
@@ -1394,6 +1499,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/host-authoritative/evaluation.json"
           ],
           "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "computed_body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1403,6 +1511,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/source-screen.json",
               "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/generated-solver.py",
+              "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+              "bytes": 1383
             }
           }
         },
@@ -1411,6 +1524,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "f1f6a1e7e29c859ff917a3d0d0b8d3e8a8df662a5cbd9c63518bafbe5a66ff03",
+          "computed_body_id": "f1f6a1e7e29c859ff917a3d0d0b8d3e8a8df662a5cbd9c63518bafbe5a66ff03",
+          "source_bytes": 1364,
+          "raw_source_bytes": 1398,
           "k": 30,
           "C": 0.16666666666666666,
           "diag_crash": 30,
@@ -1420,6 +1536,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/source-screen.json",
               "sha256": "763361a0870a624d82f85316d7cc0e56235b2308d9a50637a9e03be19716d21d",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/generated-solver.py",
+              "sha256": "d5e374e3b6dc23c9603723379e07bf33439b71dc53793c5ef72ccb50d9b8c6dc",
+              "bytes": 1398
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/diagnostic.json",
@@ -1441,6 +1562,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/host-authoritative/evaluation.json"
           ],
           "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "computed_body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "source_bytes": 1438,
+          "raw_source_bytes": 1480,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1450,6 +1574,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/source-screen.json",
               "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/generated-solver.py",
+              "sha256": "ce968ec05fc657584258cd657cdf7d72e5d8b2254bededc46a8cc4f86b438944",
+              "bytes": 1480
             }
           }
         },
@@ -1458,6 +1587,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "5cd26bb56c06f6e6b005595e4f0531ebbfdea9db1d31af6c7b818d8b33657db1",
+          "computed_body_id": "5cd26bb56c06f6e6b005595e4f0531ebbfdea9db1d31af6c7b818d8b33657db1",
+          "source_bytes": 1309,
+          "raw_source_bytes": 1347,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1467,6 +1599,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/source-screen.json",
               "sha256": "3b3525ce76b011f67a83c7597bc62f4de1133bf5aa8932bc3523781369076dbf",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/generated-solver.py",
+              "sha256": "2fc7a0d30349a10386936e4a93cb76a44ad9340e6a3d5b33f8645312c6360c06",
+              "bytes": 1347
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/diagnostic.json",
@@ -1485,6 +1622,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "f57ad1c8bcc8836b88da50296c2daf905343735153ab598522e0a021187a96c5",
+          "computed_body_id": "f57ad1c8bcc8836b88da50296c2daf905343735153ab598522e0a021187a96c5",
+          "source_bytes": 1741,
+          "raw_source_bytes": 1797,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1494,6 +1634,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/source-screen.json",
               "sha256": "ce5a93d143aeae707e64a412dd951e54376e47d51b763acc834ca0e28c3e50a6",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/generated-solver.py",
+              "sha256": "6c879ab4a24ce4803a1ea4076261e12dafc93d93a828b9bbdc75e6881c1f0c76",
+              "bytes": 1797
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/diagnostic.json",
@@ -1512,10 +1657,14 @@
           "validation": "invalid",
           "errors": [
             "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/source-screen.json",
+            "missing solver_source: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/generated-solver.py",
             "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/host-authoritative/diagnostic.json",
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/host-authoritative/evaluation.json"
           ],
           "body_id": null,
+          "computed_body_id": null,
+          "source_bytes": null,
+          "raw_source_bytes": null,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1527,6 +1676,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "computed_body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "source_bytes": 1353,
+          "raw_source_bytes": 1393,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1536,6 +1688,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/source-screen.json",
               "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/generated-solver.py",
+              "sha256": "6cc86ff9ea1ee2484ed9f42d48e7a0a211a17fcdc18d616352eefe3199f21c98",
+              "bytes": 1393
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/diagnostic.json",
@@ -1554,6 +1711,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "f0a0d8aa310e84d941d7059cda2335d329bee3414188c04488731b093a59875e",
+          "computed_body_id": "f0a0d8aa310e84d941d7059cda2335d329bee3414188c04488731b093a59875e",
+          "source_bytes": 1337,
+          "raw_source_bytes": 1372,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1563,6 +1723,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/source-screen.json",
               "sha256": "b8140ffe6f694da598556616e95ed745b5b21e83c9f6472d45db991c18ed43cf",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/generated-solver.py",
+              "sha256": "12d4c06e4429549fe2b832452b507a038b019a0fcece43917acddd689e916a4f",
+              "bytes": 1372
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/diagnostic.json",
@@ -1581,6 +1746,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "f4f1ab638ff617c1c88b4cc2f0a11cc1c507c22eee56e521326d7ffe3a87eb42",
+          "computed_body_id": "f4f1ab638ff617c1c88b4cc2f0a11cc1c507c22eee56e521326d7ffe3a87eb42",
+          "source_bytes": 1458,
+          "raw_source_bytes": 1500,
           "k": 7,
           "C": 0.7142857142857143,
           "diag_crash": 7,
@@ -1590,6 +1758,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/source-screen.json",
               "sha256": "0315f3a2a2cea0627de20cfdbd5e3f8ed61e77d6863ca2189d18520a5c5d24e4",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/generated-solver.py",
+              "sha256": "495ee30748331bad5eec147b990cd5fbf14f379f32d788fd07d7a79c1505f8e1",
+              "bytes": 1500
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/diagnostic.json",
@@ -1611,6 +1784,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/host-authoritative/evaluation.json"
           ],
           "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "computed_body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "source_bytes": 1353,
+          "raw_source_bytes": 1393,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1620,6 +1796,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/source-screen.json",
               "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/generated-solver.py",
+              "sha256": "6cc86ff9ea1ee2484ed9f42d48e7a0a211a17fcdc18d616352eefe3199f21c98",
+              "bytes": 1393
             }
           }
         },
@@ -1631,6 +1812,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/host-authoritative/evaluation.json"
           ],
           "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "computed_body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1640,6 +1824,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/source-screen.json",
               "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/generated-solver.py",
+              "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+              "bytes": 1383
             }
           }
         },
@@ -1648,6 +1837,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
+          "computed_body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
+          "source_bytes": 1350,
+          "raw_source_bytes": 1390,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1657,6 +1849,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/source-screen.json",
               "sha256": "272aa31cf6e7d0684e518abd1b0df600232bd48e0c1b03dfc1f3c4b8becf982f",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/generated-solver.py",
+              "sha256": "e6a7e39c197403ff89d3a1e1b7d35385373bb28cf8d8b4b254abd5c3c9e45234",
+              "bytes": 1390
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/diagnostic.json",
@@ -1675,6 +1872,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "1873a80b916cc0e55e4095ee6b15897341ae346d7a69bf4d30b8f2f812d5bc46",
+          "computed_body_id": "1873a80b916cc0e55e4095ee6b15897341ae346d7a69bf4d30b8f2f812d5bc46",
+          "source_bytes": 1291,
+          "raw_source_bytes": 1328,
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -1684,6 +1884,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/source-screen.json",
               "sha256": "589fcbe8887bd1959cf06c708391f37a6158b4d33cccd15aaf20f17b288962ea",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/generated-solver.py",
+              "sha256": "994cd2acf1fc759259be56ca1fbc396671899d2aea34e3e1b5f3cdc4ae3bd5a3",
+              "bytes": 1328
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/diagnostic.json",
@@ -1705,6 +1910,9 @@
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/host-authoritative/evaluation.json"
           ],
           "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "computed_body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "source_bytes": 1343,
+          "raw_source_bytes": 1383,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1714,6 +1922,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/source-screen.json",
               "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/generated-solver.py",
+              "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+              "bytes": 1383
             }
           }
         },
@@ -1722,10 +1935,14 @@
           "validation": "invalid",
           "errors": [
             "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/source-screen.json",
+            "missing solver_source: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/generated-solver.py",
             "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/host-authoritative/diagnostic.json",
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/host-authoritative/evaluation.json"
           ],
           "body_id": null,
+          "computed_body_id": null,
+          "source_bytes": null,
+          "raw_source_bytes": null,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1737,10 +1954,14 @@
           "validation": "invalid",
           "errors": [
             "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/source-screen.json",
+            "missing solver_source: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/generated-solver.py",
             "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/host-authoritative/diagnostic.json",
             "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/host-authoritative/evaluation.json"
           ],
           "body_id": null,
+          "computed_body_id": null,
+          "source_bytes": null,
+          "raw_source_bytes": null,
           "k": null,
           "C": null,
           "diag_crash": null,
@@ -1752,6 +1973,9 @@
           "validation": "valid",
           "errors": [],
           "body_id": "798619031081fe9a7919537b66dabcfad5100ae8cba4ad23e73275737299e263",
+          "computed_body_id": "798619031081fe9a7919537b66dabcfad5100ae8cba4ad23e73275737299e263",
+          "source_bytes": 1514,
+          "raw_source_bytes": 1556,
           "k": 0,
           "C": null,
           "diag_crash": 0,
@@ -1761,6 +1985,11 @@
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/source-screen.json",
               "sha256": "0223f137ce3101cda381e0689c927e2c461415450b9eb8ba8834906d0bd812ad",
               "bytes": 151
+            },
+            "solver_source": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/generated-solver.py",
+              "sha256": "a07a5ba8ca9beea14269a89fe034ab8fc8421069992351984435c75a2c5cf0a0",
+              "bytes": 1556
             },
             "diagnostic": {
               "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/diagnostic.json",
@@ -1999,9 +2228,19 @@
       "bytes": 185
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/generated-solver.py",
+      "sha256": "234e7e02c10403a8a7c78590e59d9e811c81edd47da73489e56191bd916d7018",
+      "bytes": 1413
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/source-screen.json",
       "sha256": "84ad2cc5daea6c9f671d5ef8b42456e7738aac71427467f3aebbec0f92f912d7",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/generated-solver.py",
+      "sha256": "44fd56041bebc6bb402cb23fa9ef09d1e2d0c661813397b304538caf7677f1b8",
+      "bytes": 2628
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/diagnostic.json",
@@ -2019,6 +2258,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/generated-solver.py",
+      "sha256": "955484641304e899b33ad54614bb8e9119b876641e58d8b50a7e60636c5d7b4f",
+      "bytes": 1381
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/diagnostic.json",
       "sha256": "96501e74c3f639f19425c757b707a588c220392c3a7183496636a14ce29938d5",
       "bytes": 15561
@@ -2032,6 +2276,11 @@
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/source-screen.json",
       "sha256": "f2a7d475954fead8a2cf5a0e3ee2861f84684a1ae90fb7c96d13ac21057fcc7f",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/generated-solver.py",
+      "sha256": "d7137fc2129ebeb2b76d200eb85f958bbe75b57a985edf8c771b4252709725c4",
+      "bytes": 1420
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/diagnostic.json",
@@ -2049,9 +2298,19 @@
       "bytes": 185
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/generated-solver.py",
+      "sha256": "e077f296bb28d0564745b0b8544779716d32dfae2834bc4759d94534ec152df9",
+      "bytes": 2433
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/source-screen.json",
       "sha256": "59fa0d38de5e16528812febc137fab66d9bd5c87ed5ad1b9a757b5317538a215",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/generated-solver.py",
+      "sha256": "ec42440f6a3ad39eb2819b49f7dc3f0951b30057cc50edb1493fb2cec5738023",
+      "bytes": 1425
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/diagnostic.json",
@@ -2069,6 +2328,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/generated-solver.py",
+      "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+      "bytes": 1383
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/diagnostic.json",
       "sha256": "078dac5cd64c0e2e526bf777490765fed621a8c44740edf7bb20154634129a43",
       "bytes": 17121
@@ -2082,6 +2346,11 @@
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/source-screen.json",
       "sha256": "4ce5e4f36d9ffdcba959ad89299c2b4dfb34b35c18b70bb65992683db58732c4",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/generated-solver.py",
+      "sha256": "86f35d58a6094547448292d2b7c0e0c868c97fcc16ff442e5f10c04a6c3c642d",
+      "bytes": 2450
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/diagnostic.json",
@@ -2099,6 +2368,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/generated-solver.py",
+      "sha256": "b3eb9ad3ed59e95e5476071ec931404bea3e330c483ae6a9e3e64aaf8e27e972",
+      "bytes": 1466
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/diagnostic.json",
       "sha256": "71252dfaf2b9ca02ae9a776f32b6b068c6b1a414382040c6a25600732b06b688",
       "bytes": 43048
@@ -2114,9 +2388,19 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/generated-solver.py",
+      "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+      "bytes": 1383
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/source-screen.json",
       "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/generated-solver.py",
+      "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+      "bytes": 1383
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/diagnostic.json",
@@ -2134,6 +2418,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/generated-solver.py",
+      "sha256": "a2ab4f5ccd317620f6458b50fe5e4e629c4ff0c47787fe9bd4fe1c7ff6ef065e",
+      "bytes": 1344
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/diagnostic.json",
       "sha256": "57e6888176c8ac19ba7e36eb14187ef92eb9da2a53081d5018bda93f65d48add",
       "bytes": 17119
@@ -2147,6 +2436,11 @@
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/source-screen.json",
       "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/generated-solver.py",
+      "sha256": "ce968ec05fc657584258cd657cdf7d72e5d8b2254bededc46a8cc4f86b438944",
+      "bytes": 1480
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/diagnostic.json",
@@ -2164,9 +2458,19 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/generated-solver.py",
+      "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+      "bytes": 1383
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/source-screen.json",
       "sha256": "763361a0870a624d82f85316d7cc0e56235b2308d9a50637a9e03be19716d21d",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/generated-solver.py",
+      "sha256": "d5e374e3b6dc23c9603723379e07bf33439b71dc53793c5ef72ccb50d9b8c6dc",
+      "bytes": 1398
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/diagnostic.json",
@@ -2184,9 +2488,19 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/generated-solver.py",
+      "sha256": "ce968ec05fc657584258cd657cdf7d72e5d8b2254bededc46a8cc4f86b438944",
+      "bytes": 1480
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/source-screen.json",
       "sha256": "3b3525ce76b011f67a83c7597bc62f4de1133bf5aa8932bc3523781369076dbf",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/generated-solver.py",
+      "sha256": "2fc7a0d30349a10386936e4a93cb76a44ad9340e6a3d5b33f8645312c6360c06",
+      "bytes": 1347
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/diagnostic.json",
@@ -2204,6 +2518,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/generated-solver.py",
+      "sha256": "6c879ab4a24ce4803a1ea4076261e12dafc93d93a828b9bbdc75e6881c1f0c76",
+      "bytes": 1797
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/diagnostic.json",
       "sha256": "e156b216f6efc9f07be0dee2332f7c5b3545005be530ac00635c5d6e5380067b",
       "bytes": 15562
@@ -2217,6 +2536,11 @@
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/source-screen.json",
       "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/generated-solver.py",
+      "sha256": "6cc86ff9ea1ee2484ed9f42d48e7a0a211a17fcdc18d616352eefe3199f21c98",
+      "bytes": 1393
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/diagnostic.json",
@@ -2234,6 +2558,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/generated-solver.py",
+      "sha256": "12d4c06e4429549fe2b832452b507a038b019a0fcece43917acddd689e916a4f",
+      "bytes": 1372
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/diagnostic.json",
       "sha256": "40a0972b552ad4b71a011d9b7b823110e728f6298b646b0f3aa3bd6e94b6a35b",
       "bytes": 15562
@@ -2247,6 +2576,11 @@
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/source-screen.json",
       "sha256": "0315f3a2a2cea0627de20cfdbd5e3f8ed61e77d6863ca2189d18520a5c5d24e4",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/generated-solver.py",
+      "sha256": "495ee30748331bad5eec147b990cd5fbf14f379f32d788fd07d7a79c1505f8e1",
+      "bytes": 1500
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/diagnostic.json",
@@ -2264,14 +2598,29 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/generated-solver.py",
+      "sha256": "6cc86ff9ea1ee2484ed9f42d48e7a0a211a17fcdc18d616352eefe3199f21c98",
+      "bytes": 1393
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/source-screen.json",
       "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/generated-solver.py",
+      "sha256": "681f482a0b475ef2dad5a5dc65a9009796ad082d4d4f5283c35ac3294f2853db",
+      "bytes": 1383
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/source-screen.json",
       "sha256": "272aa31cf6e7d0684e518abd1b0df600232bd48e0c1b03dfc1f3c4b8becf982f",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/generated-solver.py",
+      "sha256": "e6a7e39c197403ff89d3a1e1b7d35385373bb28cf8d8b4b254abd5c3c9e45234",
+      "bytes": 1390
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/diagnostic.json",
@@ -2289,6 +2638,11 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/generated-solver.py",
+      "sha256": "994cd2acf1fc759259be56ca1fbc396671899d2aea34e3e1b5f3cdc4ae3bd5a3",
+      "bytes": 1328
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/diagnostic.json",
       "sha256": "03c376242a3e77f4793bdd263e355ea2e0c50526be43520c4ca4043ee21de0a7",
       "bytes": 17121
@@ -2304,9 +2658,19 @@
       "bytes": 151
     },
     {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/generated-solver.py",
+      "sha256": "9cde182b974cf8c0cf3be7d44ec91e24d02bc75535e02ba5628dc60417d06f36",
+      "bytes": 1383
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/source-screen.json",
       "sha256": "0223f137ce3101cda381e0689c927e2c461415450b9eb8ba8834906d0bd812ad",
       "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/generated-solver.py",
+      "sha256": "a07a5ba8ca9beea14269a89fe034ab8fc8421069992351984435c75a2c5cf0a0",
+      "bytes": 1556
     },
     {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/diagnostic.json",
