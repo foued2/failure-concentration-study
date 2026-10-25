@@ -162,6 +162,12 @@ valid but cannot support a concentration contrast, so `C` is undefined for them.
 reported 19 eligible executed bodies counts crashed bodies and is not the protocol-eligible
 count. Same-`k`, different-`C` pairs: **0**.
 
+The collector examined all 30 attempt directories under fail-closed validation. Nineteen had a
+valid source screen with a documented canonical body identifier, a complete 30-row diagnostic
+suite, and a complete 30-row evaluation suite. Eleven lacked one or more required host records
+and are counted as invalid attempts, not as zero-crash eligible bodies. The 19 validated bodies
+are the same 19 used above; no incomplete record was promoted to eligibility.
+
 The existing post-hoc audit also found that the nine `k = 2` bodies share one whitespace bug and
 the three `k = 30` bodies are uniform crashes. Source diversity therefore overstates behavioral
 diversity in this pilot.
@@ -172,6 +178,7 @@ diversity in this pilot.
 | --- | --- |
 | `k < 2` | 16 v0.1 bodies; 10 Codex bodies; 25 Gemini SSSP bodies; 6 expression bodies |
 | Crash under the frozen protocol | 13 expression bodies with `k >= 2` (9 at `k = 2`, 1 at `k = 7`, 3 at `k = 30`) |
+| Incomplete expression attempt evidence | 11 attempt directories missing required source-screen or host diagnostic/evaluation records; not eligible bodies |
 | Markedly invalid artifact | 2 expression syntax rejects (not executed) |
 | Replica / non-independent files | 80 v0.2 files beyond the first copy of each base body |
 | No per-row auditable support | 1,200 v0.2 confirmatory pairs (aggregate-only persistence) |
@@ -208,7 +215,7 @@ not alter the observed support, but it bounds any future claim of genuine blindi
 
 | Rule | Result |
 | --- | --- |
-| 1. `BLOCKED_DATA_INTEGRITY` | Not triggered for the retained runs. Provenance, family mapping, and evaluation separation are documented and hash-checked. The v0.2 confirmatory rows are aggregate-only, so they were excluded from the auditable support rather than inferred. |
+| 1. `BLOCKED_DATA_INTEGRITY` | Not triggered for the retained runs. Provenance, family mapping, and evaluation separation are documented and hash-checked. Every expression attempt file used for eligibility is individually hashed and validated; 19 of 30 attempts passed, and the 11 incomplete attempts were excluded rather than treated as valid. The v0.2 confirmatory rows are aggregate-only, so they were excluded from the auditable support rather than inferred. |
 | 2. `INFEASIBLE_WITH_CURRENT_DATA` | **Triggered.** Zero eligible same-`k`, different-`C` pairs in every audited dataset. |
 | 3. `VARIATION_EXISTS_BUT_INSUFFICIENT` | Not reached; no qualifying pair exists. |
 | 4. `FEASIBLE_FOR_NEXT_DESIGN_STAGE_ONLY` | Not reached. |
@@ -235,14 +242,16 @@ producing independent partial implementations at the same `k` with different `C`
 
 ## 9. Artifacts
 
-- `inventory_data.json` — full machine-readable inventory, including per-file SHA-256 hashes for
-  every v0.1 and v0.2 solver file, replica mappings, provenance source hashes, and excluded crash
-  records.
+- `inventory_data.json` — full machine-readable inventory. It includes raw and normalized
+  SHA-256 hashes for every v0.1 and v0.2 solver file, per-attempt hashes for every expression
+  source-screen and host diagnostic/evaluation record, replica mappings, provenance source
+  hashes, and excluded crash/invalid-attempt records.
 - `inventory_table.csv` — flat table of dataset x `k` x `C` support with explicit eligibility
   status; `C` is blank when undefined.
 - `collect_inventory.py` — read-only script used to produce the JSON/CSV. It derives eligibility,
-  crash exclusions, and fixed-`k` contrast counts from the retained records. It reads metadata
-  and hashes only; it never imports or executes solver code.
+  crash exclusions, and fixed-`k` contrast counts from the retained records. It fails closed on
+  missing or incomplete expression evidence rather than substituting an empty evaluation. It
+  reads metadata and hashes only; it never imports or executes solver code.
 
 Key input hashes:
 

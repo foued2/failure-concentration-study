@@ -273,6 +273,251 @@
           "solver_119.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
           "solver_120.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe"
         },
+        "raw_sha256_by_file": {
+          "solver_001.py": "0b0c1b7d35b2526814cdec61c9d44a5fab181d69289676c2cb4aee2c34e96014",
+          "solver_002.py": "2d57932a75214934a8aa2928c9c4a353f7a4923a899ca7d049db030e47b21f77",
+          "solver_003.py": "d3923269740215bbc7cf1779554df1b69deea96c02607db6cf0aeb141de32c4f",
+          "solver_004.py": "441afc4cf9fce35f4344879ed094598ec076800cc534815392a5c510345ae1cc",
+          "solver_005.py": "02b71f4e6a05b537514c6bcd1e69aa735ee4f3cd9670a83158e9e87442c431fc",
+          "solver_006.py": "e5877817b8b9600a1f3d0c09ffab1b4f6ea9674c5f56e3fd4807768cba1dd0f6",
+          "solver_007.py": "d84bc3849df5291772140427543d0fdf1b422f37fa63861131ec5574f5ca05fe",
+          "solver_008.py": "dd4418de5477a6a47a420853a6d729df5f9c0bc852840e9380d7ab22bc96db6c",
+          "solver_009.py": "85ac68bf7303d1d13ca9fa55014fb538045e689d19523e9155b900df0047968e",
+          "solver_010.py": "c41b6d1c07cd9febcb40daafe6ae5b95c7f3fe879e824b1b867700175d7551b5",
+          "solver_011.py": "940de37c9b9162298f136f8e2b9284c39019da7e882cec826475d77744ba6747",
+          "solver_012.py": "5c3efa060916f157932192d00a73bf67b57a5c6a600ad1a10ef048a78efeb922",
+          "solver_013.py": "8b6e0364396bf922ca9fc35c5a95e2a51f3df956fc9899c45006330d5e5e3886",
+          "solver_014.py": "09a0660722faa2e4901305f8ec3c6c6e0ea4614d51c10816c8076c80f16f6437",
+          "solver_015.py": "b5f2f0390025b50b715324c699b71ce104ac3b7edbea24248dcf1c6d1b3d5efb",
+          "solver_016.py": "7265b68198bc5ba7231e00f384376b12c962238f2d4b682da0c9aa07565bedc3",
+          "solver_017.py": "3e2f0e7ea039a13f6072f179efca47e4645d06a9a92c2e4c2dda77b18efde5ff",
+          "solver_018.py": "50a53921a1c74e878ebe410f50aa2f9ed7e9f8a60f8f3f41978007b3e4274eee",
+          "solver_019.py": "9b9fb720ef578a24e17040be197ce99fc979b8f28bd843a829816e096e4c502f",
+          "solver_020.py": "a44f619e9c815e160154f5d6943da14b8d0e990573faf5a37373c02654498130",
+          "solver_021.py": "de6640ba771dc0d4c9b347225334c96a8d463a46ab1b42c06e17b2d303669f42",
+          "solver_022.py": "ed29ff1d5bc2c7899a431cfc653b836853f134b0f4b1233e6cb6bacbc29f44f1",
+          "solver_023.py": "24073b7255dcdab8a803e6648dc80f30c7cc03b1c8fd61bb946b3e0bf55f9dc8",
+          "solver_024.py": "0692c09c7f225e6806aac16900bd9efc77f6c28ca7c64398c18f940c7a663a15",
+          "solver_025.py": "2660e8a8c4ddd97e8a09c953f48517d508435a49752ee12d93ea6becd8e1a526",
+          "solver_026.py": "ecd614e66f8626bc8c19493bf5edb2ee93a1659b5206a17e4a2231f58023a2e9",
+          "solver_027.py": "3a7fd97262d9fa32a2516de5e8a030988bd830e31c673618e4fdfea6625043b1",
+          "solver_028.py": "fec3b908cf02fc6745b2fffbffd6bd32d303b63d3cb9ab813b900de074d82e9c",
+          "solver_029.py": "11a1b07988b1982b242150c3bb5f02fb7646041caca39c22a368fde38e6ef453",
+          "solver_030.py": "153f0d6fd0a79a36f10f68d2b43c00b4c0e98683889587d2d4e034e68c511f54",
+          "solver_031.py": "0c97fa898964ded30a28a8ced885b9f299b93eee4409e8291a800cee1e5ea2e1",
+          "solver_032.py": "59fc1fc82daf3550b7ee20dcb762260ebc105d284c908409a1f6cd46246b58d7",
+          "solver_033.py": "71096f82c3852c90bd5ad4e8f3d1fa95886f252430ac3c20683fc4f28eb51eb6",
+          "solver_034.py": "4df48ab7487735cd46719199cc225ab34a8b00390960f09c74de0799481298e1",
+          "solver_035.py": "4fdccabf341d0152f08df87d332cc76957601780fe5545be927815141aa982f1",
+          "solver_036.py": "56a950342bbdf8c22328b3c18bf54903c8fecf32214cc64117d9ded6eee43cf2",
+          "solver_037.py": "22a1c8df7ab13b96a0f8e3625153f4498413df0de24cba120239daa7f32db88f",
+          "solver_038.py": "d472261967072ab19d301da1f4c0b4d7a5c5768d9258d17919753584c3692956",
+          "solver_039.py": "fa41789de15e9683135c1c25e1ea4f8b30bc6ae84b3eba9a5254a423c8d40f7e",
+          "solver_040.py": "7f254f308bc1a9a30b6f11d2f53f38d00f5337a9447597c5d648d374a7e32acc",
+          "solver_041.py": "224fb75f4ea14d9e36862d4c920bbdf0657963e332675925894fe7d5f121fcf2",
+          "solver_042.py": "7af38f8ce641557facd52b86720b3485f1aa6bdafcd858d10738075c4477392e",
+          "solver_043.py": "5ce83034e074068a24c0d082748832034155952edfc29e547d3c52f1cca2693c",
+          "solver_044.py": "37e9c078d2a081b3152f6ffb7cff7144e60af5216a61df67b32edf6ac35694f0",
+          "solver_045.py": "94fb8f0f0e0aec85bbc28474e96b716d3dd03af812d965f340808087a6faf9bc",
+          "solver_046.py": "0b65531c4132895fc2d5d5920e429d62bc623da2e5f484b02d5324e65ae179b4",
+          "solver_047.py": "436c93d165afe2375f5cb8831256b9c95ed21d33a5c350cd0767e1dbead9ac33",
+          "solver_048.py": "f22c1693756ed3eba4642e0db49b800a4c4c3f75a7de6f0974bdd040de317bec",
+          "solver_049.py": "7dad503ecaefd4ca6e9c259c8df06a02eb402a10ad242dc7e90a6313287bfbb3",
+          "solver_050.py": "d601a28e9821ccf96c92e8d16a599089bdb1dcd156732a397019a3400efb836f",
+          "solver_051.py": "25f393f01ee45771e0b547bef68af4f11f3f7f77efc8e6c5e1d60c217ff6a1ac",
+          "solver_052.py": "f11c8241b38f7d83d9e9df439c4296f2efcbb40f5a68c28b69ac5ce17386d164",
+          "solver_053.py": "126e064abfa145244e67626732d95b5d419881f1390cefdca50bce21037e5f7e",
+          "solver_054.py": "0954dd447f6b695a8041aacb156d290cebcedb743845feaa3dc745e7ffbf03c2",
+          "solver_055.py": "9fc01e80dc0e26989cecc4b1acaa0293f0f37628db8fa9837e57351f67cdb1c1",
+          "solver_056.py": "db48b413fa520acc868bca1caf45252b566278247eb06d13ecfbcd7d809a3f52",
+          "solver_057.py": "60337081643f1dd54414ac230abd6d2583d91aaedeb8e7ff96e372aff0bc8dc6",
+          "solver_058.py": "dba5e9eec3733bee46e2abde31cb62f5e8fce9e7ecf596c7528e05f2045bc766",
+          "solver_059.py": "a02dee4e21b243003f53e5f3d81e050697c3e8766bf2d22af28bda74b07d661d",
+          "solver_060.py": "103af28de469ebaf54eacbd1a780b513baada8f38a873afaddf41ff4c1359279",
+          "solver_061.py": "f38d9bd2d9f69097bca9e229a322613592e8ad71a1e45f8e5d9f7cf96a2c6976",
+          "solver_062.py": "98466d3e46f3179ec788366cee9b1d3f817d609402d63be81abe83043467e398",
+          "solver_063.py": "f48835e3303b702d7098898617168afad1b086509de68e0ae43168d36260cf3d",
+          "solver_064.py": "e647b50bf43304c9837851c5d88758fe242fff58e2e2d033d0b264dc475fa5c3",
+          "solver_065.py": "4f63aff672444049327807b2d0adbe7c4838981c5c3ff2a68e2f9d8fa377daab",
+          "solver_066.py": "259e0f8c89dac1d9292976843c7482162a97740c3bc7a8a51ac0c7af74b918ba",
+          "solver_067.py": "57ab4eedd343d84020b6add3d2c5119f2007afb352ce1d385c67787dbc440978",
+          "solver_068.py": "c89aa40639533a7783a478c34003320d9d509107d3e00612390ff1d9f92a2f83",
+          "solver_069.py": "5dfeefd9dcddb8b2ebc5edc93f2925edef875ef047651da0ab020773f97b811d",
+          "solver_070.py": "091a08bc39c9136557aaf1bf30f724006ed4329e60937db36ab7ef8786554063",
+          "solver_071.py": "83ae0c650f36ac05d2d2a2b767db379915ecebee3db0228f3ebffd540846021a",
+          "solver_072.py": "f813d2d545614290df3e47361c28ebd0b967a0d1d6637f28640333606927a9af",
+          "solver_073.py": "44e4a7b5098ffc9b486663e9a464aaf714d61b4fece9ee62df0fb4dab7f9eded",
+          "solver_074.py": "5cdb00fa109bead5fe77eed0a19f696dcc9ae8693618af49d2a558ce189609a9",
+          "solver_075.py": "5d47613ce66460a40be78a39ded37d69d11400e8fbcd40dcb16eb7af5ea15226",
+          "solver_076.py": "af7021a4f4cef91c3098c3fb2fb6c291dadb66fc162b28bd2d8cac1ef2fa25fa",
+          "solver_077.py": "b4ebef39f40b353cba59053cb60db1e81fa9a9dd07e0fbe2a6392ece59b7dc25",
+          "solver_078.py": "befed2a517c6e0c6548c9a1a768035e8cd85b0169b6792f60949845164d9fabc",
+          "solver_079.py": "afcdece99c748fad6b7436aef464e4bb7e3babcf280e78c3d0635edb8b276888",
+          "solver_080.py": "7b5d775db83414eadc414b3479f8bb6de5e70bac036835d1c599d12c5a4bd251",
+          "solver_081.py": "9e4d0bcd2e42ca7f3d3522db4962a5d2ad9551601ff61a02bb0d991a690747d3",
+          "solver_082.py": "9704acd6640f22ce8d7b8a8fe8ae1ee4fc8b16339e3d6bb7bfa96fec0bdc9c5b",
+          "solver_083.py": "81ed5cbefdf36211878dd302e2f8809ae7d3f4ab767599c27013150b1bb21672",
+          "solver_084.py": "efe29aebaaf0eda7def03fbc89b520b196232902ffbb08301ae656bc4bdd7827",
+          "solver_085.py": "da20ab8c8ccde1ffd9c752c883f9ffe5f263ce0abee7dbe2270097b27802dd7e",
+          "solver_086.py": "5d24b29bc835f4cc8ace2c51e0b387634320db930f173bea1550acc3994cace6",
+          "solver_087.py": "1c7ffc24a602fb9382300fb64d2cb3e614806f382e320942267fdee842689ccc",
+          "solver_088.py": "9289a6d82ce3bd19f58fabec31a50207012f6a40cb78237897ca599bbeb1f997",
+          "solver_089.py": "5cb260e46bd8eb187f28f4c5fd0ad873de277790ce5fbba1b0bacc6d97b65fea",
+          "solver_090.py": "395606efd9dcc2f923cb01882f5e798c5af94797290cf258f08c49bc5058dd03",
+          "solver_091.py": "5824fffc9e32be9161195401015bb89b162db6d02b56e4272bc3050d8b30549b",
+          "solver_092.py": "a6d8579668abaa8c75ab013b77148457b5dc8cce04e931236d6047db2110775a",
+          "solver_093.py": "1455f29875a1c5bf5c796bf4a33f812e6ddddcb1d3be50b108c566ae7e57d4df",
+          "solver_094.py": "876dd40f68a8b890f359fe811a9de9135cd4b574e48f7f0a6f12d83282ee1ec2",
+          "solver_095.py": "0956e2fd367da6f54c438a9bda5f9952ee4ec12f59754db7aba2e2ea87f0efed",
+          "solver_096.py": "469a3d0b2bdcb4b910edf21dbd78703ce41770e70c98fbcb166c54ee8c74dbe6",
+          "solver_097.py": "315d0e38ce86702acc9ec136720e891005ccb404a85408c8145a52abbaf85dac",
+          "solver_098.py": "d5019af102b9966d4574fdc9f3a6cf95956af188ccd283a5c299d05cb9df1755",
+          "solver_099.py": "c59988e6790f109d3f087c76cad0910e8f50c79a6fa63357de0f72cd116ede2c",
+          "solver_100.py": "9656c7eaa4f12ddb4e6b8f182838d12cbcca9c5b3d41b8cbdb9697bb4ba3ad37",
+          "solver_101.py": "a7fe23002371aa6bd35906988b0074a2c7ac99105d6d1c3d7a01137f9f8f5c9b",
+          "solver_102.py": "b01eaf736d7ac17229035955e6a9922f671011e7e64039723102414ec2cfd078",
+          "solver_103.py": "74dde964955a051766d8c9eac7cc2db788a0f90c14246f77569942f5991eaf3e",
+          "solver_104.py": "9df6befce491fc335b564c5c556931e17206214408252186c2a758e235176235",
+          "solver_105.py": "14b7b1aa7353fc873a5310f7edeaa9c82a6e1491d9493a968e820bb2514ed2e8",
+          "solver_106.py": "3d2f6d65c8ae1ce962e153aac739572af81b12cf71084e964ee758157e0a9740",
+          "solver_107.py": "d2b0b91c0e8024de55628d8e31b9bad2086f775df43d2e9649b3dfd86db8afee",
+          "solver_108.py": "6dfeb19ca3c786aae515caf5d94f48efe030e43d4bf3591259bdf56e80c32942",
+          "solver_109.py": "ac7b8633d76bf3fe80a5682ce73098cc8732af3a5269c14bc36c0a47a8470956",
+          "solver_110.py": "2f202dd06691caf5616cd89c10122c813332338b8d6aa2517b3351a44979c2ee",
+          "solver_111.py": "67e7e73e7317438900f338e8c87dab8c300bcc9e88e34d8665415da1c42ab6b8",
+          "solver_112.py": "87ea77e71e0abe913914ddd5cee73756d90ef39b14e1f6ea4f813d68402c2f5b",
+          "solver_113.py": "3d3dc59ea06f23ea702bb90f6e1fc4c17572b0cef4b162fe0fb86d30e09e2f49",
+          "solver_114.py": "2845d1bebfc0b7de6201a3b50ba64678018091566c6b802cb164368ba21ffa14",
+          "solver_115.py": "d8c36e081ee9e544b3fb026c154d312e7acf836d58d25659cddfc7af65c4db66",
+          "solver_116.py": "93ea37033b34e834914e6284ac463534b0731da44b7b8646291ddccaee432baa",
+          "solver_117.py": "948c9f08c9474e2a887da246766867fef0887876b1a952d4f4328c748ea981e4",
+          "solver_118.py": "42fb2de1ce0418746bd7a392a226c97c2585db749ee70cbcee5b02a6340549ac",
+          "solver_119.py": "dc80a6ed8713a569178fae76644fd1a1e5e2b960b769c1084f7dfaa75676f55b",
+          "solver_120.py": "6b6e7a05d07b51a2e4b95fcc99222b5069315ea08e6ab58e6cb04a5081386afa"
+        },
+        "base_by_file": {
+          "solver_001": 1,
+          "solver_002": 1,
+          "solver_003": 1,
+          "solver_004": 2,
+          "solver_005": 2,
+          "solver_006": 2,
+          "solver_007": 3,
+          "solver_008": 3,
+          "solver_009": 3,
+          "solver_010": 4,
+          "solver_011": 4,
+          "solver_012": 4,
+          "solver_013": 5,
+          "solver_014": 5,
+          "solver_015": 5,
+          "solver_016": 6,
+          "solver_017": 6,
+          "solver_018": 6,
+          "solver_019": 7,
+          "solver_020": 7,
+          "solver_021": 7,
+          "solver_022": 8,
+          "solver_023": 8,
+          "solver_024": 8,
+          "solver_025": 9,
+          "solver_026": 9,
+          "solver_027": 9,
+          "solver_028": 10,
+          "solver_029": 10,
+          "solver_030": 10,
+          "solver_031": 11,
+          "solver_032": 11,
+          "solver_033": 11,
+          "solver_034": 12,
+          "solver_035": 12,
+          "solver_036": 12,
+          "solver_037": 13,
+          "solver_038": 13,
+          "solver_039": 13,
+          "solver_040": 14,
+          "solver_041": 14,
+          "solver_042": 14,
+          "solver_043": 15,
+          "solver_044": 15,
+          "solver_045": 15,
+          "solver_046": 16,
+          "solver_047": 16,
+          "solver_048": 16,
+          "solver_049": 17,
+          "solver_050": 17,
+          "solver_051": 17,
+          "solver_052": 18,
+          "solver_053": 18,
+          "solver_054": 18,
+          "solver_055": 19,
+          "solver_056": 19,
+          "solver_057": 19,
+          "solver_058": 20,
+          "solver_059": 20,
+          "solver_060": 20,
+          "solver_061": 21,
+          "solver_062": 21,
+          "solver_063": 21,
+          "solver_064": 22,
+          "solver_065": 22,
+          "solver_066": 22,
+          "solver_067": 23,
+          "solver_068": 23,
+          "solver_069": 23,
+          "solver_070": 24,
+          "solver_071": 24,
+          "solver_072": 24,
+          "solver_073": 25,
+          "solver_074": 25,
+          "solver_075": 25,
+          "solver_076": 26,
+          "solver_077": 26,
+          "solver_078": 26,
+          "solver_079": 27,
+          "solver_080": 27,
+          "solver_081": 27,
+          "solver_082": 28,
+          "solver_083": 28,
+          "solver_084": 28,
+          "solver_085": 29,
+          "solver_086": 29,
+          "solver_087": 29,
+          "solver_088": 30,
+          "solver_089": 30,
+          "solver_090": 30,
+          "solver_091": 31,
+          "solver_092": 31,
+          "solver_093": 31,
+          "solver_094": 32,
+          "solver_095": 32,
+          "solver_096": 32,
+          "solver_097": 33,
+          "solver_098": 33,
+          "solver_099": 33,
+          "solver_100": 34,
+          "solver_101": 34,
+          "solver_102": 34,
+          "solver_103": 35,
+          "solver_104": 35,
+          "solver_105": 35,
+          "solver_106": 36,
+          "solver_107": 36,
+          "solver_108": 36,
+          "solver_109": 37,
+          "solver_110": 37,
+          "solver_111": 37,
+          "solver_112": 38,
+          "solver_113": 38,
+          "solver_114": 38,
+          "solver_115": 39,
+          "solver_116": 39,
+          "solver_117": 39,
+          "solver_118": 40,
+          "solver_119": 40,
+          "solver_120": 40
+        },
+        "unheadered_files": [],
         "replica_groups": {
           "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
             "solver_022.py",
@@ -476,8 +721,10 @@
           ]
         },
         "replica_files_beyond_first": 80,
-        "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854"
+        "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854",
+        "raw_aggregate_sha256_of_sorted_sha256_lines": "7aaf193112c18514b0224f9e6c54fcd99e6a41b498bd34b6c551802ce31448f5"
       },
+      "invalid_pack_rows": [],
       "pilot_eligible_rows": 90,
       "pilot_distinct_body_files": 30,
       "pilot_distinct_base_bodies": 10,
@@ -672,7 +919,11 @@
       "eligible_bodies_k_ge_2": 0,
       "eligible_executed_bodies": 19,
       "state": "REPEATED_K_BUT_NO_C_SEPARATION",
-      "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures.",
+      "attempt_directories": 30,
+      "valid_attempt_records": 19,
+      "invalid_attempt_records": 11,
+      "duplicate_conflicts": [],
+      "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
       "cells": [
         {
           "k": 0,
@@ -709,56 +960,7 @@
       ],
       "excluded_crashed_bodies": [
         {
-          "body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
           "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
-          "k": 2,
-          "C": 1.0,
-          "diag_crash": 2,
-          "eval_crash": 2
-        },
-        {
-          "body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
           "k": 2,
           "C": 1.0,
           "diag_crash": 2,
@@ -772,6 +974,55 @@
           "eval_crash": 2
         },
         {
+          "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
           "body_id": "f4f1ab638ff617c1c88b4cc2f0a11cc1c507c22eee56e521326d7ffe3a87eb42",
           "k": 7,
           "C": 0.7142857142857143,
@@ -779,14 +1030,14 @@
           "eval_crash": 7
         },
         {
-          "body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
+          "body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
           "k": 30,
           "C": 0.16666666666666666,
           "diag_crash": 30,
           "eval_crash": 30
         },
         {
-          "body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
+          "body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
           "k": 30,
           "C": 0.16666666666666666,
           "diag_crash": 30,
@@ -800,13 +1051,737 @@
           "eval_crash": 30
         }
       ],
+      "attempts": [
+        {
+          "attempt": "attempt-0001",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/host-authoritative/evaluation.json",
+            "source-screen.json: not accepted",
+            "source-screen.json: rejection reasons present"
+          ],
+          "body_id": "5fa589315cbb3646ce69901d5175b0b2e3dccca94523b4947ff3d7db58554afb",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/source-screen.json",
+              "sha256": "0b02fb477896738af314cb3737d48dd01efbe95e38768d67c5de511f15e394f7",
+              "bytes": 185
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0002",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/source-screen.json",
+              "sha256": "84ad2cc5daea6c9f671d5ef8b42456e7738aac71427467f3aebbec0f92f912d7",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/diagnostic.json",
+              "sha256": "6f3ebd03b89779ba5e178f730fcf67f3fa12c6bb3ebaad824b4280add03061d1",
+              "bytes": 31363
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/evaluation.json",
+              "sha256": "46816842e7685683bc9732e4514bafa7d8fbca76970cdfeffc61f547b98e22fc",
+              "bytes": 31180
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0003",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "5c3c14c19b83db7523ee7afcb29217542c826272b59ae53f886db1663d6ffc83",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/source-screen.json",
+              "sha256": "d6345e1ecf785959a0b16e244c51518ba3877b2e3089ea98cb6c0842be7d692f",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/diagnostic.json",
+              "sha256": "96501e74c3f639f19425c757b707a588c220392c3a7183496636a14ce29938d5",
+              "bytes": 15561
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/evaluation.json",
+              "sha256": "b2610e8f37a5d2781bce133a4a6d11c12b65df402d7f4f65f04c67ba4ada907f",
+              "bytes": 15397
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0004",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/source-screen.json",
+              "sha256": "f2a7d475954fead8a2cf5a0e3ee2861f84684a1ae90fb7c96d13ac21057fcc7f",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/diagnostic.json",
+              "sha256": "cfb0ae0a1606cf8cf76e50ef0cc24ab7b4569a4f3c4bec637c1478f20b26dda9",
+              "bytes": 17121
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/evaluation.json",
+              "sha256": "6b462be52daaf78b6c7fcd0562eb0555721e81a50dd0e06caa52316ce268f1a1",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0005",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/host-authoritative/evaluation.json",
+            "source-screen.json: not accepted",
+            "source-screen.json: rejection reasons present"
+          ],
+          "body_id": "a303011a46a32e08b9f8afb4d39520c285d477af571862cc8b30535f9d4b31a9",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/source-screen.json",
+              "sha256": "f3aeaa9f5933c0df992646ffd1b3b5e6257784912d2d86746dab136227df1c04",
+              "bytes": 185
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0006",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/source-screen.json",
+              "sha256": "59fa0d38de5e16528812febc137fab66d9bd5c87ed5ad1b9a757b5317538a215",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/diagnostic.json",
+              "sha256": "297148922a617d9e5776ee02d73da95331afffc622c361c06944e16ac9401770",
+              "bytes": 17120
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/evaluation.json",
+              "sha256": "e2b143332b83f4218143446b484001667df4f0287d6b7110aa538f55cb07c456",
+              "bytes": 16972
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0007",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/source-screen.json",
+              "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/diagnostic.json",
+              "sha256": "078dac5cd64c0e2e526bf777490765fed621a8c44740edf7bb20154634129a43",
+              "bytes": 17121
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/evaluation.json",
+              "sha256": "2d7877d497af4c0ebe36c2d95411e951b1826f67ff71ada51fa8b765fd9df36a",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0008",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "0d9fb91e23d861d3bab05cf7345f173bd703decb646548490e77e307c789cd7b",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/source-screen.json",
+              "sha256": "4ce5e4f36d9ffdcba959ad89299c2b4dfb34b35c18b70bb65992683db58732c4",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/diagnostic.json",
+              "sha256": "c0601edcf6bbe5bea253c71989f40b17e339cb4f9abbceb56ff314f3dd1bff9d",
+              "bytes": 15561
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/evaluation.json",
+              "sha256": "7374887e7f6456052336e0eddca3de5b01fb923ba3102471313a148a877f16aa",
+              "bytes": 15397
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0009",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/source-screen.json",
+              "sha256": "d207a071785f92a764228b29dcabcdae15ec2bb05e7fd0d5ceb68c10ca2e3554",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/diagnostic.json",
+              "sha256": "71252dfaf2b9ca02ae9a776f32b6b068c6b1a414382040c6a25600732b06b688",
+              "bytes": 43048
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/evaluation.json",
+              "sha256": "b95062043c8eb62d08ec24bdea608a47ce4596a0cc9bb1901b7fc8a3b2d31b75",
+              "bytes": 42867
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0010",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/host-authoritative/evaluation.json"
+          ],
+          "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/source-screen.json",
+              "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0011",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/source-screen.json",
+              "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/diagnostic.json",
+              "sha256": "7652f5491a1b34e09a4a2c568117fcb7fd93660757827564fbe4a1dbf501c42e",
+              "bytes": 17120
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/evaluation.json",
+              "sha256": "5308228370c66698848fde1dafb4671ab2b77fe33589a96dc61a7e52f562eb59",
+              "bytes": 16969
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0012",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/source-screen.json",
+              "sha256": "aa015021646328ba9fad382435f22b03f404afe5a796e22b349706a5e46aa9d4",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/diagnostic.json",
+              "sha256": "57e6888176c8ac19ba7e36eb14187ef92eb9da2a53081d5018bda93f65d48add",
+              "bytes": 17119
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/evaluation.json",
+              "sha256": "2875af6fc80ef73028e0fa3d23fc577b43934bc570b8611db56ed441619430e4",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0013",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/source-screen.json",
+              "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/diagnostic.json",
+              "sha256": "00fc35f5a74158b7226fd1e202dfaf1c475b885b70d22631adcc5216b31c5619",
+              "bytes": 17120
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/evaluation.json",
+              "sha256": "0b80d9c1ab1ffef2d02e619ba98a2206b591fd63364c704f8124d30325a91ed2",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0014",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/host-authoritative/evaluation.json"
+          ],
+          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/source-screen.json",
+              "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0015",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "f1f6a1e7e29c859ff917a3d0d0b8d3e8a8df662a5cbd9c63518bafbe5a66ff03",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/source-screen.json",
+              "sha256": "763361a0870a624d82f85316d7cc0e56235b2308d9a50637a9e03be19716d21d",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/diagnostic.json",
+              "sha256": "d33de5ebd29418f373637128b9955a1ad2f4d5dbc689fbcd2c72c32dbcafa9d9",
+              "bytes": 41562
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/evaluation.json",
+              "sha256": "3d27b662d8f5ec3e9fefa9a8f4c94abd6abfe897042da8a4794a83af918b867a",
+              "bytes": 41379
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0016",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/host-authoritative/evaluation.json"
+          ],
+          "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/source-screen.json",
+              "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0017",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "5cd26bb56c06f6e6b005595e4f0531ebbfdea9db1d31af6c7b818d8b33657db1",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/source-screen.json",
+              "sha256": "3b3525ce76b011f67a83c7597bc62f4de1133bf5aa8932bc3523781369076dbf",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/diagnostic.json",
+              "sha256": "c34508436651ec2ebefca33ddd1835de6134180a5b8629afa0034346ef317512",
+              "bytes": 15562
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/evaluation.json",
+              "sha256": "55246742ab3679cea2257ccd797242522e227049f85a1deca0f9398458415101",
+              "bytes": 15396
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0018",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "f57ad1c8bcc8836b88da50296c2daf905343735153ab598522e0a021187a96c5",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/source-screen.json",
+              "sha256": "ce5a93d143aeae707e64a412dd951e54376e47d51b763acc834ca0e28c3e50a6",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/diagnostic.json",
+              "sha256": "e156b216f6efc9f07be0dee2332f7c5b3545005be530ac00635c5d6e5380067b",
+              "bytes": 15562
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/evaluation.json",
+              "sha256": "4aff199cb1843e2aaefbb9fbf3750e0367acd1c9c34cb74a09e244ce9da13db9",
+              "bytes": 15396
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0019",
+          "validation": "invalid",
+          "errors": [
+            "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/source-screen.json",
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0019/host-authoritative/evaluation.json"
+          ],
+          "body_id": null,
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {}
+        },
+        {
+          "attempt": "attempt-0020",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/source-screen.json",
+              "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/diagnostic.json",
+              "sha256": "2409f8c40eb97c9abfa7994668e35f64ca96e91c1e2c442a962a69df5f7f2af6",
+              "bytes": 17120
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/evaluation.json",
+              "sha256": "8701d2fde022bd2c8bb79fa02a93ecfab04fb074b933b4de7a3ddeb7274f5382",
+              "bytes": 16972
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0021",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "f0a0d8aa310e84d941d7059cda2335d329bee3414188c04488731b093a59875e",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/source-screen.json",
+              "sha256": "b8140ffe6f694da598556616e95ed745b5b21e83c9f6472d45db991c18ed43cf",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/diagnostic.json",
+              "sha256": "40a0972b552ad4b71a011d9b7b823110e728f6298b646b0f3aa3bd6e94b6a35b",
+              "bytes": 15562
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/evaluation.json",
+              "sha256": "08809fc67886ceae9e2dec71973c9830ded9b892a38ade359cc930996630496b",
+              "bytes": 15397
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0022",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "f4f1ab638ff617c1c88b4cc2f0a11cc1c507c22eee56e521326d7ffe3a87eb42",
+          "k": 7,
+          "C": 0.7142857142857143,
+          "diag_crash": 7,
+          "eval_crash": 7,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/source-screen.json",
+              "sha256": "0315f3a2a2cea0627de20cfdbd5e3f8ed61e77d6863ca2189d18520a5c5d24e4",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/diagnostic.json",
+              "sha256": "6a0510228f1a67fc622c4d42eee01f157278f80cc5feaa7e6a88eed620575259",
+              "bytes": 24042
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/evaluation.json",
+              "sha256": "b52578d7648d56fbe66b4191e0eabc215525bb16c230d458319762e96a5d3daf",
+              "bytes": 23878
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0023",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/host-authoritative/evaluation.json"
+          ],
+          "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/source-screen.json",
+              "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0024",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/host-authoritative/evaluation.json"
+          ],
+          "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/source-screen.json",
+              "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0025",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/source-screen.json",
+              "sha256": "272aa31cf6e7d0684e518abd1b0df600232bd48e0c1b03dfc1f3c4b8becf982f",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/diagnostic.json",
+              "sha256": "46ac8aa5a6281aefb5d782c6b9c9a985146a210a913b552a2a9b7aa6b64c5ce2",
+              "bytes": 17120
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/evaluation.json",
+              "sha256": "2c3ea5c8d8f8a4022b5cd775ab50981d0acb22976e9a22e9c4111b008dabda46",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0026",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "1873a80b916cc0e55e4095ee6b15897341ae346d7a69bf4d30b8f2f812d5bc46",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/source-screen.json",
+              "sha256": "589fcbe8887bd1959cf06c708391f37a6158b4d33cccd15aaf20f17b288962ea",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/diagnostic.json",
+              "sha256": "03c376242a3e77f4793bdd263e355ea2e0c50526be43520c4ca4043ee21de0a7",
+              "bytes": 17121
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/evaluation.json",
+              "sha256": "d580ffd6f2d28dceb09136c25bc9d72aba498914d94aeedc886d38f8de7c4072",
+              "bytes": 16971
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0027",
+          "validation": "invalid",
+          "errors": [
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/host-authoritative/evaluation.json"
+          ],
+          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/source-screen.json",
+              "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+              "bytes": 151
+            }
+          }
+        },
+        {
+          "attempt": "attempt-0028",
+          "validation": "invalid",
+          "errors": [
+            "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/source-screen.json",
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0028/host-authoritative/evaluation.json"
+          ],
+          "body_id": null,
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {}
+        },
+        {
+          "attempt": "attempt-0029",
+          "validation": "invalid",
+          "errors": [
+            "missing source_screen: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/source-screen.json",
+            "missing diagnostic: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/host-authoritative/diagnostic.json",
+            "missing evaluation: next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0029/host-authoritative/evaluation.json"
+          ],
+          "body_id": null,
+          "k": null,
+          "C": null,
+          "diag_crash": null,
+          "eval_crash": null,
+          "files": {}
+        },
+        {
+          "attempt": "attempt-0030",
+          "validation": "valid",
+          "errors": [],
+          "body_id": "798619031081fe9a7919537b66dabcfad5100ae8cba4ad23e73275737299e263",
+          "k": 0,
+          "C": null,
+          "diag_crash": 0,
+          "eval_crash": 0,
+          "files": {
+            "source_screen": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/source-screen.json",
+              "sha256": "0223f137ce3101cda381e0689c927e2c461415450b9eb8ba8834906d0bd812ad",
+              "bytes": 151
+            },
+            "diagnostic": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/diagnostic.json",
+              "sha256": "12695ffcf65eea7237c70f620690b84cba32681778963f3d776011e8fba433e5",
+              "bytes": 15561
+            },
+            "evaluation": {
+              "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/evaluation.json",
+              "sha256": "03f43febbfb681cb5c3eb6653c58d981260a35a65a953d6f46413b1ab00b5598",
+              "bytes": 15397
+            }
+          }
+        }
+      ],
       "contrast": {
         "same_k_different_C_pairs": 0,
         "same_k_different_C_level_pairs": 0,
         "by_k": {}
       },
       "same_k_different_C_pairs": 0,
-      "notes": "All 13 bodies with k>=2 crash and are excluded. The six k=0 bodies are valid but cannot support a concentration contrast. The nine k=2 bodies each crash on two diagnostic and two evaluation inputs; the singleton k=7 body has seven crashes each; the three k=30 bodies crash on all 30 diagnostic and evaluation inputs."
+      "notes": "All 13 bodies with k>=2 crash and are excluded. The 6 k=0 bodies are valid but cannot support a concentration contrast. 11 attempt directories lack complete validated evidence and are not eligible bodies. The nine k=2 bodies each crash on two diagnostic and two evaluation inputs; the singleton k=7 body has seven crashes each; the three k=30 bodies crash on all 30 diagnostic and evaluation inputs."
     }
   ],
   "excluded_categories": [
@@ -1017,6 +1992,331 @@
       "path": "next-task/07_EXPRESSION_PILOT_AUDIT_2026-10-22.md",
       "sha256": "224eec222fc5f6cf87cbd210fc9062d0de829c2886bf2e760b94b996b6fd709e",
       "bytes": 14769
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0001/source-screen.json",
+      "sha256": "0b02fb477896738af314cb3737d48dd01efbe95e38768d67c5de511f15e394f7",
+      "bytes": 185
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/source-screen.json",
+      "sha256": "84ad2cc5daea6c9f671d5ef8b42456e7738aac71427467f3aebbec0f92f912d7",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/diagnostic.json",
+      "sha256": "6f3ebd03b89779ba5e178f730fcf67f3fa12c6bb3ebaad824b4280add03061d1",
+      "bytes": 31363
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0002/host-authoritative/evaluation.json",
+      "sha256": "46816842e7685683bc9732e4514bafa7d8fbca76970cdfeffc61f547b98e22fc",
+      "bytes": 31180
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/source-screen.json",
+      "sha256": "d6345e1ecf785959a0b16e244c51518ba3877b2e3089ea98cb6c0842be7d692f",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/diagnostic.json",
+      "sha256": "96501e74c3f639f19425c757b707a588c220392c3a7183496636a14ce29938d5",
+      "bytes": 15561
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0003/host-authoritative/evaluation.json",
+      "sha256": "b2610e8f37a5d2781bce133a4a6d11c12b65df402d7f4f65f04c67ba4ada907f",
+      "bytes": 15397
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/source-screen.json",
+      "sha256": "f2a7d475954fead8a2cf5a0e3ee2861f84684a1ae90fb7c96d13ac21057fcc7f",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/diagnostic.json",
+      "sha256": "cfb0ae0a1606cf8cf76e50ef0cc24ab7b4569a4f3c4bec637c1478f20b26dda9",
+      "bytes": 17121
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0004/host-authoritative/evaluation.json",
+      "sha256": "6b462be52daaf78b6c7fcd0562eb0555721e81a50dd0e06caa52316ce268f1a1",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0005/source-screen.json",
+      "sha256": "f3aeaa9f5933c0df992646ffd1b3b5e6257784912d2d86746dab136227df1c04",
+      "bytes": 185
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/source-screen.json",
+      "sha256": "59fa0d38de5e16528812febc137fab66d9bd5c87ed5ad1b9a757b5317538a215",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/diagnostic.json",
+      "sha256": "297148922a617d9e5776ee02d73da95331afffc622c361c06944e16ac9401770",
+      "bytes": 17120
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0006/host-authoritative/evaluation.json",
+      "sha256": "e2b143332b83f4218143446b484001667df4f0287d6b7110aa538f55cb07c456",
+      "bytes": 16972
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/source-screen.json",
+      "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/diagnostic.json",
+      "sha256": "078dac5cd64c0e2e526bf777490765fed621a8c44740edf7bb20154634129a43",
+      "bytes": 17121
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0007/host-authoritative/evaluation.json",
+      "sha256": "2d7877d497af4c0ebe36c2d95411e951b1826f67ff71ada51fa8b765fd9df36a",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/source-screen.json",
+      "sha256": "4ce5e4f36d9ffdcba959ad89299c2b4dfb34b35c18b70bb65992683db58732c4",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/diagnostic.json",
+      "sha256": "c0601edcf6bbe5bea253c71989f40b17e339cb4f9abbceb56ff314f3dd1bff9d",
+      "bytes": 15561
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0008/host-authoritative/evaluation.json",
+      "sha256": "7374887e7f6456052336e0eddca3de5b01fb923ba3102471313a148a877f16aa",
+      "bytes": 15397
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/source-screen.json",
+      "sha256": "d207a071785f92a764228b29dcabcdae15ec2bb05e7fd0d5ceb68c10ca2e3554",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/diagnostic.json",
+      "sha256": "71252dfaf2b9ca02ae9a776f32b6b068c6b1a414382040c6a25600732b06b688",
+      "bytes": 43048
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0009/host-authoritative/evaluation.json",
+      "sha256": "b95062043c8eb62d08ec24bdea608a47ce4596a0cc9bb1901b7fc8a3b2d31b75",
+      "bytes": 42867
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0010/source-screen.json",
+      "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/source-screen.json",
+      "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/diagnostic.json",
+      "sha256": "7652f5491a1b34e09a4a2c568117fcb7fd93660757827564fbe4a1dbf501c42e",
+      "bytes": 17120
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0011/host-authoritative/evaluation.json",
+      "sha256": "5308228370c66698848fde1dafb4671ab2b77fe33589a96dc61a7e52f562eb59",
+      "bytes": 16969
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/source-screen.json",
+      "sha256": "aa015021646328ba9fad382435f22b03f404afe5a796e22b349706a5e46aa9d4",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/diagnostic.json",
+      "sha256": "57e6888176c8ac19ba7e36eb14187ef92eb9da2a53081d5018bda93f65d48add",
+      "bytes": 17119
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0012/host-authoritative/evaluation.json",
+      "sha256": "2875af6fc80ef73028e0fa3d23fc577b43934bc570b8611db56ed441619430e4",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/source-screen.json",
+      "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/diagnostic.json",
+      "sha256": "00fc35f5a74158b7226fd1e202dfaf1c475b885b70d22631adcc5216b31c5619",
+      "bytes": 17120
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0013/host-authoritative/evaluation.json",
+      "sha256": "0b80d9c1ab1ffef2d02e619ba98a2206b591fd63364c704f8124d30325a91ed2",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0014/source-screen.json",
+      "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/source-screen.json",
+      "sha256": "763361a0870a624d82f85316d7cc0e56235b2308d9a50637a9e03be19716d21d",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/diagnostic.json",
+      "sha256": "d33de5ebd29418f373637128b9955a1ad2f4d5dbc689fbcd2c72c32dbcafa9d9",
+      "bytes": 41562
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0015/host-authoritative/evaluation.json",
+      "sha256": "3d27b662d8f5ec3e9fefa9a8f4c94abd6abfe897042da8a4794a83af918b867a",
+      "bytes": 41379
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0016/source-screen.json",
+      "sha256": "d2d6cb615e76338b928e341b8f65fa7258b30d26ed6cd059311606db2594eae3",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/source-screen.json",
+      "sha256": "3b3525ce76b011f67a83c7597bc62f4de1133bf5aa8932bc3523781369076dbf",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/diagnostic.json",
+      "sha256": "c34508436651ec2ebefca33ddd1835de6134180a5b8629afa0034346ef317512",
+      "bytes": 15562
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0017/host-authoritative/evaluation.json",
+      "sha256": "55246742ab3679cea2257ccd797242522e227049f85a1deca0f9398458415101",
+      "bytes": 15396
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/source-screen.json",
+      "sha256": "ce5a93d143aeae707e64a412dd951e54376e47d51b763acc834ca0e28c3e50a6",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/diagnostic.json",
+      "sha256": "e156b216f6efc9f07be0dee2332f7c5b3545005be530ac00635c5d6e5380067b",
+      "bytes": 15562
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0018/host-authoritative/evaluation.json",
+      "sha256": "4aff199cb1843e2aaefbb9fbf3750e0367acd1c9c34cb74a09e244ce9da13db9",
+      "bytes": 15396
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/source-screen.json",
+      "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/diagnostic.json",
+      "sha256": "2409f8c40eb97c9abfa7994668e35f64ca96e91c1e2c442a962a69df5f7f2af6",
+      "bytes": 17120
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0020/host-authoritative/evaluation.json",
+      "sha256": "8701d2fde022bd2c8bb79fa02a93ecfab04fb074b933b4de7a3ddeb7274f5382",
+      "bytes": 16972
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/source-screen.json",
+      "sha256": "b8140ffe6f694da598556616e95ed745b5b21e83c9f6472d45db991c18ed43cf",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/diagnostic.json",
+      "sha256": "40a0972b552ad4b71a011d9b7b823110e728f6298b646b0f3aa3bd6e94b6a35b",
+      "bytes": 15562
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0021/host-authoritative/evaluation.json",
+      "sha256": "08809fc67886ceae9e2dec71973c9830ded9b892a38ade359cc930996630496b",
+      "bytes": 15397
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/source-screen.json",
+      "sha256": "0315f3a2a2cea0627de20cfdbd5e3f8ed61e77d6863ca2189d18520a5c5d24e4",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/diagnostic.json",
+      "sha256": "6a0510228f1a67fc622c4d42eee01f157278f80cc5feaa7e6a88eed620575259",
+      "bytes": 24042
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0022/host-authoritative/evaluation.json",
+      "sha256": "b52578d7648d56fbe66b4191e0eabc215525bb16c230d458319762e96a5d3daf",
+      "bytes": 23878
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0023/source-screen.json",
+      "sha256": "09fbf34ef8025dfef7836d7073f22c9618ffcc5817f986858ffba7c6281d8e20",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0024/source-screen.json",
+      "sha256": "d77859dffc0c28c373f4b626768da5b12725a628a1b9670c5e27901fa90d299b",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/source-screen.json",
+      "sha256": "272aa31cf6e7d0684e518abd1b0df600232bd48e0c1b03dfc1f3c4b8becf982f",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/diagnostic.json",
+      "sha256": "46ac8aa5a6281aefb5d782c6b9c9a985146a210a913b552a2a9b7aa6b64c5ce2",
+      "bytes": 17120
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0025/host-authoritative/evaluation.json",
+      "sha256": "2c3ea5c8d8f8a4022b5cd775ab50981d0acb22976e9a22e9c4111b008dabda46",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/source-screen.json",
+      "sha256": "589fcbe8887bd1959cf06c708391f37a6158b4d33cccd15aaf20f17b288962ea",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/diagnostic.json",
+      "sha256": "03c376242a3e77f4793bdd263e355ea2e0c50526be43520c4ca4043ee21de0a7",
+      "bytes": 17121
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0026/host-authoritative/evaluation.json",
+      "sha256": "d580ffd6f2d28dceb09136c25bc9d72aba498914d94aeedc886d38f8de7c4072",
+      "bytes": 16971
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0027/source-screen.json",
+      "sha256": "b1ec236e867b8b3091ea5e16e3b54d9ca1ba386542368cf5b846fe333f72e798",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/source-screen.json",
+      "sha256": "0223f137ce3101cda381e0689c927e2c461415450b9eb8ba8834906d0bd812ad",
+      "bytes": 151
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/diagnostic.json",
+      "sha256": "12695ffcf65eea7237c70f620690b84cba32681778963f3d776011e8fba433e5",
+      "bytes": 15561
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts/attempt-0030/host-authoritative/evaluation.json",
+      "sha256": "03f43febbfb681cb5c3eb6653c58d981260a35a65a953d6f46413b1ab00b5598",
+      "bytes": 15397
     }
   ],
   "pack_hashes": {
@@ -1046,9 +2346,76 @@
         "solver_19.py": "0242f9264b9c17cb9318268048c50067d0ea141288ada144ec5c2480886d9de1",
         "solver_20.py": "d516132f3caaa0046cdfd3a18b8c48e55ec804291297ad9542393dfe2af46328"
       },
+      "raw_sha256_by_file": {
+        "solver_01.py": "0cbb98bc5e758484b9538ea02731282a7ee74a4da61b11401f80ee0f1aac31d2",
+        "solver_02.py": "3d2b0a532ecfb6af78c2426834e0f523139b4add878ce91410977138fcd7c49e",
+        "solver_03.py": "acc60a65ed7cf1f9cb55bcc1edc8771277a2e028720e580d21b2f7cc760757b3",
+        "solver_04.py": "6941f411fb4b076140d2d83f91ca2ff23f5c98dd905ca1ea8ff7f5b65c46c58b",
+        "solver_05.py": "8932cbf89f466ce3f22db3f4a034521af0f53e933b81afd3b8dba34fd51359cb",
+        "solver_06.py": "18c3ff5fa4892931db91f60d3aa4b882e41a17bbb62529a95574f5fce68b01e9",
+        "solver_07.py": "be78955d09452534f9849eabc446fb88c665299a380d9a2649e233fb6e0e4567",
+        "solver_08.py": "0a4e93f049fab86b4fac2d25df7cdc0206404f3825759ddf766f355c7f17f916",
+        "solver_09.py": "0c8f393cb7c97266b8be321d2db42a2ed6e37a381125e6b80e7ac58f51208cac",
+        "solver_10.py": "3fa90324e4c8ad7d69b0adfbe62d790c0527b3f8982dd16079d55cf3775c9077",
+        "solver_11.py": "48f5dfddc69ee72a378725c742c4344b6ba8c4f774e46879ad73b1ad516e99ea",
+        "solver_12.py": "83bf5b7d6dec9e61e4341381f33226fe4730067ca6c55698730c11135f6b3ce0",
+        "solver_13.py": "fdeb3c361bee5ba2d3d954903ba8b9769f494303a977dd151900a188ada9e165",
+        "solver_14.py": "e977619619c361e37bcfd45d40e36a0363edaf10aacda7c0d5842fef58b90931",
+        "solver_15.py": "32217753136a942089e47a3492e7ad8a64974172927f2e109b1c4b2759065fec",
+        "solver_16.py": "33547ceb576ff6c693e2d58e4b10af834fd099dfe883780b6575ec0406336b28",
+        "solver_17.py": "59fb7d69c2473af4e76b288d65f9fc3e92f98111328368760b96cc114eebfb1e",
+        "solver_18.py": "aafff55ce5d256c26a139c89a36bc314a0f4bfc2b17914d174a4aa0438bead12",
+        "solver_19.py": "9936f5f2ea592e5d2a3d2f2c047b074056f7dd2ba73d67bea9b18c2d8c2701e9",
+        "solver_20.py": "aaa362b64e906e533b8eb007a8b0db46a918693e43deae5f5f3bf475b0786461"
+      },
+      "base_by_file": {
+        "solver_01": null,
+        "solver_02": null,
+        "solver_03": null,
+        "solver_04": null,
+        "solver_05": null,
+        "solver_06": null,
+        "solver_07": null,
+        "solver_08": null,
+        "solver_09": null,
+        "solver_10": null,
+        "solver_11": null,
+        "solver_12": null,
+        "solver_13": null,
+        "solver_14": null,
+        "solver_15": null,
+        "solver_16": null,
+        "solver_17": null,
+        "solver_18": null,
+        "solver_19": null,
+        "solver_20": null
+      },
+      "unheadered_files": [
+        "solver_01.py",
+        "solver_02.py",
+        "solver_03.py",
+        "solver_04.py",
+        "solver_05.py",
+        "solver_06.py",
+        "solver_07.py",
+        "solver_08.py",
+        "solver_09.py",
+        "solver_10.py",
+        "solver_11.py",
+        "solver_12.py",
+        "solver_13.py",
+        "solver_14.py",
+        "solver_15.py",
+        "solver_16.py",
+        "solver_17.py",
+        "solver_18.py",
+        "solver_19.py",
+        "solver_20.py"
+      ],
       "replica_groups": {},
       "replica_files_beyond_first": 0,
-      "aggregate_sha256_of_sorted_sha256_lines": "93faed17a8e815ba1f5128a00142478a94184849df0ee9f5ed0de078d17c929a"
+      "aggregate_sha256_of_sorted_sha256_lines": "93faed17a8e815ba1f5128a00142478a94184849df0ee9f5ed0de078d17c929a",
+      "raw_aggregate_sha256_of_sorted_sha256_lines": "a5d2149f159c3476d9aa38bb83637970e957c0952227e6dc4f6885e7b0162b48"
     },
     "v0.2": {
       "files": 120,
@@ -1176,6 +2543,251 @@
         "solver_119.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
         "solver_120.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe"
       },
+      "raw_sha256_by_file": {
+        "solver_001.py": "0b0c1b7d35b2526814cdec61c9d44a5fab181d69289676c2cb4aee2c34e96014",
+        "solver_002.py": "2d57932a75214934a8aa2928c9c4a353f7a4923a899ca7d049db030e47b21f77",
+        "solver_003.py": "d3923269740215bbc7cf1779554df1b69deea96c02607db6cf0aeb141de32c4f",
+        "solver_004.py": "441afc4cf9fce35f4344879ed094598ec076800cc534815392a5c510345ae1cc",
+        "solver_005.py": "02b71f4e6a05b537514c6bcd1e69aa735ee4f3cd9670a83158e9e87442c431fc",
+        "solver_006.py": "e5877817b8b9600a1f3d0c09ffab1b4f6ea9674c5f56e3fd4807768cba1dd0f6",
+        "solver_007.py": "d84bc3849df5291772140427543d0fdf1b422f37fa63861131ec5574f5ca05fe",
+        "solver_008.py": "dd4418de5477a6a47a420853a6d729df5f9c0bc852840e9380d7ab22bc96db6c",
+        "solver_009.py": "85ac68bf7303d1d13ca9fa55014fb538045e689d19523e9155b900df0047968e",
+        "solver_010.py": "c41b6d1c07cd9febcb40daafe6ae5b95c7f3fe879e824b1b867700175d7551b5",
+        "solver_011.py": "940de37c9b9162298f136f8e2b9284c39019da7e882cec826475d77744ba6747",
+        "solver_012.py": "5c3efa060916f157932192d00a73bf67b57a5c6a600ad1a10ef048a78efeb922",
+        "solver_013.py": "8b6e0364396bf922ca9fc35c5a95e2a51f3df956fc9899c45006330d5e5e3886",
+        "solver_014.py": "09a0660722faa2e4901305f8ec3c6c6e0ea4614d51c10816c8076c80f16f6437",
+        "solver_015.py": "b5f2f0390025b50b715324c699b71ce104ac3b7edbea24248dcf1c6d1b3d5efb",
+        "solver_016.py": "7265b68198bc5ba7231e00f384376b12c962238f2d4b682da0c9aa07565bedc3",
+        "solver_017.py": "3e2f0e7ea039a13f6072f179efca47e4645d06a9a92c2e4c2dda77b18efde5ff",
+        "solver_018.py": "50a53921a1c74e878ebe410f50aa2f9ed7e9f8a60f8f3f41978007b3e4274eee",
+        "solver_019.py": "9b9fb720ef578a24e17040be197ce99fc979b8f28bd843a829816e096e4c502f",
+        "solver_020.py": "a44f619e9c815e160154f5d6943da14b8d0e990573faf5a37373c02654498130",
+        "solver_021.py": "de6640ba771dc0d4c9b347225334c96a8d463a46ab1b42c06e17b2d303669f42",
+        "solver_022.py": "ed29ff1d5bc2c7899a431cfc653b836853f134b0f4b1233e6cb6bacbc29f44f1",
+        "solver_023.py": "24073b7255dcdab8a803e6648dc80f30c7cc03b1c8fd61bb946b3e0bf55f9dc8",
+        "solver_024.py": "0692c09c7f225e6806aac16900bd9efc77f6c28ca7c64398c18f940c7a663a15",
+        "solver_025.py": "2660e8a8c4ddd97e8a09c953f48517d508435a49752ee12d93ea6becd8e1a526",
+        "solver_026.py": "ecd614e66f8626bc8c19493bf5edb2ee93a1659b5206a17e4a2231f58023a2e9",
+        "solver_027.py": "3a7fd97262d9fa32a2516de5e8a030988bd830e31c673618e4fdfea6625043b1",
+        "solver_028.py": "fec3b908cf02fc6745b2fffbffd6bd32d303b63d3cb9ab813b900de074d82e9c",
+        "solver_029.py": "11a1b07988b1982b242150c3bb5f02fb7646041caca39c22a368fde38e6ef453",
+        "solver_030.py": "153f0d6fd0a79a36f10f68d2b43c00b4c0e98683889587d2d4e034e68c511f54",
+        "solver_031.py": "0c97fa898964ded30a28a8ced885b9f299b93eee4409e8291a800cee1e5ea2e1",
+        "solver_032.py": "59fc1fc82daf3550b7ee20dcb762260ebc105d284c908409a1f6cd46246b58d7",
+        "solver_033.py": "71096f82c3852c90bd5ad4e8f3d1fa95886f252430ac3c20683fc4f28eb51eb6",
+        "solver_034.py": "4df48ab7487735cd46719199cc225ab34a8b00390960f09c74de0799481298e1",
+        "solver_035.py": "4fdccabf341d0152f08df87d332cc76957601780fe5545be927815141aa982f1",
+        "solver_036.py": "56a950342bbdf8c22328b3c18bf54903c8fecf32214cc64117d9ded6eee43cf2",
+        "solver_037.py": "22a1c8df7ab13b96a0f8e3625153f4498413df0de24cba120239daa7f32db88f",
+        "solver_038.py": "d472261967072ab19d301da1f4c0b4d7a5c5768d9258d17919753584c3692956",
+        "solver_039.py": "fa41789de15e9683135c1c25e1ea4f8b30bc6ae84b3eba9a5254a423c8d40f7e",
+        "solver_040.py": "7f254f308bc1a9a30b6f11d2f53f38d00f5337a9447597c5d648d374a7e32acc",
+        "solver_041.py": "224fb75f4ea14d9e36862d4c920bbdf0657963e332675925894fe7d5f121fcf2",
+        "solver_042.py": "7af38f8ce641557facd52b86720b3485f1aa6bdafcd858d10738075c4477392e",
+        "solver_043.py": "5ce83034e074068a24c0d082748832034155952edfc29e547d3c52f1cca2693c",
+        "solver_044.py": "37e9c078d2a081b3152f6ffb7cff7144e60af5216a61df67b32edf6ac35694f0",
+        "solver_045.py": "94fb8f0f0e0aec85bbc28474e96b716d3dd03af812d965f340808087a6faf9bc",
+        "solver_046.py": "0b65531c4132895fc2d5d5920e429d62bc623da2e5f484b02d5324e65ae179b4",
+        "solver_047.py": "436c93d165afe2375f5cb8831256b9c95ed21d33a5c350cd0767e1dbead9ac33",
+        "solver_048.py": "f22c1693756ed3eba4642e0db49b800a4c4c3f75a7de6f0974bdd040de317bec",
+        "solver_049.py": "7dad503ecaefd4ca6e9c259c8df06a02eb402a10ad242dc7e90a6313287bfbb3",
+        "solver_050.py": "d601a28e9821ccf96c92e8d16a599089bdb1dcd156732a397019a3400efb836f",
+        "solver_051.py": "25f393f01ee45771e0b547bef68af4f11f3f7f77efc8e6c5e1d60c217ff6a1ac",
+        "solver_052.py": "f11c8241b38f7d83d9e9df439c4296f2efcbb40f5a68c28b69ac5ce17386d164",
+        "solver_053.py": "126e064abfa145244e67626732d95b5d419881f1390cefdca50bce21037e5f7e",
+        "solver_054.py": "0954dd447f6b695a8041aacb156d290cebcedb743845feaa3dc745e7ffbf03c2",
+        "solver_055.py": "9fc01e80dc0e26989cecc4b1acaa0293f0f37628db8fa9837e57351f67cdb1c1",
+        "solver_056.py": "db48b413fa520acc868bca1caf45252b566278247eb06d13ecfbcd7d809a3f52",
+        "solver_057.py": "60337081643f1dd54414ac230abd6d2583d91aaedeb8e7ff96e372aff0bc8dc6",
+        "solver_058.py": "dba5e9eec3733bee46e2abde31cb62f5e8fce9e7ecf596c7528e05f2045bc766",
+        "solver_059.py": "a02dee4e21b243003f53e5f3d81e050697c3e8766bf2d22af28bda74b07d661d",
+        "solver_060.py": "103af28de469ebaf54eacbd1a780b513baada8f38a873afaddf41ff4c1359279",
+        "solver_061.py": "f38d9bd2d9f69097bca9e229a322613592e8ad71a1e45f8e5d9f7cf96a2c6976",
+        "solver_062.py": "98466d3e46f3179ec788366cee9b1d3f817d609402d63be81abe83043467e398",
+        "solver_063.py": "f48835e3303b702d7098898617168afad1b086509de68e0ae43168d36260cf3d",
+        "solver_064.py": "e647b50bf43304c9837851c5d88758fe242fff58e2e2d033d0b264dc475fa5c3",
+        "solver_065.py": "4f63aff672444049327807b2d0adbe7c4838981c5c3ff2a68e2f9d8fa377daab",
+        "solver_066.py": "259e0f8c89dac1d9292976843c7482162a97740c3bc7a8a51ac0c7af74b918ba",
+        "solver_067.py": "57ab4eedd343d84020b6add3d2c5119f2007afb352ce1d385c67787dbc440978",
+        "solver_068.py": "c89aa40639533a7783a478c34003320d9d509107d3e00612390ff1d9f92a2f83",
+        "solver_069.py": "5dfeefd9dcddb8b2ebc5edc93f2925edef875ef047651da0ab020773f97b811d",
+        "solver_070.py": "091a08bc39c9136557aaf1bf30f724006ed4329e60937db36ab7ef8786554063",
+        "solver_071.py": "83ae0c650f36ac05d2d2a2b767db379915ecebee3db0228f3ebffd540846021a",
+        "solver_072.py": "f813d2d545614290df3e47361c28ebd0b967a0d1d6637f28640333606927a9af",
+        "solver_073.py": "44e4a7b5098ffc9b486663e9a464aaf714d61b4fece9ee62df0fb4dab7f9eded",
+        "solver_074.py": "5cdb00fa109bead5fe77eed0a19f696dcc9ae8693618af49d2a558ce189609a9",
+        "solver_075.py": "5d47613ce66460a40be78a39ded37d69d11400e8fbcd40dcb16eb7af5ea15226",
+        "solver_076.py": "af7021a4f4cef91c3098c3fb2fb6c291dadb66fc162b28bd2d8cac1ef2fa25fa",
+        "solver_077.py": "b4ebef39f40b353cba59053cb60db1e81fa9a9dd07e0fbe2a6392ece59b7dc25",
+        "solver_078.py": "befed2a517c6e0c6548c9a1a768035e8cd85b0169b6792f60949845164d9fabc",
+        "solver_079.py": "afcdece99c748fad6b7436aef464e4bb7e3babcf280e78c3d0635edb8b276888",
+        "solver_080.py": "7b5d775db83414eadc414b3479f8bb6de5e70bac036835d1c599d12c5a4bd251",
+        "solver_081.py": "9e4d0bcd2e42ca7f3d3522db4962a5d2ad9551601ff61a02bb0d991a690747d3",
+        "solver_082.py": "9704acd6640f22ce8d7b8a8fe8ae1ee4fc8b16339e3d6bb7bfa96fec0bdc9c5b",
+        "solver_083.py": "81ed5cbefdf36211878dd302e2f8809ae7d3f4ab767599c27013150b1bb21672",
+        "solver_084.py": "efe29aebaaf0eda7def03fbc89b520b196232902ffbb08301ae656bc4bdd7827",
+        "solver_085.py": "da20ab8c8ccde1ffd9c752c883f9ffe5f263ce0abee7dbe2270097b27802dd7e",
+        "solver_086.py": "5d24b29bc835f4cc8ace2c51e0b387634320db930f173bea1550acc3994cace6",
+        "solver_087.py": "1c7ffc24a602fb9382300fb64d2cb3e614806f382e320942267fdee842689ccc",
+        "solver_088.py": "9289a6d82ce3bd19f58fabec31a50207012f6a40cb78237897ca599bbeb1f997",
+        "solver_089.py": "5cb260e46bd8eb187f28f4c5fd0ad873de277790ce5fbba1b0bacc6d97b65fea",
+        "solver_090.py": "395606efd9dcc2f923cb01882f5e798c5af94797290cf258f08c49bc5058dd03",
+        "solver_091.py": "5824fffc9e32be9161195401015bb89b162db6d02b56e4272bc3050d8b30549b",
+        "solver_092.py": "a6d8579668abaa8c75ab013b77148457b5dc8cce04e931236d6047db2110775a",
+        "solver_093.py": "1455f29875a1c5bf5c796bf4a33f812e6ddddcb1d3be50b108c566ae7e57d4df",
+        "solver_094.py": "876dd40f68a8b890f359fe811a9de9135cd4b574e48f7f0a6f12d83282ee1ec2",
+        "solver_095.py": "0956e2fd367da6f54c438a9bda5f9952ee4ec12f59754db7aba2e2ea87f0efed",
+        "solver_096.py": "469a3d0b2bdcb4b910edf21dbd78703ce41770e70c98fbcb166c54ee8c74dbe6",
+        "solver_097.py": "315d0e38ce86702acc9ec136720e891005ccb404a85408c8145a52abbaf85dac",
+        "solver_098.py": "d5019af102b9966d4574fdc9f3a6cf95956af188ccd283a5c299d05cb9df1755",
+        "solver_099.py": "c59988e6790f109d3f087c76cad0910e8f50c79a6fa63357de0f72cd116ede2c",
+        "solver_100.py": "9656c7eaa4f12ddb4e6b8f182838d12cbcca9c5b3d41b8cbdb9697bb4ba3ad37",
+        "solver_101.py": "a7fe23002371aa6bd35906988b0074a2c7ac99105d6d1c3d7a01137f9f8f5c9b",
+        "solver_102.py": "b01eaf736d7ac17229035955e6a9922f671011e7e64039723102414ec2cfd078",
+        "solver_103.py": "74dde964955a051766d8c9eac7cc2db788a0f90c14246f77569942f5991eaf3e",
+        "solver_104.py": "9df6befce491fc335b564c5c556931e17206214408252186c2a758e235176235",
+        "solver_105.py": "14b7b1aa7353fc873a5310f7edeaa9c82a6e1491d9493a968e820bb2514ed2e8",
+        "solver_106.py": "3d2f6d65c8ae1ce962e153aac739572af81b12cf71084e964ee758157e0a9740",
+        "solver_107.py": "d2b0b91c0e8024de55628d8e31b9bad2086f775df43d2e9649b3dfd86db8afee",
+        "solver_108.py": "6dfeb19ca3c786aae515caf5d94f48efe030e43d4bf3591259bdf56e80c32942",
+        "solver_109.py": "ac7b8633d76bf3fe80a5682ce73098cc8732af3a5269c14bc36c0a47a8470956",
+        "solver_110.py": "2f202dd06691caf5616cd89c10122c813332338b8d6aa2517b3351a44979c2ee",
+        "solver_111.py": "67e7e73e7317438900f338e8c87dab8c300bcc9e88e34d8665415da1c42ab6b8",
+        "solver_112.py": "87ea77e71e0abe913914ddd5cee73756d90ef39b14e1f6ea4f813d68402c2f5b",
+        "solver_113.py": "3d3dc59ea06f23ea702bb90f6e1fc4c17572b0cef4b162fe0fb86d30e09e2f49",
+        "solver_114.py": "2845d1bebfc0b7de6201a3b50ba64678018091566c6b802cb164368ba21ffa14",
+        "solver_115.py": "d8c36e081ee9e544b3fb026c154d312e7acf836d58d25659cddfc7af65c4db66",
+        "solver_116.py": "93ea37033b34e834914e6284ac463534b0731da44b7b8646291ddccaee432baa",
+        "solver_117.py": "948c9f08c9474e2a887da246766867fef0887876b1a952d4f4328c748ea981e4",
+        "solver_118.py": "42fb2de1ce0418746bd7a392a226c97c2585db749ee70cbcee5b02a6340549ac",
+        "solver_119.py": "dc80a6ed8713a569178fae76644fd1a1e5e2b960b769c1084f7dfaa75676f55b",
+        "solver_120.py": "6b6e7a05d07b51a2e4b95fcc99222b5069315ea08e6ab58e6cb04a5081386afa"
+      },
+      "base_by_file": {
+        "solver_001": 1,
+        "solver_002": 1,
+        "solver_003": 1,
+        "solver_004": 2,
+        "solver_005": 2,
+        "solver_006": 2,
+        "solver_007": 3,
+        "solver_008": 3,
+        "solver_009": 3,
+        "solver_010": 4,
+        "solver_011": 4,
+        "solver_012": 4,
+        "solver_013": 5,
+        "solver_014": 5,
+        "solver_015": 5,
+        "solver_016": 6,
+        "solver_017": 6,
+        "solver_018": 6,
+        "solver_019": 7,
+        "solver_020": 7,
+        "solver_021": 7,
+        "solver_022": 8,
+        "solver_023": 8,
+        "solver_024": 8,
+        "solver_025": 9,
+        "solver_026": 9,
+        "solver_027": 9,
+        "solver_028": 10,
+        "solver_029": 10,
+        "solver_030": 10,
+        "solver_031": 11,
+        "solver_032": 11,
+        "solver_033": 11,
+        "solver_034": 12,
+        "solver_035": 12,
+        "solver_036": 12,
+        "solver_037": 13,
+        "solver_038": 13,
+        "solver_039": 13,
+        "solver_040": 14,
+        "solver_041": 14,
+        "solver_042": 14,
+        "solver_043": 15,
+        "solver_044": 15,
+        "solver_045": 15,
+        "solver_046": 16,
+        "solver_047": 16,
+        "solver_048": 16,
+        "solver_049": 17,
+        "solver_050": 17,
+        "solver_051": 17,
+        "solver_052": 18,
+        "solver_053": 18,
+        "solver_054": 18,
+        "solver_055": 19,
+        "solver_056": 19,
+        "solver_057": 19,
+        "solver_058": 20,
+        "solver_059": 20,
+        "solver_060": 20,
+        "solver_061": 21,
+        "solver_062": 21,
+        "solver_063": 21,
+        "solver_064": 22,
+        "solver_065": 22,
+        "solver_066": 22,
+        "solver_067": 23,
+        "solver_068": 23,
+        "solver_069": 23,
+        "solver_070": 24,
+        "solver_071": 24,
+        "solver_072": 24,
+        "solver_073": 25,
+        "solver_074": 25,
+        "solver_075": 25,
+        "solver_076": 26,
+        "solver_077": 26,
+        "solver_078": 26,
+        "solver_079": 27,
+        "solver_080": 27,
+        "solver_081": 27,
+        "solver_082": 28,
+        "solver_083": 28,
+        "solver_084": 28,
+        "solver_085": 29,
+        "solver_086": 29,
+        "solver_087": 29,
+        "solver_088": 30,
+        "solver_089": 30,
+        "solver_090": 30,
+        "solver_091": 31,
+        "solver_092": 31,
+        "solver_093": 31,
+        "solver_094": 32,
+        "solver_095": 32,
+        "solver_096": 32,
+        "solver_097": 33,
+        "solver_098": 33,
+        "solver_099": 33,
+        "solver_100": 34,
+        "solver_101": 34,
+        "solver_102": 34,
+        "solver_103": 35,
+        "solver_104": 35,
+        "solver_105": 35,
+        "solver_106": 36,
+        "solver_107": 36,
+        "solver_108": 36,
+        "solver_109": 37,
+        "solver_110": 37,
+        "solver_111": 37,
+        "solver_112": 38,
+        "solver_113": 38,
+        "solver_114": 38,
+        "solver_115": 39,
+        "solver_116": 39,
+        "solver_117": 39,
+        "solver_118": 40,
+        "solver_119": 40,
+        "solver_120": 40
+      },
+      "unheadered_files": [],
       "replica_groups": {
         "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
           "solver_022.py",
@@ -1379,7 +2991,8 @@
         ]
       },
       "replica_files_beyond_first": 80,
-      "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854"
+      "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854",
+      "raw_aggregate_sha256_of_sorted_sha256_lines": "7aaf193112c18514b0224f9e6c54fcd99e6a41b498bd34b6c551802ce31448f5"
     }
   }
 }

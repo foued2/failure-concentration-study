@@ -13,6 +13,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 HEADER_RE = re.compile(r'^"""Submission (\d{3}) \(base body (\d+), replica (\d+)\)\."""\n\n')
+HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
+FAMILIES = [f"F{i}" for i in range(1, 7)]
+EXPECTED_DIAGNOSTIC_IDS = [f"{family}_{i}" for family in FAMILIES for i in range(5)]
+EXPECTED_EVALUATION_IDS = [f"E{i}_{j}" for i in range(1, 7) for j in range(5)]
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
@@ -45,34 +49,123 @@ def norm_c(k: int, c) -> float | None:
     return None if k == 0 else float(c)
 
 
+def validate_screen(screen, path: Path) -> list[str]:
+    errors = []
+    if not isinstance(screen, dict):
+        return [f"{path.name}: not a JSON object"]
+    if screen.get("accepted") is not True:
+        errors.append(f"{path.name}: not accepted")
+    body_id = screen.get("body_id")
+    if not isinstance(body_id, str) or not HEX64_RE.fullmatch(body_id):
+        errors.append(f"{path.name}: missing or malformed canonical body_id")
+    if not isinstance(screen.get("source_bytes"), int) or screen["source_bytes"] <= 0:
+        errors.append(f"{path.name}: missing or invalid source_bytes")
+    if screen.get("reasons") != []:
+        errors.append(f"{path.name}: rejection reasons present")
+    return errors
+
+
+def validate_suite(suite, path: Path, expected_ids: list[str], require_k: bool) -> tuple[list[str], Counter]:
+    errors = []
+    if not isinstance(suite, dict):
+        return [f"{path.name}: not a JSON object"], Counter()
+    rows = suite.get("probe_rows")
+    if not isinstance(rows, list):
+        return [f"{path.name}: probe_rows is not a list"], Counter()
+    if suite.get("rows") != 30 or len(rows) != 30:
+        errors.append(f"{path.name}: expected 30 rows, got rows={suite.get('rows')!r}, len={len(rows)}")
+    actual_ids = [row.get("probe_id") for row in rows if isinstance(row, dict)]
+    if actual_ids != expected_ids:
+        errors.append(f"{path.name}: probe_ids do not match the expected ordered F1-F6 x 5 bank")
+    if len(set(actual_ids)) != len(actual_ids):
+        errors.append(f"{path.name}: duplicate probe_ids")
+    statuses = Counter()
+    family_counts = Counter()
+    for row in rows:
+        if not isinstance(row, dict):
+            errors.append(f"{path.name}: non-object probe row")
+            continue
+        if row.get("family") not in FAMILIES:
+            errors.append(f"{path.name}: invalid family {row.get('family')!r} for {row.get('probe_id')!r}")
+        if not isinstance(row.get("status"), str) or not row["status"]:
+            errors.append(f"{path.name}: missing status for {row.get('probe_id')!r}")
+            continue
+        statuses[row["status"]] += 1
+        if row["status"] != "pass":
+            family_counts[row.get("family")] += 1
+    if len(rows) == 30:
+        for family in FAMILIES:
+            if sum(1 for row in rows if isinstance(row, dict) and row.get("family") == family) != 5:
+                errors.append(f"{path.name}: expected 5 rows for {family}")
+    declared_status = suite.get("status_counts")
+    if not isinstance(declared_status, dict) or Counter(declared_status) != statuses:
+        errors.append(f"{path.name}: status_counts do not match probe_rows")
+    if suite.get("failed") is not None and suite.get("failed") != sum(statuses.values()) - statuses.get("pass", 0):
+        errors.append(f"{path.name}: failed count does not match probe_rows")
+    if suite.get("passed") is not None and suite.get("passed") != statuses.get("pass", 0):
+        errors.append(f"{path.name}: passed count does not match probe_rows")
+    if require_k:
+        k = suite.get("k")
+        if not isinstance(k, int) or k < 0:
+            errors.append(f"{path.name}: missing or invalid k")
+        if not isinstance(suite.get("C"), (int, float)):
+            errors.append(f"{path.name}: missing or invalid C")
+        declared_families = suite.get("family_counts")
+        if not isinstance(declared_families, dict):
+            errors.append(f"{path.name}: missing family_counts")
+        else:
+            normalized = Counter({family: int(declared_families.get(family, 0)) for family in FAMILIES})
+            if normalized != family_counts:
+                errors.append(f"{path.name}: family_counts do not match probe_rows")
+            if isinstance(k, int) and sum(normalized.values()) != k:
+                errors.append(f"{path.name}: family_counts sum does not equal k")
+        if isinstance(k, int) and isinstance(suite.get("C"), (int, float)):
+            expected_c = 0.0 if k == 0 else max(family_counts.values()) / k
+            if abs(float(suite["C"]) - expected_c) > 1e-12:
+                errors.append(f"{path.name}: C does not match max(family)/k")
+    return errors, statuses
+
+
 def pack_summary(pack_dir: Path) -> dict:
     files = sorted(pack_dir.glob("solver_*.py"))
     body_sha_by_file = {}
+    raw_sha_by_file = {}
     base_by_file = {}
+    unheadered_files = []
     for p in files:
+        raw_sha_by_file[p.name] = sha256(p)
         norm = p.read_text(encoding="utf-8").replace("\r\n", "\n")
         m = HEADER_RE.match(norm)
+        if not m:
+            unheadered_files.append(p.name)
         body = norm[m.end():] if m else norm
         body_sha_by_file[p.name] = hashlib.sha256(body.encode()).hexdigest()
-        base_by_file[p.name] = int(m.group(2)) if m else None
+        base_by_file[p.stem] = int(m.group(2)) if m else None
     groups = defaultdict(list)
     for name, digest in body_sha_by_file.items():
         groups[digest].append(name)
     bases = defaultdict(set)
-    for name, base in base_by_file.items():
-        if base is not None:
-            bases[base].add(body_sha_by_file[name])
+    for stem, base in base_by_file.items():
+        filename = f"{stem}.py"
+        if base is not None and filename in body_sha_by_file:
+            bases[base].add(body_sha_by_file[filename])
     aggregate = hashlib.sha256()
+    raw_aggregate = hashlib.sha256()
     for name in sorted(body_sha_by_file):
         aggregate.update(f"{body_sha_by_file[name]}  {name}\n".encode())
+        raw_aggregate.update(f"{raw_sha_by_file[name]}  {name}\n".encode())
     return {
         "files": len(files),
         "unique_bodies_after_header_strip": len(groups),
         "base_bodies_in_header": len(bases),
         "body_sha256_by_file": body_sha_by_file,
+        "raw_sha256_by_file": raw_sha_by_file,
+        "base_by_file": base_by_file,
+        "unheadered_files": unheadered_files,
         "replica_groups": {d: names for d, names in sorted(groups.items()) if len(names) > 1},
         "replica_files_beyond_first": sum(len(names) - 1 for names in groups.values()),
         "aggregate_sha256_of_sorted_sha256_lines": aggregate.hexdigest(),
+        "raw_aggregate_sha256_of_sorted_sha256_lines": raw_aggregate.hexdigest(),
     }
 
 
@@ -187,20 +280,20 @@ def v02() -> dict:
                 rows.append({"instance": instance, **row})
     cells = Counter()
     files_by_cell = defaultdict(set)
-    base_by_file = {}
-    for p in sorted((ROOT / "generation_v02" / "pack").glob("solver_*.py")):
-        norm = p.read_text(encoding="utf-8").replace("\r\n", "\n")
-        m = HEADER_RE.match(norm)
-        base_by_file[p.stem] = int(m.group(2)) if m else None
+    pack = pack_summary(ROOT / "generation_v02" / "pack")
+    base_by_file = pack["base_by_file"]
+    invalid_pack_rows = []
     units = {}
     for r in rows:
+        base = base_by_file.get(r["solver"])
+        if base is None:
+            invalid_pack_rows.append(r["solver"])
+            continue
         k = int(r["k"])
         c = norm_c(k, r["C"])
-        base = base_by_file.get(r["solver"])
         cells[(k, c)] += 1
         files_by_cell[(k, c)].add(r["solver"])
-        if base is not None:
-            units[base] = (k, c)
+        units[base] = (k, c)
     cell_rows = []
     for (k, c), n in sorted(cells.items()):
         base_count = len({base_by_file[name] for name in files_by_cell[(k, c)] if base_by_file.get(name) is not None})
@@ -218,15 +311,15 @@ def v02() -> dict:
         if k >= 2 and c is not None:
             per_k[k].add(c)
     contrast = contrast_from_cells(cell_rows)
-    pack = pack_summary(ROOT / "generation_v02" / "pack")
     return {
         "id": "v0.2_mimo_sssp_pack",
         "task": "SSSP",
         "generator": "frozen 120-file single-shot pack; 40 unique bodies, exactly 3 replicas each (per v0.2 audit)",
         "source": ["v02/pilot_v02/pilot_v02_report.json", "v02/FREEZE_V02.md", "v02/INTERPRETABILITY_AUDIT_2026-10-14.md", "generation_v02/pack/"],
         "pack": pack,
-        "pilot_eligible_rows": len(rows),
-        "pilot_distinct_body_files": len({r["solver"] for r in rows}),
+        "invalid_pack_rows": invalid_pack_rows,
+        "pilot_eligible_rows": sum(cells.values()),
+        "pilot_distinct_body_files": len({name for names in files_by_cell.values() for name in names}),
         "pilot_distinct_base_bodies": len(units),
         "eligible_bodies_k_ge_2": len(units),
         "eligible_distinct_base_bodies": len(units),
@@ -282,33 +375,95 @@ def sssp_natural(run_id: str, dirname: str) -> dict:
 def expression() -> dict:
     d = ROOT / "next-task" / "expression-pilot-gemini-20261022T163536Z"
     results = load_json(d / "PILOT_RESULTS.json")
-    bodies = {}
+    attempt_records = []
     for attempt_dir in sorted((d / "attempts").iterdir()):
         if not attempt_dir.is_dir():
             continue
-        diag_path = attempt_dir / "host-authoritative" / "diagnostic.json"
-        if not diag_path.exists():
-            continue
-        screen_path = attempt_dir / "source-screen.json"
-        screen = load_json(screen_path) if screen_path.exists() else {}
-        diag = load_json(diag_path)
-        eval_path = attempt_dir / "host-authoritative" / "evaluation.json"
-        evaluation = load_json(eval_path) if eval_path.exists() else {}
-        body_id = screen.get("body_id") or attempt_dir.name
-        k = int(diag["k"])
-        c = norm_c(k, diag["C"])
-        diag_crash = int(diag.get("status_counts", {}).get("crash", 0))
-        eval_crash = sum(1 for row in evaluation.get("probe_rows", []) if row.get("status") == "crash")
-        if body_id not in bodies:
-            bodies[body_id] = {
+        rec = {
+            "attempt": attempt_dir.name,
+            "validation": "pending",
+            "errors": [],
+            "body_id": None,
+            "k": None,
+            "C": None,
+            "diag_crash": None,
+            "eval_crash": None,
+            "files": {},
+        }
+        paths = {
+            "source_screen": attempt_dir / "source-screen.json",
+            "diagnostic": attempt_dir / "host-authoritative" / "diagnostic.json",
+            "evaluation": attempt_dir / "host-authoritative" / "evaluation.json",
+        }
+        for label, path in paths.items():
+            if path.exists():
+                rec["files"][label] = {
+                    "path": path.relative_to(ROOT).as_posix(),
+                    "sha256": sha256(path),
+                    "bytes": path.stat().st_size,
+                }
+            else:
+                rec["errors"].append(f"missing {label}: {path.relative_to(ROOT).as_posix()}")
+        screen = diag = evaluation = None
+        if paths["source_screen"].exists():
+            try:
+                screen = load_json(paths["source_screen"])
+            except Exception as exc:
+                rec["errors"].append(f"source_screen parse error: {exc}")
+            else:
+                rec["errors"].extend(validate_screen(screen, paths["source_screen"]))
+                if isinstance(screen, dict) and isinstance(screen.get("body_id"), str):
+                    rec["body_id"] = screen["body_id"]
+        if paths["diagnostic"].exists():
+            try:
+                diag = load_json(paths["diagnostic"])
+            except Exception as exc:
+                rec["errors"].append(f"diagnostic parse error: {exc}")
+            else:
+                errors, _ = validate_suite(diag, paths["diagnostic"], EXPECTED_DIAGNOSTIC_IDS, require_k=True)
+                rec["errors"].extend(errors)
+                if isinstance(diag, dict):
+                    rec["k"] = diag.get("k")
+                    rec["C"] = norm_c(int(diag["k"]), diag["C"]) if isinstance(diag.get("k"), int) and isinstance(diag.get("C"), (int, float)) else None
+                    if isinstance(diag.get("status_counts"), dict):
+                        rec["diag_crash"] = int(diag["status_counts"].get("crash", 0))
+        if paths["evaluation"].exists():
+            try:
+                evaluation = load_json(paths["evaluation"])
+            except Exception as exc:
+                rec["errors"].append(f"evaluation parse error: {exc}")
+            else:
+                errors, _ = validate_suite(evaluation, paths["evaluation"], EXPECTED_EVALUATION_IDS, require_k=False)
+                rec["errors"].extend(errors)
+                if isinstance(evaluation, dict) and isinstance(evaluation.get("status_counts"), dict):
+                    rec["eval_crash"] = int(evaluation["status_counts"].get("crash", 0))
+        rec["validation"] = "valid" if not rec["errors"] else "invalid"
+        attempt_records.append(rec)
+
+    valid_records = [rec for rec in attempt_records if rec["validation"] == "valid"]
+    invalid_records = [rec for rec in attempt_records if rec["validation"] == "invalid"]
+    by_body = defaultdict(list)
+    for rec in valid_records:
+        by_body[rec["body_id"]].append(rec)
+    bodies = {}
+    duplicate_conflicts = []
+    for body_id, recs in sorted(by_body.items()):
+        keys = {(r["k"], r["C"]) for r in recs}
+        if len(keys) != 1:
+            duplicate_conflicts.append({
                 "body_id": body_id,
-                "k": k,
-                "C": c,
-                "attempts": [],
-                "diag_crash": diag_crash,
-                "eval_crash": eval_crash,
-            }
-        bodies[body_id]["attempts"].append(attempt_dir.name)
+                "attempts": [r["attempt"] for r in recs],
+                "k_C": sorted(keys, key=lambda x: (x[0], -1 if x[1] is None else x[1])),
+            })
+            continue
+        bodies[body_id] = {
+            "body_id": body_id,
+            "k": recs[0]["k"],
+            "C": recs[0]["C"],
+            "attempts": [r["attempt"] for r in recs],
+            "diag_crash": max(int(r["diag_crash"] or 0) for r in recs),
+            "eval_crash": max(int(r["eval_crash"] or 0) for r in recs),
+        }
     grouped = defaultdict(list)
     for body in bodies.values():
         grouped[(body["k"], body["C"])].append(body)
@@ -326,7 +481,7 @@ def expression() -> dict:
             "k": k,
             "C": c,
             "status": status,
-            "attempts": len(group),
+            "attempts": sum(len(b["attempts"]) for b in group),
             "distinct_bodies": len(group),
             "eligible_body_count": len(eligible) if k >= 2 else 0,
         })
@@ -357,12 +512,17 @@ def expression() -> dict:
         "eligible_bodies_k_ge_2": sum(1 for b in protocol_eligible if b["k"] >= 2),
         "eligible_executed_bodies": results.get("eligible_executed_bodies"),
         "state": results.get("state"),
-        "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures.",
+        "attempt_directories": len(attempt_records),
+        "valid_attempt_records": len(valid_records),
+        "invalid_attempt_records": len(invalid_records),
+        "duplicate_conflicts": duplicate_conflicts,
+        "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures. Missing, malformed, or incomplete source-screen/diagnostic/evaluation evidence is invalid and cannot become an eligible body.",
         "cells": cells,
         "excluded_crashed_bodies": excluded_crashed,
+        "attempts": attempt_records,
         "contrast": contrast,
         "same_k_different_C_pairs": contrast["same_k_different_C_pairs"],
-        "notes": "All 13 bodies with k>=2 crash and are excluded. The six k=0 bodies are valid but cannot support a concentration contrast. The nine k=2 bodies each crash on two diagnostic and two evaluation inputs; the singleton k=7 body has seven crashes each; the three k=30 bodies crash on all 30 diagnostic and evaluation inputs.",
+        "notes": f"All {sum(1 for b in bodies.values() if b['k'] >= 2)} bodies with k>=2 crash and are excluded. The {sum(1 for b in bodies.values() if b['k'] == 0)} k=0 bodies are valid but cannot support a concentration contrast. {len(invalid_records)} attempt directories lack complete validated evidence and are not eligible bodies. The nine k=2 bodies each crash on two diagnostic and two evaluation inputs; the singleton k=7 body has seven crashes each; the three k=30 bodies crash on all 30 diagnostic and evaluation inputs.",
     }
 
 
@@ -431,6 +591,18 @@ def main() -> None:
         ROOT / "next-task" / "06_EXPRESSION_PILOT_RESULT_2026-10-22.md",
         ROOT / "next-task" / "07_EXPRESSION_PILOT_AUDIT_2026-10-22.md",
     ]
+    expression_attempt_root = ROOT / "next-task" / "expression-pilot-gemini-20261022T163536Z" / "attempts"
+    for attempt_dir in sorted(expression_attempt_root.iterdir()):
+        if not attempt_dir.is_dir():
+            continue
+        for rel in [
+            Path("source-screen.json"),
+            Path("host-authoritative") / "diagnostic.json",
+            Path("host-authoritative") / "evaluation.json",
+        ]:
+            path = attempt_dir / rel
+            if path.exists():
+                hash_paths.append(path)
     data["input_hashes"] = file_hashes(hash_paths)
     data["pack_hashes"] = {
         "v0.1": pack_summary(ROOT / "generation" / "pilot_pack"),
