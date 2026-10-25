@@ -85,7 +85,7 @@ Across the displayed strata, the mean and median extreme-level differences are p
 
 The frozen primary estimand compares cross-validated prediction loss with and without `C`, using the same eligible cases, folds, categorical `k` effects, and family adjustment. That is different from comparing the highest and lowest observed `C` levels within a stratum.
 
-In the frozen simulation report, W1's mean incremental predictive gain from adding `C` was approximately `1.96e-6` for `S_D`, with central 95% simulation-trial interval `[-1.24e-6, 7.58e-6]`. For `S_F`, the mean was approximately `1.91e-6`, with interval `[-1.83e-6, 8.99e-6]`. Both intervals include zero, and the frozen alternate-partition check did not establish the required positive gain. **The W1 wiring criterion therefore remains FAILED.** These new descriptive contrasts do not change that finding.
+In the frozen simulation report, W1's mean incremental predictive gain from adding `C` was `1.961346752e-6` for `S_D`, with central 95% simulation-trial interval `[-1.242089975e-6, 7.581285807e-6]`. For `S_F`, the mean was `1.914362824e-6`, with interval `[-1.833270363e-6, 8.988738209e-6]`. Both intervals include zero, and the frozen alternate-partition check did not establish the required positive gain. **The W1 wiring criterion therefore remains FAILED.** These new descriptive contrasts do not change that finding.
 
 ### W3 shows why descriptive contrasts are not a direct-effect test
 
@@ -117,7 +117,7 @@ The script's detailed Markdown and JSON outputs are local run artifacts under `e
 
 ## Related frozen materials
 
-- [Frozen simulation design](../10_THREE_WORLD_SIM_DESIGN.md)
+- [Frozen simulation design](../../10_THREE_WORLD_SIM_DESIGN.md)
 - [Original three-world simulation results](11_THREE_WORLD_SIM_RESULT.md)
 - [Correction and closure amendment: W3 oracle distinction and contrast-reporting status](13_DOCUMENTATION_GAPS_CLOSURE_AMENDMENT_1_2026-10-24.md)
 - [Saved-record contrast analysis script](../../analyze_stratum_specific_contrasts.py)
