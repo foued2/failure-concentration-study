@@ -1,0 +1,911 @@
+{
+  "audit_date": "2026-10-25",
+  "protocol": "engineered-study/math/15_NATURAL_SOLVER_FEASIBILITY_PROTOCOL_2026-10-24.md",
+  "mode": "offline inventory only; no solver or model execution",
+  "disposition": "INFEASIBLE_WITH_CURRENT_DATA",
+  "disposition_basis": "Zero eligible same-k, different-C body pairs with independent lineage in every audited dataset.",
+  "datasets": [
+    {
+      "id": "v0.1_mimo_sssp_pilot",
+      "task": "SSSP",
+      "generator": "opencode/mimo-v2.6-flash-free, 20 single-shot submissions, one session",
+      "source": [
+        "pilot/pilot_report.json",
+        "pilot/PILOT_REPORT.md",
+        "specs/generator_spec.json"
+      ],
+      "records": 60,
+      "unique_bodies": 20,
+      "eligible_bodies_k_ge_2": 4,
+      "eligible_body_instance_rows": 12,
+      "k_values": [
+        0,
+        5,
+        10,
+        25
+      ],
+      "distinct_C_levels_by_k": {
+        "0": [
+          0.0
+        ],
+        "5": [
+          1.0
+        ],
+        "10": [
+          0.5
+        ],
+        "25": [
+          0.2
+        ]
+      },
+      "cells": [
+        {
+          "k": 0,
+          "C": 0.0,
+          "body_instance_rows": 48,
+          "distinct_bodies": 16,
+          "bodies": [
+            "solver_01",
+            "solver_02",
+            "solver_03",
+            "solver_06",
+            "solver_07",
+            "solver_08",
+            "solver_09",
+            "solver_10",
+            "solver_11",
+            "solver_12",
+            "solver_13",
+            "solver_14",
+            "solver_15",
+            "solver_16",
+            "solver_17",
+            "solver_18"
+          ]
+        },
+        {
+          "k": 5,
+          "C": 1.0,
+          "body_instance_rows": 6,
+          "distinct_bodies": 2,
+          "bodies": [
+            "solver_05",
+            "solver_20"
+          ]
+        },
+        {
+          "k": 10,
+          "C": 0.5,
+          "body_instance_rows": 3,
+          "distinct_bodies": 1,
+          "bodies": [
+            "solver_19"
+          ]
+        },
+        {
+          "k": 25,
+          "C": 0.2,
+          "body_instance_rows": 3,
+          "distinct_bodies": 1,
+          "bodies": [
+            "solver_04"
+          ]
+        }
+      ],
+      "same_k_different_C_pairs": 0,
+      "notes": "16/20 bodies had k=0 and are ineligible. Four multi-failure bodies occupy k=25(C=0.2), k=10(C=0.5), k=5(C=1), k=5(C=1); no fixed-k group has two C levels."
+    },
+    {
+      "id": "v0.2_mimo_sssp_pack",
+      "task": "SSSP",
+      "generator": "frozen 120-file single-shot pack; 40 unique bodies, exactly 3 replicas each (per v0.2 audit)",
+      "source": [
+        "v02/pilot_v02/pilot_v02_report.json",
+        "v02/FREEZE_V02.md",
+        "v02/INTERPRETABILITY_AUDIT_2026-10-14.md",
+        "generation_v02/pack/"
+      ],
+      "pack": {
+        "files": 120,
+        "unique_bodies_after_header_strip": 40,
+        "base_bodies_in_header": 40,
+        "replica_groups": {
+          "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
+            "solver_022.py",
+            "solver_023.py",
+            "solver_024.py"
+          ],
+          "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991": [
+            "solver_028.py",
+            "solver_029.py",
+            "solver_030.py"
+          ],
+          "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760": [
+            "solver_094.py",
+            "solver_095.py",
+            "solver_096.py"
+          ],
+          "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5": [
+            "solver_016.py",
+            "solver_017.py",
+            "solver_018.py"
+          ],
+          "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f": [
+            "solver_070.py",
+            "solver_071.py",
+            "solver_072.py"
+          ],
+          "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94": [
+            "solver_097.py",
+            "solver_098.py",
+            "solver_099.py"
+          ],
+          "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f": [
+            "solver_034.py",
+            "solver_035.py",
+            "solver_036.py"
+          ],
+          "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d": [
+            "solver_079.py",
+            "solver_080.py",
+            "solver_081.py"
+          ],
+          "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211": [
+            "solver_103.py",
+            "solver_104.py",
+            "solver_105.py"
+          ],
+          "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3": [
+            "solver_040.py",
+            "solver_041.py",
+            "solver_042.py"
+          ],
+          "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3": [
+            "solver_049.py",
+            "solver_050.py",
+            "solver_051.py"
+          ],
+          "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a": [
+            "solver_085.py",
+            "solver_086.py",
+            "solver_087.py"
+          ],
+          "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46": [
+            "solver_004.py",
+            "solver_005.py",
+            "solver_006.py"
+          ],
+          "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099": [
+            "solver_076.py",
+            "solver_077.py",
+            "solver_078.py"
+          ],
+          "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df": [
+            "solver_055.py",
+            "solver_056.py",
+            "solver_057.py"
+          ],
+          "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06": [
+            "solver_088.py",
+            "solver_089.py",
+            "solver_090.py"
+          ],
+          "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce": [
+            "solver_025.py",
+            "solver_026.py",
+            "solver_027.py"
+          ],
+          "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce": [
+            "solver_019.py",
+            "solver_020.py",
+            "solver_021.py"
+          ],
+          "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9": [
+            "solver_100.py",
+            "solver_101.py",
+            "solver_102.py"
+          ],
+          "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a": [
+            "solver_073.py",
+            "solver_074.py",
+            "solver_075.py"
+          ],
+          "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609": [
+            "solver_001.py",
+            "solver_002.py",
+            "solver_003.py"
+          ],
+          "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64": [
+            "solver_013.py",
+            "solver_014.py",
+            "solver_015.py"
+          ],
+          "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1": [
+            "solver_067.py",
+            "solver_068.py",
+            "solver_069.py"
+          ],
+          "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52": [
+            "solver_061.py",
+            "solver_062.py",
+            "solver_063.py"
+          ],
+          "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780": [
+            "solver_046.py",
+            "solver_047.py",
+            "solver_048.py"
+          ],
+          "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546": [
+            "solver_007.py",
+            "solver_008.py",
+            "solver_009.py"
+          ],
+          "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd": [
+            "solver_091.py",
+            "solver_092.py",
+            "solver_093.py"
+          ],
+          "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105": [
+            "solver_037.py",
+            "solver_038.py",
+            "solver_039.py"
+          ],
+          "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0": [
+            "solver_115.py",
+            "solver_116.py",
+            "solver_117.py"
+          ],
+          "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522": [
+            "solver_031.py",
+            "solver_032.py",
+            "solver_033.py"
+          ],
+          "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02": [
+            "solver_052.py",
+            "solver_053.py",
+            "solver_054.py"
+          ],
+          "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1": [
+            "solver_106.py",
+            "solver_107.py",
+            "solver_108.py"
+          ],
+          "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304": [
+            "solver_064.py",
+            "solver_065.py",
+            "solver_066.py"
+          ],
+          "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5": [
+            "solver_109.py",
+            "solver_110.py",
+            "solver_111.py"
+          ],
+          "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031": [
+            "solver_082.py",
+            "solver_083.py",
+            "solver_084.py"
+          ],
+          "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72": [
+            "solver_058.py",
+            "solver_059.py",
+            "solver_060.py"
+          ],
+          "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f": [
+            "solver_010.py",
+            "solver_011.py",
+            "solver_012.py"
+          ],
+          "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0": [
+            "solver_043.py",
+            "solver_044.py",
+            "solver_045.py"
+          ],
+          "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe": [
+            "solver_118.py",
+            "solver_119.py",
+            "solver_120.py"
+          ],
+          "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109": [
+            "solver_112.py",
+            "solver_113.py",
+            "solver_114.py"
+          ]
+        },
+        "replica_files_beyond_first": 80,
+        "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854"
+      },
+      "pilot_eligible_rows": 90,
+      "pilot_distinct_body_files": 30,
+      "pilot_distinct_base_bodies": 10,
+      "eligible_bodies_k_ge_2": 10,
+      "confirmatory_eligible_pairs_reported": 1200,
+      "confirmatory_per_row_persisted": false,
+      "cells": [
+        {
+          "k": 5,
+          "C": 1.0,
+          "body_instance_rows": 27,
+          "distinct_body_files": 9,
+          "distinct_base_bodies": 3
+        },
+        {
+          "k": 10,
+          "C": 0.5,
+          "body_instance_rows": 9,
+          "distinct_body_files": 3,
+          "distinct_base_bodies": 1
+        },
+        {
+          "k": 20,
+          "C": 0.25,
+          "body_instance_rows": 9,
+          "distinct_body_files": 3,
+          "distinct_base_bodies": 1
+        },
+        {
+          "k": 25,
+          "C": 0.2,
+          "body_instance_rows": 45,
+          "distinct_body_files": 15,
+          "distinct_base_bodies": 5
+        }
+      ],
+      "distinct_C_levels_by_k": {
+        "5": [
+          1.0
+        ],
+        "10": [
+          0.5
+        ],
+        "20": [
+          0.25
+        ],
+        "25": [
+          0.2
+        ]
+      },
+      "same_k_different_C_pairs": 0,
+      "eligible_distinct_base_bodies": 10,
+      "notes": "All 90 audited eligible rows satisfy C=5/k exactly; each k has one C level. Confirmatory rows were persisted only as aggregates. The 120 files are 40 base bodies x 3 replicas, so they are not 120 independent units."
+    },
+    {
+      "id": "codex_sssp_100",
+      "task": "SSSP",
+      "generator": "Codex CLI 0.160.1, --model gpt-6-luna, one exact SSSP prompt per attempt; backend snapshot unavailable",
+      "source": [
+        "natural-feasibility-pilot/natural-pilot-20261021T123319Z/PILOT_RESULTS.json",
+        "natural-feasibility-pilot/natural-pilot-20261021T123319Z/FEASIBILITY_REPORT.md"
+      ],
+      "generation_requests": 100,
+      "model_written_outputs": 39,
+      "generation_failures": 61,
+      "distinct_canonical_bodies": 15,
+      "eligible_executed_bodies": 10,
+      "eligible_bodies_k_ge_2": 0,
+      "state": "HALTED_GENERATION_USAGE_LIMIT",
+      "cells": [
+        {
+          "k": 0,
+          "C": 0.0,
+          "attempts": 10,
+          "distinct_bodies": 10,
+          "evaluation_correct_counts": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20
+          ]
+        }
+      ],
+      "same_k_different_C_pairs": 0,
+      "notes": "All completed bodies have k=0, so C is undefined/zero and no k>=2 support exists."
+    },
+    {
+      "id": "gemini_sssp_100",
+      "task": "SSSP",
+      "generator": "Google Gemini API, model gemini-3.5-flash-lite, one exact SSSP prompt per attempt; backend snapshot unavailable",
+      "source": [
+        "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/PILOT_RESULTS.json",
+        "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/FEASIBILITY_REPORT.md"
+      ],
+      "generation_requests": 100,
+      "model_written_outputs": 100,
+      "generation_failures": 0,
+      "distinct_canonical_bodies": 25,
+      "eligible_executed_bodies": 25,
+      "eligible_bodies_k_ge_2": 0,
+      "state": "FEASIBILITY_NOT_DEMONSTRATED_WITHIN_CAP",
+      "cells": [
+        {
+          "k": 0,
+          "C": 0.0,
+          "attempts": 25,
+          "distinct_bodies": 25,
+          "evaluation_correct_counts": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20,
+            20
+          ]
+        }
+      ],
+      "same_k_different_C_pairs": 0,
+      "notes": "All completed bodies have k=0, so C is undefined/zero and no k>=2 support exists."
+    },
+    {
+      "id": "gemini_expression_30",
+      "task": "bounded integer expression",
+      "generator": "Google Gemini API / gemini-3.5-flash-lite, 30 slots",
+      "source": [
+        "next-task/expression-pilot-gemini-20261022T163536Z/PILOT_RESULTS.json",
+        "next-task/expression-pilot-gemini-20261022T163536Z/FEASIBILITY_REPORT.md",
+        "next-task/07_EXPRESSION_PILOT_AUDIT_2026-10-22.md"
+      ],
+      "generation_requests": 30,
+      "model_written_outputs": 27,
+      "generation_failures": 3,
+      "source_rejected": 2,
+      "duplicates": 6,
+      "distinct_canonical_bodies": 21,
+      "eligible_executed_bodies": 19,
+      "eligible_bodies_k_ge_2": 13,
+      "state": "REPEATED_K_BUT_NO_C_SEPARATION",
+      "cells": [
+        {
+          "k": 0,
+          "C": 0.0,
+          "attempts": 6,
+          "distinct_bodies": 6,
+          "evaluation_correct_counts": [
+            30,
+            30,
+            30,
+            30,
+            30,
+            30
+          ]
+        },
+        {
+          "k": 2,
+          "C": 1.0,
+          "attempts": 9,
+          "distinct_bodies": 9,
+          "evaluation_correct_counts": [
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28
+          ]
+        },
+        {
+          "k": 30,
+          "C": 0.16666666666666666,
+          "attempts": 3,
+          "distinct_bodies": 3,
+          "evaluation_correct_counts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "k": 7,
+          "C": 0.7142857142857143,
+          "attempts": 1,
+          "distinct_bodies": 1,
+          "evaluation_correct_counts": [
+            23
+          ]
+        }
+      ],
+      "same_k_different_C_pairs": 0,
+      "notes": "k=2 occurs with C=1 only (9 bodies); k=30 with C=1/6 only (3 bodies); k=7 is a singleton. The nine k=2 bodies share one whitespace bug; the three k=30 bodies are uniform crashes. No fixed-k C separation."
+    }
+  ],
+  "excluded_categories": [
+    {
+      "category": "engineered-study controls",
+      "reason": "constructed controls, not independently generated natural solver bodies"
+    },
+    {
+      "category": "three-world simulation",
+      "reason": "synthetic mathematical simulation, not solver records"
+    },
+    {
+      "category": "followup 1-request run",
+      "reason": "0 generated bodies"
+    },
+    {
+      "category": "expression syntax rejects",
+      "reason": "2 invalid artifacts, not executable bodies"
+    }
+  ],
+  "input_hashes": [
+    {
+      "path": "engineered-study/math/15_NATURAL_SOLVER_FEASIBILITY_PROTOCOL_2026-10-24.md",
+      "sha256": "8f0a24fe9c387733ee28ef345d527be048c15a6a57ad634ef9f0997feff2fed4",
+      "bytes": 6746
+    },
+    {
+      "path": "pilot/PILOT_REPORT.md",
+      "sha256": "5e592b561f08be19afcf041fc5bd328896314e689e954f2518bfad398c18c16a",
+      "bytes": 2024
+    },
+    {
+      "path": "pilot/pilot_report.json",
+      "sha256": "0dd24c2822be00ce2125c78a4be2a2b2dae285859d6ffceb7584df3a8aa1e344",
+      "bytes": 9803
+    },
+    {
+      "path": "specs/generator_spec.json",
+      "sha256": "6384ef5837fd70656c3ad79dfcffd4c3d2dd4346ab97a4eac282749f50f3cc44",
+      "bytes": 2339
+    },
+    {
+      "path": "v02/FREEZE_V02.md",
+      "sha256": "0e36bfcc50146407007fb9ae2a8ac91318903b90647fe9897b2bf607a2ff2589",
+      "bytes": 2351
+    },
+    {
+      "path": "v02/pilot_v02/pilot_v02_report.json",
+      "sha256": "af1c731f64263f625d4c57dc88e347986138bf595d46a348dfec4d311afc2b75",
+      "bytes": 109246
+    },
+    {
+      "path": "v02/INTERPRETABILITY_AUDIT_2026-10-14.md",
+      "sha256": "9f18211f8e7e758411fce523b1f93b20bcb6b35e12ad65184c85ff1222d288e9",
+      "bytes": 19271
+    },
+    {
+      "path": "v02/confirmatory_v02/confirmatory_v02_report.json",
+      "sha256": "183a8d80f66f94dc252ce96916737a8fe8d0bb7822091d77d7cebc763d6706b4",
+      "bytes": 1572
+    },
+    {
+      "path": "v02/generate_pack.py",
+      "sha256": "3d87bb21399d6b2498b99ad8941851f8f143255ec9b2ef0417c07cb26db1ff40",
+      "bytes": 22939
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-20261021T123319Z/PILOT_RESULTS.json",
+      "sha256": "b37cf35249f3815ec58f7caa3ba49a211008ce0162a5535de3ecbe81520ed2d7",
+      "bytes": 2263
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-20261021T123319Z/FEASIBILITY_REPORT.md",
+      "sha256": "662524c6c2e70c7ffd5ccbb6aa01c6e17a1102f46075c74173b9795a086c2605",
+      "bytes": 1939
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-20261021T123319Z/attempts.json",
+      "sha256": "3c6c3c6d3c8b140945cd352fc0b557cb9e791d95a2ba904396af36576ded36ea",
+      "bytes": 719830
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-20261021T123319Z/protocol.json",
+      "sha256": "5eadcc6f11b21718a3847dc3f4e98fd2504cac3f63106ab65ee8caa01df59ed1",
+      "bytes": 579
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/PILOT_RESULTS.json",
+      "sha256": "7664e3c08671b284f3b20f3a58155fba4524480dc5d1fe4c8113f985d1d4f47d",
+      "bytes": 1442
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/FEASIBILITY_REPORT.md",
+      "sha256": "ad962284d9a5ace08f1f4225849a399993b0bd78cfb4ec562a946c1fef13ccfc",
+      "bytes": 845
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/attempts.json",
+      "sha256": "6132e673cdc69b4a18c112f6fd1ae184fa57d4c95008d97a42945543091ca8b7",
+      "bytes": 1761987
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/INTEGRITY.json",
+      "sha256": "fb8ff53274e599db87ab3c5e544101def09679e19fabfb0640017d8b457694ba",
+      "bytes": 1845
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/CLOSURE_VALIDATION.json",
+      "sha256": "8c86a9e361ddc58791450a7ca2a9c58d65d87d6bc805eec9434acaa57b98d5ad",
+      "bytes": 1396
+    },
+    {
+      "path": "natural-feasibility-pilot/natural-pilot-gemini-20261021T172103Z/protocol.json",
+      "sha256": "e5cb8116b0b4b70620d518c9e4200b6d74b9d237d1f22f097caf17ba45157141",
+      "bytes": 2101
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/PILOT_RESULTS.json",
+      "sha256": "8c939cd4b1a4c7ab08bdffdab20340e0525a16e6d8108bfafebaaaa35bd0e1f4",
+      "bytes": 3401
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/FEASIBILITY_REPORT.md",
+      "sha256": "ce014c91f3ad630205e3071009ef85cc37a318b641e445084f993fb0d6f5e598",
+      "bytes": 2307
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/PROTOCOL.json",
+      "sha256": "78d37f5fcc15b89bf1e3dbdee2868bf5f1ed9f99b7cfcb170af9f3d3203c593b",
+      "bytes": 2923
+    },
+    {
+      "path": "next-task/expression-pilot-gemini-20261022T163536Z/attempts.json",
+      "sha256": "65cfd37315bc7faa5a8abefb0c8b47431dcaadf47ba4225d1a9e510b8c960c89",
+      "bytes": 898324
+    },
+    {
+      "path": "next-task/banks/diagnostic.json",
+      "sha256": "ca1ba993ba3bcc6c3c2d011c49cd51e0f5eb32ff8f8cb0421768553c47507847",
+      "bytes": 4982
+    },
+    {
+      "path": "next-task/banks/evaluation.json",
+      "sha256": "e227c24d9bfea7f734b3a249015d33f15d3a2619e62ff5f3a4d8a557e163946d",
+      "bytes": 4837
+    },
+    {
+      "path": "next-task/06_EXPRESSION_PILOT_RESULT_2026-10-22.md",
+      "sha256": "390aa417f18611028f8f36a32296b751c7c79f2aaf8422c0213529bb384fa9d6",
+      "bytes": 5260
+    },
+    {
+      "path": "next-task/07_EXPRESSION_PILOT_AUDIT_2026-10-22.md",
+      "sha256": "224eec222fc5f6cf87cbd210fc9062d0de829c2886bf2e760b94b996b6fd709e",
+      "bytes": 14769
+    }
+  ],
+  "pack_hashes": {
+    "v0.1": {
+      "files": 20,
+      "unique_bodies_after_header_strip": 20,
+      "base_bodies_in_header": 0,
+      "replica_groups": {},
+      "replica_files_beyond_first": 0,
+      "aggregate_sha256_of_sorted_sha256_lines": "93faed17a8e815ba1f5128a00142478a94184849df0ee9f5ed0de078d17c929a"
+    },
+    "v0.2": {
+      "files": 120,
+      "unique_bodies_after_header_strip": 40,
+      "base_bodies_in_header": 40,
+      "replica_groups": {
+        "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
+          "solver_022.py",
+          "solver_023.py",
+          "solver_024.py"
+        ],
+        "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991": [
+          "solver_028.py",
+          "solver_029.py",
+          "solver_030.py"
+        ],
+        "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760": [
+          "solver_094.py",
+          "solver_095.py",
+          "solver_096.py"
+        ],
+        "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5": [
+          "solver_016.py",
+          "solver_017.py",
+          "solver_018.py"
+        ],
+        "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f": [
+          "solver_070.py",
+          "solver_071.py",
+          "solver_072.py"
+        ],
+        "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94": [
+          "solver_097.py",
+          "solver_098.py",
+          "solver_099.py"
+        ],
+        "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f": [
+          "solver_034.py",
+          "solver_035.py",
+          "solver_036.py"
+        ],
+        "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d": [
+          "solver_079.py",
+          "solver_080.py",
+          "solver_081.py"
+        ],
+        "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211": [
+          "solver_103.py",
+          "solver_104.py",
+          "solver_105.py"
+        ],
+        "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3": [
+          "solver_040.py",
+          "solver_041.py",
+          "solver_042.py"
+        ],
+        "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3": [
+          "solver_049.py",
+          "solver_050.py",
+          "solver_051.py"
+        ],
+        "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a": [
+          "solver_085.py",
+          "solver_086.py",
+          "solver_087.py"
+        ],
+        "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46": [
+          "solver_004.py",
+          "solver_005.py",
+          "solver_006.py"
+        ],
+        "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099": [
+          "solver_076.py",
+          "solver_077.py",
+          "solver_078.py"
+        ],
+        "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df": [
+          "solver_055.py",
+          "solver_056.py",
+          "solver_057.py"
+        ],
+        "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06": [
+          "solver_088.py",
+          "solver_089.py",
+          "solver_090.py"
+        ],
+        "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce": [
+          "solver_025.py",
+          "solver_026.py",
+          "solver_027.py"
+        ],
+        "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce": [
+          "solver_019.py",
+          "solver_020.py",
+          "solver_021.py"
+        ],
+        "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9": [
+          "solver_100.py",
+          "solver_101.py",
+          "solver_102.py"
+        ],
+        "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a": [
+          "solver_073.py",
+          "solver_074.py",
+          "solver_075.py"
+        ],
+        "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609": [
+          "solver_001.py",
+          "solver_002.py",
+          "solver_003.py"
+        ],
+        "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64": [
+          "solver_013.py",
+          "solver_014.py",
+          "solver_015.py"
+        ],
+        "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1": [
+          "solver_067.py",
+          "solver_068.py",
+          "solver_069.py"
+        ],
+        "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52": [
+          "solver_061.py",
+          "solver_062.py",
+          "solver_063.py"
+        ],
+        "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780": [
+          "solver_046.py",
+          "solver_047.py",
+          "solver_048.py"
+        ],
+        "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546": [
+          "solver_007.py",
+          "solver_008.py",
+          "solver_009.py"
+        ],
+        "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd": [
+          "solver_091.py",
+          "solver_092.py",
+          "solver_093.py"
+        ],
+        "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105": [
+          "solver_037.py",
+          "solver_038.py",
+          "solver_039.py"
+        ],
+        "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0": [
+          "solver_115.py",
+          "solver_116.py",
+          "solver_117.py"
+        ],
+        "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522": [
+          "solver_031.py",
+          "solver_032.py",
+          "solver_033.py"
+        ],
+        "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02": [
+          "solver_052.py",
+          "solver_053.py",
+          "solver_054.py"
+        ],
+        "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1": [
+          "solver_106.py",
+          "solver_107.py",
+          "solver_108.py"
+        ],
+        "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304": [
+          "solver_064.py",
+          "solver_065.py",
+          "solver_066.py"
+        ],
+        "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5": [
+          "solver_109.py",
+          "solver_110.py",
+          "solver_111.py"
+        ],
+        "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031": [
+          "solver_082.py",
+          "solver_083.py",
+          "solver_084.py"
+        ],
+        "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72": [
+          "solver_058.py",
+          "solver_059.py",
+          "solver_060.py"
+        ],
+        "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f": [
+          "solver_010.py",
+          "solver_011.py",
+          "solver_012.py"
+        ],
+        "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0": [
+          "solver_043.py",
+          "solver_044.py",
+          "solver_045.py"
+        ],
+        "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe": [
+          "solver_118.py",
+          "solver_119.py",
+          "solver_120.py"
+        ],
+        "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109": [
+          "solver_112.py",
+          "solver_113.py",
+          "solver_114.py"
+        ]
+      },
+      "replica_files_beyond_first": 80,
+      "aggregate_sha256_of_sorted_sha256_lines": "225701286cebab13b883a53669fecf62fe3d1bdf052a2cd7cfb90b999c2e8854"
+    }
+  }
+}
