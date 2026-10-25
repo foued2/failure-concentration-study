@@ -1,0 +1,27 @@
+{
+  "alpha": 0.05,
+  "alternative": "p(k,C) = baseline(k) + beta*(C - midpoint(C_low,C_high))",
+  "baseline_probability": "0.90 - 0.0125*k",
+  "c_high": "1.0",
+  "c_low": "ceil(k/6)/k",
+  "code_sha256": "fb1a6855961009f0e04b487a1d9839c418c539a04aa95e80d32c108c6c180bca",
+  "duplicate_or_execution_loss": "Binomial thinning with yield=(1-duplicate_rate)*(1-ineligible_rate)",
+  "generated_at_utc": "2026-10-22T19:26:54.289214+00:00",
+  "k_levels": [
+    2,
+    6,
+    12,
+    24
+  ],
+  "n_eval": 200,
+  "null_permutations": 199,
+  "null_replicates": 1000,
+  "permutations": 99,
+  "power_replicates": 400,
+  "python": "3.14.0 (main, Nov 19 2025, 22:43:52) [MSC v.1944 64 bit (AMD64)]",
+  "score_model": "Binomial(200,p); rho>0: p_i~Beta(mean=p, ICC=rho), X~Binomial(200,p_i)",
+  "seed": 20261022,
+  "status": "OFFLINE_SIMULATION_COMPLETE_NO_GENERATION",
+  "yield_model_limit": "Thinning approximates loss of independent bodies; it is not a clustered-duplicate model.",
+  "yield_permutations": 199
+}
