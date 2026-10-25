@@ -12,8 +12,11 @@ and no bank, protocol, frozen result, or solver record was modified.
 No existing retained dataset contains an eligible same-`k`, different-`C` comparison with
 independent solver bodies.
 
-- The SSSP runs have no eligible `k >= 2` bodies at all: every completed body has `k = 0`.
-- The expression pilot has `k >= 2` bodies, but each repeated-`k` group has only one `C` level.
+- The newer Codex and Gemini SSSP runs have no eligible `k >= 2` bodies: every completed body
+  has `k = 0`. This statement does not apply to the historical v0.1 and v0.2 packs, which do
+  contain multi-failure bodies.
+- The expression pilot has `k >= 2` bodies, but all 13 of them crash and are ineligible under the
+  frozen protocol. It therefore contributes zero eligible `k >= 2` bodies.
 - The v0.1 and v0.2 SSSP packs have several `C` values, but only across different `k` values;
   on the audited support `C = 5/k` exactly, so there is no within-`k` `C` variation.
 - The v0.2 pack is 40 base bodies replicated three times, not 120 independent bodies.
@@ -27,7 +30,9 @@ The unit is one solver body with a documented generation lineage. Exact duplicat
 were collapsed. Independence was not inferred from differing filenames or raw file hashes.
 
 A body is eligible only if it has a parseable artifact, complete diagnostic measurements, a
-correctness outcome on a separate evaluation suite, and `k >= 2`. `C` is undefined at `k = 0`.
+correctness outcome on a separate evaluation suite, no diagnostic or evaluation crash, and
+`k >= 2`. `C` is undefined at `k = 0`; historical rows that store `C = 0` there are treated as
+sentinel values and excluded from concentration counts, not as observed concentration.
 
 ## 3. Family rationale used for the audit
 
@@ -73,7 +78,7 @@ Generator: `opencode/mimo-v2.6-flash-free`, 20 single-shot submissions from one 
 
 | `k` | `C` | Body-instance rows | Distinct bodies |
 | ---: | ---: | ---: | ---: |
-| 0 | 0.0 | 48 | 16 |
+| 0 | undefined | 48 | 16 |
 | 5 | 1.0 | 6 | 2 |
 | 10 | 0.5 | 3 | 1 |
 | 25 | 0.2 | 3 | 1 |
@@ -116,7 +121,7 @@ Generator: Codex CLI / `gpt-6-luna`.
 - Model-written outputs: 39; generation failures: 61
 - Distinct canonical bodies: 15
 - Bodies with complete diagnostic and evaluation records: 10
-- All 10 complete bodies: `k = 0`, `C = 0`, 20/20 evaluation correct
+- All 10 complete bodies: `k = 0`, so `C` is undefined
 - Eligible `k >= 2` bodies: **0**
 - Same-`k`, different-`C` pairs: **0**
 
@@ -132,7 +137,7 @@ Generator: Google Gemini API / `gemini-3.5-flash-lite`.
 - Generation requests: 100; generation failures: 0
 - Distinct canonical bodies: 25
 - Complete bodies: 25
-- All 25 bodies: `k = 0`, `C = 0`, 20/20 evaluation correct
+- All 25 bodies: `k = 0`, so `C` is undefined
 - Eligible `k >= 2` bodies: **0**
 - Same-`k`, different-`C` pairs: **0**
 
@@ -144,15 +149,18 @@ Source: `next-task/expression-pilot-gemini-20261022T163536Z/PILOT_RESULTS.json`,
 `next-task/06_EXPRESSION_PILOT_RESULT_2026-10-22.md`,
 `next-task/07_EXPRESSION_PILOT_AUDIT_2026-10-22.md`.
 
-| `k` | `C` | Bodies | Evaluation correct per body |
-| ---: | ---: | ---: | --- |
-| 0 | 0.0 | 6 | 30/30 each |
-| 2 | 1.0 | 9 | 28/30 each |
-| 7 | 5/7 | 1 | 23/30 |
-| 30 | 1/6 | 3 | 0/30 each |
+| `k` | Stored `C` | Bodies | Protocol status | Crash evidence |
+| ---: | ---: | ---: | --- | --- |
+| 0 | undefined | 6 | valid but `k < 2` | 0 crashes |
+| 2 | 1.0 | 9 | excluded (crash) | 2 diagnostic and 2 evaluation crashes each |
+| 7 | 5/7 | 1 | excluded (crash) | 7 diagnostic and 7 evaluation crashes |
+| 30 | 1/6 | 3 | excluded (crash) | 30 diagnostic and 30 evaluation crashes each |
 
-Eligible bodies with `k >= 2`: **13**. Same-`k`, different-`C` pairs: **0**.
-`k = 2` has only `C = 1.0`; `k = 30` has only `C = 1/6`; `k = 7` is a singleton.
+All 13 bodies with `k >= 2` crash on the diagnostic and evaluation suites and are ineligible
+under the protocol's crash rule. Eligible bodies with `k >= 2`: **0**. The six `k = 0` bodies are
+valid but cannot support a concentration contrast, so `C` is undefined for them. The pilot's
+reported 19 eligible executed bodies counts crashed bodies and is not the protocol-eligible
+count. Same-`k`, different-`C` pairs: **0**.
 
 The existing post-hoc audit also found that the nine `k = 2` bodies share one whitespace bug and
 the three `k = 30` bodies are uniform crashes. Source diversity therefore overstates behavioral
@@ -163,6 +171,7 @@ diversity in this pilot.
 | Reason | Count / extent |
 | --- | --- |
 | `k < 2` | 16 v0.1 bodies; 10 Codex bodies; 25 Gemini SSSP bodies; 6 expression bodies |
+| Crash under the frozen protocol | 13 expression bodies with `k >= 2` (9 at `k = 2`, 1 at `k = 7`, 3 at `k = 30`) |
 | Markedly invalid artifact | 2 expression syntax rejects (not executed) |
 | Replica / non-independent files | 80 v0.2 files beyond the first copy of each base body |
 | No per-row auditable support | 1,200 v0.2 confirmatory pairs (aggregate-only persistence) |
@@ -184,6 +193,13 @@ to select the pack.
 their exact expression strings are disjoint. Expected values are host-side and were not in the
 guest payload. The evaluation outcomes were not used to select or replace bodies.
 
+**Non-blindness and outcome separation.** Historical evaluation outcomes already existed and
+were visible to this audit. This is therefore not a blind inventory. The eligibility decision
+uses artifact validity, crash status, lineage, and the presence of an evaluation record, not
+score magnitudes; the inventory tables do not report correctness counts. No `C`-`S`
+association is fitted here, and the visible historical scores are not treated as evidence for
+or against such an association.
+
 **Caveat common to all natural runs.** The guest could read other inputs mounted in its suite
 session. The source screen was a best-effort policy, not a secure blinding boundary. This does
 not alter the observed support, but it bounds any future claim of genuine blinding.
@@ -197,10 +213,11 @@ not alter the observed support, but it bounds any future claim of genuine blindi
 | 3. `VARIATION_EXISTS_BUT_INSUFFICIENT` | Not reached; no qualifying pair exists. |
 | 4. `FEASIBLE_FOR_NEXT_DESIGN_STAGE_ONLY` | Not reached. |
 
-The total number of `k >= 2` units across datasets (27 before behavioral de-duplication) is not
-the relevant test. The minimum bar in rule 3 additionally requires at least three family x `k`
-strata with two or more `C` levels, each supported by at least two independent units. No such
-stratum exists.
+The total number of protocol-eligible `k >= 2` units across datasets is **14** (4 v0.1 + 10
+v0.2); the expression pilot contributes **0** because all of its `k >= 2` bodies crash. This
+total is not the relevant test. The minimum bar in rule 3 additionally requires at least three
+family x `k` strata with two or more `C` levels, each supported by at least two independent
+units. No such stratum exists.
 
 ## 8. What this does not authorize
 
@@ -218,11 +235,14 @@ producing independent partial implementations at the same `k` with different `C`
 
 ## 9. Artifacts
 
-- `inventory_data.json` — full machine-readable inventory, including every input hash and
-  replica mapping.
-- `inventory_table.csv` — flat table of dataset x `k` x `C` support.
-- `collect_inventory.py` — read-only script used to produce the JSON/CSV. It reads metadata and
-  hashes only; it never imports or executes solver code.
+- `inventory_data.json` — full machine-readable inventory, including per-file SHA-256 hashes for
+  every v0.1 and v0.2 solver file, replica mappings, provenance source hashes, and excluded crash
+  records.
+- `inventory_table.csv` — flat table of dataset x `k` x `C` support with explicit eligibility
+  status; `C` is blank when undefined.
+- `collect_inventory.py` — read-only script used to produce the JSON/CSV. It derives eligibility,
+  crash exclusions, and fixed-`k` contrast counts from the retained records. It reads metadata
+  and hashes only; it never imports or executes solver code.
 
 Key input hashes:
 
@@ -231,6 +251,14 @@ Key input hashes:
 | protocol | `8f0a24fe9c387733ee28ef345d527be048c15a6a57ad634ef9f0997feff2fed4` |
 | v0.1 pilot report JSON | `0dd24c2822be00ce2125c78a4be2a2b2dae285859d6ffceb7584df3a8aa1e344` |
 | v0.2 pilot report JSON | `af1c731f64263f625d4c57dc88e347986138bf595d46a348dfec4d311afc2b75` |
+| v0.2 frozen spec | `f4120d0ef2566fefbc3840635d9fff7d6a62053da1f0569bf0cf09e29eb873f4` |
+| SSSP instrument spec | `0573e4809649bb6b67f81fce5784501d90827b8f3b019d2f01175a6f876e4a3d` |
+| SSSP families | `1146c45edd2863aa05828fad0a0b900218b2584e6b2d0b9319db941b59f22fd4` |
+| SSSP probes | `dffccc958163c751654810d8f4990e64c042250cb9bacde1748aa82b7942bf5a` |
+| SSSP instances | `cd6ad31ff25185acbb441e6f01ec739a10c1090aba81638f255aa7bd1dc4bfff` |
+| SSSP solver/evaluator | `7270c572fa0033fd7a663f86a7bdfdd373773714a4b00cd758ba30b4ef5d5860` |
+| expression bank builder | `9ccaec5dc9bdc332a8e39506e1f5c482b05b17f108bd55aed4dcb50afb75dcfc` |
+| expression bank manifest | `849159c467682a782564bd63423d85c2da3c75d2efd4e9a211992ea986256155` |
 | Codex SSSP results | `b37cf35249f3815ec58f7caa3ba49a211008ce0162a5535de3ecbe81520ed2d7` |
 | Codex SSSP report | `662524c6c2e70c7ffd5ccbb6aa01c6e17a1102f46075c74173b9795a086c2605` |
 | Gemini SSSP results | `7664e3c08671b284f3b20f3a58155fba4524480dc5d1fe4c8113f985d1d4f47d` |

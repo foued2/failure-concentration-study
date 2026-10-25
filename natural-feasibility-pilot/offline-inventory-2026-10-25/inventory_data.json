@@ -4,6 +4,7 @@
   "mode": "offline inventory only; no solver or model execution",
   "disposition": "INFEASIBLE_WITH_CURRENT_DATA",
   "disposition_basis": "Zero eligible same-k, different-C body pairs with independent lineage in every audited dataset.",
+  "outcome_limitation": "Historical evaluation outcomes already existed and were visible to this audit; it is not a blind inventory. Eligibility uses artifact validity, crash status, lineage, and the presence of an evaluation record, not score magnitudes. No C-S association is fitted or reported here.",
   "datasets": [
     {
       "id": "v0.1_mimo_sssp_pilot",
@@ -25,9 +26,6 @@
         25
       ],
       "distinct_C_levels_by_k": {
-        "0": [
-          0.0
-        ],
         "5": [
           1.0
         ],
@@ -41,9 +39,11 @@
       "cells": [
         {
           "k": 0,
-          "C": 0.0,
+          "C": null,
+          "status": "ineligible_k_lt_2",
           "body_instance_rows": 48,
           "distinct_bodies": 16,
+          "eligible_body_count": 0,
           "bodies": [
             "solver_01",
             "solver_02",
@@ -66,8 +66,10 @@
         {
           "k": 5,
           "C": 1.0,
+          "status": "eligible",
           "body_instance_rows": 6,
           "distinct_bodies": 2,
+          "eligible_body_count": 2,
           "bodies": [
             "solver_05",
             "solver_20"
@@ -76,8 +78,10 @@
         {
           "k": 10,
           "C": 0.5,
+          "status": "eligible",
           "body_instance_rows": 3,
           "distinct_bodies": 1,
+          "eligible_body_count": 1,
           "bodies": [
             "solver_19"
           ]
@@ -85,15 +89,53 @@
         {
           "k": 25,
           "C": 0.2,
+          "status": "eligible",
           "body_instance_rows": 3,
           "distinct_bodies": 1,
+          "eligible_body_count": 1,
           "bodies": [
             "solver_04"
           ]
         }
       ],
+      "contrast": {
+        "same_k_different_C_pairs": 0,
+        "same_k_different_C_level_pairs": 0,
+        "by_k": {
+          "5": {
+            "C_levels": [
+              1.0
+            ],
+            "eligible_bodies_by_C": {
+              "1.0": 2
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          },
+          "10": {
+            "C_levels": [
+              0.5
+            ],
+            "eligible_bodies_by_C": {
+              "0.5": 1
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          },
+          "25": {
+            "C_levels": [
+              0.2
+            ],
+            "eligible_bodies_by_C": {
+              "0.2": 1
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          }
+        }
+      },
       "same_k_different_C_pairs": 0,
-      "notes": "16/20 bodies had k=0 and are ineligible. Four multi-failure bodies occupy k=25(C=0.2), k=10(C=0.5), k=5(C=1), k=5(C=1); no fixed-k group has two C levels."
+      "notes": "16/20 bodies had k=0 and are ineligible for a concentration contrast. Four multi-failure bodies occupy k=25(C=0.2), k=10(C=0.5), k=5(C=1), k=5(C=1); no fixed-k group has two C levels. C is undefined at k=0."
     },
     {
       "id": "v0.2_mimo_sssp_pack",
@@ -109,6 +151,128 @@
         "files": 120,
         "unique_bodies_after_header_strip": 40,
         "base_bodies_in_header": 40,
+        "body_sha256_by_file": {
+          "solver_001.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+          "solver_002.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+          "solver_003.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+          "solver_004.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+          "solver_005.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+          "solver_006.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+          "solver_007.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+          "solver_008.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+          "solver_009.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+          "solver_010.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+          "solver_011.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+          "solver_012.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+          "solver_013.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+          "solver_014.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+          "solver_015.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+          "solver_016.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+          "solver_017.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+          "solver_018.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+          "solver_019.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+          "solver_020.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+          "solver_021.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+          "solver_022.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+          "solver_023.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+          "solver_024.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+          "solver_025.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+          "solver_026.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+          "solver_027.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+          "solver_028.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+          "solver_029.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+          "solver_030.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+          "solver_031.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+          "solver_032.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+          "solver_033.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+          "solver_034.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+          "solver_035.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+          "solver_036.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+          "solver_037.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+          "solver_038.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+          "solver_039.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+          "solver_040.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+          "solver_041.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+          "solver_042.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+          "solver_043.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+          "solver_044.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+          "solver_045.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+          "solver_046.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+          "solver_047.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+          "solver_048.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+          "solver_049.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+          "solver_050.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+          "solver_051.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+          "solver_052.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+          "solver_053.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+          "solver_054.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+          "solver_055.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+          "solver_056.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+          "solver_057.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+          "solver_058.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+          "solver_059.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+          "solver_060.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+          "solver_061.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+          "solver_062.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+          "solver_063.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+          "solver_064.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+          "solver_065.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+          "solver_066.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+          "solver_067.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+          "solver_068.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+          "solver_069.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+          "solver_070.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+          "solver_071.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+          "solver_072.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+          "solver_073.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+          "solver_074.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+          "solver_075.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+          "solver_076.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+          "solver_077.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+          "solver_078.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+          "solver_079.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+          "solver_080.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+          "solver_081.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+          "solver_082.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+          "solver_083.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+          "solver_084.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+          "solver_085.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+          "solver_086.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+          "solver_087.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+          "solver_088.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+          "solver_089.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+          "solver_090.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+          "solver_091.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+          "solver_092.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+          "solver_093.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+          "solver_094.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+          "solver_095.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+          "solver_096.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+          "solver_097.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+          "solver_098.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+          "solver_099.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+          "solver_100.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+          "solver_101.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+          "solver_102.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+          "solver_103.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+          "solver_104.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+          "solver_105.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+          "solver_106.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+          "solver_107.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+          "solver_108.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+          "solver_109.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+          "solver_110.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+          "solver_111.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+          "solver_112.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+          "solver_113.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+          "solver_114.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+          "solver_115.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+          "solver_116.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+          "solver_117.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+          "solver_118.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
+          "solver_119.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
+          "solver_120.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe"
+        },
         "replica_groups": {
           "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
             "solver_022.py",
@@ -318,36 +482,45 @@
       "pilot_distinct_body_files": 30,
       "pilot_distinct_base_bodies": 10,
       "eligible_bodies_k_ge_2": 10,
+      "eligible_distinct_base_bodies": 10,
       "confirmatory_eligible_pairs_reported": 1200,
       "confirmatory_per_row_persisted": false,
       "cells": [
         {
           "k": 5,
           "C": 1.0,
+          "status": "eligible",
           "body_instance_rows": 27,
           "distinct_body_files": 9,
-          "distinct_base_bodies": 3
+          "distinct_base_bodies": 3,
+          "eligible_body_count": 3
         },
         {
           "k": 10,
           "C": 0.5,
+          "status": "eligible",
           "body_instance_rows": 9,
           "distinct_body_files": 3,
-          "distinct_base_bodies": 1
+          "distinct_base_bodies": 1,
+          "eligible_body_count": 1
         },
         {
           "k": 20,
           "C": 0.25,
+          "status": "eligible",
           "body_instance_rows": 9,
           "distinct_body_files": 3,
-          "distinct_base_bodies": 1
+          "distinct_base_bodies": 1,
+          "eligible_body_count": 1
         },
         {
           "k": 25,
           "C": 0.2,
+          "status": "eligible",
           "body_instance_rows": 45,
           "distinct_body_files": 15,
-          "distinct_base_bodies": 5
+          "distinct_base_bodies": 5,
+          "eligible_body_count": 5
         }
       ],
       "distinct_C_levels_by_k": {
@@ -364,8 +537,53 @@
           0.2
         ]
       },
+      "contrast": {
+        "same_k_different_C_pairs": 0,
+        "same_k_different_C_level_pairs": 0,
+        "by_k": {
+          "5": {
+            "C_levels": [
+              1.0
+            ],
+            "eligible_bodies_by_C": {
+              "1.0": 3
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          },
+          "10": {
+            "C_levels": [
+              0.5
+            ],
+            "eligible_bodies_by_C": {
+              "0.5": 1
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          },
+          "20": {
+            "C_levels": [
+              0.25
+            ],
+            "eligible_bodies_by_C": {
+              "0.25": 1
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          },
+          "25": {
+            "C_levels": [
+              0.2
+            ],
+            "eligible_bodies_by_C": {
+              "0.2": 5
+            },
+            "C_level_pairs": 0,
+            "body_pairs": 0
+          }
+        }
+      },
       "same_k_different_C_pairs": 0,
-      "eligible_distinct_base_bodies": 10,
       "notes": "All 90 audited eligible rows satisfy C=5/k exactly; each k has one C level. Confirmatory rows were persisted only as aggregates. The 120 files are 40 base bodies x 3 replicas, so they are not 120 independent units."
     },
     {
@@ -386,25 +604,20 @@
       "cells": [
         {
           "k": 0,
-          "C": 0.0,
+          "C": null,
+          "status": "ineligible_k_lt_2",
           "attempts": 10,
           "distinct_bodies": 10,
-          "evaluation_correct_counts": [
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20
-          ]
+          "eligible_body_count": 0
         }
       ],
+      "contrast": {
+        "same_k_different_C_pairs": 0,
+        "same_k_different_C_level_pairs": 0,
+        "by_k": {}
+      },
       "same_k_different_C_pairs": 0,
-      "notes": "All completed bodies have k=0, so C is undefined/zero and no k>=2 support exists."
+      "notes": "All completed bodies have k=0, so C is undefined and no k>=2 support exists."
     },
     {
       "id": "gemini_sssp_100",
@@ -424,40 +637,20 @@
       "cells": [
         {
           "k": 0,
-          "C": 0.0,
+          "C": null,
+          "status": "ineligible_k_lt_2",
           "attempts": 25,
           "distinct_bodies": 25,
-          "evaluation_correct_counts": [
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20,
-            20
-          ]
+          "eligible_body_count": 0
         }
       ],
+      "contrast": {
+        "same_k_different_C_pairs": 0,
+        "same_k_different_C_level_pairs": 0,
+        "by_k": {}
+      },
       "same_k_different_C_pairs": 0,
-      "notes": "All completed bodies have k=0, so C is undefined/zero and no k>=2 support exists."
+      "notes": "All completed bodies have k=0, so C is undefined and no k>=2 support exists."
     },
     {
       "id": "gemini_expression_30",
@@ -474,64 +667,146 @@
       "source_rejected": 2,
       "duplicates": 6,
       "distinct_canonical_bodies": 21,
+      "pilot_reported_eligible_bodies": 19,
+      "protocol_eligible_bodies": 6,
+      "eligible_bodies_k_ge_2": 0,
       "eligible_executed_bodies": 19,
-      "eligible_bodies_k_ge_2": 13,
       "state": "REPEATED_K_BUT_NO_C_SEPARATION",
+      "crash_policy": "Any crash in the diagnostic or evaluation suite makes a body ineligible under the frozen protocol; crashes are counted separately from diagnostic failures.",
       "cells": [
         {
           "k": 0,
-          "C": 0.0,
+          "C": null,
+          "status": "ineligible_k_lt_2",
           "attempts": 6,
           "distinct_bodies": 6,
-          "evaluation_correct_counts": [
-            30,
-            30,
-            30,
-            30,
-            30,
-            30
-          ]
+          "eligible_body_count": 0
         },
         {
           "k": 2,
           "C": 1.0,
+          "status": "excluded_crash",
           "attempts": 9,
           "distinct_bodies": 9,
-          "evaluation_correct_counts": [
-            28,
-            28,
-            28,
-            28,
-            28,
-            28,
-            28,
-            28,
-            28
-          ]
-        },
-        {
-          "k": 30,
-          "C": 0.16666666666666666,
-          "attempts": 3,
-          "distinct_bodies": 3,
-          "evaluation_correct_counts": [
-            0,
-            0,
-            0
-          ]
+          "eligible_body_count": 0
         },
         {
           "k": 7,
           "C": 0.7142857142857143,
+          "status": "excluded_crash",
           "attempts": 1,
           "distinct_bodies": 1,
-          "evaluation_correct_counts": [
-            23
-          ]
+          "eligible_body_count": 0
+        },
+        {
+          "k": 30,
+          "C": 0.16666666666666666,
+          "status": "excluded_crash",
+          "attempts": 3,
+          "distinct_bodies": 3,
+          "eligible_body_count": 0
         }
       ],
+      "excluded_crashed_bodies": [
+        {
+          "body_id": "433b735840241b108c5d851e42b63c3cf8f46dd175e5bbea243b3dd8b3cfa4b8",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "9ff39e024cf6390b68b6ca4d3df9e821eed9dadecc579a7c4783a8a502c26f66",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "0393483b6fad28f33cfb3b35bb0b6e3bea459c5587c55ce767934772c51c7a5e",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "5cecbd1e100dbcd37519fdd2537fed33f1741d16667a1da3ef928c0221cf1b5a",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "ba8bad3d20c33f0f90a4e736ae0c7c3df49aa82e9e73aa268c1477ec5a62551c",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "a974e67030948c350c0ad0301998235b7d3537104729b673e8d5b75a5ae37a9f",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "41753a30d479b2f70e10e1a3115551720dd56eca9179874460ef658f100d19a9",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "b0abb598e2724ce7b57a5e861e7429b3c6b3a9d05f9685aed6eab752f438ac12",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "1873a80b916cc0e55e4095ee6b15897341ae346d7a69bf4d30b8f2f812d5bc46",
+          "k": 2,
+          "C": 1.0,
+          "diag_crash": 2,
+          "eval_crash": 2
+        },
+        {
+          "body_id": "f4f1ab638ff617c1c88b4cc2f0a11cc1c507c22eee56e521326d7ffe3a87eb42",
+          "k": 7,
+          "C": 0.7142857142857143,
+          "diag_crash": 7,
+          "eval_crash": 7
+        },
+        {
+          "body_id": "c80287fe075d3b717c612180f7a22273fd10293dbe494a68ca00b712736c8bdb",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30
+        },
+        {
+          "body_id": "b8024a66c5958c0369070957991b80a2f352c3398f22a16e5df0130497e72e53",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30
+        },
+        {
+          "body_id": "f1f6a1e7e29c859ff917a3d0d0b8d3e8a8df662a5cbd9c63518bafbe5a66ff03",
+          "k": 30,
+          "C": 0.16666666666666666,
+          "diag_crash": 30,
+          "eval_crash": 30
+        }
+      ],
+      "contrast": {
+        "same_k_different_C_pairs": 0,
+        "same_k_different_C_level_pairs": 0,
+        "by_k": {}
+      },
       "same_k_different_C_pairs": 0,
-      "notes": "k=2 occurs with C=1 only (9 bodies); k=30 with C=1/6 only (3 bodies); k=7 is a singleton. The nine k=2 bodies share one whitespace bug; the three k=30 bodies are uniform crashes. No fixed-k C separation."
+      "notes": "All 13 bodies with k>=2 crash and are excluded. The six k=0 bodies are valid but cannot support a concentration contrast. The nine k=2 bodies each crash on two diagnostic and two evaluation inputs; the singleton k=7 body has seven crashes each; the three k=30 bodies crash on all 30 diagnostic and evaluation inputs."
     }
   ],
   "excluded_categories": [
@@ -574,9 +849,49 @@
       "bytes": 2339
     },
     {
+      "path": "specs/instrument_spec.json",
+      "sha256": "0573e4809649bb6b67f81fce5784501d90827b8f3b019d2f01175a6f876e4a3d",
+      "bytes": 2751
+    },
+    {
+      "path": "study/families.py",
+      "sha256": "1146c45edd2863aa05828fad0a0b900218b2584e6b2d0b9319db941b59f22fd4",
+      "bytes": 1422
+    },
+    {
+      "path": "study/probes.py",
+      "sha256": "dffccc958163c751654810d8f4990e64c042250cb9bacde1748aa82b7942bf5a",
+      "bytes": 3562
+    },
+    {
+      "path": "study/instances.py",
+      "sha256": "cd6ad31ff25185acbb441e6f01ec739a10c1090aba81638f255aa7bd1dc4bfff",
+      "bytes": 1800
+    },
+    {
+      "path": "study/sssp.py",
+      "sha256": "7270c572fa0033fd7a663f86a7bdfdd373773714a4b00cd758ba30b4ef5d5860",
+      "bytes": 2399
+    },
+    {
       "path": "v02/FREEZE_V02.md",
       "sha256": "0e36bfcc50146407007fb9ae2a8ac91318903b90647fe9897b2bf607a2ff2589",
       "bytes": 2351
+    },
+    {
+      "path": "v02/PROTOCOL_V02.md",
+      "sha256": "86511a6f074df7176530366245d909ba714201fa53eab2c3dbb425b652c6457a",
+      "bytes": 5785
+    },
+    {
+      "path": "v02/spec_v02.json",
+      "sha256": "f4120d0ef2566fefbc3840635d9fff7d6a62053da1f0569bf0cf09e29eb873f4",
+      "bytes": 1214
+    },
+    {
+      "path": "v02/freeze_v02.py",
+      "sha256": "32b5e11d2203b0ed8613d758c63c1bd7a949141af4df50a9e4d77a15730ddb14",
+      "bytes": 2530
     },
     {
       "path": "v02/pilot_v02/pilot_v02_report.json",
@@ -649,6 +964,21 @@
       "bytes": 2101
     },
     {
+      "path": "next-task/build_expression_banks.py",
+      "sha256": "9ccaec5dc9bdc332a8e39506e1f5c482b05b17f108bd55aed4dcb50afb75dcfc",
+      "bytes": 4943
+    },
+    {
+      "path": "next-task/freeze_expression_banks.py",
+      "sha256": "47280599eba1a66db2e9aa983a2df7e4cc695bd7aac2f8589344bf1e5bc47bc6",
+      "bytes": 2449
+    },
+    {
+      "path": "next-task/banks/BUILD_MANIFEST.json",
+      "sha256": "849159c467682a782564bd63423d85c2da3c75d2efd4e9a211992ea986256155",
+      "bytes": 889
+    },
+    {
       "path": "next-task/expression-pilot-gemini-20261022T163536Z/PILOT_RESULTS.json",
       "sha256": "8c939cd4b1a4c7ab08bdffdab20340e0525a16e6d8108bfafebaaaa35bd0e1f4",
       "bytes": 3401
@@ -694,6 +1024,28 @@
       "files": 20,
       "unique_bodies_after_header_strip": 20,
       "base_bodies_in_header": 0,
+      "body_sha256_by_file": {
+        "solver_01.py": "54ca5b69d73600146cf6e3188f52eb910c8db52fdc3765ce47550057b1ea322f",
+        "solver_02.py": "1b5336790ab27f27cc2929f999192acbf3d1f556dfe6db83b63b81379c6ba16e",
+        "solver_03.py": "9c88dd376051b6b6f68b6c3dde558f9fa4910d9de9a450be489147baf5913c21",
+        "solver_04.py": "37e39d4c0e358d208c5759c680cba23531b3f58dddbb3aa0bd25c7739e9ba0c6",
+        "solver_05.py": "cd7f6922900e35d0282bbe5df9b55c46a5568c231cc59f1ae273111e90bc0b01",
+        "solver_06.py": "0b346d59ddb2cf989bfebf3d9bdada4cbbc95e9754a39c2d7ba075c20ac733e2",
+        "solver_07.py": "584abd4e45f92f7f092d37e5019f80028d1a4ec7953dd1d55102c9f41e091367",
+        "solver_08.py": "b64778620389a417abea26817d7d825c188120d30827dcd8b102ab0d2ef9c987",
+        "solver_09.py": "8f76c66c2efc3fcdcdd57ded827127c90df7c47eadb6d69669d3648b59c67c89",
+        "solver_10.py": "c7a7636c61b25a5009c7ac11eeca9c056ade16302a609c07ebe8823b26deaf55",
+        "solver_11.py": "db0089ec4b8f8dc86511cae810c553ba749c87dbdd1fe697a1be095bc49e8be5",
+        "solver_12.py": "e0a566d6983dbd2fc214160be1a9d6bab4b7df5fa75adf84e9e60cdf3db1bd19",
+        "solver_13.py": "41557bee018fa530ce6495a94d5ff73ea9f03557c0a79e17d2c806e6f6aec363",
+        "solver_14.py": "154631d343d96f6dabb8d65be4cf21119c0ea4d32eb7d339e5dcf78215ef01d0",
+        "solver_15.py": "4275e64fb010c3a16f756503b9e773b4e555a8bca0117e2c4c0d97638122ff74",
+        "solver_16.py": "96bd300f80eff0c5e457f9ebc92f164b768d500c6d382321bb5faf2e80d7c255",
+        "solver_17.py": "fd4c5447130f3e6119127070b614964ce483b0620f6c8d9569cccf6ee52bc6dd",
+        "solver_18.py": "3775799fdb38d8db723358af8884a5c6e8633774f99e58052db7876d072208f8",
+        "solver_19.py": "0242f9264b9c17cb9318268048c50067d0ea141288ada144ec5c2480886d9de1",
+        "solver_20.py": "d516132f3caaa0046cdfd3a18b8c48e55ec804291297ad9542393dfe2af46328"
+      },
       "replica_groups": {},
       "replica_files_beyond_first": 0,
       "aggregate_sha256_of_sorted_sha256_lines": "93faed17a8e815ba1f5128a00142478a94184849df0ee9f5ed0de078d17c929a"
@@ -702,6 +1054,128 @@
       "files": 120,
       "unique_bodies_after_header_strip": 40,
       "base_bodies_in_header": 40,
+      "body_sha256_by_file": {
+        "solver_001.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+        "solver_002.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+        "solver_003.py": "75b7cac06b64a81eabc9a050ce92c3559ebcbb1770ac1c05662578a3e19b3609",
+        "solver_004.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+        "solver_005.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+        "solver_006.py": "42d3e57a57e901909ec505138799794a364da4dbba57672bf9585b6a88d50e46",
+        "solver_007.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+        "solver_008.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+        "solver_009.py": "90a5ee1b937ecded4513278f9a9ca6300514c5176c44a07f7a6408e8dfbe6546",
+        "solver_010.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+        "solver_011.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+        "solver_012.py": "e47c85a2b8362bd7953a935309e357e41d923e429fc60ebea5e8b6848f77eb9f",
+        "solver_013.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+        "solver_014.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+        "solver_015.py": "77597107144d76964abd72ee4bb0ef753bc87836187f7469a9cc274de35c5d64",
+        "solver_016.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+        "solver_017.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+        "solver_018.py": "07bef5b31fb13165262ebf4e3cbcf492e10dd3b10172061432440b9ed4af0de5",
+        "solver_019.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+        "solver_020.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+        "solver_021.py": "64153e23829c053a9db9706d6cac8e52a8a7f0c341870165edf1e1cd621524ce",
+        "solver_022.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+        "solver_023.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+        "solver_024.py": "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595",
+        "solver_025.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+        "solver_026.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+        "solver_027.py": "62c0941ea5debae9f9a44870a54d943fed64131b0687115a07aa618a9299d4ce",
+        "solver_028.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+        "solver_029.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+        "solver_030.py": "01bbe9885d1940b344814116c1eb454b6af09845351577d77a0f9fc37d9a3991",
+        "solver_031.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+        "solver_032.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+        "solver_033.py": "aafee105a202e8e752cb3676157090f7571cbe75b605572229b2db55d2a66522",
+        "solver_034.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+        "solver_035.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+        "solver_036.py": "131fc558ea34754a342b0956d925af4274353a532a799b17c1cef1c47e45146f",
+        "solver_037.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+        "solver_038.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+        "solver_039.py": "a201a3e8a3f44d64e1f0a705b3117ed85b86be1665c01c085d67379933872105",
+        "solver_040.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+        "solver_041.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+        "solver_042.py": "227487ae6770f9c02446880484dbc705d35676d55363b613c765b8075b248cd3",
+        "solver_043.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+        "solver_044.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+        "solver_045.py": "e8467fdd7ab84642579d4fb447957a50a11f153a595acfddda71d613c88c5ae0",
+        "solver_046.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+        "solver_047.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+        "solver_048.py": "904047dcc6dc5bc0b57cd8a98a07804dfe027e4e24b88298969770933e136780",
+        "solver_049.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+        "solver_050.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+        "solver_051.py": "342df579e503321534a53bd8d9a99c73fd91c10a52d7667205e6e6d2495da4f3",
+        "solver_052.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+        "solver_053.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+        "solver_054.py": "b1f0aaf29438d79400985af73f15c600ecdde15f155edfd36ec246c4415d4e02",
+        "solver_055.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+        "solver_056.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+        "solver_057.py": "50e2f14f6108db817fcdbcc71663754f4c909767bba9c9dd5f90930acddbc0df",
+        "solver_058.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+        "solver_059.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+        "solver_060.py": "cfac18f6f04b8b412a539e349d60ceb0d71bf361621eca87d5f41fbe76e24f72",
+        "solver_061.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+        "solver_062.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+        "solver_063.py": "8adfc65921fa430f449a09ca210a79c53de9b59dd91523acc44f4b02ea2c3d52",
+        "solver_064.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+        "solver_065.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+        "solver_066.py": "c2810a406bfff802959ca2c74dc06f18efda0055b7448c2ebac4ccc3e490c304",
+        "solver_067.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+        "solver_068.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+        "solver_069.py": "77a82e9dbfe54b772bde4423bc656be4819553a93c6119e607ff0edbdebb76d1",
+        "solver_070.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+        "solver_071.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+        "solver_072.py": "09b72c507bb283b3a8a99dc68d06766f14f782d22a0e846f80b6a38159156b0f",
+        "solver_073.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+        "solver_074.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+        "solver_075.py": "701b990fc6a9d00a3e792d00f9b4cc7cfc833be8545b16f9ab760ade97852a6a",
+        "solver_076.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+        "solver_077.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+        "solver_078.py": "46843687c3dbaea154c0ac637a9c51f1fe4b7a1295ecad4f1d714bf8a80d6099",
+        "solver_079.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+        "solver_080.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+        "solver_081.py": "1b185b5b2ce19caada9b72765ad6ea6b6b53865ae7af25d0b6890ac63671f89d",
+        "solver_082.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+        "solver_083.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+        "solver_084.py": "cee8fde94a0c3a6212a4962f1a7c2794f23abff9e7b48e203f7ed663cf85d031",
+        "solver_085.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+        "solver_086.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+        "solver_087.py": "345be03de8427af92b5b548f0694086d8809d04ef2b089ae3db377ce69e89f1a",
+        "solver_088.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+        "solver_089.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+        "solver_090.py": "62801c42a14761e9454aee6f822d01cab69bf833dda503e4e9a9dd99d9fdad06",
+        "solver_091.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+        "solver_092.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+        "solver_093.py": "961be103c87a3bd76428dfd94ce54057e49de3e619e4dd7898cbbf30659e10dd",
+        "solver_094.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+        "solver_095.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+        "solver_096.py": "0359f147634ac3049a85dcf06c734e40c538f1dbe0ba00fdfed6132360ec9760",
+        "solver_097.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+        "solver_098.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+        "solver_099.py": "0e648fe67e0be7c5ae661fb68a2840a81f8243b18dc0f45ec6a0e115320f5f94",
+        "solver_100.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+        "solver_101.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+        "solver_102.py": "64a899de08ef3ff792ae18da1b62c8605ace68f6f2c318ca8f7f162a8b7ed3d9",
+        "solver_103.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+        "solver_104.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+        "solver_105.py": "217eb42e96917c5a62f2e4beaddb4f5d71039c803537d9978e2afcbfb9921211",
+        "solver_106.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+        "solver_107.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+        "solver_108.py": "baff7625505ac52b72ecfce9f1ed4308723e68eef06fdca040586f5ab59027f1",
+        "solver_109.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+        "solver_110.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+        "solver_111.py": "ce6c6bab5b1691ab7e15b43dbc5bd8408edd5e16b9d112a1e73dce5faaa910e5",
+        "solver_112.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+        "solver_113.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+        "solver_114.py": "ff9ac2fcb6813bc5c41818313623734c994687f8f8bb4e17a7acfd9df6571109",
+        "solver_115.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+        "solver_116.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+        "solver_117.py": "a82b0e5c57002a32ff9edf4eb45cd2ebc8061379b85e0a95fa6ddb46e92e46c0",
+        "solver_118.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
+        "solver_119.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe",
+        "solver_120.py": "fc134c90f17ff17183a218799769ced1e093a8ea246e94d48f4830bd18f595fe"
+      },
       "replica_groups": {
         "00eead32243a89e6e86372b3424362802590f4b0751d10b675b69e0b0ee64595": [
           "solver_022.py",
