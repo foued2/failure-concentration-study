@@ -1,7 +1,7 @@
 # Research-formulation note: does failure concentration carry information beyond failure count?
 
 **Date:** 2026-10-25  
-**Status:** formulation only (Claude Doc export, rev 3). Every hypothesis below is **proposed, not demonstrated**. This note is not an implementation plan and authorizes no solver generation, execution, simulation, model calls, data collection, or repository change beyond this record. The failure-concentration project remains closed under its existing authorization.
+**Status:** reconciled research-formulation candidate, revision 4, recorded on the review branch. Every hypothesis below is **proposed, not demonstrated**. This is a research record, not an implementation plan or authorization to generate or execute solvers, simulate, call models, collect data, or change other repository files. The failure-concentration project remains closed under existing authorization. This file is the active formulation candidate for this repository branch; a separately reported local copy was not available for byte-for-byte comparison, so identity with that copy is not claimed.
 
 ## 1. Purpose
 
@@ -25,14 +25,24 @@ Assume the tests are valid, their expected results are correct, and execution is
 
 **Consequence.** Concentration cannot improve B1's binary decision about universal correctness. This part is not a hypothesis. The question that remains is empirical and about held-out performance, not universal correctness.
 
-## 4. Two research questions
+## 4. Research questions and working primary hypothesis
 
-They have different practical meanings and are not to be conflated.
+The questions have different practical meanings and must not be conflated.
 
-- **Q1 (prediction).** Does `C` improve prediction of held-out average performance beyond `k`?
-- **Q2 (ranking).** Among rejected candidates with the same `k`, does `C` rank them by held-out performance better than an arbitrary order?
+**Working primary question: H3 (ranking rejected candidates).** Among independent solver-side dependence groups containing naturally generated rejected candidates, does the concentration score add useful ranking information about performance on a separately constructed, held-out input domain, conditional on diagnostic failure count `k`? The proposed direction is that higher `C` predicts better held-out performance. This direction is a hypothesis, not a result.
 
-A variant of Q1 concerns spread and tail events, treated in Section 6.
+**What is actually being compared.** At a fixed `k > 0`, `C = max_j f_j / k`; therefore ranking by `C` is exactly the same ordering as ranking by `max_j f_j`. The proposed study would test whether the largest family-specific failure count adds information conditional on total failures. It would not establish a special property of the ratio itself.
+
+**Proposed primary estimand.** Within each pre-specified `k` stratum, compare independent pairs whose `C` values differ. Measure the proportion of non-tied held-out-performance comparisons ordered correctly by `C`, with a pre-specified tie rule and a pre-specified way to combine strata. A chance-ordering reference is 0.5. The practical minimum improvement, tie handling, uncertainty procedure, and stratum weighting remain open and must be fixed before any held-out scores are inspected. If there are not enough independent, same-`k` comparisons with distinct `C`, the primary question is not estimable in that population with that instrument.
+
+**Population qualification.** The intended primary population is naturally generated solver candidates, but the generation mechanism, sampling frame, and solver-side dependence groups are not yet operationally specified. The mutation-site combinations discussed in the separate Idea 1 feasibility note are a different population and cannot establish the primary claim about naturally generated candidates.
+
+**Secondary questions.**
+- **Q1 (mean prediction):** Does `C` improve out-of-sample prediction of held-out average performance beyond `k`?
+- **Q1b (spread and threshold events):** Does `C` improve prediction of the distribution of future performance or a pre-declared threshold event beyond `k`?
+- Other ranking settings are secondary and must not be used to replace a failed primary result after outcomes are seen.
+
+H1 to H4 below remain proposed hypotheses. A two-sided analysis distinguishes evidence for the proposed direction, the opposite direction, and insufficient evidence of a practically meaningful association. A reversed effect would contradict the rule that higher `C` is better even if the feature carried predictive information.
 
 ## 5. When `k` alone is enough for the original six-family target
 
@@ -81,10 +91,10 @@ The motivating direction is that higher `C` at fixed `k` means a narrower weakne
 | --- | --- | --- | --- |
 | H1 (Q1, in-instrument) | At fixed `k`, `C` predicts held-out average performance on the same six families | `k` only | Reduction in held-out loss on new defect groups |
 | H2 (Q1, transfer) | Same, on the pre-specified out-of-instrument domain | `k` only | Reduction in held-out loss on that domain |
-| H3 (Q2, ranking) | Among rejected candidates with equal `k`, higher `C` ranks better on held-out performance | Arbitrary order within `k` | Rank agreement within each `k` stratum |
+| **H3 (working primary; ranking)** | Among independent solver-side groups with equal `k`, the ordering induced by `C` predicts held-out performance; proposed direction: higher `C` means better performance | Chance ordering (0.5 pairwise concordance) within `k` strata | Incremental, pre-specified rank concordance over chance, combined across eligible `k` strata |
 | H4 (Q1b, spread) | `C` improves prediction of the spread or threshold-event probability | `k` only | Improvement in a proper scoring rule for the predictive distribution |
 
-At fixed `k` a `k`-only baseline gives equal predictions, so for H3 the comparison is against arbitrary ordering, not against a fitted model.
+At fixed `k`, a model using only `k` makes tied predictions. Therefore H3 compares the ordering induced by `C` with chance ordering within eligible `k` strata; the metric, tie rule, weighting across strata, and meaningful-gain threshold must be frozen before evaluation.
 
 **Evidence that would count against a hypothesis.**
 
@@ -95,11 +105,15 @@ At fixed `k` a `k`-only baseline gives equal predictions, so for H3 the comparis
 
 The smallest practically meaningful gain and the uncertainty procedure must be fixed before any data exist.
 
-**Units of independence (to be defined before any study).** Two kinds of independence are handled separately: independent solvers do not give independent inputs, and the reverse.
+**Units and dependence (distinct concepts; operational rules are still required).**
 
-- **Solver unit.** The independent unit is the defect group, not the generated body. Replicas of one generated solver body, and closely related outputs from the same generation process or mutation site, count as one unit. In the saved v0.2 data, 90 rows come from ten base bodies, so the body is the most that could count.
-- **Defect group.** A set of solvers that share at least one mutation site or code component. It is different from a probe family (a set of diagnostic probes), from an input (one test case), and from a solver (one program). Held-out folds are formed by defect group, so no site appears in both training and test data.
-- **Input cluster.** Test inputs derived from the same underlying defect mechanism or construction template form one cluster. A cluster is assigned whole to the diagnostic bank, the in-instrument held-out bank, or the out-of-instrument domain, so related inputs cannot leak across banks and make transfer look stronger than it is.
+- **Solver instance:** one generated candidate program body. Repeated execution or replica rows for the identical body are repeated measurements, not new independent solver candidates.
+- **Defect group:** a mutation mechanism or identity class used to describe the underlying defect source. It is not itself automatically the statistical inference unit.
+- **Solver-side dependence group:** a pre-defined group of solver instances linked by shared generation lineage, a common mutation site, shared code components, or another known source of dependence. This is the inference and validation cluster. Related candidates must be kept together across training and held-out folds.
+- **Input cluster:** related test inputs derived from one construction template or underlying mechanism. Related inputs must be allocated together to one diagnostic or evaluation bank; the out-of-instrument bank must use pre-specified construction rules and be separate at the input-cluster level.
+- **Probe family:** a designed category of diagnostic probes from which the family counts `f_j` are calculated. A probe family is not equivalent to a defect group or an input cluster.
+
+Neither distinct program text nor different observed failure sets by itself proves statistical independence. Dependence groups must be justified from provenance and construction, with behavioral-alias checks treated as supporting evidence rather than proof of independence. The archived v0.2 data contain 40 solver bodies with three replicas each; the 120 solver-body/replica records are not 120 independent solver candidates.
 
 **Feasible support.** With six families of `p = 5` probes, some strata allow no variation in `C`: `k = 1` forces `C = 1`, and `k = 29` forces `C = 5/29`. For `k > 5`, `C <= 5/k`. How many values of `C` are attainable at each `k` is a property of the instrument. Variation in `C` at fixed `k` must be demonstrated for the particular strata a study would use, because a larger sample cannot create it.
 
@@ -107,16 +121,19 @@ The smallest practically meaningful gain and the uncertainty procedure must be f
 
 These are lessons from the earlier work, not a design.
 
-- The comparison must hold `k` fixed. The saved v0.2 data cannot provide this, because `C = 5/k` throughout, and the natural inventory found no same-`k`, different-`C` pairs.
-- The v0.2 instrument builds defects that fail all of a family or none of it, so partial-family variation may need a different kind of defect or a different instrument.
-- Independent units must be defined (site groups, not sampled solvers), with leakage control between training and test.
+- The comparison must hold `k` fixed and use independent solver-side dependence groups. The archived v0.2 confirmatory table reports `C = 5/k` throughout and therefore has no within-`k` concentration variation. A separate natural-candidate inventory was reported as 90 eligible rows from ten base bodies, also without same-`k`, different-`C` support. These are different records and must not be conflated.
+- The v0.2 instrument used five probes per family that varied one underlying property; its all-or-none family counts are at least partly instrument-induced. They do not establish that naturally generated solvers have family-aligned failure patterns.
+- Independence and leakage control must be defined separately for solver-side dependence groups and input-construction clusters. A difference in observed failure sets does not by itself prove independence.
 - `C` has tracked a hidden variable in each earlier setting: algorithm type in the old Doctor project, failure count in v0.2, and family size and defect identity in the engineered Gate 1 work.
 
 ## 10. Literature status
 
-- **Verified in this thread (abstracts):** EvalPlus on test inadequacy; failure clustering and failure indexing for debugging (Hybiscus, GREClue); the similarity of failing tests for patch correctness (BATS, Tian et al., ACM TOSEM 2022).
-- **Reported by GPT, titles not independently checked by me:** SimSCOOD (NAACL Findings 2024) on out-of-distribution generalization of code models, Fault-Aware Neural Code Rankers (NeurIPS 2022), and Uncovering Weaknesses in Neural Code Generation (2024).
-- None of these tests `C` against `k`. This is an adjacent literature and not a validation. No claim of novelty or duplication is made, and a systematic review is needed before either.
+The focused scan and its exploratory follow-up covered failure clustering and root-cause indexing, held-out repair evaluation, out-of-distribution code evaluation, slice/worst-group evaluation, software reliability and capture-recapture, and automated grading/test-suite properties. The reading remains at abstract/snippet level for several sources; this is not a systematic review.
+
+- **Direct result:** no directly matching study was identified in these limited searches that tests whether `max_j f_j` (equivalently `C` at fixed `k`) adds predictive ranking value for rejected solver candidates on held-out inputs. This is not evidence of novelty.
+- **Adjacent evidence:** EvalPlus addresses test inadequacy; Hybiscus/GREClue address clustering failures to infer root causes; BATS studies similarity of failing tests for patch correctness; DEIm studies automated identification of underperforming data slices; Clegg et al. study how test-suite properties affect automated grading; capture-recapture work estimates fault counts/reliability from overlapping detections. These are different targets and do not directly validate H3.
+- **Corrected descriptions:** Fault-Aware Neural Code Rankers predicts code correctness and execution information from code rather than using a candidate's own observed failure pattern. SimSCOOD studies OOD behavior of fine-tuned code models, not transfer of a candidate's diagnostic failure profile. Uncovering Weaknesses in Neural Code Generation is a thematic taxonomy, not a statistical test of concentration.
+- **Limitation:** the scan has not read every relevant paper in full and has not established the absence of a direct precedent. No novelty or duplication claim is made. A systematic review is needed before such a claim.
 
 ## 11. What this note does not do
 
@@ -125,6 +142,17 @@ These are lessons from the earlier work, not a design.
 - It does not reopen the closed study.
 
 ## 12. Open items
+
+- Define and justify the natural solver-generation mechanism and target population.
+- Specify the bounded held-out input domain, construction rules, and score orientation.
+- Set the minimum practically meaningful ranking improvement, tie rule, stratum weighting, and uncertainty procedure before any held-out score is inspected.
+- Establish that sufficient fixed-`k`, varying-`C` comparisons exist across independent solver-side dependence groups.
+- Resolve input-cluster separation and the limits of behavioral-alias checks.
+- Complete a systematic literature review before making any novelty claim.
+
+No item in this note authorizes data collection, generation, execution, or an experiment.
+
+
 
 - The out-of-instrument domain, its scoring rule, and its bound.
 - The smallest practically meaningful gain, and the uncertainty procedure.
