@@ -577,6 +577,7 @@ def main() -> None:
     ]
 
     hash_paths = [
+        Path(__file__).resolve(),
         ROOT / "engineered-study" / "math" / "15_NATURAL_SOLVER_FEASIBILITY_PROTOCOL_2026-10-24.md",
         ROOT / "pilot" / "PILOT_REPORT.md",
         ROOT / "pilot" / "pilot_report.json",
@@ -630,6 +631,12 @@ def main() -> None:
             if path.exists():
                 hash_paths.append(path)
     data["input_hashes"] = file_hashes(hash_paths)
+    collector_path = Path(__file__).resolve()
+    data["collector"] = {
+        "path": collector_path.relative_to(ROOT).as_posix(),
+        "sha256": sha256(collector_path),
+        "bytes": collector_path.stat().st_size,
+    }
     data["pack_hashes"] = {
         "v0.1": pack_summary(ROOT / "generation" / "pilot_pack"),
         "v0.2": pack_summary(ROOT / "generation_v02" / "pack"),

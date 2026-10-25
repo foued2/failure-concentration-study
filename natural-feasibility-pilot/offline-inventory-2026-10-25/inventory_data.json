@@ -2033,6 +2033,11 @@
   ],
   "input_hashes": [
     {
+      "path": "natural-feasibility-pilot/offline-inventory-2026-10-25/collect_inventory.py",
+      "sha256": "3a3b5891b28d5b5c39ddba49521338d54c3a94e54b2a2083130dc7654adeb404",
+      "bytes": 32959
+    },
+    {
       "path": "engineered-study/math/15_NATURAL_SOLVER_FEASIBILITY_PROTOCOL_2026-10-24.md",
       "sha256": "8f0a24fe9c387733ee28ef345d527be048c15a6a57ad634ef9f0997feff2fed4",
       "bytes": 6746
@@ -2683,6 +2688,11 @@
       "bytes": 15397
     }
   ],
+  "collector": {
+    "path": "natural-feasibility-pilot/offline-inventory-2026-10-25/collect_inventory.py",
+    "sha256": "3a3b5891b28d5b5c39ddba49521338d54c3a94e54b2a2083130dc7654adeb404",
+    "bytes": 32959
+  },
   "pack_hashes": {
     "v0.1": {
       "files": 20,

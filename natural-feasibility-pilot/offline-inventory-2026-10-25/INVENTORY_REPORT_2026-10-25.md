@@ -255,7 +255,9 @@ producing independent partial implementations at the same `k` with different `C`
 - `collect_inventory.py` — read-only script used to produce the JSON/CSV. It derives eligibility,
   crash exclusions, and fixed-`k` contrast counts from the retained records. It fails closed on
   missing or incomplete expression evidence rather than substituting an empty evaluation. It
-  reads metadata and hashes only; it never imports or executes solver code.
+  reads metadata and hashes only; it never imports or executes solver code. Its own SHA-256 is
+  `3a3b5891b28d5b5c39ddba49521338d54c3a94e54b2a2083130dc7654adeb404` (**32,959 bytes**), and it
+  is also recorded in the JSON `input_hashes` manifest.
 
 Key input hashes:
 
