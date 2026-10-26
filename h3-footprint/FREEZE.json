@@ -1,0 +1,26 @@
+{
+  "artifact_hashes_sha256": {
+    "GATE.md": "3b88ddc6652eb8612cb4e4f0fc21f14d4d14e33661475cb6fca6aecd6e0cc0cb",
+    "coherence_review.json": "8198cb9f429b6a90f6c0dd6d3997442f258682d5b79528fa358f49321c19b0c4",
+    "expected_values.json": "ffef0b7e5fdbe294689d5b3646514716f9c93085596185324ebba80151cf5098",
+    "freeze.py": "a9d365f9c96fc94131bb069fd30c9f52e2aa38dacc51a872d469d5cc6cfd0d5f",
+    "generate.py": "bc0066187f1b63c9170fc9ba4f417bd34f202d453c56579ffaee8a595991995b",
+    "instrument.py": "e0bb4aa7adfa3bfc6d1b936c308314327e38d3d6166f16f010ce31f02f42bb81",
+    "probe_worker.py": "670bce83536c7a427a73c43e31821384913b865ca48d083bb2a87dc09d3a0376",
+    "run_gate.py": "c8f65531683e0bdaea529dafabd391464858dd80fc18f6ecf5a07de7b352f242"
+  },
+  "bodies_per_batch": 8,
+  "budget_batches": 72,
+  "candidate_count_at_freeze": 0,
+  "tag": "h3-footprint-freeze-2026-10-26",
+  "target_rejected_bodies": 150,
+  "thresholds": {
+    "degeneracy_max": 0.8,
+    "m_min": 4,
+    "pass_cells": 3,
+    "pass_groups": 40,
+    "pass_k": 2,
+    "weak_cells_max": 2
+  },
+  "timestamp_utc": "2026-10-26T09:14:16.877683+00:00"
+}
