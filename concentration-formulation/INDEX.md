@@ -38,9 +38,11 @@ The repository version of file 02 is the active formulation candidate for this b
 
 1. Specify the natural candidate-generation mechanism and sampling frame; establish independent solver-side groups.
 2. Define the bounded held-out input domain and scoring target, independently of the diagnostic family partition.
-3. Specify the practical ranking-gain threshold, tie rule, stratum weighting, and uncertainty procedure before held-out outcomes are inspected.
+3. Specify the practical ranking-gain threshold, pairwise tie rule, dependence-group weighting, stratum weighting, and group-level uncertainty procedure before held-out outcomes are inspected.
 4. Demonstrate adequate same-`k`, varying-`C` support among independent groups; for six families with five probes each, `C` cannot vary at `k = 1` or `k = 25..30`, and has only two levels at `k = 2`. If support is absent, primary H3 is not estimable with that population/instrument.
 5. Resolve alias grouping and separate diagnostic, identity-check, and evaluation input clusters without claiming more equivalence than the domains support.
-6. Treat Yang et al. (ICML 2023) on worst-class-accuracy model selection under subpopulation shift as the closest conceptual precedent identified so far, not a direct match to H3.
-7. Search defect prediction and software reliability more systematically; the current scan is exploratory and defect prediction remains unsearched.
-8. Conduct a systematic literature review before any novelty claim.
+6. Freeze the diagnostic probe-to-family partition before candidate outcomes are observed, and define held-out evaluation strata and weights independently of that partition.
+7. Specify how pairs drawn from dependence groups containing multiple candidates are weighted so larger groups do not dominate.
+8. Treat Yang et al. (ICML 2023) on worst-class-accuracy model selection under subpopulation shift as the closest conceptual precedent identified so far, not a direct match to H3.
+9. Search defect prediction and software reliability more systematically; the current scan is exploratory and defect prediction remains unsearched.
+10. Conduct a systematic literature review before any novelty claim.
