@@ -21,6 +21,9 @@ Suggested reading order: 02, then 03, then 01.
 ## Core conclusions and constraints
 
 - At fixed `k`, ranking by `C = max_j f_j / k` is exactly ranking by `max_j f_j`. The claim to test is whether the maximum family-specific failure count adds predictive ranking information conditional on total failure count, not whether the ratio has a distinct ordering property.
+- The diagnostic probe-to-family partition, family labels, counts, and weights must be frozen before candidate outcomes are observed; post hoc repartitioning can alter the statistic.
+- H3 conditions on B1-rejected candidates (`k > 0`). B1's rejection rule depends only on `k`, but the claim does not generalize to accepted candidates or other selection rules.
+- Held-out input-domain construction and any score strata/weights must be defined independently of the diagnostic family partition, with related input clusters kept disjoint.
 - The intended primary population is naturally generated rejected solver candidates, but the generator and sampling frame are not yet operationally specified.
 - Mutation-site combinations in file 01 are a different population. A positive result for them would not establish the natural-candidate claim.
 - Solver-side dependence groups and input-construction clusters must be controlled separately. Different program text or failure sets alone do not establish independence.
@@ -34,9 +37,9 @@ The repository version of file 02 is the active formulation candidate for this b
 ## Open items
 
 1. Specify the natural candidate-generation mechanism and sampling frame; establish independent solver-side groups.
-2. Define the bounded held-out input domain and scoring target.
+2. Define the bounded held-out input domain and scoring target, independently of the diagnostic family partition.
 3. Specify the practical ranking-gain threshold, tie rule, stratum weighting, and uncertainty procedure before held-out outcomes are inspected.
-4. Demonstrate adequate same-`k`, varying-`C` support among independent groups; if absent, primary H3 is not estimable with that population/instrument.
+4. Demonstrate adequate same-`k`, varying-`C` support among independent groups; for six families with five probes each, `C` cannot vary at `k = 1` or `k = 25..30`, and has only two levels at `k = 2`. If support is absent, primary H3 is not estimable with that population/instrument.
 5. Resolve alias grouping and separate diagnostic, identity-check, and evaluation input clusters without claiming more equivalence than the domains support.
 6. Treat Yang et al. (ICML 2023) on worst-class-accuracy model selection under subpopulation shift as the closest conceptual precedent identified so far, not a direct match to H3.
 7. Search defect prediction and software reliability more systematically; the current scan is exploratory and defect prediction remains unsearched.
