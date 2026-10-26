@@ -17,7 +17,9 @@ A diagnostic bank has six families with `p` probes each (the natural-solver runs
 - `k = sum_j f_j`
 - `C = max_j f_j / k`, defined only for `k > 0`
 
-The held-out score `S` is computed on an evaluation bank that is disjoint from the diagnostic bank and from every probe used to build or select solvers.
+**Frozen diagnostic partition.** The probe-to-family mapping, family labels, probe counts, and family weights must be fixed before building or measuring candidate mutation combinations. Repartitioning probes after seeing failure profiles changes `max_j f_j` and can create a post hoc pattern.
+
+The held-out score `S` is computed on input clusters disjoint from the diagnostic bank and from every input used to build or select solvers. This feasibility note currently proposes a family-balanced score using the diagnostic taxonomy; that is a same-instrument held-out target, not proof of transfer to an independently defined out-of-instrument domain.
 
 **Mutation-population estimand (predictive, not causal; not the primary H3 target).** Let `Z` be a predeclared set of controls that are available at prediction time and do not determine `C`. Let `M0` predict `S` from `k` and `Z`, and let `M1` predict `S` from `k`, `C` and `Z`. With `L` a fixed loss computed on out-of-fold predictions for held-out defect groups:
 
@@ -65,15 +67,9 @@ Two requirements from the previous protocol failed on exactly these points, so t
 
 This section matters most, because the earlier data showed no within-`k` variation at all.
 
-**Arithmetic facts (exact).** With six families of `p` probes, `f_j <= p`. For a given `k`, the possible values of `max_j f_j` run from `ceil(k/6)` to `min(p, k)`. With `p = 5`:
+**Arithmetic facts (exact).** With six families of `p` probes, each `f_j <= p`. At a given total `k`, the maximum family count is an integer between `ceil(k/6)` and `min(p,k)`. With `p = 5`, `k = 5` allows `C` values from 0.2 to 1.0, and `k = 10` allows 0.2, 0.3, 0.4, or 0.5. The general feasible-support implication is important: `C` has no variation at `k = 1` or for `k = 25..30`; at `k = 2`, only `C = 0.5` and `C = 1` are feasible. For every `k > 5`, `C <= 5/k`. Therefore the feasible region is bounded, and variation at fixed `k` is possible only at some strata, not all.
 
-- `k = 5`: `C` can take five values, from 0.2 to 1.0.
-- `k = 10`: `C` can take four values, 0.2, 0.3, 0.4, 0.5.
-- For every `k > 5`: `C <= 5/k`.
-
-So the feasible region is a band, and variation in `C` at a fixed `k` is mathematically available.
-
-**What the saved natural data show.** In the audited v0.1 and v0.2 rows, `C = 5/k` exactly at every observed `k` (5, 10, 20, 25), and every observed `k` is a multiple of five. Since `C <= 5/k` for `k > 5`, every eligible natural row sits on the upper boundary of the feasible band: at least one family had all five probes failing. This is consistent with defects whose footprints are aligned to the diagnostic families (a family either fails entirely or not at all). The saved per-family vectors in the v0.1 report could confirm or reject this reading. It is a hypothesis, not a finding, until checked.
+**Reported archived-data pattern; keep records and units separate.** The archived v0.2 audit reports `C = 5/k` throughout the rows it analyzed and all-or-none family counts under that instrument. The v0.2 archive also records 40 solver bodies with three replicas each and only ten eligible bodies; those replicas are not independent candidates. A separate natural-candidate inventory is reported as 90 eligible rows from ten base bodies and also lacked same-`k`, different-`C` support. Do not merge those counts into one dataset or treat row counts as independent solver units. The all-or-none pattern is at least partly instrument-induced because each diagnostic family's probes vary one underlying property. These reports do not establish that naturally generated solvers in general have family-aligned failures; they establish only that the saved setups did not furnish the required support.
 
 **The tension this creates.**
 
@@ -93,10 +89,10 @@ Whether the library can contain such sites naturally, and with what frequency, i
 
 ## 8. Score and loss
 
-- **Score:** `S` is computed on the evaluation bank. To prevent family size from driving the score (the cause of the `paren7` spread), the primary score is the mean over families of the within-family evaluation failure rate. The choice of equal family weights must match the stated target population, and a pooled-rate version is reported as a secondary analysis.
+- **Score:** `S` is computed on the evaluation bank. This mutation-population note proposes a mean over the diagnostic families of within-family evaluation failure rates to control family-size effects, with pooled rate secondary. That reuses the diagnostic family taxonomy, so the target is same-instrument held-out performance. It cannot answer the primary H3 claim about transfer to an independently defined held-out domain unless the evaluation strata and weights are redefined independently before outcomes.
 - **Loss:** squared error on `S`, averaged first within each group and then across groups, so each independent unit has equal weight.
 - **Small baseline loss:** if `L(M0)` falls below a threshold fixed in advance, relative gain `R` is not used and the absolute gain `Delta_pred` is reported instead.
-- **Instrument dependence:** `C` is computed from the diagnostic bank and `S` from a disjoint evaluation bank, but both use the same family taxonomy. A positive result is therefore a statement about this instrument.
+- **Instrument dependence:** `C` is computed from the diagnostic bank and `S` from disjoint evaluation input clusters, but the proposed family-balanced score reuses the same family taxonomy. A positive result therefore concerns that instrument and same-family target; independence of inputs does not remove this construct overlap.
 
 ## 9. Uncertainty and thresholds
 
@@ -124,7 +120,7 @@ Whether the library can contain such sites naturally, and with what frequency, i
 - A positive gain would show predictive usefulness across this defect distribution and instrument, not a causal effect of concentration and not independence from defect identity.
 - The result depends on the library and sampling probabilities. A different but equally reasonable library could change it.
 - A null or inconclusive result would say the design lacked power or support. It would not show that `C` has no predictive value.
-- Knowing how many mutations were inserted does not establish how many independent behavioral defects resulted. Independence is established only by the failure-set rule.
+- Knowing how many mutations were inserted does not establish how many independent behavioral defects resulted. Failure-set equality can establish behavioral equivalence only on the domain checked; it does not prove statistical independence. Solver-side dependence groups should primarily follow provenance and construction.
 
 ## 12. Assessment and decision
 
