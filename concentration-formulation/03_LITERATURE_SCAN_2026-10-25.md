@@ -1,22 +1,22 @@
 # Literature scan: failure structure, failure counts, and prediction of held-out correctness
 
 **Date:** 2026-10-25  
-**Status:** stage 2 of the plan, a focused scan, not a systematic review (Claude Doc export, rev 1). No novelty claim is made. Nothing here authorizes a run, a generation step, or a repository change beyond this record.
+**Status:** focused literature scan with exploratory follow-up of four neighboring areas, revision 2. This is not a systematic review. No novelty claim is made. Nothing here authorizes generation, execution, simulation, data collection, or repository changes beyond this record.
 
-**Bottom line.** Nothing found tests the specific claim that a max-share concentration statistic over predefined test families predicts held-out performance beyond failure count `k`. Neighboring work is substantial, and two findings bear directly on the primary question: failure-causing inputs usually form contiguous regions, which would make whole-family failure the common case, and the failure count is known not to equal the number of root causes. Both raise the risk that fixed-`k` variation in `C` is rare in natural candidates.
+**Bottom line.** No direct study was identified in the initial scan or follow-up searches of slice/worst-group evaluation, software reliability and capture-recapture, and automated grading/test-suite properties. These searches are exploratory, not proof of novelty. Existing work shows that failure clustering can inform root-cause analysis, test suites can alter observed scores, and subgroup-error analysis is established. None directly establishes that maximum family-specific failure count predicts held-out performance beyond total `k` for naturally generated rejected solvers.
 
 ## 1. Scope and limits
 
-- About ten targeted searches across the four areas GPT listed: failure distribution and correctness, failure clustering for ranking or repair, transfer to unfamiliar inputs, and when counts suffice versus patterns.
-- Reading was at abstract and snippet level. No paper was read in full, so details below are what the abstracts state.
-- Searches were deliberately aimed at counter-evidence as well as support.
-- Absence of a direct study in these results is weak evidence of a gap. A fuller review could still find one.
+- The initial pass covered failure distribution/correctness, failure clustering for ranking or repair, transfer to held-out inputs, and count-versus-pattern summaries.
+- A follow-up explored slice/worst-group evaluation; software reliability and defect estimation; automated grading and partial credit; and capture-recapture fault estimation.
+- Several sources were reviewed only through abstracts, excerpts, or metadata; comprehensive full-text coverage is not claimed.
+- Searches sought counterevidence as well as support. Lack of a direct match is weak evidence of a gap.
 
 ## 2. What the literature establishes
 
 1. **A counterexample refutes correctness, and passing tests does not prove it.** EvalPlus ([Liu et al., NeurIPS 2023](https://arxiv.org/pdf/2305.01210)) shows that small benchmark test sets pass flawed programs and distort rankings. Work on coincidental correctness ([arXiv 1808.09233](https://arxiv.org/pdf/1808.09233v3)) shows passing tests can hide defects through masked error propagation. This supports the accept-side limit of the strict rule, which `C` cannot reach.
 2. **The failure count is not the number of root causes.** The Hybiscus authors ([arXiv 2104.10360](https://arxiv.org/pdf/2104.10360)) state that one fault can fail many tests, so the number of failing tests may not indicate the number of root causes. Failure indexing methods (Hybiscus, [GREClue](https://doi.org/10.1145/3808118)) group failing tests by root cause and estimate fault counts. Hybiscus reports perfect clustering for 418 of 605 multi-failure runs.
-3. **Faults usually act independently.** A fault-injection study on the Siemens suite reports under 1% interference between two faults ([Li et al., ICRSE 2017](https://research.buaa.edu.cn/en/publications/an-insight-of-double-faults-interactions-in-program-an-empirical-/)). Another empirical study finds failure behavior mostly accounted for by dominant faults ([Yan et al., QRS-C 2017](https://research.buaa.edu.cn/en/publications/the-failure-behaviors-of-multi-faults-programs-an-empirical-study/)). Composite-fault theory ([ICST 2017](https://www.cefns.nau.edu/~adg326/icst17.pdf)) says masking is rare but strong interactions can produce semantically new faults.
+3. **Some fault-injection studies report limited interaction in their tested settings.** A study on the Siemens suite reports under 1% interference between two faults ([Li et al., ICRSE 2017](https://research.buaa.edu.cn/en/publications/an-insight-of-double-faults-interactions-in-program-an-empirical-/)); another describes dominant-fault explanations in its test programs ([Yan et al., QRS-C 2017](https://research.buaa.edu.cn/en/publications/the-failure-behaviors-of-multi-faults-programs-an-empirical-study/)). Composite-fault work ([ICST 2017](https://www.cefns.nau.edu/~adg326/icst17.pdf)) also describes masking and semantically new faults under interaction. These setting-specific findings do not establish independence among naturally generated solvers or their failure patterns.
 4. **Failure-causing inputs cluster in contiguous regions.** The adaptive random testing literature ([survey](https://arxiv.org/pdf/2007.03885), [taxonomic review](https://arxiv.org/pdf/1909.10879)) reports block, strip and point failure patterns, with block and strip patterns more common than point patterns.
 5. **How failure rates distribute over partitions of the input domain matters for detection.** Partition-versus-random testing theory finds partition testing can be better, equal, or worse than random testing depending on how failures fall across subdomains, with proportional allocation the one scheme that never loses ([Chen and Yu](https://i.cs.hku.hk/~tse/Papers/2000s/typssTR.pdf)). Majorization and Schur-function methods give general conditions for this (Singh, Boland and Cukic, IEEE TSE 2003). The outcome studied is the probability that a test strategy detects a failure, not the held-out performance of a solver.
 6. **Evaluation on tests independent of those used for repair is established method, and overfitting is common.** Smith et al. ([FSE 2015](https://www.cs.washington.edu/homes/brun/pubs/pubs/Smith15fse.pdf)) and Motwani et al. ([TSE 2022](https://people.cs.umass.edu/~brun/pubs/pubs/Motwani22tse.pdf)) evaluate repair patches on independent suites and find many pass the repair tests but fail the held-out ones. A 2025 study finds the problem persists with LLM-based repair ([arXiv 2511.16858](https://arxiv.org/pdf/2511.16858v1)).
@@ -66,16 +66,17 @@ The proposed primary question asks whether `C` improves the ranking of same-`k` 
 - **A source of ground-truth root-cause structure may exist.** The Hybiscus authors report public multi-fault datasets built on Defects4J and SIR. They carry known root causes for failing tests but are real-world programs with no predefined families, so they would test a different question. This is a lead, not a proposal.
 - **Independent-suite evaluation has precedent.** The repair literature's practice of an evaluation suite independent of the repair tests matches the held-out domain requirement in the formulation note.
 
-## 8. Neighboring areas not yet searched
+## 8. Follow-up search of neighboring areas
 
-- Slice-based and worst-group evaluation in machine learning and NLP behavioral testing, where the worst-performing subgroup is analogous to `max_j f_j`.
-- Defect prediction and software reliability estimation from failure counts.
-- Automated grading with partial credit.
-- Capture-recapture methods for estimating the number of faults.
+The four neighboring areas have now received an exploratory search. These are adjacent methods, not direct evidence for H3.
 
-## 9. Next steps within current authorization
+- **Slice and worst-group evaluation.** Hua et al., *Discover, Explain, Improve: An Automatic Slice Detection Benchmark for Natural Language Processing*, TACL 2023 ([ACL Anthology](https://aclanthology.org/2023.tacl-1.87/), [DOI](https://doi.org/10.1162/tacl_a_00617)) studies locating underperforming groups of datapoints and explaining correlated error features. This is related to subgroup-error analysis, but does not test candidate-level held-out solver performance conditional on `k`.
+- **Software reliability and capture-recapture.** Okamura and Dohi, *Software Reliability Modeling Based on Capture-Recapture Sampling* ([DOI](https://doi.org/10.1587/transfun.E92.A.1615)), uses detection-process data to estimate fault totals and reliability. Estimating unseen faults differs from ranking rejected solver candidates by `C` at fixed `k`.
+- **Automated grading and partial credit.** Clegg, McMinn, and Fraser, *The Influence of Test Suite Properties on Automated Grading of Programming Exercises* ([paper](https://philmcminn.com/publications/clegg2020.pdf), [DOI](https://doi.org/10.1109/CSEET49119.2020.9206231)), reports that suite coverage and repeated coverage can affect grades assigned to faulty programs. This is relevant counterevidence to treating observed family scores as neutral to instrument construction.
+- **Conclusion.** The follow-up strengthens the need to control instrument construction, define the candidate population, and compare against meaningful alternatives. It does not validate `C` or establish novelty.
 
-- GPT challenges the interpretation above, in particular the reading of the ART evidence and the claim that nothing direct exists.
-- Search the four neighboring areas in Section 8, again looking for counter-evidence.
-- Then produce the short research brief GPT described, with the recommended primary estimand and a proposed bounded held-out domain.
-- No execution, generation, simulation, or repository change is needed for any of these.
+## 9. Status and permissible next step
+
+This scan is complete only as an exploratory pass. The next work is synthesis into the existing formulation record, not another standalone document. A systematic search and full-text review remain necessary before any novelty claim.
+
+No execution, generation, simulation, or data collection is authorized by this note.
