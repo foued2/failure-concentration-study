@@ -100,7 +100,7 @@ The motivating direction is that higher `C` at fixed `k` means a narrower weakne
 | --- | --- | --- | --- |
 | H1 (Q1, in-instrument) | At fixed `k`, `C` predicts held-out average performance on the same six families | `k` only | Reduction in held-out loss on new defect groups |
 | H2 (Q1, transfer) | Same, on the pre-specified out-of-instrument domain | `k` only | Reduction in held-out loss on that domain |
-| **H3 (working primary; ranking)** | Among independent solver-side groups with equal `k`, the ordering induced by `C` predicts held-out performance; proposed direction: higher `C` means better performance | Chance ordering (0.5 pairwise concordance) within `k` strata | Incremental, pre-specified rank concordance over chance, combined across eligible `k` strata |
+| **H3 (working primary; ranking)** | Within each task/base-algorithm/`k` cell, higher `C` ranks candidates better on held-out performance across distinct solver-side dependence groups | Chance ordering (0.5 pairwise concordance) within each eligible cell | Equal-weight group-pair concordance within cells, combined using pre-declared cell weights |
 | H4 (Q1b, spread) | `C` improves prediction of the spread or threshold-event probability | `k` only | Improvement in a proper scoring rule for the predictive distribution |
 
 At fixed `k` and within a fixed task/base-algorithm stratum, a model using only `k` makes tied predictions. Therefore H3 compares the ordering induced by `C` with chance ordering within eligible cells; its metric, tie rule, group-pair weighting, cell weights, support gate, and meaningful-gain threshold must be frozen before evaluation.
