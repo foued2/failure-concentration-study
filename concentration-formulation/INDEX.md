@@ -27,7 +27,7 @@ Suggested reading order: 02, then 03, then 01.
 - The intended primary population is naturally generated rejected solver candidates, but the generator and sampling frame are not yet operationally specified.
 - Mutation-site combinations in file 01 are a different population. A positive result for them would not establish the natural-candidate claim.
 - Solver-side dependence groups and input-construction clusters must be controlled separately. Different program text or failure sets alone do not establish independence.
-- The archived v0.2 table is reported as 1,200 rows from 40 solver bodies with three replicas each, with `C = 5/k` throughout. A separate natural-candidate inventory was reported as 90 eligible rows across ten base bodies, also without same-`k`, different-`C` support. Do not conflate these records or their independent units.
+- The archived v0.2 analysis reports `C = 5/k` throughout. Keep its dimensions separate: 1,200 rows correspond to 40 input instances × 30 probes; the solver inventory separately comprises 40 bodies with three replicas each, with ten base bodies eligible. Neither the 1,200 probe/input rows nor the 120 body/replica records are 120 independent candidates. A separate natural-candidate inventory was reported as 90 eligible rows across ten base bodies, also without same-`k`, different-`C` support. Do not conflate these records or their units.
 - The alias-check issue in file 01 is not solved: comparing failure behavior over the same domain used for held-out scoring is not outcome-blind.
 
 ## Version status
