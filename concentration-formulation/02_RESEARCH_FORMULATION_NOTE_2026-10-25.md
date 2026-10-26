@@ -151,12 +151,3 @@ The focused scan and its exploratory follow-up covered failure clustering and ro
 - Complete a systematic literature review before making any novelty claim.
 
 No item in this note authorizes data collection, generation, execution, or an experiment.
-
-
-
-- The out-of-instrument domain, its scoring rule, and its bound.
-- The smallest practically meaningful gain, and the uncertainty procedure.
-- Whether Q1b is worth a separate treatment.
-- A systematic literature review before any novelty claim.
-
-*Revised 2026-10-25 after review: the reference-model claim is narrowed to the stated Beta-Binomial model, direction is separated from the two-sided test, and units of independence and feasible support are added.*
