@@ -1,14 +1,14 @@
 # Feasibility note: random defect-set sampling to test whether C adds held-out predictive value beyond k
 
 **Date:** 2026-10-25  
-**Status:** paper-only draft (Claude Doc export, rev 1, committed to a review branch as a record). Nothing in this note authorizes solver generation, mutation building, execution, simulation, model calls, data collection, or repository changes beyond this record. The failure-concentration project remains closed under its existing authorization.  
-**Scope:** Idea 1 only (sample defect sets without targeting profiles). Ideas 2 to 6 are out of scope here.
+**Status:** historical paper-only feasibility analysis, revision 2. This note examines mutation-site combinations, not the naturally generated candidate population selected as the working primary target in the formulation note. It is retained as an alternative feasibility record, not the current primary design or an implementation plan. Nothing here authorizes mutation building, solver generation or execution, simulation, model calls, data collection, or repository changes beyond this record. The project remains closed under existing authorization.  
+**Scope:** Idea 1 only (sample mutation-site combinations without targeting observed failure profiles). It cannot by itself test the primary claim about naturally generated solvers.
 
 ## 1. The one question this note answers
 
-Can random sampling of independently defined defect sets plausibly yield enough variation in `C` and a defensible held-out prediction test, without profile targeting and without leakage?
+Can untargeted sampling of mutation-site combinations plausibly yield variation in `C` and a defensible held-out prediction test for that mutation-based population?
 
-The note does not propose an experiment. It states what would have to be true for the idea to be worth a separate authorization request, says which of those conditions can be settled on paper, and records what cannot.
+This is not the working primary research question. A result from mutation-site combinations would concern that constructed population and would not establish predictive value for naturally generated candidates. The note does not propose or authorize an experiment; it records conditions, unresolved risks, and reasons not to treat this route as a substitute for the primary target.
 
 ## 2. Definitions and estimand
 
@@ -19,7 +19,7 @@ A diagnostic bank has six families with `p` probes each (the natural-solver runs
 
 The held-out score `S` is computed on an evaluation bank that is disjoint from the diagnostic bank and from every probe used to build or select solvers.
 
-**Primary estimand (predictive, not causal).** Let `Z` be a predeclared set of controls that are available at prediction time and do not determine `C`. Let `M0` predict `S` from `k` and `Z`, and let `M1` predict `S` from `k`, `C` and `Z`. With `L` a fixed loss computed on out-of-fold predictions for held-out defect groups:
+**Mutation-population estimand (predictive, not causal; not the primary H3 target).** Let `Z` be a predeclared set of controls that are available at prediction time and do not determine `C`. Let `M0` predict `S` from `k` and `Z`, and let `M1` predict `S` from `k`, `C` and `Z`. With `L` a fixed loss computed on out-of-fold predictions for held-out defect groups:
 
 `Delta_pred = L(M0) - L(M1)`,  `R = Delta_pred / L(M0)`
 
@@ -53,11 +53,11 @@ A positive `Delta_pred` means `C` improved prediction for new defect groups draw
 
 Two requirements from the previous protocol failed on exactly these points, so they are restated precisely.
 
-**Operational definition of independent defect.** Two candidates are the same defect if they have identical failure sets on a bounded input domain. Distinct failure sets, established by at least one separating input, are necessary for independence. They are not sufficient: sites in one group that share code are dependent for validation purposes even when their failure sets differ.
+**Behavioral aliases are not the same as statistical independence.** Two candidates with identical failure sets on a specified bounded domain are behaviorally equivalent on that domain; one separating input shows they differ on that domain. Neither equality nor difference of observed failure sets alone proves statistical independence. Solver-side dependence groups must primarily follow known provenance, such as shared mutation sites, common code ancestry, generation lineage, or shared components. Behavioral-alias checks are supporting evidence and have domain-limited meaning.
 
 **Bounded domain.** The task must have a finite input domain (for example a bound on expression length, digits per integer, and whitespace run length). Then failure sets can be compared exactly in principle. Agreement on a finite diagnostic bank is never accepted as proof of equivalence. The length-7 parentheses domain is finite, but its earlier evaluation families had unequal sizes and would need the family-balanced scoring in Section 8.
 
-**Blindness of the alias check.** Alias detection compares full-domain failure sets, which also determine `S`. To keep it outcome-blind, the check should record equality classes only, for example by comparing set hashes, and no score should be computed or examined until the design is frozen.
+**The alias check is not yet resolved as outcome-blind.** Exact comparison of failure sets over the full bounded domain uses behavior on the same domain from which `S` would be computed, so describing it as outcome-blind is not justified. A separate identity-check domain can identify aliases relative to that domain, but cannot prove equivalence over the whole evaluation domain. A future protocol must define disjoint diagnostic, identity-check, and evaluation input clusters, state the limited equivalence claim, and keep evaluation outcomes sealed until grouping rules are frozen. Alternatively, use provenance-based groups without claiming exact behavioral equivalence. This note does not decide between those options.
 
 **Independent unit.** If solvers share sites, they are dependent. The number of independent units is the number of site groups `G`, not the number of sampled solvers. Sampling more combinations inside a group adds within-group variation in `(k, C)` but does not add independent units.
 
@@ -110,7 +110,7 @@ Whether the library can contain such sites naturally, and with what frequency, i
 | Criterion | What a pass needs | Can paper settle it? | Current assessment |
 | --- | --- | --- | --- |
 | P1. Footprint heterogeneity | A library that plausibly contains partial-family and cross-family footprints at stated frequencies | No, only plausibility from code structure | **Open.** Key risk (Section 6) |
-| P2. Independence rule | Bounded domain, failure-set equality, outcome-blind alias check | Yes | **Pass on paper** if a bounded domain is chosen |
+| P2. Independence rule | Provenance-based dependence groups; bounded diagnostic, identity-check, and evaluation input clusters | No, not fully resolved | **Open.** Full-domain alias checking overlaps the evaluation domain; a separate identity-check domain supports only a domain-limited equivalence claim |
 | P3. `(k, C)` support | A support rule applied to measured footprints before outcomes | Rule: yes. Satisfaction: no | **Rule can be stated; satisfaction unknown** |
 | P4. Leakage | Group-level folds, no shared sites across folds | Yes | **Pass on paper** |
 | P5. Thresholds and precision | Frozen loss, `R_min`, handling of small `L(M0)`, justified number of groups `G` | Partly | **Open:** `G` and the required precision depend on between-group variance that is not known in advance |
@@ -128,14 +128,9 @@ Whether the library can contain such sites naturally, and with what frequency, i
 
 ## 12. Assessment and decision
 
-The question in Section 1 cannot be answered "yes" from the paper alone. The decisive quantity is empirical: whether the defect library produces partial-family or cross-family footprints often enough to give `C` variation at fixed `k`. The natural-data pattern (all rows on the upper boundary `C = 5/k`) is a reason for caution, not a reason to expect support.
+The paper alone cannot establish whether a mutation-site library will produce sufficient fixed-`k`, varying-`C` support, nor whether the result would generalize to naturally generated solvers. The main issues remain footprint heterogeneity (P1), independence/alias handling (P2), support (P3), and a defensible number of independent groups (P5). As written, this note does not establish that a confirmatory design is ready.
 
-What the note does establish is that the rest of the design can be specified coherently: independence is operational, the leakage control is clear, the score removes the family-size confound, and the thresholds can be fixed in advance. Two things remain unresolved: footprint heterogeneity (P1) and the justification of `G` (P5).
-
-**Two options for the reviewer.**
-
-- **A. Credible enough to request a narrow authorization.** If an independent reviewer accepts the identification argument and the open items, the next request would be an outcome-blind footprint audit only: build the frozen library, measure diagnostic footprints and failure-set equality classes, apply the support rule, and stop. No score is computed or inspected. This is not a study and not an authorization to run one.
-- **B. Not credible.** Leave the project closed and use the methodology write-up fallback, titled for example "Feasibility and construct-validity limits in testing diagnostic failure concentration as a predictive feature."
+**Disposition.** Do not treat Idea 1 as the implementation route for primary H3. It is a different research question about a mutation-defined population. A separate, narrowly authorized, outcome-blind feasibility audit could be considered only if that alternative population is independently worth studying and if P2 is first resolved; it must not be used as a proxy for naturally generated candidates. Otherwise, leave the project closed and retain this note as a record of feasibility and construct-validity limits.
 
 ## 13. Items this note deliberately leaves open
 
@@ -143,6 +138,7 @@ What the note does establish is that the rest of the design can be specified coh
 - The specific bounded domain.
 - The value of `p`, the controls `Z`, and the model class.
 - The number of groups `G`, the support minimum, and `R_min`.
-- Whether the saved v0.1 and v0.2 per-family vectors confirm the alignment reading in Section 6. This is a read-only check of existing records.
+- The exact provenance and distinct scope of the natural-candidate inventory versus the archived v0.2 confirmatory table.
+- Diagnostic, identity-check, and evaluation input-cluster construction rules.
 
-No item above may be settled after any footprint or score has been seen.
+The population and analysis rules must be frozen before confirmatory scores are inspected. A support gate may use diagnostic footprints only after grouping and domain rules are specified; evaluation scores remain sealed until that gate is complete.
