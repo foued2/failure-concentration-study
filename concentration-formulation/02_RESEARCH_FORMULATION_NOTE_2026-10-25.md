@@ -14,6 +14,7 @@ Two claims have been mixed together in this project. This note separates them, s
 - `C = max_j f_j / k`, defined only for `k > 0`.
 - **B1** is the strict decision rule: accept if `k = 0`, reject if `k > 0`.
 - `C` depends on `F` only through its largest entry and the total. It does not depend on which family fails.
+- **Frozen family partition:** the probe-to-family mapping, family labels, probe counts, and family weights must be fixed in a protocol before candidate generation and before any candidate failures are observed. They must not be revised after seeing the failure profiles. Since `max_j f_j` changes with the partition, post hoc repartitioning could create an apparent signal.
 
 ## 3. What is settled: universal correctness
 
@@ -29,13 +30,13 @@ Assume the tests are valid, their expected results are correct, and execution is
 
 The questions have different practical meanings and must not be conflated.
 
-**Working primary question: H3 (ranking rejected candidates).** Among independent solver-side dependence groups containing naturally generated rejected candidates, does the concentration score add useful ranking information about performance on a separately constructed, held-out input domain, conditional on diagnostic failure count `k`? The proposed direction is that higher `C` predicts better held-out performance. This direction is a hypothesis, not a result.
+**Working primary question: H3 (ranking B1-rejected candidates).** The target population is naturally generated candidates in a pre-specified sampling frame that are rejected by B1, meaning `k > 0`. B1's rejection rule depends only on `k`, not on the family profile. H3 therefore asks: among independent solver-side dependence groups with the same `k`, does the ordering induced by `max_j f_j` predict performance on a separately constructed, held-out input domain? The proposed direction is that higher `C` predicts better held-out performance. This is a hypothesis, not a result. The claim applies only to the stated B1-rejected population and does not generalize automatically to candidates with `k = 0` or to another selection rule. No additional inclusion or exclusion criterion may use the family failure profile unless it is pre-specified.
 
 **What is actually being compared.** At a fixed `k > 0`, `C = max_j f_j / k`; therefore ranking by `C` is exactly the same ordering as ranking by `max_j f_j`. The proposed study would test whether the largest family-specific failure count adds information conditional on total failures. It would not establish a special property of the ratio itself.
 
-**Proposed primary estimand.** Within each pre-specified `k` stratum, compare independent pairs whose `C` values differ. Measure the proportion of non-tied held-out-performance comparisons ordered correctly by `C`, with a pre-specified tie rule and a pre-specified way to combine strata. A chance-ordering reference is 0.5. The practical minimum improvement, tie handling, uncertainty procedure, and stratum weighting remain open and must be fixed before any held-out scores are inspected. If there are not enough independent, same-`k` comparisons with distinct `C`, the primary question is not estimable in that population with that instrument.
+**Proposed primary estimand.** Within each eligible, pre-specified `k` stratum, compare candidate pairs from different solver-side dependence groups whose `C` values differ. Measure pairwise concordance: the proportion of non-tied held-out-performance comparisons ordered correctly by `C`. Define in advance whether tied held-out scores receive half credit or are excluded, and how concordance is combined across `k` strata. A 0.5 reference corresponds to chance ordering under the specified tie convention. Pairwise comparisons share candidates and are not independent observations; uncertainty must be computed at the solver-side dependence-group level, not by treating pairs as independent. The practical minimum improvement, tie rule, uncertainty procedure, and stratum weighting remain open and must be fixed before any held-out scores are inspected. If there are not enough independent, same-`k` comparisons with distinct `C`, the primary question is not estimable in that population with that instrument.
 
-**Population qualification.** The intended primary population is naturally generated solver candidates, but the generation mechanism, sampling frame, and solver-side dependence groups are not yet operationally specified. The mutation-site combinations discussed in the separate Idea 1 feasibility note are a different population and cannot establish the primary claim about naturally generated candidates.
+**Population qualification.** The intended primary population is naturally generated solver candidates, but the generation mechanism, sampling frame, and solver-side dependence groups are not yet operationally specified. The mutation-site combinations discussed in the separate Idea 1 feasibility note are a different population and cannot establish the primary claim about naturally generated candidates. Conditioning on `k > 0` is explicit selection under B1; the result is a conditional ranking claim, not a population-wide claim about all generated candidates.
 
 **Secondary questions.**
 - **Q1 (mean prediction):** Does `C` improve out-of-sample prediction of held-out average performance beyond `k`?
@@ -74,12 +75,13 @@ Q1b: does `C` improve prediction of the **distribution** of future family-balanc
 
 ## 7. The out-of-instrument target
 
-"Unseen input types" is not a target. A target for transfer must be:
+"Unseen input types" is not a target. The held-out score must measure performance on input clusters independently constructed from, and disjoint from, the diagnostic clusters. A target for transfer must be:
 
-- a **pre-specified input domain**, defined by a stated construction rule before any outcome is seen;
-- **independently evaluated**, disjoint from the diagnostic bank and from any in-instrument held-out bank;
-- **bounded**, so the domain can be described exactly and failure sets compared;
-- stated together with its scoring rule (family-balanced or pooled), chosen to match the population the claim is about.
+- a **pre-specified input domain**, defined by a construction rule before any candidate outcomes are seen;
+- **input-cluster disjoint**, with related inputs kept together and no diagnostic input cluster reused for held-out evaluation;
+- **not defined or weighted by the six diagnostic families**. If evaluation strata are needed, their construction rules and weights must be fixed independently of the diagnostic family partition and before any candidate outcomes are seen. This avoids a transfer result arising solely because the scoring target reuses the diagnostic partition by design; it does not rule out real correlations between diagnostic failures and held-out performance;
+- **bounded**, so the target domain and score are precisely specified;
+- paired with a pre-specified score (for example, a pooled failure rate or a balanced rate over independently defined evaluation strata) matching the target population.
 
 A transfer claim applies only to that domain. A high `C` does not show that a weakness is narrow or that it stays narrow on unfamiliar inputs. Both concentrated and dispersed failures can arise from different mechanisms.
 
@@ -115,13 +117,14 @@ The smallest practically meaningful gain and the uncertainty procedure must be f
 
 Neither distinct program text nor different observed failure sets by itself proves statistical independence. Dependence groups must be justified from provenance and construction, with behavioral-alias checks treated as supporting evidence rather than proof of independence. The archived v0.2 data contain 40 solver bodies with three replicas each; the 120 solver-body/replica records are not 120 independent solver candidates.
 
-**Feasible support.** With six families of `p = 5` probes, some strata allow no variation in `C`: `k = 1` forces `C = 1`, and `k = 29` forces `C = 5/29`. For `k > 5`, `C <= 5/k`. How many values of `C` are attainable at each `k` is a property of the instrument. Variation in `C` at fixed `k` must be demonstrated for the particular strata a study would use, because a larger sample cannot create it.
+**Feasible support and the low-`k` issue.** With six families of `p = 5` probes, the feasible maximum family count at total `k` lies between `ceil(k/6)` and `min(5,k)`. Therefore, `C` has no variation at `k = 1` and at every `k` from 25 through 30; at `k = 0`, `C` is undefined and B1 accepts the candidate. At `k = 2`, two levels are possible (`C = 1/2` or `C = 1`), so variation is possible but sparse. More generally, low and high `k` strata may have only a few feasible levels. A study must declare its eligible `k` strata and minimum independent-group support rule before evaluating held-out outcomes. It must not pick the range after inspecting associations with held-out performance. A larger sample cannot create variation where the instrument's feasible support is a single value.
 
 ## 9. Identification requirements carried forward
 
 These are lessons from the earlier work, not a design.
 
-- The comparison must hold `k` fixed and use independent solver-side dependence groups. The archived v0.2 confirmatory table reports `C = 5/k` throughout and therefore has no within-`k` concentration variation. A separate natural-candidate inventory was reported as 90 eligible rows from ten base bodies, also without same-`k`, different-`C` support. These are different records and must not be conflated.
+- The comparison must hold `k` fixed and use independent solver-side dependence groups. The diagnostic probe-to-family partition must be frozen before candidates and outcomes are observed. The archived v0.2 confirmatory table reports `C = 5/k` throughout and therefore has no within-`k` concentration variation. A separate natural-candidate inventory was reported as 90 eligible rows from ten base bodies, also without same-`k`, different-`C` support. These are different records and must not be conflated.
+- The primary target is explicitly conditional on B1 rejection (`k > 0`). Because B1 uses only `k`, it does not select among family profiles within a fixed-`k` stratum; however, the claim does not apply to accepted candidates or to another rejection rule.
 - The v0.2 instrument used five probes per family that varied one underlying property; its all-or-none family counts are at least partly instrument-induced. They do not establish that naturally generated solvers have family-aligned failure patterns.
 - Independence and leakage control must be defined separately for solver-side dependence groups and input-construction clusters. A difference in observed failure sets does not by itself prove independence.
 - `C` has tracked a hidden variable in each earlier setting: algorithm type in the old Doctor project, failure count in v0.2, and family size and defect identity in the engineered Gate 1 work.
@@ -144,9 +147,10 @@ The focused scan and its exploratory follow-up covered failure clustering and ro
 ## 12. Open items
 
 - Define and justify the natural solver-generation mechanism and target population.
-- Specify the bounded held-out input domain, construction rules, and score orientation.
-- Set the minimum practically meaningful ranking improvement, tie rule, stratum weighting, and uncertainty procedure before any held-out score is inspected.
-- Establish that sufficient fixed-`k`, varying-`C` comparisons exist across independent solver-side dependence groups.
+- Freeze the diagnostic probe-to-family partition, labels, counts, and weights before candidate outcomes are observed.
+- Specify the bounded held-out input domain and its construction independently of diagnostic family labels; freeze its score orientation and any evaluation strata/weights.
+- Set the B1-rejected target population (`k > 0`), eligible `k` strata, minimum practically meaningful ranking improvement, pairwise tie rule, stratum weighting, and group-level uncertainty procedure before any held-out score is inspected.
+- Establish sufficient fixed-`k`, varying-`C` comparisons across independent solver-side dependence groups. For `p = 5` and six families, `k = 1` and `k = 25..30` have no variation in `C`; `k = 2` has only two feasible levels.
 - Resolve input-cluster separation and the limits of behavioral-alias checks.
 - Complete a systematic literature review before making any novelty claim.
 
