@@ -1,0 +1,212 @@
+[
+  {
+    "probe_id": "R1",
+    "family": "R",
+    "construct": "Depth of relaxation required along a long chain of dependencies.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "R2",
+    "family": "R",
+    "construct": "Depth of relaxation required along a long chain of dependencies.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "R3",
+    "family": "R",
+    "construct": "Depth of relaxation required along a long chain of dependencies.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "R4",
+    "family": "R",
+    "construct": "Depth of relaxation required along a long chain of dependencies.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "R5",
+    "family": "R",
+    "construct": "Depth of relaxation required along a long chain of dependencies.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "Z1",
+    "family": "Z",
+    "construct": "Termination and distance correctness around zero-weight reachability and zero cycles.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "Z2",
+    "family": "Z",
+    "construct": "Termination and distance correctness around zero-weight reachability and zero cycles.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "Z3",
+    "family": "Z",
+    "construct": "Termination and distance correctness around zero-weight reachability and zero cycles.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "Z4",
+    "family": "Z",
+    "construct": "Termination and distance correctness around zero-weight reachability and zero cycles.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "Z5",
+    "family": "Z",
+    "construct": "Termination and distance correctness around zero-weight reachability and zero cycles.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "A1",
+    "family": "A",
+    "construct": "Choice among parallel and alternative source-to-target routes.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "A2",
+    "family": "A",
+    "construct": "Choice among parallel and alternative source-to-target routes.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "A3",
+    "family": "A",
+    "construct": "Choice among parallel and alternative source-to-target routes.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "A4",
+    "family": "A",
+    "construct": "Choice among parallel and alternative source-to-target routes.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "A5",
+    "family": "A",
+    "construct": "Choice among parallel and alternative source-to-target routes.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "I1",
+    "family": "I",
+    "construct": "Robustness to arbitrary node labels and interior source/target positions.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "I2",
+    "family": "I",
+    "construct": "Robustness to arbitrary node labels and interior source/target positions.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "I3",
+    "family": "I",
+    "construct": "Robustness to arbitrary node labels and interior source/target positions.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "I4",
+    "family": "I",
+    "construct": "Robustness to arbitrary node labels and interior source/target positions.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "I5",
+    "family": "I",
+    "construct": "Robustness to arbitrary node labels and interior source/target positions.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "S1",
+    "family": "S",
+    "construct": "Shortcut discovery in dense graphs with many competing edges.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "S2",
+    "family": "S",
+    "construct": "Shortcut discovery in dense graphs with many competing edges.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "S3",
+    "family": "S",
+    "construct": "Shortcut discovery in dense graphs with many competing edges.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "S4",
+    "family": "S",
+    "construct": "Shortcut discovery in dense graphs with many competing edges.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "S5",
+    "family": "S",
+    "construct": "Shortcut discovery in dense graphs with many competing edges.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "U1",
+    "family": "U",
+    "construct": "Correct unreachable-target sentinel behavior.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "U2",
+    "family": "U",
+    "construct": "Correct unreachable-target sentinel behavior.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "U3",
+    "family": "U",
+    "construct": "Correct unreachable-target sentinel behavior.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "U4",
+    "family": "U",
+    "construct": "Correct unreachable-target sentinel behavior.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  },
+  {
+    "probe_id": "U5",
+    "family": "U",
+    "construct": "Correct unreachable-target sentinel behavior.",
+    "belongs": true,
+    "reviewer": "pre-freeze construct review by executor; no candidate outcomes seen"
+  }
+]
