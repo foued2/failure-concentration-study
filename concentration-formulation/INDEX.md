@@ -24,7 +24,7 @@ Suggested reading order: 02, then 03, then 01.
 - The intended primary population is naturally generated rejected solver candidates, but the generator and sampling frame are not yet operationally specified.
 - Mutation-site combinations in file 01 are a different population. A positive result for them would not establish the natural-candidate claim.
 - Solver-side dependence groups and input-construction clusters must be controlled separately. Different program text or failure sets alone do not establish independence.
-- The archived v0.2 table is reported as 1,200 rows from 40 solver bodies with three replicas each, with `C = 5/k` throughout. A separate natural-candidate inventory was reported as 90 eligible rows across ten base bodies, also without same-`k), different-`C` support. Do not conflate these records or their independent units.
+- The archived v0.2 table is reported as 1,200 rows from 40 solver bodies with three replicas each, with `C = 5/k` throughout. A separate natural-candidate inventory was reported as 90 eligible rows across ten base bodies, also without same-`k`, different-`C` support. Do not conflate these records or their independent units.
 - The alias-check issue in file 01 is not solved: comparing failure behavior over the same domain used for held-out scoring is not outcome-blind.
 
 ## Version status
@@ -38,4 +38,6 @@ The repository version of file 02 is the active formulation candidate for this b
 3. Specify the practical ranking-gain threshold, tie rule, stratum weighting, and uncertainty procedure before held-out outcomes are inspected.
 4. Demonstrate adequate same-`k`, varying-`C` support among independent groups; if absent, primary H3 is not estimable with that population/instrument.
 5. Resolve alias grouping and separate diagnostic, identity-check, and evaluation input clusters without claiming more equivalence than the domains support.
-6. Conduct a systematic literature review before any novelty claim.
+6. Treat Yang et al. (ICML 2023) on worst-class-accuracy model selection under subpopulation shift as the closest conceptual precedent identified so far, not a direct match to H3.
+7. Search defect prediction and software reliability more systematically; the current scan is exploratory and defect prediction remains unsearched.
+8. Conduct a systematic literature review before any novelty claim.
