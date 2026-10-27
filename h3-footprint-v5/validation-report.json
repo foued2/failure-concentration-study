@@ -1,0 +1,107 @@
+{
+  "candidate_bodies_generated": 0,
+  "candidate_generation_performed": false,
+  "control_expectations": {
+    "constant_minus_one": {
+      "k": 25
+    },
+    "constant_zero": {
+      "k": 29
+    },
+    "invalid_to_load": {
+      "k": null
+    },
+    "missing_solve": {
+      "k": null
+    },
+    "reachable_distance_plus_one": {
+      "k": 25
+    },
+    "reference": {
+      "k": 0
+    },
+    "runtime_exception": {
+      "k": 30
+    },
+    "single_R1_failure": {
+      "k": 1
+    },
+    "single_Z4_failure": {
+      "k": 1
+    },
+    "spread_bug_across_R_and_Z": {
+      "C": 0.6,
+      "family_counts": {
+        "R": 2,
+        "Z": 3
+      },
+      "k": 5
+    },
+    "syntax_error": {
+      "k": null
+    },
+    "undefined_global": {
+      "k": null
+    },
+    "unreachable_sentinel_bug": {
+      "C": 1.0,
+      "k": 5
+    }
+  },
+  "limitations": [
+    "Static undefined-name checking is a conservative warning; preflight loading remains mandatory.",
+    "The saturation metric, futility rule, and conservative classifier are validated against synthetic fixtures, not generated candidates.",
+    "Unrecognized or ambiguous solver structure is labelled other and excluded from supported cells and the PASS group count.",
+    "These are deterministic harness controls, not generated candidate results.",
+    "No generation, model calls, held-out scoring, power estimate, or H3 inference was performed."
+  ],
+  "model_calls_performed": 0,
+  "oracle_validation": {
+    "coherence_review_entries": 30,
+    "expected_values_match": true,
+    "family_counts": {
+      "A": 5,
+      "I": 5,
+      "R": 5,
+      "S": 5,
+      "U": 5,
+      "Z": 5
+    },
+    "oracle_agreement_count": 30,
+    "probe_count": 30
+  },
+  "status": "PASS",
+  "test_output_tail": "0_triggers) ... ok\ntest_checkpoint_not_reached_before_100_batches (test_v3_controls.FutilityTests.test_checkpoint_not_reached_before_100_batches) ... ok\ntest_groups_from_batches_at_or_after_checkpoint_do_not_count (test_v3_controls.FutilityTests.test_groups_from_batches_at_or_after_checkpoint_do_not_count) ... ok\ntest_empty_set_reports_none (test_v3_controls.SaturationMetricTests.test_empty_set_reports_none) ... ok\ntest_fully_failed_family_is_saturated (test_v3_controls.SaturationMetricTests.test_fully_failed_family_is_saturated) ... ok\ntest_low_k_single_family_two_probe_failure_is_not_saturated (test_v3_controls.SaturationMetricTests.test_low_k_single_family_two_probe_failure_is_not_saturated) ... ok\ntest_high_all_or_none_without_saturation_is_not_degeneracy_fail (test_v3_controls.VerdictTests.test_high_all_or_none_without_saturation_is_not_degeneracy_fail) ... ok\ntest_comment_terms_cannot_change_the_label (test_v4_classifier.ConservativeClassifierTests.test_comment_terms_cannot_change_the_label) ... ok\ntest_docstring_terms_cannot_change_the_label (test_v4_classifier.ConservativeClassifierTests.test_docstring_terms_cannot_change_the_label) ... ok\ntest_genuine_algorithms_are_recognized (test_v4_classifier.ConservativeClassifierTests.test_genuine_algorithms_are_recognized) ... ok\ntest_heap_used_only_in_an_unreached_helper_is_ignored (test_v4_classifier.ConservativeClassifierTests.test_heap_used_only_in_an_unreached_helper_is_ignored) ... ok\ntest_import_aliases_are_resolved (test_v4_classifier.ConservativeClassifierTests.test_import_aliases_are_resolved) ... ok\ntest_list_scan_dijkstra_is_not_forced_into_a_cell (test_v4_classifier.ConservativeClassifierTests.test_list_scan_dijkstra_is_not_forced_into_a_cell) ... ok\ntest_multiple_structural_signals_fall_back_to_other (test_v4_classifier.ConservativeClassifierTests.test_multiple_structural_signals_fall_back_to_other) ... ok\ntest_unused_deque_import_does_not_create_a_bfs_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_deque_import_does_not_create_a_bfs_cell) ... ok\ntest_unused_floyd_shaped_helper_does_not_create_a_floyd_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_floyd_shaped_helper_does_not_create_a_floyd_cell) ... ok\ntest_unused_heap_import_does_not_create_a_heap_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_heap_import_does_not_create_a_heap_cell) ... ok\ntest_unused_recursive_helper_does_not_create_a_dfs_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_recursive_helper_does_not_create_a_dfs_cell) ... ok\ntest_identified_algorithms_still_form_cells (test_v5_other_category.OtherCategoryTests.test_identified_algorithms_still_form_cells) ... ok\ntest_other_cannot_create_a_supported_cell_even_when_thresholds_are_met (test_v5_other_category.OtherCategoryTests.test_other_cannot_create_a_supported_cell_even_when_thresholds_are_met) ... ok\n\n----------------------------------------------------------------------\nRan 41 tests in 33.045s\n\nOK\n",
+  "unit_test_count": 41,
+  "unit_tests_passed": true,
+  "v3_rule_validation": {
+    "futility_checkpoints": {
+      "100": 10,
+      "200": 20,
+      "300": 30
+    },
+    "low_k_control": {
+      "all_or_none_fraction": 0.8333333333333334,
+      "saturation_rate": 0.0
+    },
+    "primary_metric": "P(max_j f_j = 5 | 2 <= k <= 24)",
+    "saturated_control": {
+      "saturation_rate": 1.0
+    },
+    "saturation_cutoff": 0.8
+  },
+  "v4_classifier_validation": {
+    "classifier": "ast_structural_reachable_from_solve_v1",
+    "unclassified_label": "other",
+    "weak_evidence_fallbacks": [
+      "misleading_comment",
+      "unused_import"
+    ]
+  },
+  "v5_other_policy_validation": {
+    "other_category_policy": "reported_in_all_counts_but_excluded_from_supported_cells_and_pass_group_count",
+    "regression_test": "tests/test_v5_other_category.py"
+  },
+  "validated_at_utc": "2026-10-27T10:13:58.268459+00:00",
+  "version": 5
+}

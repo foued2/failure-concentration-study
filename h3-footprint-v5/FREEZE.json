@@ -1,0 +1,56 @@
+{
+  "artifact_hashes_sha256": {
+    "GATE.md": "b0024aad60b72fc7ffc6812e95887babee5ee2cbe113c75f24b41ad988e1673e",
+    "README.md": "7c63782e9df5aec82803708e66b66a2dcacc376d23fa487a90c26691c691e689",
+    "RUNBOOK.md": "5b2f53ae2544875165169262e87d120d438347d596534e8c3b32517e05614ffb",
+    "coherence_review.json": "7efb9965c9d18d0a42dcecdfd161c1352b4fd9fd26439d807eec9c38bc092a4f",
+    "expected_values.json": "2358240af47f420b9fba447155a33fdc96f0dc7e2944dad74e2616ea5ae82ae8",
+    "freeze.py": "f5e4f8a0eeb8935d4ae936fecb7b297cf5114e0eba012c78f4c92ed345f65905",
+    "generate.py": "ff5b638455f16a3033168b02929e4d7bb63b72a5b486b72930b119b69b3e3456",
+    "instrument.py": "e0bb4aa7adfa3bfc6d1b936c308314327e38d3d6166f16f010ce31f02f42bb81",
+    "probe_worker.py": "e9e4deb02a7dc07970a3d5ee023e97c917952836c52ab3297b09d1ac663e0b2c",
+    "run_gate.py": "e5b1bad08ea9f54f402f114a549671f82369d77042015c5fe67668601c7a0eb4",
+    "tests/test_harness.py": "db08544f0efff8affdc75fa8b3a1e0d2123aacb2791ee3afd7e16f5b16148406",
+    "tests/test_v2_controls.py": "684c1291ef710ba3cf8eee985ed0f6abe700feb055a5975b4d09a69f099312f4",
+    "tests/test_v3_controls.py": "f4993a80b32158a5693f38a1a79912bb03b2c8d4bd34bebfe6953bf03c4adde9",
+    "tests/test_v4_classifier.py": "be2d438be7f90209240573e3e3666d5208bff6b75779cce97be0424b7e4c3b8e",
+    "tests/test_v5_other_category.py": "c71f119e0a3b6898e54bd48bdc7fc58d4d5faf27dc385fee69192f953a3dd33a",
+    "validate_controls.py": "eb92d7c55f7c44fcf5ba0fbe45559cf79af1f4a49b93c9b0f23c645c31cd320a",
+    "validation-report.json": "cadb2cdbf56050e45a90cc15402df917a855ffe01b8a761c521c38b7962576d2"
+  },
+  "base_algorithm_classifier": "ast_structural_reachable_from_solve_v1",
+  "bodies_per_batch": 8,
+  "candidate_count_at_freeze": 0,
+  "candidate_generation_performed": false,
+  "freeze_scope": "Exclusion of other-labelled candidates from supported cells, conservative AST algorithm classification, saturation-based degeneracy, and futility checkpoints; unchanged probe definitions and generation frame.",
+  "futility_checkpoints": {
+    "100": 10,
+    "200": 20,
+    "300": 30
+  },
+  "generation_budget_batches": 400,
+  "generation_segment_batches": 100,
+  "model_calls_performed": 0,
+  "other_category_policy": "reported_in_all_counts_but_excluded_from_supported_cells_and_pass_group_count",
+  "requested_candidate_cap": 3200,
+  "scientific_status": "No H3 conclusion. No new candidate data generated.",
+  "status": "PRE_CANDIDATE_HARNESS_FREEZE",
+  "tag": "h3-footprint-v5-freeze-2026-10-27",
+  "target_rejected_bodies": 150,
+  "thresholds": {
+    "m_min": 4,
+    "pass_cells": 3,
+    "pass_groups": 40,
+    "pass_k": 2,
+    "saturation_max": 0.8,
+    "weak_cells_max": 2
+  },
+  "timestamp_utc": "2026-10-27T10:14:12.146546+00:00",
+  "validation": {
+    "control_suite": "Passed; expected-k controls are in validation-report.json.",
+    "oracle_agreement_count": 30,
+    "status": "PASS",
+    "unit_test_count": 41
+  },
+  "version": 5
+}
