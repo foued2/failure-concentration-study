@@ -50,11 +50,19 @@ A static AST denylist is not a security boundary for arbitrary Python code. Do n
 
 ## Finding B: expected values and probe definitions are candidate-readable
 
-This is stronger than an untested possibility. The V8 runbook maps the entire harness tree, including `expected_values.json` and the instrument source, into the Sandbox as read-only. Read-only access blocks changes; it does not block reads. The candidate is executed from a file under the same mapped staging tree. The worker imports `io` and `pathlib`, and the static filter permits `io.open` and `sys.modules` access (the V8 isolation tests themselves exercise `io.open` and `sys.modules["os"]` access). Candidate code can therefore discover the worker/module paths and read files in the mapped tree without needing write access.
+This is a confirmed design defect from source inspection, not merely a missing test. The V8 runbook maps the entire harness tree into the Sandbox as read-only, including `expected_values.json` and `instrument.py`. Read-only access blocks changes; it does not block reads. The candidate is executed from a file under that same mapped staging tree. The worker imports `io` and `pathlib`; candidate code can reach them through `sys.modules` even where direct imports are denied. The existing static filter permits `io.open` and `sys.modules` access (the V8 controls themselves exercise `io.open` and `sys.modules["os"]` access).
 
-The current pre-generation isolation probe does not test expected-value **read denial**. Consequently V8 has not established that expected outputs or the diagnostic probe definition are hidden from candidate code. This makes the response-forgery risk materially worse: it is not merely a candidate substituting a different answer; the mapped layout can expose the reference answers used by the parent evaluator.
+A source-level attack path is direct: obtain `sys.modules["__main__"].__file__` to find `probe_worker.py`, use `sys.modules["pathlib"].Path` to locate the adjacent `expected_values.json`, and read it with `sys.modules["io"].open` or equivalent. The frozen instrument uses a stable probe order and probe index, so the candidate can map the current index to the key in the answer file. Because `_emit_answer()` resolves the worker module's `_emit` global dynamically, candidate code can also replace that function and write a single nonce-prefixed payload containing the reference answer. Parent-side comparison is not protection when the candidate can read the values being compared.
 
-This finding should be treated as a confirmed design defect from source inspection. Do not try to fix it with more import/call denylist entries. The next revision must keep reference answers and any probes intended to be secret outside the candidate-visible filesystem and process boundary. The trusted evaluator must compare candidate-observed outputs against references that the candidate process cannot read. Add separate regression controls for (a) attempting to read reference outputs and (b) attempting to read evaluator/probe source, and require them to fail in the real Sandbox.
+The current pre-generation isolation probe tests expected-value **write denial**, not **read denial**. Therefore V8 has not established that reference outputs or the diagnostic probe definitions are hidden from candidate code. Do not try to fix this with more static import/call denylist entries. Keep reference answers and any probe bank meant to be hidden outside the candidate-visible filesystem and process boundary, and test read denial in the actual Sandbox.
+
+## Finding C: the five-second timeout does not terminate the candidate process tree
+
+`run_gate.py::evaluate_body()` uses `subprocess.run(..., timeout=5)` separately for preflight and each probe. Python's timeout handling kills the direct subprocess; it does not by itself guarantee that child or grandchild processes launched by that subprocess are terminated. V8 candidates can reach the already-loaded `os` module through `sys.modules`; the V8 lock-removal control explicitly uses `os.system()` to launch external commands, confirming that process spawning remains reachable despite the static import filter.
+
+A candidate can spawn a detached or long-running descendant, let the worker hit its timeout, and leave that descendant running into later probes/candidates. Its low-integrity token and the Sandbox reduce the impact but do not provide a per-candidate process-tree time bound. This can exhaust the Sandbox's memory/CPU, interfere with later evaluations, or leave processes operating on scratch locations after the parent worker is killed. The global Sandbox memory ceiling is not a substitute for killing every descendant at a per-candidate deadline.
+
+The historical Job Object fixture work is not an implementation guarantee: the frozen V8 `evaluate_body()` call path shown above does not create, assign, or close a Windows Job Object around each worker. The next revision must enforce a process-tree kill-on-timeout (for example, by assigning a worker process and descendants to a Windows Job Object with kill-on-job-close, or an equivalently strong container boundary) and resource limits for each candidate invocation. Add a regression candidate that launches a child which outlives the parent; prove the child is gone after timeout. Run that test inside the real Sandbox as well as ordinary tests.
 
 ## Finding C: OpenCode free-agent access needs local diagnosis, not an unverified global conclusion
 
@@ -86,8 +94,9 @@ Do not silently replace any model in the frozen sampling frame. Any replacement 
 
 ## Next work, in order
 
-1. Resolve the evaluator trust boundary and add the suppression-and-forgery regression test.
+1. Redesign the trust boundary so expected values and probe definitions are outside the candidate-visible filesystem/process; add the suppression-and-forgery regression test.
 2. Add explicit read-access probes for expected values, instrument, harness source, and other candidate files.
-3. Run the isolation probe in a real, configured Windows Sandbox and preserve its report outside the writable output mapping.
-4. Separately diagnose the current OpenCode CLI/account state without generating study candidates.
-5. Only after items 1–3 pass, revisit whether candidate evaluation is authorized. Only after generation access is confirmed under the frozen model IDs should any generation batch begin.
+3. Add process-tree kill-on-timeout and per-candidate resource controls; prove descendants are gone after timeout.
+4. Run the complete isolation probe in a real, configured Windows Sandbox and preserve its report outside the writable output mapping.
+5. Separately diagnose the current OpenCode CLI/account state without generating study candidates.
+6. Only after items 1–4 pass, revisit whether candidate evaluation is authorized. Only after generation access is confirmed under the frozen model IDs should any generation batch begin.
