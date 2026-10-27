@@ -118,11 +118,14 @@ class StaticCheckTests(unittest.TestCase):
                 target = root / (label + '.py')
                 target.write_text(source, encoding='utf-8')
                 import subprocess
+                nonce = 'test-nonce'
                 proc = subprocess.run(
-                    [sys.executable, '-I', str(root / 'probe_worker.py'), str(target), '--preflight'],
+                    [sys.executable, '-I', str(root / 'probe_worker.py'), str(target), '--preflight', nonce],
                     capture_output=True, text=True, timeout=5
                 )
-                payload = json.loads(proc.stdout.strip().splitlines()[-1])
+                lines = [line for line in proc.stdout.splitlines() if line.startswith(nonce + ' ')]
+                self.assertEqual(len(lines), 1, label)
+                payload = json.loads(lines[0][len(nonce) + 1:])
                 self.assertFalse(payload.get('valid', False), label)
                 self.assertEqual(payload.get('phase'), 'load', label)
 

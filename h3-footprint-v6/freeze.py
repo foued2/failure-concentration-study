@@ -15,6 +15,9 @@ ARTIFACTS = [
     "generate.py",
     "run_gate.py",
     "probe_worker.py",
+    "isolation_probe.py",
+    "isolation/fixtures/other_candidate.py",
+    "isolation/windows-sandbox.wsb",
     "expected_values.json",
     "coherence_review.json",
     "validate_controls.py",
@@ -24,9 +27,11 @@ ARTIFACTS = [
     "tests/test_v3_controls.py",
     "tests/test_v4_classifier.py",
     "tests/test_v5_other_category.py",
+    "tests/test_v6_integrity.py",
     "freeze.py",
 ]
-TAG = "h3-footprint-v5-freeze-2026-10-27"
+TAG = "h3-footprint-v6-freeze-2026-10-27"
+CORE_ARTIFACTS = ["run_gate.py", "probe_worker.py", "instrument.py", "expected_values.json"]
 THRESHOLDS = {
     "saturation_max": 0.80,
     "m_min": 4,
@@ -52,11 +57,13 @@ def calculate(timestamp_override: str | None = None) -> dict:
     }
     return {
         "tag": TAG,
-        "version": 5,
+        "version": 6,
         "status": "PRE_CANDIDATE_HARNESS_FREEZE",
-        "freeze_scope": "Exclusion of other-labelled candidates from supported cells, conservative AST algorithm classification, saturation-based degeneracy, and futility checkpoints; unchanged probe definitions and generation frame.",
+        "freeze_scope": "Evaluator-integrity revision: the worker returns only raw answers, the parent owns expected-value comparison and fail flags, candidates run in per-candidate scratch directories, the harness must be mounted read-only, and a pre-generation isolation probe gates evaluation. Unchanged probe definitions, generation frame, thresholds, and futility rule.",
         "timestamp_utc": timestamp_override or datetime.now(timezone.utc).isoformat(),
         "artifact_hashes_sha256": hashes,
+        "core_integrity_artifacts": CORE_ARTIFACTS,
+        "isolation_report_policy": "produced_by_pre_generation_isolation_probe_stored_outside_frozen_harness_not_hashed_in_FREEZE",
         "candidate_count_at_freeze": 0,
         "candidate_generation_performed": False,
         "model_calls_performed": 0,

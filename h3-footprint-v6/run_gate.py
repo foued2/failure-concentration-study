@@ -1,19 +1,25 @@
 from __future__ import annotations
 
+import argparse
 import ast
 import builtins
+import contextlib
+import hashlib
 import json
 import math
 import re
+import secrets
 import subprocess
 import symtable
 import sys
+import tempfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
 import instrument
 
-ROOT = Path(__file__).resolve().parent
+HARNESS_ROOT = Path(__file__).resolve().parent
+ROOT = HARNESS_ROOT
 GEN = ROOT / "generated"
 BODIES = GEN / "bodies"
 RESULTS = ROOT / "results"
@@ -283,18 +289,33 @@ def undefined_global_names(source: str) -> list[str]:
     return sorted(missing)
 
 
-def _json_object_from_stdout(stdout: str) -> dict | None:
-    for line in reversed(stdout.splitlines()):
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            value = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if isinstance(value, dict):
-            return value
-    return None
+def _nonce_payload(stdout: str, nonce: str) -> dict | None:
+    # The worker prints exactly one nonce-tagged line. Candidate code shares
+    # the worker process and can print extra lines (for example from atexit),
+    # so require exactly one match and ignore everything else. Zero or
+    # multiple matches are malformed and invalidate the candidate.
+    prefix = nonce + " "
+    matches = [line[len(prefix):] for line in stdout.splitlines() if line.startswith(prefix)]
+    if len(matches) != 1:
+        return None
+    try:
+        value = json.loads(matches[0])
+    except json.JSONDecodeError:
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def _load_expected() -> dict[str, int]:
+    return json.loads((HARNESS_ROOT / "expected_values.json").read_text(encoding="utf-8"))
+
+
+def _probe_input(probe: dict) -> str:
+    return json.dumps({
+        "n": probe["n"],
+        "edges": [list(edge) for edge in probe["edges"]],
+        "s": probe["s"],
+        "t": probe["t"],
+    }, sort_keys=True)
 
 
 def _invalid_candidate(row: dict, reason: str) -> dict:
@@ -306,7 +327,12 @@ def _invalid_candidate(row: dict, reason: str) -> dict:
     return row
 
 
-def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
+def evaluate_body(
+    path: Path,
+    meta: dict[str, dict],
+    expected: dict[str, int] | None = None,
+    scratch_dir: Path | str | None = None,
+) -> dict:
     source = path.read_text(encoding="utf-8")
     h = path.stem
     info = meta.get(h) or {}
@@ -326,46 +352,68 @@ def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
     if row["group_id"] is None:
         return _invalid_candidate(row, "missing_provenance")
 
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-I", str(WORKER), str(path), "--preflight"],
-            cwd=str(ROOT), capture_output=True, text=True, timeout=5,
-            encoding="utf-8", errors="replace",
-        )
-    except subprocess.TimeoutExpired:
-        return _invalid_candidate(row, "preflight_timeout")
-    except Exception as exc:
-        return _invalid_candidate(row, "preflight_runner_error:" + type(exc).__name__)
-    pre = _json_object_from_stdout(proc.stdout)
-    if proc.returncode != 0 or pre is None:
-        return _invalid_candidate(row, "preflight_invalid_output")
-    if pre.get("phase") != "preflight" or pre.get("valid") is not True or pre.get("load_error"):
-        detail = pre.get("load_error") or pre.get("error") or "candidate did not load"
-        return _invalid_candidate(row, "load_error:" + str(detail))
+    if expected is None:
+        expected = _load_expected()
 
-    fails: list[bool] = []
-    had_probe_timeout = False
-    for probe_index in range(len(instrument.PROBES)):
+    scratch_base = Path(scratch_dir) if scratch_dir is not None else None
+    if scratch_base is not None:
+        scratch_base.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="h3probe-", dir=str(scratch_base) if scratch_base else None) as td:
+        scratch = Path(td)
+        nonce = secrets.token_hex(16)
         try:
             proc = subprocess.run(
-                [sys.executable, "-I", str(WORKER), str(path), "--probe", str(probe_index)],
-                cwd=str(ROOT), capture_output=True, text=True, timeout=5,
+                [sys.executable, "-I", str(WORKER), str(path), "--preflight", nonce],
+                cwd=str(scratch), capture_output=True, text=True, timeout=5,
                 encoding="utf-8", errors="replace",
             )
         except subprocess.TimeoutExpired:
-            had_probe_timeout = True
-            fails.append(True)
-            continue
+            return _invalid_candidate(row, "preflight_timeout")
         except Exception as exc:
-            return _invalid_candidate(row, "probe_runner_error:" + type(exc).__name__)
-        data = _json_object_from_stdout(proc.stdout)
-        if proc.returncode != 0 or data is None:
-            return _invalid_candidate(row, "probe_invalid_output")
-        if data.get("phase") == "load" or data.get("load_error"):
-            return _invalid_candidate(row, "load_error_during_probe")
-        if data.get("phase") != "probe" or data.get("probe_index") != probe_index or not isinstance(data.get("fail"), bool):
-            return _invalid_candidate(row, "probe_invalid_output")
-        fails.append(data["fail"])
+            return _invalid_candidate(row, "preflight_runner_error:" + type(exc).__name__)
+        pre = _nonce_payload(proc.stdout, nonce)
+        if proc.returncode != 0 or pre is None:
+            return _invalid_candidate(row, "preflight_invalid_output")
+        if pre.get("phase") != "preflight" or pre.get("valid") is not True or pre.get("load_error"):
+            detail = pre.get("load_error") or pre.get("error") or "candidate did not load"
+            return _invalid_candidate(row, "load_error:" + str(detail))
+
+        fails: list[bool] = []
+        had_probe_timeout = False
+        for probe_index, probe in enumerate(instrument.PROBES):
+            nonce = secrets.token_hex(16)
+            try:
+                proc = subprocess.run(
+                    [sys.executable, "-I", str(WORKER), str(path), "--probe", str(probe_index),
+                     _probe_input(probe), nonce],
+                    cwd=str(scratch), capture_output=True, text=True, timeout=5,
+                    encoding="utf-8", errors="replace",
+                )
+            except subprocess.TimeoutExpired:
+                had_probe_timeout = True
+                fails.append(True)
+                continue
+            except Exception as exc:
+                return _invalid_candidate(row, "probe_runner_error:" + type(exc).__name__)
+            data = _nonce_payload(proc.stdout, nonce)
+            if proc.returncode != 0 or data is None:
+                return _invalid_candidate(row, "probe_invalid_output")
+            if data.get("phase") == "load" or data.get("load_error"):
+                return _invalid_candidate(row, "load_error_during_probe")
+            if data.get("phase") != "probe" or data.get("probe_index") != probe_index:
+                return _invalid_candidate(row, "probe_invalid_output")
+            if "error" in data:
+                fails.append(True)
+                continue
+            if "answer" not in data:
+                return _invalid_candidate(row, "probe_invalid_output")
+            answer = data["answer"]
+            expected_value = expected[probe["probe_id"]]
+            # The parent owns the comparison. The child only returns the raw
+            # answer, so a forged answer is merely a wrong answer, not a
+            # forged verdict.
+            bad = isinstance(answer, bool) or not isinstance(answer, int) or answer != expected_value
+            fails.append(bad)
 
     counts = instrument.family_counts(fails)
     k, c = instrument.concentration(fails)
@@ -468,9 +516,11 @@ def _futility(eligible: list[dict], support_eligible: list[dict] | None = None) 
     }
 
 
-def build() -> dict:
+def build(scratch_dir: Path | str | None = None, expected: dict[str, int] | None = None) -> dict:
     meta = body_meta()
-    rows = [evaluate_body(p, meta) for p in sorted(BODIES.glob("*.py"))]
+    if expected is None:
+        expected = _load_expected()
+    rows = [evaluate_body(p, meta, expected, scratch_dir) for p in sorted(BODIES.glob("*.py"))]
     invalid_rows = [r for r in rows if r["excluded"] is not None]
     valid_rows = [r for r in rows if r["excluded"] is None and r.get("k") is not None]
     rejected = [r for r in valid_rows if r["k"] > 0]
@@ -625,9 +675,69 @@ def markdown(report: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+CORE_ARTIFACTS = ["run_gate.py", "probe_worker.py", "instrument.py", "expected_values.json"]
+REQUIRED_ISOLATION_CHECKS = [
+    "evaluator_inside_sandbox",
+    "network_blocked",
+    "host_write_blocked",
+    "expected_values_write_blocked",
+    "other_candidate_write_blocked",
+    "extra_output_rejected",
+    "repo_not_present",
+    "correct_result_after_tamper_attempts",
+]
+
+
+def _canonical_hash(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def verify_frozen(manifest_path: Path) -> dict:
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    recorded = manifest.get("artifact_hashes_sha256") or {}
+    checked = {}
+    ok = True
+    for name in CORE_ARTIFACTS:
+        expected = recorded.get(name)
+        actual = _canonical_hash(ROOT / name)
+        match = expected == actual
+        checked[name] = {"expected": expected, "actual": actual, "ok": match}
+        ok = ok and match
+    return {"manifest": str(manifest_path), "checked": checked, "ok": ok}
+
+
+def load_isolation_report(path: Path) -> dict:
+    report = json.loads(path.read_text(encoding="utf-8"))
+    failed = [name for name in REQUIRED_ISOLATION_CHECKS if report.get(name) is not True]
+    return {"path": str(path), "failed_checks": failed, "ok": not failed}
+
+
 def main() -> None:
+    global RESULTS
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--results-dir", default=str(RESULTS))
+    parser.add_argument("--scratch-dir", default=None)
+    parser.add_argument("--freeze-manifest", required=True)
+    parser.add_argument("--isolation-report", required=True)
+    args = parser.parse_args()
+
+    RESULTS = Path(args.results_dir)
+    manifest = Path(args.freeze_manifest)
+    isolation = load_isolation_report(Path(args.isolation_report))
+    if not isolation["ok"]:
+        raise SystemExit("Refusing to evaluate: isolation report failed checks " + ", ".join(isolation["failed_checks"]))
+    integrity_start = verify_frozen(manifest)
+    if not integrity_start["ok"]:
+        raise SystemExit("Refusing to evaluate: frozen harness hash mismatch.")
+
     RESULTS.mkdir(parents=True, exist_ok=True)
-    report = build()
+    report = build(scratch_dir=args.scratch_dir)
+    integrity_end = verify_frozen(manifest)
+    report["isolation"] = isolation
+    report["harness_integrity"] = {"start": integrity_start, "end": integrity_end}
+    if not integrity_end["ok"]:
+        report["verdict"] = "FAIL"
+        report["reason"] = "harness_modified_during_run"
     (RESULTS / "footprint.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
     (RESULTS / "REPORT.md").write_text(markdown(report), encoding="utf-8")
     print(markdown(report))

@@ -41,7 +41,7 @@ def build_with(rows):
             run_gate.BODIES = bodies
             run_gate.WORKER = root / "probe_worker.py"
             with mock.patch.object(run_gate, "body_meta", return_value={}), mock.patch.object(
-                run_gate, "evaluate_body", side_effect=lambda path, meta: rows[int(path.stem[1:])]
+                run_gate, "evaluate_body", side_effect=lambda path, meta, *args, **kwargs: rows[int(path.stem[1:])]
             ):
                 return run_gate.build()
         finally:

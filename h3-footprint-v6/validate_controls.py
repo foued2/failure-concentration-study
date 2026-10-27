@@ -108,6 +108,35 @@ def validate_v5_other_policy() -> dict:
     }
 
 
+def validate_v6_integrity() -> dict:
+    sys.path.insert(0, str(ROOT))
+    import run_gate
+
+    worker = (ROOT / "probe_worker.py").read_text(encoding="utf-8")
+    if "import instrument" in worker or "expected_values" in worker:
+        raise AssertionError("worker still reads expected values or instrument")
+    if '"fail"' in worker:
+        # The child returns raw answers and the parent builds the fail flags.
+        raise AssertionError("worker still emits a fail flag")
+    nonce = "n"
+    if run_gate._nonce_payload('n {"phase":"probe"}\nn {"phase":"probe"}\n', nonce) is not None:
+        raise AssertionError("duplicate nonce lines were accepted")
+    if run_gate._nonce_payload('noise\n', nonce) is not None:
+        raise AssertionError("missing nonce line was accepted")
+    if run_gate._nonce_payload('n {"phase":"probe","probe_index":0}\n', nonce) != {"phase": "probe", "probe_index": 0}:
+        raise AssertionError("single nonce line was not parsed")
+    if not run_gate.REQUIRED_ISOLATION_CHECKS:
+        raise AssertionError("no isolation checks are required")
+    return {
+        "worker_protocol": "raw_answer_only_parent_compares",
+        "worker_reads_expected_values": False,
+        "worker_emits_fail_flag": False,
+        "nonce_requires_exactly_one_line": True,
+        "required_isolation_checks": list(run_gate.REQUIRED_ISOLATION_CHECKS),
+        "fixture": "tests/test_v6_integrity.py",
+    }
+
+
 def run_tests() -> tuple[int, str]:
     proc = subprocess.run(
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
@@ -129,10 +158,11 @@ def main() -> None:
     v3_rules = validate_v3_rules()
     v4_classifier = validate_v4_classifier()
     v5_other_policy = validate_v5_other_policy()
+    v6_integrity = validate_v6_integrity()
     test_count, test_output = run_tests()
     report = {
         "status": "PASS",
-        "version": 5,
+        "version": 6,
         "validated_at_utc": datetime.now(timezone.utc).isoformat(),
         "candidate_generation_performed": False,
         "model_calls_performed": 0,
@@ -141,6 +171,7 @@ def main() -> None:
         "v3_rule_validation": v3_rules,
         "v4_classifier_validation": v4_classifier,
         "v5_other_policy_validation": v5_other_policy,
+        "v6_integrity_validation": v6_integrity,
         "unit_test_count": test_count,
         "unit_tests_passed": True,
         "control_expectations": {
@@ -162,6 +193,8 @@ def main() -> None:
             "Static undefined-name checking is a conservative warning; preflight loading remains mandatory.",
             "The saturation metric, futility rule, and conservative classifier are validated against synthetic fixtures, not generated candidates.",
             "Unrecognized or ambiguous solver structure is labelled other and excluded from supported cells and the PASS group count.",
+            "The evaluator child returns raw answers only; the parent compares against expected values and builds fail flags. This prevents a candidate from forging the verdict, but a candidate can still return a wrong or forged raw answer, which is simply a probe failure.",
+            "The isolation probe must be run inside Windows Sandbox before evaluation; its report is run evidence and is not hashed into FREEZE.json.",
             "These are deterministic harness controls, not generated candidate results.",
             "No generation, model calls, held-out scoring, power estimate, or H3 inference was performed.",
         ],
