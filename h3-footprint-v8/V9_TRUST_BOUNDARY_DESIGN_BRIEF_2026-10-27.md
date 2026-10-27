@@ -91,7 +91,7 @@ No candidate execution until all of the following hold:
 - design review accepts the external-response contract and trust-domain split;
 - adversarial tests above are added and pass;
 - frozen-artifact/hash verification passes for the new version;
-- the real Windows Sandbox probe demonstrates network isolation, absent host repo/credentials, no access to reference outputs and probe bank, write isolation, time/memory bounds, and unaltered trusted results;
+- the real Windows Sandbox probe demonstrates network isolation, absent host repo/credentials, no access to reference outputs and probe bank, write isolation, process-tree/time/memory bounds, and unaltered trusted results;
 - the actual OpenCode generation route is separately diagnosed and confirmed under the frozen three-model schedule.
 
 Generation and evaluation are separate authorizations. Solving the executor issue does not authorize model calls, and restoring model access does not authorize candidate execution.
