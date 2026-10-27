@@ -48,11 +48,13 @@ At minimum, the next design must:
 
 A static AST denylist is not a security boundary for arbitrary Python code. Do not run generated candidates against V8 while the trust issue is unresolved.
 
-## Finding B: read access to staged evaluator files has not been established
+## Finding B: expected values and probe definitions are candidate-readable
 
-The runbook maps the V8 harness read-only. The isolation probe checks whether writes to files such as `expected_values.json` and `isolation/fixtures` fail. Read-only access does not itself deny reading.
+This is stronger than an untested possibility. The V8 runbook maps the entire harness tree, including `expected_values.json` and the instrument source, into the Sandbox as read-only. Read-only access blocks changes; it does not block reads. The candidate is executed from a file under the same mapped staging tree. The worker imports `io` and `pathlib`, and the static filter permits `io.open` and `sys.modules` access (the V8 isolation tests themselves exercise `io.open` and `sys.modules["os"]` access). Candidate code can therefore discover the worker/module paths and read files in the mapped tree without needing write access.
 
-Since V8 loads candidate code into the worker interpreter, candidate code can inspect worker state and the worker's file path. The review has not yet demonstrated that candidate code is unable to read the expected-value file, the probe instrument, or other staged evaluator source. This is a distinct check from the emitter-mutation finding. It must be tested explicitly before treating the evaluator as resistant to candidate-side inspection.
+The current pre-generation isolation probe does not test expected-value **read denial**. Consequently V8 has not established that expected outputs or the diagnostic probe definition are hidden from candidate code. This makes the response-forgery risk materially worse: it is not merely a candidate substituting a different answer; the mapped layout can expose the reference answers used by the parent evaluator.
+
+This finding should be treated as a confirmed design defect from source inspection. Do not try to fix it with more import/call denylist entries. The next revision must keep reference answers and any probes intended to be secret outside the candidate-visible filesystem and process boundary. The trusted evaluator must compare candidate-observed outputs against references that the candidate process cannot read. Add separate regression controls for (a) attempting to read reference outputs and (b) attempting to read evaluator/probe source, and require them to fail in the real Sandbox.
 
 ## Finding C: OpenCode free-agent access needs local diagnosis, not an unverified global conclusion
 
