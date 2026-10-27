@@ -1,6 +1,6 @@
-# H3 Footprint Gate, Version 6 Harness
+# H3 Footprint Gate, Version 7 Harness
 
-Status: engineering candidate awaiting pre-candidate freeze. No candidate generation or model calls have occurred in this version. Do not generate candidates until FREEZE.json, the annotated version-6 tag, and the execution-isolation check all pass.
+Status: engineering candidate awaiting pre-candidate freeze. No candidate generation or model calls have occurred in this version. Do not generate candidates until FREEZE.json, the annotated version-7 tag, and the execution-isolation check all pass.
 
 ## Purpose and version boundary
 
@@ -11,10 +11,11 @@ This version carries forward the version-2 extraction and outcome-classification
 3. Algorithm classification for the supported-cell key is structural and conservative, rather than a raw substring search. Comments, docstrings, unused imports, and unused helpers cannot change a solver's cell; ambiguous or unrecognized structure is labelled other.
 4. Candidates labelled other remain in overall counts, distributions, degeneracy rates, and futility, but cannot form a supported cell or contribute to the PASS group count. Pooling unidentified algorithms would otherwise create a false PASS from a mixture of distinct approaches. Supported cells and the PASS group count use identified algorithms only.
 5. The worker returns only the raw answer from `solve`; the parent compares it with the frozen expected value and builds the fail flag. The worker cannot read expected values, the harness is mounted read-only, each candidate runs in its own scratch directory, and a pre-generation isolation probe tests expected-value modification, cross-candidate writes, and extra worker output.
+6. The writable output root is locked with a deny ACE while any candidate process runs. The evaluator opens its two result files before locking, writes through those handles while the lock is active, reads both files back under the lock, and removes the ACE in a `finally` block. The isolation report must be outside the output root and on a read-only mount, so it cannot be rewritten by `io.open`, `open`, or a direct file-handle attack. The probe has an explicit `io.open` control candidate that must leave both an isolation-report canary and a results canary unchanged.
 
 The six-family SSSP probes, expected values, family mapping, three generators, three prompt variants, batch schedule, and support thresholds remain unchanged.
 
-Version 1 is marked INVALID_RUN. Its candidate outcomes and import-restoration diagnostic are not version-5 results. Versions 2, 3, and 4 are frozen but were not run. This version reuses the existing family partition after a prior invalid-run diagnostic, so it is a repaired feasibility run on an already-observed instrument, not a pristine first confirmatory test of that family definition.
+Version 1 is marked INVALID_RUN. Its candidate outcomes and import-restoration diagnostic are not version-5 results. Versions 2 through 6 are frozen but were not run. This version reuses the existing family partition after a prior invalid-run diagnostic, so it is a repaired feasibility run on an already-observed instrument, not a pristine first confirmatory test of that family definition.
 
 Out of scope: held-out inputs, held-out scoring, effect estimation, power analysis, prompt tuning after outcomes, and edits to research formulation branches.
 
@@ -66,11 +67,11 @@ Candidate bodies are untrusted generated code. They must not execute on the deve
 Execution is separated into two stages, specified in RUNBOOK.md:
 
 1. Generation stage: OpenCode runs where it has the network access it needs. generate.py only parses returned text and writes bodies; it does not import or execute candidate code.
-2. Evaluation stage: run_gate.py, probe_worker.py, instrument.py, expected values, and the generated bodies are staged into a sandbox with networking disabled and no host repository, credential directory, or development checkout exposed. The frozen harness and bodies are mapped read-only. Only a separate, initially empty results directory is writable. Each candidate runs in its own scratch directory. run_gate.py must be started inside that environment, not on the host. The ordinary host shell does not move subprocesses into Windows Sandbox by itself.
+2. Evaluation stage: run_gate.py, probe_worker.py, instrument.py, expected values, and the generated bodies are staged into a sandbox with networking disabled and no host repository, credential directory, or development checkout exposed. The frozen harness and bodies are mapped read-only. Only a separate, initially empty `C:\h3-out` tree is writable. `run_gate.py` writes results to `C:\h3-out\results`; that output root is the tree it locks. Each candidate runs in its own scratch directory. run_gate.py must be started inside that environment, not on the host. The ordinary host shell does not move subprocesses into Windows Sandbox by itself.
 
-Before any candidate is evaluated, the operator must run the isolation probe inside the sandbox and produce isolation-report.json. `run_gate.py` refuses to evaluate unless every required check in that report is true: evaluator inside the sandbox, network blocked, host write blocked, expected-values write blocked, another candidate's file write blocked, extra worker output rejected, repository not present, and correct results after the tamper attempts. A static import/call denylist alone is not an isolation boundary. If no such environment is available, the run must not start.
+Before any candidate is evaluated, the operator must run the isolation probe inside the sandbox and produce isolation-report.json. `run_gate.py` refuses to evaluate unless every required check in that report is true: evaluator inside the sandbox, network blocked, host write blocked, expected-values write blocked, another candidate's file write blocked, output-root write blocked both directly and through an `io.open` candidate, extra worker output rejected, repository not present, and correct results after the tamper attempts. A static import/call denylist alone is not an isolation boundary. If no such environment is available, the run must not start.
 
-The pre-generation isolation probe and the evaluator both run inside the same sandbox. isolation-report.json is stored in the writable output mapping, outside the frozen harness. It is run evidence, not a frozen harness artifact, so FREEZE.json does not hash it. `run_gate.py` independently verifies the frozen core hashes before and after evaluation and reports a FAIL if they differ.
+The probe runs in a first sandbox session and writes its report to the writable output mapping. The operator exports that report to the host and places it in a separate read-only evidence folder under the staging root. The sandbox is then restarted with the evidence folder read-only. `run_gate.py` refuses an isolation report that is inside the output root or writable, so candidate code cannot rewrite the evidence after the probe. The report is run evidence, not a frozen harness artifact, and FREEZE.json does not hash it. `run_gate.py` independently verifies the frozen core hashes before and after evaluation and reports a FAIL if they differ.
 
 ## Algorithm classification
 
@@ -103,5 +104,6 @@ The result report and JSON must include:
 6. The complete base-algorithm/k cell table (identified algorithms only) with candidate-body counts and distinct-group counts per C level.
 7. Unique provenance groups in supported cells and distinct cross-group different-C group pairs.
 8. The verdict under the thresholds above.
+9. The output boundary: output root, locked user, that the root was locked during candidate execution, and the read-only isolation report path. A result file that fails read-back while the lock is active aborts the run rather than being reported as a normal verdict.
 
 A PASS does not show that C predicts held-out performance. A FAIL means this sampling frame and instrument did not furnish the predeclared structural support. Neither verdict estimates power or effect size.

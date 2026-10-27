@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import tempfile
 from datetime import datetime, timezone
 import subprocess
 import sys
@@ -137,6 +138,32 @@ def validate_v6_integrity() -> dict:
     }
 
 
+def validate_v7_output_boundary() -> dict:
+    sys.path.insert(0, str(ROOT))
+    import isolation_probe
+    import run_gate
+
+    for name in ("output_write_blocked", "candidate_output_write_blocked"):
+        if name not in run_gate.REQUIRED_ISOLATION_CHECKS:
+            raise AssertionError(f"missing required isolation check: {name}")
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        direct, candidate, detail = isolation_probe._output_lock_checks(root)
+    if not direct or not candidate:
+        raise AssertionError(f"output-lock control failed: {detail}")
+    if run_gate.isolation_report_outside_output(root / "results" / "isolation-report.json", root):
+        raise AssertionError("isolation report inside the output root was accepted")
+    return {
+        "required_checks": list(run_gate.REQUIRED_ISOLATION_CHECKS),
+        "output_root_lock": "deny_write_delete_for_current_user",
+        "result_handles_opened_before_lock": True,
+        "direct_output_write_blocked": direct,
+        "io_open_candidate_output_write_blocked": candidate,
+        "isolation_report_outside_output_root": True,
+        "fixture": "tests/test_v7_output_boundary.py",
+    }
+
+
 def run_tests() -> tuple[int, str]:
     proc = subprocess.run(
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
@@ -159,10 +186,11 @@ def main() -> None:
     v4_classifier = validate_v4_classifier()
     v5_other_policy = validate_v5_other_policy()
     v6_integrity = validate_v6_integrity()
+    v7_output_boundary = validate_v7_output_boundary()
     test_count, test_output = run_tests()
     report = {
         "status": "PASS",
-        "version": 6,
+        "version": 7,
         "validated_at_utc": datetime.now(timezone.utc).isoformat(),
         "candidate_generation_performed": False,
         "model_calls_performed": 0,
@@ -172,6 +200,7 @@ def main() -> None:
         "v4_classifier_validation": v4_classifier,
         "v5_other_policy_validation": v5_other_policy,
         "v6_integrity_validation": v6_integrity,
+        "v7_output_boundary_validation": v7_output_boundary,
         "unit_test_count": test_count,
         "unit_tests_passed": True,
         "control_expectations": {
@@ -195,6 +224,7 @@ def main() -> None:
             "Unrecognized or ambiguous solver structure is labelled other and excluded from supported cells and the PASS group count.",
             "The evaluator child returns raw answers only; the parent compares against expected values and builds fail flags. This prevents a candidate from forging the verdict, but a candidate can still return a wrong or forged raw answer, which is simply a probe failure.",
             "The isolation probe must be run inside Windows Sandbox before evaluation; its report is run evidence and is not hashed into FREEZE.json.",
+            "The output-root deny ACE is proved on local NTFS in validation. Windows Sandbox mapped-folder ACL behavior must still be proved by the probe, which refuses evaluation if direct or io.open output writes are not blocked.",
             "These are deterministic harness controls, not generated candidate results.",
             "No generation, model calls, held-out scoring, power estimate, or H3 inference was performed.",
         ],

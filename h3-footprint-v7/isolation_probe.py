@@ -23,6 +23,20 @@ atexit.register(lambda: print(sys.argv[-1] + ' {"phase":"probe","probe_index":0,
 WRONG_SOLVER = 'def solve(n, edges, s, t):\n    return -999\n'
 
 
+def _io_open_source(*paths: Path) -> str:
+    lines = ["import io", "", "def solve(n, edges, s, t):"]
+    for path in paths:
+        lines.append(f"    for mode in ('a', 'w'):")
+        lines.append(f"        try:")
+        lines.append(f"            fh = io.open({str(path)!r}, mode)")
+        lines.append("            fh.write('tampered')")
+        lines.append("            fh.close()")
+        lines.append("        except BaseException:")
+        lines.append("            pass")
+    lines.append("    return -999")
+    return "\n".join(lines) + "\n"
+
+
 def _try_open_for_append(path: Path) -> tuple[bool, str | None]:
     try:
         with path.open("ab"):
@@ -67,6 +81,46 @@ def _control_checks() -> tuple[bool, bool, dict]:
     return extra_rejected, wrong_is_k30, detail
 
 
+def _output_lock_checks(output_root: Path) -> tuple[bool, bool, dict]:
+    canary_dir = Path(tempfile.mkdtemp(prefix="h3-output-canary-", dir=str(output_root)))
+    report_canary = canary_dir / "isolation-report.json"
+    result_canary = canary_dir / "footprint.json"
+    report_canary.write_text("trusted-report", encoding="utf-8")
+    result_canary.write_text("trusted-result", encoding="utf-8")
+    lock = run_gate.lock_output(Path(output_root))
+    if not lock["ok"]:
+        run_gate.unlock_output(Path(output_root))
+        return False, False, {"lock_ok": False, "lock_errors": lock["errors"]}
+    try:
+        direct_report_ok, direct_report_error = _try_open_for_append(report_canary)
+        direct_result_ok, direct_result_error = _try_open_for_append(result_canary)
+        row = _control_row(_io_open_source(report_canary, result_canary), "io_open_output")
+        report_changed = report_canary.read_text(encoding="utf-8") != "trusted-report"
+        result_changed = result_canary.read_text(encoding="utf-8") != "trusted-result"
+        output_blocked = (
+            not direct_report_ok and not direct_result_ok and not report_changed and not result_changed
+        )
+        candidate_blocked = row.get("excluded") is None and row.get("k") == 30 and output_blocked
+        detail = {
+            "lock_ok": True,
+            "direct_report_write_error": direct_report_error,
+            "direct_result_write_error": direct_result_error,
+            "report_canary_changed": report_changed,
+            "result_canary_changed": result_changed,
+            "io_open_candidate_k": row.get("k"),
+            "io_open_candidate_excluded": row.get("excluded"),
+        }
+        return output_blocked, candidate_blocked, detail
+    finally:
+        run_gate.unlock_output(Path(output_root))
+        try:
+            report_canary.unlink()
+            result_canary.unlink()
+            canary_dir.rmdir()
+        except OSError:
+            pass
+
+
 def build_report(args: argparse.Namespace) -> dict:
     harness = Path(args.harness_root)
     host_write_ok, host_write_error = _try_open_for_append(Path(args.host_write_target))
@@ -78,6 +132,7 @@ def build_report(args: argparse.Namespace) -> dict:
     fixture_exists = fixture.exists()
     other_ok, other_error = _try_open_for_append(fixture)
     extra_rejected, wrong_is_k30, control_detail = _control_checks()
+    output_blocked, candidate_output_blocked, output_detail = _output_lock_checks(Path(args.output_root))
     repo_path = Path(args.repo_path)
     repo_exposed = (repo_path / ".git").exists() or (repo_path / "run_gate.py").exists()
     marker = Path(args.sandbox_marker)
@@ -94,6 +149,8 @@ def build_report(args: argparse.Namespace) -> dict:
         "host_write_blocked": not host_write_ok,
         "expected_values_write_blocked": expected_exists and not expected_ok,
         "other_candidate_write_blocked": fixture_exists and not other_ok,
+        "output_write_blocked": output_blocked,
+        "candidate_output_write_blocked": candidate_output_blocked,
         "extra_output_rejected": extra_rejected,
         "correct_result_after_tamper_attempts": wrong_is_k30,
         "repo_not_present": not repo_exposed,
@@ -104,6 +161,8 @@ def build_report(args: argparse.Namespace) -> dict:
             "expected_values_write_error": expected_error,
             "other_candidate_exists": fixture_exists,
             "other_candidate_write_error": other_error,
+            "output_root": args.output_root,
+            "output_lock": output_detail,
             **control_detail,
         },
     }
@@ -117,19 +176,28 @@ def main() -> None:
     parser.add_argument("--host-write-target", required=True)
     parser.add_argument("--repo-path", required=True)
     parser.add_argument("--sandbox-marker", required=True)
+    parser.add_argument("--output-root", default=None)
     parser.add_argument("--out", required=True)
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
 
     if args.self_test:
         extra_rejected, wrong_is_k30, detail = _control_checks()
+        with tempfile.TemporaryDirectory() as td:
+            output_blocked, candidate_output_blocked, output_detail = _output_lock_checks(Path(td))
         print(json.dumps({
             "extra_output_rejected": extra_rejected,
             "correct_result_after_tamper_attempts": wrong_is_k30,
+            "output_write_blocked": output_blocked,
+            "candidate_output_write_blocked": candidate_output_blocked,
             "detail": detail,
+            "output_detail": output_detail,
         }, indent=2, sort_keys=True))
-        raise SystemExit(0 if extra_rejected and wrong_is_k30 else 1)
+        ok = extra_rejected and wrong_is_k30 and output_blocked and candidate_output_blocked
+        raise SystemExit(0 if ok else 1)
 
+    if not args.output_root:
+        parser.error("--output-root is required outside --self-test")
     report = build_report(args)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)

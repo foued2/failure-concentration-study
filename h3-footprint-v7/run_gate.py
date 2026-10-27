@@ -4,9 +4,11 @@ import argparse
 import ast
 import builtins
 import contextlib
+import getpass
 import hashlib
 import json
 import math
+import os
 import re
 import secrets
 import subprocess
@@ -682,6 +684,8 @@ REQUIRED_ISOLATION_CHECKS = [
     "host_write_blocked",
     "expected_values_write_blocked",
     "other_candidate_write_blocked",
+    "output_write_blocked",
+    "candidate_output_write_blocked",
     "extra_output_rejected",
     "repo_not_present",
     "correct_result_after_tamper_attempts",
@@ -712,6 +716,59 @@ def load_isolation_report(path: Path) -> dict:
     return {"path": str(path), "failed_checks": failed, "ok": not failed}
 
 
+def isolation_report_outside_output(report_path: Path, output_root: Path) -> bool:
+    return not report_path.resolve().is_relative_to(output_root.resolve())
+
+
+def path_is_writable(path: Path) -> bool:
+    try:
+        fd = os.open(path, os.O_WRONLY)
+    except OSError:
+        return False
+    os.close(fd)
+    return True
+
+
+def current_user() -> str:
+    return os.environ.get("USERNAME") or getpass.getuser()
+
+
+def _icacls(path: Path, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["icacls", str(path), *args],
+        capture_output=True, text=True, timeout=30, encoding="utf-8", errors="replace",
+    )
+
+
+def lock_output(root: Path, user: str | None = None) -> dict:
+    user = user or current_user()
+    errors = []
+    # Deepest first: applying the deny to the root first would prevent /T from
+    # traversing into children. Each object gets a direct deny ACE; the root
+    # also gets inheritance flags for any object created later.
+    objects = sorted(root.rglob("*"), key=lambda p: len(p.parts), reverse=True)
+    for path in objects:
+        proc = _icacls(path, "/deny", f"{user}:(WD,AD,DE,DC)")
+        if proc.returncode != 0:
+            errors.append(str(path) + ": " + proc.stderr.strip())
+    proc = _icacls(root, "/deny", f"{user}:(OI)(CI)(WD,AD,DE,DC)")
+    if proc.returncode != 0:
+        errors.append(str(root) + ": " + proc.stderr.strip())
+    return {"root": str(root), "user": user, "ok": not errors, "errors": errors}
+
+
+def unlock_output(root: Path, user: str | None = None) -> dict:
+    user = user or current_user()
+    errors = []
+    proc = _icacls(root, "/remove:d", user)
+    if proc.returncode != 0:
+        errors.append(str(root) + ": " + proc.stderr.strip())
+    proc = _icacls(root, "/remove:d", user, "/T")
+    if proc.returncode != 0:
+        errors.append(str(root) + " (recursive): " + proc.stderr.strip())
+    return {"root": str(root), "user": user, "ok": not errors, "errors": errors}
+
+
 def main() -> None:
     global RESULTS
     parser = argparse.ArgumentParser()
@@ -722,8 +779,14 @@ def main() -> None:
     args = parser.parse_args()
 
     RESULTS = Path(args.results_dir)
+    output_root = RESULTS.parent
     manifest = Path(args.freeze_manifest)
-    isolation = load_isolation_report(Path(args.isolation_report))
+    isolation_path = Path(args.isolation_report)
+    if not isolation_report_outside_output(isolation_path, output_root):
+        raise SystemExit("Refusing to evaluate: isolation report must be outside the writable output root.")
+    if path_is_writable(isolation_path):
+        raise SystemExit("Refusing to evaluate: isolation report must be on a read-only mount.")
+    isolation = load_isolation_report(isolation_path)
     if not isolation["ok"]:
         raise SystemExit("Refusing to evaluate: isolation report failed checks " + ", ".join(isolation["failed_checks"]))
     integrity_start = verify_frozen(manifest)
@@ -731,16 +794,52 @@ def main() -> None:
         raise SystemExit("Refusing to evaluate: frozen harness hash mismatch.")
 
     RESULTS.mkdir(parents=True, exist_ok=True)
-    report = build(scratch_dir=args.scratch_dir)
-    integrity_end = verify_frozen(manifest)
-    report["isolation"] = isolation
-    report["harness_integrity"] = {"start": integrity_start, "end": integrity_end}
-    if not integrity_end["ok"]:
-        report["verdict"] = "FAIL"
-        report["reason"] = "harness_modified_during_run"
-    (RESULTS / "footprint.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
-    (RESULTS / "REPORT.md").write_text(markdown(report), encoding="utf-8")
-    print(markdown(report))
+    # Open the result files before denying writes. Existing handles remain
+    # usable after the deny ACE is applied, but no candidate subprocess can
+    # open, truncate, delete, or replace anything under the output root.
+    footprint_file = open(RESULTS / "footprint.json", "w", encoding="utf-8", newline="\n")
+    report_file = open(RESULTS / "REPORT.md", "w", encoding="utf-8", newline="\n")
+    lock = lock_output(output_root)
+    if not lock["ok"]:
+        footprint_file.close()
+        report_file.close()
+        unlock_output(output_root)
+        raise SystemExit("Refusing to evaluate: could not lock the output root: " + "; ".join(lock["errors"]))
+    try:
+        report = build(scratch_dir=args.scratch_dir)
+        integrity_end = verify_frozen(manifest)
+        report["isolation"] = isolation
+        report["harness_integrity"] = {"start": integrity_start, "end": integrity_end}
+        report["output_boundary"] = {
+            "root": str(output_root), "user": lock["user"], "locked_during_candidates": True,
+            "isolation_report": str(isolation_path),
+        }
+        if not integrity_end["ok"]:
+            report["verdict"] = "FAIL"
+            report["reason"] = "harness_modified_during_run"
+        footprint_text = json.dumps(report, indent=2, sort_keys=True)
+        report_text = markdown(report)
+        footprint_file.write(footprint_text)
+        report_file.write(report_text)
+        footprint_file.flush()
+        report_file.flush()
+        footprint_file.close()
+        report_file.close()
+        # Read back while the deny ACE is still active. This catches a write
+        # that bypassed the expected handles without unlocking the boundary.
+        if (RESULTS / "footprint.json").read_text(encoding="utf-8") != footprint_text:
+            raise SystemExit("Refusing: footprint.json changed during write.")
+        if (RESULTS / "REPORT.md").read_text(encoding="utf-8") != report_text:
+            raise SystemExit("Refusing: REPORT.md changed during write.")
+    finally:
+        if not footprint_file.closed:
+            footprint_file.close()
+        if not report_file.closed:
+            report_file.close()
+        unlock = unlock_output(output_root)
+        if not unlock["ok"]:
+            print("WARNING: output lock removal failed; run icacls on the output root to restore writes.", file=sys.stderr)
+    print(report_text)
 
 
 if __name__ == "__main__":

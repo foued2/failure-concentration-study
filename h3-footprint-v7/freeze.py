@@ -28,9 +28,10 @@ ARTIFACTS = [
     "tests/test_v4_classifier.py",
     "tests/test_v5_other_category.py",
     "tests/test_v6_integrity.py",
+    "tests/test_v7_output_boundary.py",
     "freeze.py",
 ]
-TAG = "h3-footprint-v6-freeze-2026-10-27"
+TAG = "h3-footprint-v7-freeze-2026-10-27"
 CORE_ARTIFACTS = ["run_gate.py", "probe_worker.py", "instrument.py", "expected_values.json"]
 THRESHOLDS = {
     "saturation_max": 0.80,
@@ -57,13 +58,13 @@ def calculate(timestamp_override: str | None = None) -> dict:
     }
     return {
         "tag": TAG,
-        "version": 6,
+        "version": 7,
         "status": "PRE_CANDIDATE_HARNESS_FREEZE",
-        "freeze_scope": "Evaluator-integrity revision: the worker returns only raw answers, the parent owns expected-value comparison and fail flags, candidates run in per-candidate scratch directories, the harness must be mounted read-only, and a pre-generation isolation probe gates evaluation. Unchanged probe definitions, generation frame, thresholds, and futility rule.",
+        "freeze_scope": "Output-boundary revision: the evaluator pre-opens its result files, ACL-locks the writable output root for the duration of candidate execution, writes and reads back results through the pre-opened handles, and unlocks in a finally block. The isolation report must be outside the output root and on a read-only mount. The probe has an explicit io.open control candidate and direct-write checks. Unchanged probes, generation frame, thresholds, and futility rule.",
         "timestamp_utc": timestamp_override or datetime.now(timezone.utc).isoformat(),
         "artifact_hashes_sha256": hashes,
         "core_integrity_artifacts": CORE_ARTIFACTS,
-        "isolation_report_policy": "produced_by_pre_generation_isolation_probe_stored_outside_frozen_harness_not_hashed_in_FREEZE",
+        "isolation_report_policy": "produced_by_pre_generation_isolation_probe_in_first_sandbox_session_exported_to_read_only_staging_outside_output_root_not_hashed_in_FREEZE",
         "candidate_count_at_freeze": 0,
         "candidate_generation_performed": False,
         "model_calls_performed": 0,

@@ -1,26 +1,27 @@
 {
   "artifact_hashes_sha256": {
-    "GATE.md": "aaa5497a35532d9341a9c4cb4cd78965276c93d56c7bba82217495d46c6ca18b",
-    "README.md": "470f7f2fde96696e3b40e38a71cc71897e77bd9767b79570bdf8d276eff2afac",
-    "RUNBOOK.md": "15f9c7639fb605c148e70f7e18fd2cc592cd86896da1225a29155f05aa194ed2",
+    "GATE.md": "9dd887f0c73aa520cf31e8561bace3ab3e2ab0834fcda7f551203fa0e7259a57",
+    "README.md": "aa46cbe602c9e0f07fdd9f7bd89ab0e2b29c90985a19e7fbaea489d0ba0debb5",
+    "RUNBOOK.md": "fd0223fb91edb6b8dcd6e58090a67ad19478dc9cae3c60a49978099024f9793d",
     "coherence_review.json": "7efb9965c9d18d0a42dcecdfd161c1352b4fd9fd26439d807eec9c38bc092a4f",
     "expected_values.json": "2358240af47f420b9fba447155a33fdc96f0dc7e2944dad74e2616ea5ae82ae8",
-    "freeze.py": "7bdbcb6a92511fa52cd8b3e90babd90c23b4f5fee831fc1ef93d742cd68e9a8b",
+    "freeze.py": "99d23bff2d1847a092e75935ed51f19310e041a514afdfdc783d0b53878278a0",
     "generate.py": "ff5b638455f16a3033168b02929e4d7bb63b72a5b486b72930b119b69b3e3456",
     "instrument.py": "e0bb4aa7adfa3bfc6d1b936c308314327e38d3d6166f16f010ce31f02f42bb81",
     "isolation/fixtures/other_candidate.py": "5a68d9be235ad90bc6eb0573130dbd0fb8e5c76d5940b028a47008f1635310da",
     "isolation/windows-sandbox.wsb": "537c75f832c40f40a8306ec2464f2f53a71853c5c0de9a4d190ea94555faa452",
-    "isolation_probe.py": "468eb10f3388469e710c6354a48f66dc9210c3d6104b1e55c0684c5d035a3cb1",
+    "isolation_probe.py": "2d3f42b2b24284b4346576550e453b0ddd1c3d4359ed9721b38da60588c61f98",
     "probe_worker.py": "ff793a692c02dee93ef739c230600972ab1cf5564b5d4ea1e47b29e9a3d0f40c",
-    "run_gate.py": "9ca139e1bd6d281c5cae0c0c91603a00d650b05e5b5de995bb66cac340e957f4",
+    "run_gate.py": "fde76a97d77eaad57d377ea4e7161a83b100e8c4ccc30ceeae684e7a6cab529c",
     "tests/test_harness.py": "bcd0f64e1d9846009dcbd28f07d91761dad6bd25c4fb710678884fc85fce7bd8",
     "tests/test_v2_controls.py": "47f209fc0beec2aa72981da56733a8bb28ad5ee0d7e5e5590ea55696fc5ccc98",
     "tests/test_v3_controls.py": "1c8fad47d0e59d2e1b841f9f55a6cea0fe507b987befa93806aaed1f5ad0503b",
     "tests/test_v4_classifier.py": "be2d438be7f90209240573e3e3666d5208bff6b75779cce97be0424b7e4c3b8e",
     "tests/test_v5_other_category.py": "76e347db8f8397eeb103c5e66cbdf5e53a19caba45629aecd4aca04b3540864a",
     "tests/test_v6_integrity.py": "4368f18459cdaba15f0b6d8c66b53e9d5b016b460cb6c11efa4fa7072ef2c770",
-    "validate_controls.py": "5149779dd925565986ae7747e0d2981b0a1b49175a2e7d022798ea4e3a95bb27",
-    "validation-report.json": "e174a4abd48579dbf574d6e6611629705dfff5c6e070c168bdcbde4caecb885d"
+    "tests/test_v7_output_boundary.py": "6b21630e33ff6712acf3997a5889b208c77b104391565031165802c1a7b215f6",
+    "validate_controls.py": "b747fb7132f4859d0aada4c6da624a67a16f41e71a9555f08a45a0f751c3d5cf",
+    "validation-report.json": "57544ed51d069bd615622d8f1750abac592a0cd726f87b1750b55be39780fb19"
   },
   "base_algorithm_classifier": "ast_structural_reachable_from_solve_v1",
   "bodies_per_batch": 8,
@@ -32,7 +33,7 @@
     "instrument.py",
     "expected_values.json"
   ],
-  "freeze_scope": "Evaluator-integrity revision: the worker returns only raw answers, the parent owns expected-value comparison and fail flags, candidates run in per-candidate scratch directories, the harness must be mounted read-only, and a pre-generation isolation probe gates evaluation. Unchanged probe definitions, generation frame, thresholds, and futility rule.",
+  "freeze_scope": "Output-boundary revision: the evaluator pre-opens its result files, ACL-locks the writable output root for the duration of candidate execution, writes and reads back results through the pre-opened handles, and unlocks in a finally block. The isolation report must be outside the output root and on a read-only mount. The probe has an explicit io.open control candidate and direct-write checks. Unchanged probes, generation frame, thresholds, and futility rule.",
   "futility_checkpoints": {
     "100": 10,
     "200": 20,
@@ -40,13 +41,13 @@
   },
   "generation_budget_batches": 400,
   "generation_segment_batches": 100,
-  "isolation_report_policy": "produced_by_pre_generation_isolation_probe_stored_outside_frozen_harness_not_hashed_in_FREEZE",
+  "isolation_report_policy": "produced_by_pre_generation_isolation_probe_in_first_sandbox_session_exported_to_read_only_staging_outside_output_root_not_hashed_in_FREEZE",
   "model_calls_performed": 0,
   "other_category_policy": "reported_in_all_counts_but_excluded_from_supported_cells_and_pass_group_count",
   "requested_candidate_cap": 3200,
   "scientific_status": "No H3 conclusion. No new candidate data generated.",
   "status": "PRE_CANDIDATE_HARNESS_FREEZE",
-  "tag": "h3-footprint-v6-freeze-2026-10-27",
+  "tag": "h3-footprint-v7-freeze-2026-10-27",
   "target_rejected_bodies": 150,
   "thresholds": {
     "m_min": 4,
@@ -56,12 +57,12 @@
     "saturation_max": 0.8,
     "weak_cells_max": 2
   },
-  "timestamp_utc": "2026-10-27T10:46:44.999880+00:00",
+  "timestamp_utc": "2026-10-27T11:28:23.281667+00:00",
   "validation": {
     "control_suite": "Passed; expected-k controls are in validation-report.json.",
     "oracle_agreement_count": 30,
     "status": "PASS",
-    "unit_test_count": 46
+    "unit_test_count": 53
   },
-  "version": 6
+  "version": 7
 }
