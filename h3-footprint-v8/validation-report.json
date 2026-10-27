@@ -1,0 +1,178 @@
+{
+  "candidate_bodies_generated": 0,
+  "candidate_generation_performed": false,
+  "control_expectations": {
+    "constant_minus_one": {
+      "k": 25
+    },
+    "constant_zero": {
+      "k": 29
+    },
+    "invalid_to_load": {
+      "k": null
+    },
+    "missing_solve": {
+      "k": null
+    },
+    "reachable_distance_plus_one": {
+      "k": 25
+    },
+    "reference": {
+      "k": 0
+    },
+    "runtime_exception": {
+      "k": 30
+    },
+    "single_R1_failure": {
+      "k": 1
+    },
+    "single_Z4_failure": {
+      "k": 1
+    },
+    "spread_bug_across_R_and_Z": {
+      "C": 0.6,
+      "family_counts": {
+        "R": 2,
+        "Z": 3
+      },
+      "k": 5
+    },
+    "syntax_error": {
+      "k": null
+    },
+    "undefined_global": {
+      "k": null
+    },
+    "unreachable_sentinel_bug": {
+      "C": 1.0,
+      "k": 5
+    }
+  },
+  "limitations": [
+    "Static undefined-name checking is a conservative warning; preflight loading remains mandatory.",
+    "The saturation metric, futility rule, and conservative classifier are validated against synthetic fixtures, not generated candidates.",
+    "Unrecognized or ambiguous solver structure is labelled other and excluded from supported cells and the PASS group count.",
+    "The evaluator child returns raw answers only; the parent compares against expected values and builds fail flags. This prevents a candidate from forging the verdict, but a candidate can still return a wrong or forged raw answer, which is simply a probe failure.",
+    "The isolation probe must be run inside Windows Sandbox before evaluation; its report is run evidence and is not hashed into FREEZE.json.",
+    "The output-root deny ACE and low-integrity boundary are proved on local NTFS in validation. Windows Sandbox mapped-folder behavior must still be proved by the probe, which refuses evaluation if direct writes, io.open writes, or sys.modules-os lock-removal attempts can change the canaries.",
+    "Low integrity lowers the candidate's write ceiling but is not a substitute for Windows Sandbox; the sandbox, read-only harness, and read-only isolation report remain the outer boundary.",
+    "These are deterministic harness controls, not generated candidate results.",
+    "No generation, model calls, held-out scoring, power estimate, or H3 inference was performed."
+  ],
+  "model_calls_performed": 0,
+  "oracle_validation": {
+    "coherence_review_entries": 30,
+    "expected_values_match": true,
+    "family_counts": {
+      "A": 5,
+      "I": 5,
+      "R": 5,
+      "S": 5,
+      "U": 5,
+      "Z": 5
+    },
+    "oracle_agreement_count": 30,
+    "probe_count": 30
+  },
+  "status": "PASS",
+  "test_output_tail": " ... ok\ntest_unused_heap_import_does_not_create_a_heap_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_heap_import_does_not_create_a_heap_cell) ... ok\ntest_unused_recursive_helper_does_not_create_a_dfs_cell (test_v4_classifier.ConservativeClassifierTests.test_unused_recursive_helper_does_not_create_a_dfs_cell) ... ok\ntest_identified_algorithms_still_form_cells (test_v5_other_category.OtherCategoryTests.test_identified_algorithms_still_form_cells) ... ok\ntest_other_cannot_create_a_supported_cell_even_when_thresholds_are_met (test_v5_other_category.OtherCategoryTests.test_other_cannot_create_a_supported_cell_even_when_thresholds_are_met) ... ok\ntest_atexit_fake_line_cannot_flip_verdict (test_v6_integrity.V6ProtocolTests.test_atexit_fake_line_cannot_flip_verdict) ... ok\ntest_parent_owns_comparison (test_v6_integrity.V6ProtocolTests.test_parent_owns_comparison) ... ok\ntest_worker_does_not_read_expected_values_or_instrument (test_v6_integrity.V6ProtocolTests.test_worker_does_not_read_expected_values_or_instrument) ... ok\ntest_worker_returns_raw_answer_and_no_fail_flag (test_v6_integrity.V6ProtocolTests.test_worker_returns_raw_answer_and_no_fail_flag) ... ok\ntest_zero_or_multiple_nonce_lines_are_rejected (test_v6_integrity.V6ProtocolTests.test_zero_or_multiple_nonce_lines_are_rejected) ... ok\ntest_isolation_report_must_be_outside_output_root (test_v7_output_boundary.V7OutputBoundaryTests.test_isolation_report_must_be_outside_output_root) ... ok\ntest_lock_blocks_io_open_and_preserves_content (test_v7_output_boundary.V7OutputBoundaryTests.test_lock_blocks_io_open_and_preserves_content) ... ok\ntest_main_refuses_report_inside_output_root (test_v7_output_boundary.V7OutputBoundaryTests.test_main_refuses_report_inside_output_root) ... ok\ntest_main_writes_under_lock_and_unlocks (test_v7_output_boundary.V7OutputBoundaryTests.test_main_writes_under_lock_and_unlocks) ... ok\ntest_preopened_handle_survives_lock (test_v7_output_boundary.V7OutputBoundaryTests.test_preopened_handle_survives_lock) ... ok\ntest_unlock_restores_write (test_v7_output_boundary.V7OutputBoundaryTests.test_unlock_restores_write) ... ok\ntest_writable_probe_returns_false_for_missing_file (test_v7_output_boundary.V7OutputBoundaryTests.test_writable_probe_returns_false_for_missing_file) ... ok\ntest_attack_source_uses_loaded_os_without_importing_it (test_v8_low_integrity.V8LowIntegrityTests.test_attack_source_uses_loaded_os_without_importing_it) ... ok\ntest_lock_removal_candidate_cannot_change_canaries (test_v8_low_integrity.V8LowIntegrityTests.test_lock_removal_candidate_cannot_change_canaries) ... ok\ntest_required_checks_include_lock_removal (test_v8_low_integrity.V8LowIntegrityTests.test_required_checks_include_lock_removal) ... ok\ntest_worker_drops_to_low_integrity_before_writing (test_v8_low_integrity.V8LowIntegrityTests.test_worker_drops_to_low_integrity_before_writing) ... ok\n\n----------------------------------------------------------------------\nRan 57 tests in 64.740s\n\nOK\n",
+  "unit_test_count": 57,
+  "unit_tests_passed": true,
+  "v3_rule_validation": {
+    "futility_checkpoints": {
+      "100": 10,
+      "200": 20,
+      "300": 30
+    },
+    "low_k_control": {
+      "all_or_none_fraction": 0.8333333333333334,
+      "saturation_rate": 0.0
+    },
+    "primary_metric": "P(max_j f_j = 5 | 2 <= k <= 24)",
+    "saturated_control": {
+      "saturation_rate": 1.0
+    },
+    "saturation_cutoff": 0.8
+  },
+  "v4_classifier_validation": {
+    "classifier": "ast_structural_reachable_from_solve_v1",
+    "unclassified_label": "other",
+    "weak_evidence_fallbacks": [
+      "misleading_comment",
+      "unused_import"
+    ]
+  },
+  "v5_other_policy_validation": {
+    "other_category_policy": "reported_in_all_counts_but_excluded_from_supported_cells_and_pass_group_count",
+    "regression_test": "tests/test_v5_other_category.py"
+  },
+  "v6_integrity_validation": {
+    "fixture": "tests/test_v6_integrity.py",
+    "nonce_requires_exactly_one_line": true,
+    "required_isolation_checks": [
+      "evaluator_inside_sandbox",
+      "network_blocked",
+      "host_write_blocked",
+      "expected_values_write_blocked",
+      "other_candidate_write_blocked",
+      "output_write_blocked",
+      "candidate_output_write_blocked",
+      "output_lock_removal_blocked",
+      "candidate_output_lock_removal_blocked",
+      "extra_output_rejected",
+      "repo_not_present",
+      "correct_result_after_tamper_attempts"
+    ],
+    "worker_emits_fail_flag": false,
+    "worker_protocol": "raw_answer_only_parent_compares",
+    "worker_reads_expected_values": false
+  },
+  "v7_output_boundary_validation": {
+    "candidate_lock_removal_blocked": true,
+    "direct_lock_removal_blocked": true,
+    "direct_output_write_blocked": true,
+    "fixture": "tests/test_v7_output_boundary.py",
+    "io_open_candidate_output_write_blocked": true,
+    "isolation_report_outside_output_root": true,
+    "output_root_lock": "deny_write_delete_for_current_user",
+    "required_checks": [
+      "evaluator_inside_sandbox",
+      "network_blocked",
+      "host_write_blocked",
+      "expected_values_write_blocked",
+      "other_candidate_write_blocked",
+      "output_write_blocked",
+      "candidate_output_write_blocked",
+      "output_lock_removal_blocked",
+      "candidate_output_lock_removal_blocked",
+      "extra_output_rejected",
+      "repo_not_present",
+      "correct_result_after_tamper_attempts"
+    ],
+    "result_handles_opened_before_lock": true
+  },
+  "v8_low_integrity_validation": {
+    "candidate_integrity": "low",
+    "drop_before_candidate_load": true,
+    "fixture": "tests/test_v8_low_integrity.py",
+    "lock_removal_control": "sys.modules_os_icacls_takeown_integrity_lowering",
+    "low_integrity_sid": "S-1-16-4096",
+    "required_checks": [
+      "evaluator_inside_sandbox",
+      "network_blocked",
+      "host_write_blocked",
+      "expected_values_write_blocked",
+      "other_candidate_write_blocked",
+      "output_write_blocked",
+      "candidate_output_write_blocked",
+      "output_lock_removal_blocked",
+      "candidate_output_lock_removal_blocked",
+      "extra_output_rejected",
+      "repo_not_present",
+      "correct_result_after_tamper_attempts"
+    ],
+    "scratch_integrity": "low"
+  },
+  "validated_at_utc": "2026-10-27T12:05:06.625496+00:00",
+  "version": 8
+}

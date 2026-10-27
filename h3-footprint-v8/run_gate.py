@@ -329,6 +329,16 @@ def _invalid_candidate(row: dict, reason: str) -> dict:
     return row
 
 
+def _set_low_integrity(path: Path) -> bool:
+    if sys.platform != "win32":
+        return True
+    proc = subprocess.run(
+        ["icacls", str(path), "/setintegritylevel", "(OI)(CI)Low"],
+        capture_output=True, text=True, timeout=30, encoding="utf-8", errors="replace",
+    )
+    return proc.returncode == 0
+
+
 def evaluate_body(
     path: Path,
     meta: dict[str, dict],
@@ -362,6 +372,8 @@ def evaluate_body(
         scratch_base.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="h3probe-", dir=str(scratch_base) if scratch_base else None) as td:
         scratch = Path(td)
+        if not _set_low_integrity(scratch):
+            return _invalid_candidate(row, "scratch_integrity_error")
         nonce = secrets.token_hex(16)
         try:
             proc = subprocess.run(
@@ -686,6 +698,8 @@ REQUIRED_ISOLATION_CHECKS = [
     "other_candidate_write_blocked",
     "output_write_blocked",
     "candidate_output_write_blocked",
+    "output_lock_removal_blocked",
+    "candidate_output_lock_removal_blocked",
     "extra_output_rejected",
     "repo_not_present",
     "correct_result_after_tamper_attempts",
@@ -813,6 +827,7 @@ def main() -> None:
         report["output_boundary"] = {
             "root": str(output_root), "user": lock["user"], "locked_during_candidates": True,
             "isolation_report": str(isolation_path),
+            "candidate_integrity": "low", "scratch_integrity": "low",
         }
         if not integrity_end["ok"]:
             report["verdict"] = "FAIL"

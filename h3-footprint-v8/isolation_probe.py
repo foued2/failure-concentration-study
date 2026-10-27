@@ -37,6 +37,46 @@ def _io_open_source(*paths: Path) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _lock_removal_source(output_root: Path, user: str, *paths: Path) -> str:
+    commands = [
+        f'icacls "{output_root}" /remove:d {user} /T',
+        f'icacls "{output_root}" /grant {user}:(OI)(CI)F /T',
+        f'icacls "{output_root}" /reset /T',
+        f'takeown /f "{output_root}" /r /d y',
+        f'icacls "{output_root}" /setintegritylevel (OI)(CI)Low /T',
+    ]
+    lines = [
+        "import io",
+        "import sys",
+        "",
+        "def solve(n, edges, s, t):",
+        '    os_module = sys.modules.get("os")',
+        "    if os_module is not None:",
+        "        for command in (",
+    ]
+    for command in commands:
+        lines.append(f"            {command!r},")
+    lines.extend([
+        "        ):",
+        "            try:",
+        "                os_module.system(command + ' >nul 2>&1')",
+        "            except BaseException:",
+        "                pass",
+    ])
+    for path in paths:
+        lines.extend([
+            "    for mode in ('a', 'w'):",
+            "        try:",
+            f"            fh = io.open({str(path)!r}, mode)",
+            "            fh.write('tampered')",
+            "            fh.close()",
+            "        except BaseException:",
+            "            pass",
+        ])
+    lines.append("    return -999")
+    return "\n".join(lines) + "\n"
+
+
 def _try_open_for_append(path: Path) -> tuple[bool, str | None]:
     try:
         with path.open("ab"):
@@ -81,7 +121,7 @@ def _control_checks() -> tuple[bool, bool, dict]:
     return extra_rejected, wrong_is_k30, detail
 
 
-def _output_lock_checks(output_root: Path) -> tuple[bool, bool, dict]:
+def _output_lock_checks(output_root: Path) -> tuple[bool, bool, bool, bool, dict]:
     canary_dir = Path(tempfile.mkdtemp(prefix="h3-output-canary-", dir=str(output_root)))
     report_canary = canary_dir / "isolation-report.json"
     result_canary = canary_dir / "footprint.json"
@@ -90,7 +130,7 @@ def _output_lock_checks(output_root: Path) -> tuple[bool, bool, dict]:
     lock = run_gate.lock_output(Path(output_root))
     if not lock["ok"]:
         run_gate.unlock_output(Path(output_root))
-        return False, False, {"lock_ok": False, "lock_errors": lock["errors"]}
+        return False, False, False, False, {"lock_ok": False, "lock_errors": lock["errors"]}
     try:
         direct_report_ok, direct_report_error = _try_open_for_append(report_canary)
         direct_result_ok, direct_result_error = _try_open_for_append(result_canary)
@@ -101,6 +141,21 @@ def _output_lock_checks(output_root: Path) -> tuple[bool, bool, dict]:
             not direct_report_ok and not direct_result_ok and not report_changed and not result_changed
         )
         candidate_blocked = row.get("excluded") is None and row.get("k") == 30 and output_blocked
+
+        user = run_gate.current_user()
+        attack = _control_row(
+            _lock_removal_source(Path(output_root), user, report_canary, result_canary),
+            "lock_removal",
+        )
+        direct_after_ok, direct_after_error = _try_open_for_append(report_canary)
+        report_changed_after = report_canary.read_text(encoding="utf-8") != "trusted-report"
+        result_changed_after = result_canary.read_text(encoding="utf-8") != "trusted-result"
+        removal_blocked = (
+            not direct_after_ok and not report_changed_after and not result_changed_after
+        )
+        candidate_removal_blocked = (
+            attack.get("excluded") is None and attack.get("k") == 30 and removal_blocked
+        )
         detail = {
             "lock_ok": True,
             "direct_report_write_error": direct_report_error,
@@ -109,8 +164,13 @@ def _output_lock_checks(output_root: Path) -> tuple[bool, bool, dict]:
             "result_canary_changed": result_changed,
             "io_open_candidate_k": row.get("k"),
             "io_open_candidate_excluded": row.get("excluded"),
+            "direct_after_attack_write_error": direct_after_error,
+            "report_canary_changed_after_attack": report_changed_after,
+            "result_canary_changed_after_attack": result_changed_after,
+            "lock_removal_candidate_k": attack.get("k"),
+            "lock_removal_candidate_excluded": attack.get("excluded"),
         }
-        return output_blocked, candidate_blocked, detail
+        return output_blocked, candidate_blocked, removal_blocked, candidate_removal_blocked, detail
     finally:
         run_gate.unlock_output(Path(output_root))
         try:
@@ -132,7 +192,9 @@ def build_report(args: argparse.Namespace) -> dict:
     fixture_exists = fixture.exists()
     other_ok, other_error = _try_open_for_append(fixture)
     extra_rejected, wrong_is_k30, control_detail = _control_checks()
-    output_blocked, candidate_output_blocked, output_detail = _output_lock_checks(Path(args.output_root))
+    output_blocked, candidate_output_blocked, removal_blocked, candidate_removal_blocked, output_detail = (
+        _output_lock_checks(Path(args.output_root))
+    )
     repo_path = Path(args.repo_path)
     repo_exposed = (repo_path / ".git").exists() or (repo_path / "run_gate.py").exists()
     marker = Path(args.sandbox_marker)
@@ -151,6 +213,8 @@ def build_report(args: argparse.Namespace) -> dict:
         "other_candidate_write_blocked": fixture_exists and not other_ok,
         "output_write_blocked": output_blocked,
         "candidate_output_write_blocked": candidate_output_blocked,
+        "output_lock_removal_blocked": removal_blocked,
+        "candidate_output_lock_removal_blocked": candidate_removal_blocked,
         "extra_output_rejected": extra_rejected,
         "correct_result_after_tamper_attempts": wrong_is_k30,
         "repo_not_present": not repo_exposed,
@@ -184,16 +248,23 @@ def main() -> None:
     if args.self_test:
         extra_rejected, wrong_is_k30, detail = _control_checks()
         with tempfile.TemporaryDirectory() as td:
-            output_blocked, candidate_output_blocked, output_detail = _output_lock_checks(Path(td))
+            output_blocked, candidate_output_blocked, removal_blocked, candidate_removal_blocked, output_detail = (
+                _output_lock_checks(Path(td))
+            )
         print(json.dumps({
             "extra_output_rejected": extra_rejected,
             "correct_result_after_tamper_attempts": wrong_is_k30,
             "output_write_blocked": output_blocked,
             "candidate_output_write_blocked": candidate_output_blocked,
+            "output_lock_removal_blocked": removal_blocked,
+            "candidate_output_lock_removal_blocked": candidate_removal_blocked,
             "detail": detail,
             "output_detail": output_detail,
         }, indent=2, sort_keys=True))
-        ok = extra_rejected and wrong_is_k30 and output_blocked and candidate_output_blocked
+        ok = (
+            extra_rejected and wrong_is_k30 and output_blocked
+            and candidate_output_blocked and removal_blocked and candidate_removal_blocked
+        )
         raise SystemExit(0 if ok else 1)
 
     if not args.output_root:
