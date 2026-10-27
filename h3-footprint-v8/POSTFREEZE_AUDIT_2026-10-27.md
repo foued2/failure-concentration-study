@@ -64,7 +64,23 @@ A candidate can spawn a detached or long-running descendant, let the worker hit 
 
 The historical Job Object fixture work is not an implementation guarantee: the frozen V8 `evaluate_body()` call path shown above does not create, assign, or close a Windows Job Object around each worker. The next revision must enforce a process-tree kill-on-timeout (for example, by assigning a worker process and descendants to a Windows Job Object with kill-on-job-close, or an equivalently strong container boundary) and resource limits for each candidate invocation. Add a regression candidate that launches a child which outlives the parent; prove the child is gone after timeout. Run that test inside the real Sandbox as well as ordinary tests.
 
-## Finding C: OpenCode free-agent access needs local diagnosis, not an unverified global conclusion
+## Finding D: generation invokes a tool-enabled agent, not a strictly text-only model
+
+The frozen `generate.py` executes `opencode run --pure --format json --model ... --dir WORK`. The prompt asks the model not to read files, use the network, or print, but prompt text is not a permission boundary. OpenCode's documented `--pure` flag means “run without external plugins”; it does not mean “disable built-in tools.” The OpenCode documentation says the default Build agent has all tools enabled and most actions default to allow. See the [CLI documentation](https://dev.opencode.ai/docs/cli/), [agent documentation](https://dev.opencode.ai/docs/agents/), and [permissions documentation](https://dev.opencode.ai/docs/permissions/).
+
+The generator launches three concurrent OpenCode runs by default (`ThreadPoolExecutor(max_workers=3)`) and passes the same `generated/work` directory to every call. If the agent uses built-in file or shell tools, concurrent batches could inspect or modify a shared workspace. Although a model may comply with the textual instruction not to use tools, the frozen generator neither disables such tools nor records a proof that no tool operation occurred.
+
+This is a sampling-frame integrity issue. The frozen V8 generation schedule has not run, so no V8 candidate sample is known to have been contaminated. But a future run should not be described as prompt-only or natural sampling unless tool use is explicitly disabled or shown not to occur.
+
+For a new version, create an isolated per-batch workspace and enforce a no-tools permission profile covering file read/list/search, file edits, shell, subagents, skills, web fetch/search, and external-directory access. Verify the exact permission semantics with the installed CLI. Inspect raw JSON events and treat any tool-call or permission-escalation event as a failed generation attempt, not as an accepted body source. Preserve the frozen model IDs and prompt schedule unless a separately documented sampling-frame change is approved.
+
+## Finding E: the generator does not enforce the eight-body batch ceiling
+
+The V8 constants set `BODIES_PER_BATCH = 8` and the prompt requests exactly eight fenced code blocks. However, `extract()` returns every valid fenced `solve` module it finds, and `call_batch()` persists every returned element in `found` without truncating or rejecting a response with more than eight blocks. Thus the implementation enforces at most 400 batch requests, not at most eight accepted bodies per batch. If a response contains 9 or more valid blocks, they are all stored and can exceed the stated 3,200-requested-body budget and change the sample size.
+
+Before a new generation run, the versioned generator must define a deterministic overproduction rule. Recommended rule: accept at most the first eight valid modules in response order, record the total number found and all overflow hashes/metadata for audit, and mark overflow bodies as not accepted into the candidate corpus. Do not manually choose overflow bodies based on apparent quality or later test outcomes. Add regression tests for fewer than, exactly, and more than eight valid code blocks.
+
+## Finding F: OpenCode free-agent access needs local diagnosis, not an unverified global conclusion
 
 Checked the official documentation on 2026-10-27:
 
