@@ -113,6 +113,8 @@ Do not silently replace any model in the frozen sampling frame. Any replacement 
 1. Redesign the trust boundary so expected values and probe definitions are outside the candidate-visible filesystem/process; add the suppression-and-forgery regression test.
 2. Add explicit read-access probes for expected values, instrument, harness source, and other candidate files.
 3. Add process-tree kill-on-timeout and per-candidate resource controls; prove descendants are gone after timeout.
-4. Run the complete isolation probe in a real, configured Windows Sandbox and preserve its report outside the writable output mapping.
-5. Separately diagnose the current OpenCode CLI/account state without generating study candidates.
-6. Only after items 1–4 pass, revisit whether candidate evaluation is authorized. Only after generation access is confirmed under the frozen model IDs should any generation batch begin.
+4. In a new, versioned generator, deny built-in OpenCode tools, isolate each batch workspace, enforce the eight-body cap, and reject partial/nonzero-exit responses.
+5. Reconcile the Gate/Runbook sequence in a new version; preserve the stricter rule that the isolation report must pass before generation begins.
+6. Run the complete isolation probe in a real, configured Windows Sandbox and preserve its report outside the writable output mapping.
+7. Separately diagnose the current OpenCode CLI/account state without generating study candidates.
+8. Only after items 1–6 pass, revisit whether candidate evaluation is authorized. Only after generation access is confirmed under the frozen model IDs should any generation batch begin.
