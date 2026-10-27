@@ -1,0 +1,1517 @@
+{
+  "bodies_in_frozen_report": 526,
+  "bodies_with_changed_k": 153,
+  "bodies_with_restored_imports": 158,
+  "changed_rows": [
+    {
+      "body_hash": "00091cd1e062d84e5d31b28c0322fe3c0357f8ed059d2368caeabc2731a993d5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "00451ac47e87f9b9bd4b3ee2e778cc54eee03158775cb8ec37359ca967d7d1b7",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "00f0758756ef1bd634a6b6af25615c1bdefdb94ea9d8d48c91f64956f878ee9d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "031334fe6f2cc27314d6e2fbcb53224d4a4ad34cfff8bab00aa83f415a7a3fa3",
+      "k_after": 15,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "031e6af08cc8769a54a041f130b681b759304b88fe96eb50743d9153266db54a",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "052ae4cb8158d0c8b98a1a8e37014cefb9af2021c524fea18b44aac03088e4fa",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "0961fa201a20937f43d23d677221553b9c2dfeaa45637d91a369a7c715be0c12",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "0abae15973bdc3f58875988a548b4c90e2f2e65d061c389b69134fc6c21013f1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "0b26de93559e790baae34a835ce495ba6ae775704309baf489517613b834d767",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "0d49881020481b2b18a225115ce8552ae3e1c2b705bdfe6559a201b9d7e84fd5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "0ea574a04ab955e27d75270b23023128679763c7caf6ff22d7425c6a7c90ec1d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "10455f981a4108e75b288414ed0bf46d7734bafadf697f6443d414ebb2ecd0e0",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "10b98df6c454accc5ee52efc3a582db567fc70e6bf70517bdb26d8e364c5cbed",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "11339bca75c823698fe5354a55c2005a17e45826bc5d3a0d93aa6204e2b218b2",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "11777470c46b581b91843893459002d805314d216849698de2b5c140289c234c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "1294b66e8d990d785fac00cbb11ec96e78faf635befe323b1c020f996531f51b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "1725a612d2c3444224012d5277497905a6e55f116ee050550e28da13f0efc3dc",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "194049b4000d5c9383b02cd09606ef7d8b79a0fa9fb935cd73c5d3cdac79b5cb",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "1abc4fe2b831f040b9e98ad3c7af8db2c69c4d36be3f395429b0b2e74f68c986",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "1bd5b9353877cb6b938da4186a9807f6c5446dab2da4567f9e3291538153a3b6",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "1d28720d79a0287c20a6c183d39b5910801990501ad97a57225b9f16fe0140a2",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "1f6b671baa69a6ef51d9a421c175329d1f06a3a9434a8439812e5488fb9ca02b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "20641fa0a6f63c9ef66271d851c71c8c085b8879c093fb626306e1dfc9bcbd59",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "209b9d4de314879a7e3dc16acdba725c10c499b00603774a257fc5652f6e37e9",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2113dd1f96b02a2e818be8c2a2f9c241b92200be15554effac71766e7cf2a9e9",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2439ee4a62d91fbf4b0d276c38cd790c6a54c1bc583ece9455b20a4d076df696",
+      "k_after": 8,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "293267f2e0da7e113aa5c256126f16ad5c89167c491cb8ea60614bd3cacec22b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2ad37702deb333d22c688e47fac2ee04fdcf5a89e1a0d3c03956db375ed54be7",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "2ae0120d9f1cc6b6312ec4bec2a49373950db086f6f8ac884fc29bf0a5108f76",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2c0f58d2f2f1f78e86cd8bbbd8601f797524363a72ff58175a79eae42e08e302",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2d68e89b24665e5c4c479e993eee02dabe7be6423b5d7a7f0a8b4aab263cfcc7",
+      "k_after": 21,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "2e322d2c4ead3a0bffe23f810f2a09c35ec421588d837a797d190744eea1c9d5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "2e4951bc0e09a74080212ea44d842b87ae4bed6e57a8cc8dfcc95262142127a1",
+      "k_after": 25,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "2f71ed40bf82ff8279564a9d0922e558292a77ba4f9c4ca0c20bac2fafcb6768",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "2f75a0a165e6e5ab4c8963d9dc69618924eabc0e9778c5f0bd4236b9d49d86dd",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "2fa29b1fb2b3fdbe342caf684edc1897f7bd603bcb89e9354381e8f9c1551a83",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "305bd55eaff491d38df01a9585ca4f55b30fc8e7b839d6429f0644ab04cf1a81",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "315659b499ea1412909f191dbf36fd21191a8c3ff43540a288007154de858230",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "31800e2ab219ee41e7e338b77a3eb6b00d175f0bd68ea449235764fb52eae05c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "3247908685b5e5e85c73abf3922813cb569fe91fb808339d8f98ea68b3cfdb8f",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "3610c24dc1e636ff9307917f11819dccfdca24aec73685c5de015308f8a3b97e",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "3912553d46039a80cf0fa206249380b71a02e0e0c57ce61fc329309e8e8b7685",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "4125f913ab89c9aa6e91d09d4541ac6dbd5a7fa87d05bd4282232154cc975781",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "42b60e595b53375419e3796baed056a58ed3d3f8198fc5f6f200450ff02c28e5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "42b7a095e6f18f974819fec3d22589d0754f604bf3c4e0c1b3c7a7d9367b0f25",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "44e24880b263640553eef2af1d286eb0403d459d52483b427b9df50c390170d7",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "47779134d0fb1e7eb7ed69d0c2a1b3b46aa121c280a6569c92f80a3f9742d80a",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "47dda9c0dca59257327a4f0b73cc9c7a28b0f45938def0c0faad5d39453fa35f",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "48263a3c9ea0565463a61bf1ea2261cce6093a6e8fedfb3464952da7cb558447",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "48f0098bb2b52bc2f0f6bc46081a763e92b70f92877b20cfc299c1c071af3944",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "495d41a750dbcb22b7063ce0fa6d942f57c80234f369c5d1b0658b86753b4e51",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "4da9b3b03560a5cb62a8bb288ac30dd4e6e9c2409f39e26ed4ecc4e47244e03f",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "4e2857c7979b746c2a10636436dd3fff982cdd90b0e0a80b1b643ecc56f686b4",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "4f7e47139578354ce89839fce94014c21669b974867d28fed5f6031b85079a9e",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "504c87629f409e915fd216d761da8008a3b8bc71f0f72fff55ff8b8fd59fb288",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "5074366290fab9130f82dc687ccf03981779e65c73bddc05cc464c66fe298dd9",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "54e23449ebeec922f1eb16960795249b127f65c41cf4babffab43ef75c94b209",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "55eb6de07bf054355c1412f39325df2336a0c1c7be918261fab2b7a9cd19fede",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "56af9861c966c1207e2fdd6ebe51c4e8ae7ab1a4858a26bababd90ad410a7862",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "57f0bbf454703cd189647ba0adeee361e263c1f3de11cf6b7a64351552c5d0df",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "5a8c7224a4d85ae431113acd05f816a96187fe781958ed0ba00590d559c0dbea",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "5eb73aac8df8a1f6a4c008113c8d854fbf2b30bf036ed16701e70b0611a1749b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "5f3eb7ad70f41738944bfbc05b130b1e95a6b343011a72511e378f90a7616336",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "6a4ae94f03a8eae1d714d6df35915a87fea913beb4d1d682554e5d62361afba0",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "6a6fe47fdc54550b9c175ee22e4195fe801c6e3b4d59cc267a6af23ae4e9d691",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "7085e0225b3706f88d1e6ba20639d3d09e10a48caba5220fc6b4bb68a78cda1d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "733906400ac73208200600b3834ffd882e700c912646b1e2fdd1f73154ae21ca",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "7518332632da8c84365ac0fee9c84aefde35e71f8828e8c0085a828ef066b7e6",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "77a5e0107912aa2a1fedbe51a45ac61777a707028e2f598e97c54d7f3457c139",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "77ce1bcbdd776d2789825789871c69bf746c844c4ad6a9cd3634eeec0972fe2b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "78262a902521305b3a18c822e95f21b561e67bac9811e182065aea043469837c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "79121d9404a54c4a4e8b2da713fe2cf0458834a69c907c8323d5eb8cf755a011",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "79557cd82a6d9b4dc6286941fcc7b32a44be4cfbb29e776aebd5be1ee534996d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "79db3bf6c4a280899f1700cc9f143f12ebd0cbb0b70a06f8997376023bbd4645",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "7cbaf7bf82d26c58d10d8da6c047b3675a7e4e968a2aaf0d9f20956be6cb6e82",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "7f124eed37ce73c29f448565b4a2d783e9963f326f07d45035d612f796304cf5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "801ed9fe59857e38d172a8f5a492111f2a296e34b1a35b2e6f65c668bba37734",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8037a49983d8a8566556648ad81c66903a0bfc93bc2b1f3207418bed515b443f",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "82db332b81ed07c860d3f1c143c7f891fb0b20ff44377bbf77387f359ee32d4f",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "844c2bb35d25078d7c3477b068619b80dab79a8c845de69f109905404f03b89d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "87e966d915bd1b4f4bdab6c04bec263fdebc6fada3747f3e64fefb0b73ec06d1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "88eaa531b4ba34b25095bbdc880ccd14906de50758c1fdcc695bf6ac27ddd2f6",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "89657874064dd4708ef8180a741c6285fbdc6acc171d360bf174d9d50433c4e1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "89a48429df541039502fdf154cb6757bc1963b346755879c61c51cd22805aa56",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8a3249a055e720ef1987be137c9034e5b9c105fc3544945b079fcb124b7a77a9",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "8a85379f46d2b7bfed6ccf339862a82b9d915d33f47324d519ebc8948a8da125",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8b3354be1303726ab063ae74ea9cdf694412a2f7bc5f047a5cb05b32c107fef6",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8bf41612b30d63f25dccbabfd4abf49771586b1d9a316fd20025665bab954734",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8c1a61021661c270e79ca268de95989346b83d1ec3d8c5916f030ff82a3f58f1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "8e08202999312700522fa5ee11c7c14dd80b508b7e3bb02c69e7e4a49d96301a",
+      "k_after": 5,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "8f69381dabc5e18db598968bfea57ced1c99f8f42d75b2310b6bd4063a8b8149",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "900df15b5f55e94d0bfa44d925206f9007fe37ba80fec1237a28ea924c939d19",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "9073f5596649cd460dcac933272d692aae9508de298df7c030fbdfbb57c76cd0",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "91b4c37fd4e04dc2c15d35ba6f7f8e8beb3a4dce3d1207fb17a762a388cdac11",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "94567301da3b4c86e78539f11e54872b5c4d010ca09085a7bd0334e69a265848",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "947d0a86cc9c9b8553495ef6c381ab9a7ad9f8746e0548355ccecee6d5e56bdf",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "96670b76ec6fdb64a2ee931d100bc98347fdb318622d76a265852d5a2b7babae",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "990d29c78af493a7c9b02690677760151bdf6200fc2442c3c3e679c007c20218",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "9ccc1f7864916b39c744ae7bc7bacdc4ab7040d23ec46dd7dca770e69bfd864c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "9e951bb38ff93434debb6be6607be2e49603ae7f78e85702a789891a5512f7d8",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "9fac7018e7504694c04d1cf6bc51d4bcb712bbdaeffeb62b04fbee3623d9274e",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "a13f81600e2832a1525ba447250be9dcd86505d9a18fc98e6f613c882b1cbad8",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "a244c207f182ea395cb412dbea809984dabdce0250ee0d59f5115ca9672f76db",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "a4c056ed1985b5dedb996ac9bba67e041a807df9caf6f676e7051cc43c099ae7",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "a84989678c549e649c357decd6509d716552617f34256b0a7954ebeea0be61ae",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "b2535612ae952144560178b488e1711ceb5892e73d001101e1d0e99ecfb00add",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "b309e69988aff0277c422e215b05a6c6838055acfef0d75ce9e35162ab71c434",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "b3289fb469a56bc96d77d83c267f8a45bdcfba467dbcee5b2c8037ad94f610b1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "b35757369ab62384042f8f85b7e0e35c7258769bd35e2768f3b2e1416f0af837",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "b3bf74908d9735b0f4eff779bed8058d39885bc22a0636d2f6d48f21dc0b3f5c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "b5950815a7ed4d19ef9f65851ca7d8eb71bf9b5a05587ff2c952b4765d7a3360",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "ba5b7d8f16051a9bae9f897f32ba254f20d569d97d3c422c6e13500c60cc77e5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "bb05175f40f892fb93ab315064f75be8a73d6fb5fd488f570dacba0bcb32f424",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "bb13f53867626b55df9be8c6c4894f27c7ba5b83446771c1fe5296741b312002",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "c17aa7ecdc87b14750c0d6b3513f7d85d07ea84bf9e9f9b2c6ee8f04cbcb40ec",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "c3c2326d0175147d760c1f28884cdf06fb18cfd89811389a7752171154447ce8",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "c52ff4049759308b463bad36755b916989e5634bbcf3e50cb87bc7a4c65e6d0d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "c76dd2d8eefba68b856fce9d788b4b9cb3a8bbc522821b188680500beffdd968",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "c79799b27a0a0f99855f375e2347623587f6c0945ac623af5e9bc33b0c0fdce0",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "c91016ae12e79342f45e784e8ef5d35618e37ec2d4bf7a64c517c85a3c37ff49",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "ca4de07b0bd5deda325f373e6ee6cd4e1818f3d5d04e82e04d4a53596d669d54",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "cd72c6f3903a633a5c064388a6aa28962113d5f4b8a34d70b6e4b812d0c36ce4",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "cf36513cea1611131479891f9703a66b72c0e5a9d1c4ad091ffe1545308b0491",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "d1b08c840d233b2dd46aac5efec9d7d48c3ca8bd11347b98ca72136baeea01a8",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "d1c1f78afb8a04c5069b33693fe351d0e9ab02801a6ef5c5e14616f76c40b5a2",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "d26fa5eaf12334292fcd99f8e0d25f19d1a4e5b34c8a7e4a5b200b96c0f42efa",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "d335ef4c761bad28d77237e8fb88ce7a9df46229a7c5d399d14f8007a09339c6",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "d58236d05ca9935010293c2998c60bb6110ad224893967444bf6784e3f812c5b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "d592995c715b32429fb8e7f441224d635cb63a0cb8c14bf820f913f0380dbd90",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "d6da3b56b4d89f2d0c59bc2e6e384c659c73cb5a9f0a8bae9601852f0e32f25a",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "d9216b51c78bdecb9dbad541ac16ec209b76d05ed1545fef3f6717e96c4bdf22",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "de597f954763a11b3a61a1a311d39b5678e502823ffdc3affbb44263be2bf24b",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "de85dc973876a72c1b65afbf496d91a0e37b3652dd23b3162f82239f6302b379",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "e41f15cef0c742f6cf5b04b4a73766b10e3c3d10c6fc49871b989af0fe0b9dea",
+      "k_after": 9,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "e5236c28c09a9b770d73cf72aa329febb4f51808094bd28ba1d094a31dd75842",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "e53c4d600a60a6b53fd731865d7a6b8f58fc1b2f0705efb347c2e4986ed07602",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "e68dfd98bdc81bf6b74e289bf7e43c778338cedf27f739beebe1a23300e58151",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "e8adf6ea0a77da39a965957f9ddec8a1b08379c23706865eb2d6092f22ed7dd8",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "e990296bbaebb80160809cdd940e1cc42e9329fcc1dcee701e32988ad790576d",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "ea4932122dbc6e79d8dedc7d25cc3f89a663fcd68bc0cd52adc8143dae1f7665",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "eaa179e37156aa255ee0dbbb1eee85b2ae17b076e6cc25a0296ca8fc606ccd27",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "ed01947c499b44b022ea131b923be08ef06dd3c558afa4a419bc5f41d7be930c",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "ed9fe79cce6aab9ec826d289977ad817e8da28c580a6e734068fb7ce3a4b9510",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "f06b07f0bd9c6973aff951ad5373bb660f8d41b30557f1ead082d6bcd06d5d05",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "f25ec35af5433c86f4215c7cf257f9a6fcd66e1c8829b2c3cd6a98160a085bd0",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "f36e137a071c126791535e6c9a5e2b64a9acad72a7e67150a3792eb601e0a669",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "f442dda0d5bd6361f47558e4e84043ceef41f5358089aeaf5985209f849a1d74",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq",
+        "from collections import defaultdict"
+      ]
+    },
+    {
+      "body_hash": "f66802123e1ae3ab35260b52c0a30c8ea9737c61525f33f2ce5f85fe54320888",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "f69473f2d3332bed1448aa34cfc994556b9349f548a2a86f5a4721fce8208ea3",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "f79e803042b0326f0d8ecdc3ba417ce50b332136374f78e5c26fa8d408a13a56",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "fb71b3121fefd6321202570e4c41b642a3f8c617f7e6ef8157da9546aeaf37e1",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "from collections import deque"
+      ]
+    },
+    {
+      "body_hash": "fd3da1b20eada59b262001de6a4cef8f60d68b715264306b1d204f4ab0a18df3",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    },
+    {
+      "body_hash": "ff3e85d32a74c923c447b79ec5fc3979b3d47f1271b2d69e5cab5a504f1624c5",
+      "k_after": 0,
+      "k_before": 30,
+      "load_error": null,
+      "restored_imports": [
+        "import heapq"
+      ]
+    }
+  ],
+  "corrected_all_or_none_fraction": 0.98891,
+  "corrected_eligible_k_2_to_24": 10,
+  "corrected_k_distribution": {
+    "0": 497,
+    "4": 1,
+    "5": 2,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "13": 1,
+    "15": 2,
+    "21": 1,
+    "25": 5,
+    "29": 4,
+    "30": 10
+  },
+  "corrected_total_bodies": 526,
+  "denominator_reconciliation": {
+    "eligible_k_2_to_24": 10,
+    "k_25": 5,
+    "k_29": 4,
+    "k_30": 10,
+    "k_zero": 497,
+    "resolved": true,
+    "sum": 526,
+    "total": 526
+  },
+  "frozen_report": "results/footprint.json",
+  "k_30_before_to_below_30_after": 153,
+  "note": "Import restoration is diagnostic evidence about the harness defect. It is not a result from the frozen harness and does not establish any H3 conclusion.",
+  "raw_prelude_stats": {
+    "blocks_with_import_in_prelude": 174,
+    "blocks_with_nonempty_prelude": 174,
+    "code_blocks_with_def_solve": 544
+  },
+  "status": "INVALID_RUN_DIAGNOSTIC_ONLY",
+  "transitions": [
+    {
+      "count": 350,
+      "k_after": 0,
+      "k_before": 0
+    },
+    {
+      "count": 1,
+      "k_after": 4,
+      "k_before": 4
+    },
+    {
+      "count": 1,
+      "k_after": 5,
+      "k_before": 5
+    },
+    {
+      "count": 1,
+      "k_after": 7,
+      "k_before": 7
+    },
+    {
+      "count": 1,
+      "k_after": 13,
+      "k_before": 13
+    },
+    {
+      "count": 1,
+      "k_after": 15,
+      "k_before": 15
+    },
+    {
+      "count": 4,
+      "k_after": 25,
+      "k_before": 25
+    },
+    {
+      "count": 4,
+      "k_after": 29,
+      "k_before": 29
+    },
+    {
+      "count": 147,
+      "k_after": 0,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 5,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 8,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 9,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 15,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 21,
+      "k_before": 30
+    },
+    {
+      "count": 1,
+      "k_after": 25,
+      "k_before": 30
+    },
+    {
+      "count": 10,
+      "k_after": 30,
+      "k_before": 30
+    }
+  ]
+}

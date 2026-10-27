@@ -1,0 +1,24 @@
+def solve(n, edges, s, t):
+    if s == t:
+        return 0
+    adj = [[] for _ in range(n)]
+    for u, v, w in edges:
+        adj[u].append((v, w))
+    INF = float('inf')
+    dist = [INF] * n
+    dist[s] = 0
+    heap = [(0, 0, s)]
+    counter = 0
+    while heap:
+        d, _, u = heapq.heappop(heap)
+        if d > dist[u]:
+            continue
+        if u == t:
+            return d
+        for v, w in adj[u]:
+            nd = d + w
+            if nd < dist[v]:
+                dist[v] = nd
+                counter += 1
+                heapq.heappush(heap, (nd, counter, v))
+    return -1 if dist[t] == INF else dist[t]
