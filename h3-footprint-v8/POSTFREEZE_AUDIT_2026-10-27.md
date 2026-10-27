@@ -50,7 +50,7 @@ A static AST denylist is not a security boundary for arbitrary Python code. Do n
 
 ## Finding B: read access to staged evaluator files has not been established
 
-The runbook maps the V8 harness read-only. The isolation probe checks whether writes to files such as `expected_values.json` and `instrument/fixtures` fail. Read-only access does not itself deny reading.
+The runbook maps the V8 harness read-only. The isolation probe checks whether writes to files such as `expected_values.json` and `isolation/fixtures` fail. Read-only access does not itself deny reading.
 
 Since V8 loads candidate code into the worker interpreter, candidate code can inspect worker state and the worker's file path. The review has not yet demonstrated that candidate code is unable to read the expected-value file, the probe instrument, or other staged evaluator source. This is a distinct check from the emitter-mutation finding. It must be tested explicitly before treating the evaluator as resistant to candidate-side inspection.
 
