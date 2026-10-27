@@ -1,0 +1,377 @@
+from __future__ import annotations
+
+import ast
+import builtins
+import json
+import math
+import re
+import subprocess
+import symtable
+import sys
+from collections import Counter, defaultdict
+from pathlib import Path
+
+import instrument
+
+ROOT = Path(__file__).resolve().parent
+GEN = ROOT / "generated"
+BODIES = GEN / "bodies"
+RESULTS = ROOT / "results"
+WORKER = ROOT / "probe_worker.py"
+
+FORBIDDEN_IMPORTS = {
+    "os",
+    "subprocess",
+    "socket",
+    "pathlib",
+    "shutil",
+    "importlib",
+    "ctypes",
+    "multiprocessing",
+    "threading",
+    "requests",
+    "urllib",
+    "http",
+    "ftplib",
+    "telnetlib",
+    "pickle",
+    "marshal",
+}
+FORBIDDEN_CALLS = {
+    "open",
+    "eval",
+    "exec",
+    "compile",
+    "__import__",
+    "input",
+    "breakpoint",
+}
+
+
+def unsafe_reason(source: str) -> str | None:
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as exc:
+        return f"syntax:{exc.msg}"
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name.split(".")[0] in FORBIDDEN_IMPORTS:
+                    return f"import:{alias.name}"
+        elif isinstance(node, ast.ImportFrom):
+            if node.module and node.module.split(".")[0] in FORBIDDEN_IMPORTS:
+                return f"from:{node.module}"
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.func.id in FORBIDDEN_CALLS:
+                return f"call:{node.func.id}"
+    return None
+
+
+def base_label(source: str) -> str:
+    s = source.lower()
+    if "heapq" in s or "heappush" in s or "heappop" in s:
+        return "heap_dijkstra"
+    if "floyd" in s or re.search(r"(?m)^\s*dist\s*=\s*\[\[", source):
+        return "floyd"
+    if "bellman" in s or ("range(n - 1)" in s and "for u, v, w in edges" in s):
+        return "bellman_ford"
+    if "deque" in s or "collections" in s:
+        return "bfs"
+    if "def dfs" in s or "def walk" in s or "def visit" in s:
+        return "dfs_bruteforce"
+    return "other"
+
+
+def body_meta() -> dict[str, dict]:
+    """Assign each distinct body to the first generation batch that emitted it."""
+    meta: dict[str, dict] = {}
+    path = GEN / "attempts.jsonl"
+    if not path.exists():
+        return meta
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        rec = json.loads(line)
+        batch_id = rec.get("batch_id")
+        group_id = f"batch-{batch_id:03d}" if batch_id is not None else None
+        candidates = rec.get("candidate_records")
+        if candidates is None:
+            candidates = [{"body_hash": h} for h in rec.get("body_hashes", [])]
+        for item in candidates:
+            h = item.get("body_hash") if isinstance(item, dict) else item
+            if h:
+                meta.setdefault(h, {
+                    "group_id": group_id or f"untracked:{h}",
+                    "model": rec.get("model"),
+                    "prompt_variant": rec.get("prompt_variant"),
+                    "batch_id": batch_id,
+                })
+    return meta
+
+
+def undefined_global_names(source: str) -> list[str]:
+    """Conservative static warning for referenced globals never bound in source."""
+    try:
+        root = symtable.symtable(source, "<candidate>", "exec")
+    except SyntaxError:
+        return []
+    module_bound = {
+        symbol.get_name()
+        for symbol in root.get_symbols()
+        if symbol.is_assigned() or symbol.is_imported() or symbol.is_namespace()
+    }
+    runtime_names = {
+        "__name__", "__package__", "__spec__", "__builtins__", "__doc__",
+        "__loader__", "__file__", "__cached__", "__annotations__",
+    }
+    allowed = set(dir(builtins)) | runtime_names
+    missing: set[str] = set()
+
+    def visit(table) -> None:
+        if table.get_type() != "module":
+            for symbol in table.get_symbols():
+                name = symbol.get_name()
+                if symbol.is_referenced() and symbol.is_global() and name not in module_bound and name not in allowed:
+                    missing.add(name)
+        for child in table.get_children():
+            visit(child)
+
+    visit(root)
+    return sorted(missing)
+
+
+def _json_object_from_stdout(stdout: str) -> dict | None:
+    for line in reversed(stdout.splitlines()):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def _invalid_candidate(row: dict, reason: str) -> dict:
+    row.update({
+        "excluded": reason, "load_error": reason, "fails": None,
+        "family_counts": None, "k": None, "C": None, "max_f": None,
+        "eligible": False, "probes_completed": 0,
+    })
+    return row
+
+
+def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
+    source = path.read_text(encoding="utf-8")
+    h = path.stem
+    info = meta.get(h) or {}
+    row = {
+        "body_hash": h, "base_algorithm": base_label(source),
+        "source_chars": len(source), "excluded": None, "timeout": False,
+        "fails": None, "k": None, "C": None,
+        "group_id": info.get("group_id"), "generator": info.get("model"),
+        "prompt_variant": info.get("prompt_variant"), "batch_id": info.get("batch_id"),
+    }
+    reason = unsafe_reason(source)
+    if reason:
+        return _invalid_candidate(row, reason)
+    missing = undefined_global_names(source)
+    if missing:
+        return _invalid_candidate(row, "undefined_name:" + ",".join(missing))
+    if row["group_id"] is None:
+        return _invalid_candidate(row, "missing_provenance")
+
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-I", str(WORKER), str(path), "--preflight"],
+            cwd=str(ROOT), capture_output=True, text=True, timeout=5,
+            encoding="utf-8", errors="replace",
+        )
+    except subprocess.TimeoutExpired:
+        return _invalid_candidate(row, "preflight_timeout")
+    except Exception as exc:
+        return _invalid_candidate(row, "preflight_runner_error:" + type(exc).__name__)
+    pre = _json_object_from_stdout(proc.stdout)
+    if proc.returncode != 0 or pre is None:
+        return _invalid_candidate(row, "preflight_invalid_output")
+    if pre.get("phase") != "preflight" or pre.get("valid") is not True or pre.get("load_error"):
+        detail = pre.get("load_error") or pre.get("error") or "candidate did not load"
+        return _invalid_candidate(row, "load_error:" + str(detail))
+
+    fails: list[bool] = []
+    had_probe_timeout = False
+    for probe_index in range(len(instrument.PROBES)):
+        try:
+            proc = subprocess.run(
+                [sys.executable, "-I", str(WORKER), str(path), "--probe", str(probe_index)],
+                cwd=str(ROOT), capture_output=True, text=True, timeout=5,
+                encoding="utf-8", errors="replace",
+            )
+        except subprocess.TimeoutExpired:
+            had_probe_timeout = True
+            fails.append(True)
+            continue
+        except Exception as exc:
+            return _invalid_candidate(row, "probe_runner_error:" + type(exc).__name__)
+        data = _json_object_from_stdout(proc.stdout)
+        if proc.returncode != 0 or data is None:
+            return _invalid_candidate(row, "probe_invalid_output")
+        if data.get("phase") == "load" or data.get("load_error"):
+            return _invalid_candidate(row, "load_error_during_probe")
+        if data.get("phase") != "probe" or data.get("probe_index") != probe_index or not isinstance(data.get("fail"), bool):
+            return _invalid_candidate(row, "probe_invalid_output")
+        fails.append(data["fail"])
+
+    counts = instrument.family_counts(fails)
+    k, c = instrument.concentration(fails)
+    row.update({
+        "excluded": None, "load_error": None, "fails": fails, "family_counts": counts, "timeout": had_probe_timeout,
+        "k": k, "C": c, "max_f": max(counts.values()),
+        "eligible": 2 <= k <= 24, "probes_completed": len(fails),
+    })
+    return row
+
+
+def _all_or_none_fraction(rows: list[dict]) -> float | None:
+    values = [v for row in rows for v in (row.get("family_counts") or {}).values()]
+    return (sum(v in (0, 5) for v in values) / len(values)) if values else None
+
+
+def build() -> dict:
+    meta = body_meta()
+    rows = [evaluate_body(p, meta) for p in sorted(BODIES.glob("*.py"))]
+    invalid_rows = [r for r in rows if r["excluded"] is not None]
+    valid_rows = [r for r in rows if r["excluded"] is None and r.get("k") is not None]
+    rejected = [r for r in valid_rows if r["k"] > 0]
+    eligible = [r for r in valid_rows if 2 <= r["k"] <= 24]
+    cells = defaultdict(lambda: defaultdict(list))
+    for row in eligible:
+        cells[(row["base_algorithm"], row["k"])][row["C"]].append(row)
+
+    cell_table, supported = [], []
+    for (label, k), levels in sorted(cells.items(), key=lambda item: (item[0][0], item[0][1])):
+        level_rows, ok = [], len(levels) >= 2
+        for c in sorted(levels):
+            candidates = levels[c]
+            group_ids = sorted({r["group_id"] for r in candidates if r.get("group_id")})
+            level_rows.append({
+                "C": c, "candidate_bodies": len(candidates), "groups": len(group_ids),
+                "group_ids": group_ids,
+                "generators": dict(Counter(r.get("generator") or "unknown" for r in candidates)),
+            })
+            if len(group_ids) < 4:
+                ok = False
+        all_groups = sorted({r["group_id"] for level in levels.values() for r in level if r.get("group_id")})
+        entry = {
+            "base_algorithm": label, "k": k, "levels": level_rows,
+            "candidate_bodies": sum(len(level) for level in levels.values()),
+            "groups": len(all_groups), "group_ids": all_groups, "supported": ok,
+        }
+        cell_table.append(entry)
+        if ok:
+            supported.append(entry)
+
+    unique_groups = {gid for cell in supported for gid in cell["group_ids"]}
+    group_pairs: set[tuple[str, int, str, str]] = set()
+    for cell in supported:
+        label, k = cell["base_algorithm"], cell["k"]
+        group_to_c = defaultdict(set)
+        for c, candidate_rows in cells[(label, k)].items():
+            for row in candidate_rows:
+                if row.get("group_id"):
+                    group_to_c[row["group_id"]].add(c)
+        gids = sorted(group_to_c)
+        for i, group_a in enumerate(gids):
+            for group_b in gids[i+1:]:
+                if any(ca != cb for ca in group_to_c[group_a] for cb in group_to_c[group_b]):
+                    group_pairs.add((label, k, group_a, group_b))
+
+    aone_all = _all_or_none_fraction(valid_rows)
+    aone_rejected = _all_or_none_fraction(rejected)
+    aone_eligible = _all_or_none_fraction(eligible)
+    distinct_k = sorted({cell["k"] for cell in supported})
+
+    # Apply the primary degeneracy rule only to eligible candidates. k=0
+    # candidates otherwise trivially inflate the family-count all-or-none rate.
+    if eligible and aone_eligible is not None and aone_eligible > 0.80:
+        verdict, reason = "FAIL", "degeneracy_among_eligible_k"
+    elif len(supported) >= 3 and len(distinct_k) >= 2 and len(unique_groups) >= 40:
+        verdict, reason = "PASS", "thresholds_met"
+    elif 1 <= len(supported) <= 2:
+        verdict, reason = "WEAK", "one_or_two_supported_cells"
+    else:
+        verdict, reason = "FAIL", "insufficient_support"
+
+    return {
+        "verdict": verdict, "reason": reason, "candidate_bodies": len(rows),
+        "valid_bodies": len(valid_rows), "invalid_candidates": len(invalid_rows),
+        "eligible_bodies": len(eligible),
+        "eligible_groups": len({r["group_id"] for r in eligible if r.get("group_id")}),
+        "rejected_bodies": len(rejected), "target_rejected_bodies": 150,
+        "target_reached": len(rejected) >= 150,
+        "k_distribution": dict(sorted(Counter(r["k"] for r in valid_rows).items())),
+        "max_f_distribution": dict(sorted(Counter(r["max_f"] for r in valid_rows).items())),
+        "all_or_none_fraction_all_valid": aone_all,
+        "all_or_none_fraction_rejected": aone_rejected,
+        "all_or_none_fraction_eligible": aone_eligible,
+        "supported_cells": supported, "cell_table": cell_table,
+        "supported_cell_count": len(supported), "distinct_supported_k": distinct_k,
+        "unique_groups_in_supported_cells": len(unique_groups),
+        "cross_group_pairs_different_C": len(group_pairs),
+        "base_algorithm_counts": dict(Counter(r["base_algorithm"] for r in valid_rows)),
+        "exclusion_reasons": dict(Counter(r["excluded"] for r in invalid_rows)),
+        "rows": rows,
+    }
+
+
+def markdown(report: dict) -> str:
+    lines = [
+        "# H3 Footprint Gate Result", "",
+        "Verdict: " + report["verdict"] + " (" + report["reason"] + ")", "",
+        "- Candidate bodies: " + str(report["candidate_bodies"]),
+        "- Valid candidates: " + str(report["valid_bodies"]),
+        "- Invalid candidates (not assigned k): " + str(report["invalid_candidates"]),
+        "- B1-rejected valid candidates: " + str(report["rejected_bodies"]),
+        "- Eligible bodies (2 <= k <= 24): " + str(report["eligible_bodies"]),
+        "- Eligible provenance groups: " + str(report["eligible_groups"]),
+        "- Target of 150 rejected bodies reached: " + str(report["target_reached"]),
+        "- All-or-none fraction among all valid candidates: " + str(report["all_or_none_fraction_all_valid"]),
+        "- All-or-none fraction among rejected candidates: " + str(report["all_or_none_fraction_rejected"]),
+        "- All-or-none fraction among eligible candidates (primary degeneracy metric): " + str(report["all_or_none_fraction_eligible"]),
+        "- Supported cells: " + str(report["supported_cell_count"]),
+        "- Distinct supported k: " + str(report["distinct_supported_k"]),
+        "- Unique provenance groups in supported cells: " + str(report["unique_groups_in_supported_cells"]),
+        "- Distinct cross-group pairs with different C: " + str(report["cross_group_pairs_different_C"]), "",
+        "## Distribution", "",
+        "k: " + str(report["k_distribution"]), "",
+        "max_j f_j: " + str(report["max_f_distribution"]), "",
+        "## Supported cells", "",
+        "| base algorithm | k | C levels (distinct groups) | candidate bodies |",
+        "|---|---:|---|---:|",
+    ]
+    for cell in report["supported_cells"]:
+        levels = ", ".join(str(level["C"]) + " (" + str(level["groups"]) + " groups)" for level in cell["levels"])
+        lines.append("| " + str(cell["base_algorithm"]) + " | " + str(cell["k"]) + " | " + levels + " | " + str(cell["candidate_bodies"]) + " |")
+    if not report["supported_cells"]:
+        lines.append("| none | | | |")
+    lines += [
+        "",
+        "Candidates that fail static checks or cannot load are invalid and receive no k. Runtime exceptions and timeouts during an individual probe count as that probe failing. The primary degeneracy metric is restricted to eligible candidates (2 <= k <= 24) so passing candidates do not trivially inflate it.",
+        "",
+        "A PASS would not establish predictive value or power. This is a footprint feasibility gate only.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def main() -> None:
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    report = build()
+    (RESULTS / "footprint.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    (RESULTS / "REPORT.md").write_text(markdown(report), encoding="utf-8")
+    print(markdown(report))
+
+
+if __name__ == "__main__":
+    main()
