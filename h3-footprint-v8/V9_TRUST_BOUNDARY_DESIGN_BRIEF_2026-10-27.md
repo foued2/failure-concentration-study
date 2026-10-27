@@ -68,8 +68,9 @@ The next version must include negative controls for:
 3. **Probe-bank read:** candidate attempts to enumerate all probe inputs, family labels, and oracle mappings. Only the one current input may be made available to the candidate invocation.
 4. **Other-candidate read:** candidate attempts to inspect a different candidate body or the complete generated-body directory. It must not be exposed through candidate-visible staging.
 5. **Trusted-state tampering:** candidate attempts to alter trusted failure flags, family counts, result handles, and the authoritative record through `sys.modules`, frame inspection, or stream monkeypatching. The trusted controller must be in a separate process/trust domain and must compute these independently.
-6. **Host and output boundary:** continue the existing host-write, network-block, output-root-lock-removal, low-integrity, timeout, memory-limit, and post-run hash checks in the actual Sandbox configuration.
-7. **Reference result controls:** known wrong solvers must remain wrong on all frozen probes, correct solvers must remain correct, and malformed or timed-out candidates must follow explicitly specified classifications.
+6. **Process-tree/resource boundary:** run each candidate invocation in a Windows Job Object (or equivalently strong mechanism) with process-tree kill-on-timeout, memory/process-count caps, and a regression that spawns a long-lived child. `subprocess.run(timeout=...)` alone does not guarantee descendants are terminated. Verify the child has exited after timeout and before the next candidate starts.
+7. **Host and output boundary:** continue the existing host-write, network-block, output-root-lock-removal, low-integrity, and post-run hash checks in the actual Sandbox configuration.
+8. **Reference result controls:** known wrong solvers must remain wrong on all frozen probes, correct solvers must remain correct, and malformed or timed-out candidates must follow explicitly specified classifications.
 
 For each check, preserve the attempted action, observed result, artifact hashes, and report fields. A test that passes only under the ordinary development host does not certify the Sandbox boundary.
 
