@@ -1,0 +1,95 @@
+name: H3 V4 anonymous hosted-model connectivity smoke
+
+on:
+  push:
+    branches:
+      - research/h3-v4-anonymous-model-prototype-2026-10-28
+    paths:
+      - ".github/workflows/h3-v4-anonymous-endpoint-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  anonymous-endpoint-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Test one non-study completion without a key
+        env:
+          ENDPOINT: https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import time
+          import urllib.error
+          import urllib.request
+
+          payload = {
+              "model": "gpt-oss-120b",
+              "messages": [
+                  {"role": "user", "content": "Reply with exactly H3_ENDPOINT_HEALTHY and no other text."}
+              ],
+              "max_tokens": 20,
+              "temperature": 0,
+          }
+          request = urllib.request.Request(
+              os.environ["ENDPOINT"],
+              data=json.dumps(payload).encode("utf-8"),
+              headers={"Content-Type": "application/json"},
+              method="POST",
+          )
+          started = time.time()
+          try:
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  raw = response.read()
+                  status = response.status
+                  headers = response.headers
+          except urllib.error.HTTPError as exc:
+              retry_after = exc.headers.get("Retry-After")
+              print(json.dumps({
+                  "status": exc.code,
+                  "retry_after": retry_after,
+                  "anonymous_endpoint_usable": False,
+                  "note": "Connectivity smoke only; no solver candidate was requested or saved."
+              }, sort_keys=True))
+              sys.exit(1)
+          except Exception as exc:
+              print(json.dumps({
+                  "error_type": type(exc).__name__,
+                  "detail": str(exc)[:240],
+                  "anonymous_endpoint_usable": False
+              }, sort_keys=True))
+              sys.exit(1)
+
+          try:
+              data = json.loads(raw)
+              text = data["choices"][0]["message"]["content"].strip()
+          except Exception as exc:
+              print(json.dumps({
+                  "status": status,
+                  "parse_error": type(exc).__name__,
+                  "response_prefix": raw[:500].decode("utf-8", "replace"),
+                  "anonymous_endpoint_usable": False
+              }, sort_keys=True))
+              sys.exit(1)
+
+          result = {
+              "status": status,
+              "model_requested": payload["model"],
+              "reply_matches": text == "H3_ENDPOINT_HEALTHY",
+              "elapsed_seconds": round(time.time() - started, 2),
+              "usage": data.get("usage"),
+              "anonymous_endpoint_usable": status == 200,
+              "note": "One operational smoke completion only. It is not part of the H3 candidate population."
+          }
+          print(json.dumps(result, sort_keys=True))
+          if status != 200:
+              sys.exit(1)
+          PY
