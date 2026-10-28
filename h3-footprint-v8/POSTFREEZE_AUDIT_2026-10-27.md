@@ -56,6 +56,12 @@ A source-level attack path is direct: obtain `sys.modules["__main__"].__file__` 
 
 The current pre-generation isolation probe tests expected-value **write denial**, not **read denial**. Therefore V8 has not established that reference outputs or the diagnostic probe definitions are hidden from candidate code. Do not try to fix this with more static import/call denylist entries. Keep reference answers and any probe bank meant to be hidden outside the candidate-visible filesystem and process boundary, and test read denial in the actual Sandbox.
 
+
+### Frozen-artifact erratum
+
+The frozen [V8 GATE.md](https://github.com/foued2/failure-concentration-study/blob/h3-footprint-v8-freeze-2026-10-27/h3-footprint-v8/GATE.md) item 5 says as a fact that the worker “cannot read expected values.” That assertion is false given the source and staging layout described above. This is not simply an absent test: a frozen document overstates a property that the implementation does not provide. The tag and its contents must remain unchanged; this post-freeze note is the erratum and must be carried forward into every successor's status record.
+
+Findings A and B should be treated as **one compound exploit path**: candidate-readable reference data plus control over the in-process response channel. Reading expected outputs supplies the value needed to make a forged response pass the parent's comparison. Fixing only the emitter mutation or only the file-write boundary is insufficient. The requirement is that the reference oracle be outside both the candidate's filesystem view and its process/trust domain.
 ## Finding C: the five-second timeout does not terminate the candidate process tree
 
 `run_gate.py::evaluate_body()` uses `subprocess.run(..., timeout=5)` separately for preflight and each probe. Python's timeout handling kills the direct subprocess; it does not by itself guarantee that child or grandchild processes launched by that subprocess are terminated. V8 candidates can reach the already-loaded `os` module through `sys.modules`; the V8 lock-removal control explicitly uses `os.system()` to launch external commands, confirming that process spawning remains reachable despite the static import filter.
@@ -74,6 +80,14 @@ This is a sampling-frame integrity issue. The frozen V8 generation schedule has 
 
 For a new version, create an isolated per-batch workspace and enforce a no-tools permission profile covering file read/list/search, file edits, shell, subagents, skills, web fetch/search, and external-directory access. Verify the exact permission semantics with the installed CLI. Inspect raw JSON events and treat any tool-call or permission-escalation event as a failed generation attempt, not as an accepted body source. Preserve the frozen model IDs and prompt schedule unless a separately documented sampling-frame change is approved.
 
+
+### Documented enforcement interface and caveat
+
+Current OpenCode CLI documentation documents `opencode agent create --permissions <list>` (alias `--tools`): it accepts a comma-separated allowlist, and tools omitted from the list are denied. The permissions guide documents `OPENCODE_PERMISSION` as an environment-based JSON permission override and says `--auto` automatically approves permission requests that are not explicitly denied. See the [agent-create CLI documentation](https://dev.opencode.ai/docs/cli/), [permissions documentation](https://dev.opencode.ai/docs/permissions/), and [agent permissions guide](https://dev.opencode.ai/docs/agents/).
+
+V9 should create a dedicated, versioned generation agent with an explicit least-privilege permission profile, verify its effective loaded configuration, and never pass `--auto`. The launch environment must be controlled so an external `OPENCODE_PERMISSION` or alternate config cannot silently restore tools; hash the actual agent/config artifacts and record the CLI version.
+
+Important limitation: a current upstream [OpenCode issue](https://github.com/anomalyco/opencode/issues/50627) reports that certain OpenCode free-tier models return a 403 “free tier can only be used from within OpenCode” when tool permissions, notably `bash`, are denied. The public documentation establishes the permission interface, but does not establish that a fully no-tools agent is compatible with all three frozen free models or with the user's specific CLI version. Do not weaken permissions just to make a request succeed. Resolve this by checking documented CLI behavior and effective local configuration without model calls; if the actual free models reject the required permission profile, record the generation frame as operationally incompatible rather than running with tools enabled. Any alternate execution frame requires a separately versioned protocol.
 ## Finding E: the generator does not enforce the eight-body batch ceiling
 
 The V8 constants set `BODIES_PER_BATCH = 8` and the prompt requests exactly eight fenced code blocks. However, `extract()` returns every valid fenced `solve` module it finds, and `call_batch()` persists every returned element in `found` without truncating or rejecting a response with more than eight blocks. Thus the implementation enforces at most 400 batch requests, not at most eight accepted bodies per batch. If a response contains 9 or more valid blocks, they are all stored and can exceed the stated 3,200-requested-body budget and change the sample size.
@@ -110,10 +124,10 @@ Do not silently replace any model in the frozen sampling frame. Any replacement 
 
 ## Next work, in order
 
-1. Redesign the trust boundary so expected values and probe definitions are outside the candidate-visible filesystem/process; add the suppression-and-forgery regression test.
+1. Treat reference disclosure and response forgery as one compound threat: remove the reference oracle from the candidate-visible filesystem and process, then add the suppression-and-forgery regression test. Preserve the false GATE.md claim as a post-freeze erratum; do not edit V8.
 2. Add explicit read-access probes for expected values, instrument, harness source, and other candidate files.
 3. Add process-tree kill-on-timeout and per-candidate resource controls; prove descendants are gone after timeout.
-4. In a new, versioned generator, deny built-in OpenCode tools, isolate each batch workspace, enforce the eight-body cap, and reject partial/nonzero-exit responses.
+4. In a new, versioned generator, use the documented OpenCode agent permission interface, verify its effective no-tools configuration, never enable --auto, isolate each batch workspace, enforce the eight-body cap, and reject partial/nonzero-exit responses. Account explicitly for the documented permission mechanism's unverified compatibility with OpenCode free-tier models.
 5. Reconcile the Gate/Runbook sequence in a new version; preserve the stricter rule that the isolation report must pass before generation begins.
 6. Run the complete isolation probe in a real, configured Windows Sandbox and preserve its report outside the writable output mapping.
 7. Separately diagnose the current OpenCode CLI/account state without generating study candidates.
