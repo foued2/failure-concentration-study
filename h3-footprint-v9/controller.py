@@ -819,7 +819,10 @@ def _rendezvous_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -
 
     if args.transport == "sandbox":
         stage_runtime(inbox)
-        transport = backend.WindowsSandboxTransport(handshake_timeout=args.handshake_timeout)
+        transport = backend.WindowsSandboxTransport(
+            handshake_timeout=args.handshake_timeout,
+            job_protocol=args.job_protocol,
+        )
         try:
             transport.start(inbox, outbox)
         except backend.FatalBoundaryError as exc:

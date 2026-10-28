@@ -287,6 +287,47 @@ class ServeTests(unittest.TestCase):
         self.assertTrue(state)
 
 
+class TransportSelectionTests(unittest.TestCase):
+    """The real transport must read the request it actually published."""
+
+    def test_sandbox_transport_selects_the_immutable_request(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            inbox, outbox, scratch = root / "in", root / "out", root / "scratch"
+            for path in (inbox, outbox, scratch):
+                path.mkdir()
+            job = make_job(1)
+            protocol.publish_immutable_job(inbox, job, BODY)
+            protocol.write_response_exclusive(outbox, response_for(job))
+            transport = backend.WindowsSandboxTransport(job_protocol="immutable")
+            transport._attestation = {"verified": True}
+            transport._nonce = NONCE
+            record = transport.execute(
+                inbox, outbox, scratch, timeout=1.0,
+                memory_bytes=constants.MEMORY_LIMIT_BYTES, max_processes=4,
+            )
+            self.assertEqual(record["job_id"], job["job_id"])
+            self.assertEqual(record["answer"], 111)
+
+    def test_sandbox_transport_rejects_an_unusable_immutable_request(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            inbox, outbox, scratch = root / "in", root / "out", root / "scratch"
+            for path in (inbox, outbox, scratch):
+                path.mkdir()
+            (inbox / protocol.immutable_job_filename(1, "f" * 32)).write_text(
+                "{", encoding="utf-8"
+            )
+            transport = backend.WindowsSandboxTransport(job_protocol="immutable")
+            transport._attestation = {"verified": True}
+            transport._nonce = NONCE
+            with self.assertRaises(backend.FatalBoundaryError):
+                transport.execute(
+                    inbox, outbox, scratch, timeout=0.1,
+                    memory_bytes=constants.MEMORY_LIMIT_BYTES, max_processes=4,
+                )
+
+
 class RendezvousProtocolTests(unittest.TestCase):
     """The immutable variant must still enforce ordering and tree-empty."""
 

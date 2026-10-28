@@ -138,7 +138,7 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "158 tests, 0 failures"
+      "detail": "160 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",

@@ -146,9 +146,13 @@ class WindowsSandboxTransport:
     requires_sandbox = True
 
     def __init__(self, *, handshake_timeout: float = 180.0,
-                 response_slack: float = 120.0) -> None:
+                 response_slack: float = 120.0,
+                 job_protocol: str = "legacy") -> None:
+        if job_protocol not in ("legacy", "immutable"):
+            raise ValueError(f"unknown job protocol {job_protocol!r}")
         self.handshake_timeout = handshake_timeout
         self.response_slack = response_slack
+        self.job_protocol = job_protocol
         self._attestation: dict[str, Any] | None = None
 
     @property
@@ -242,7 +246,18 @@ class WindowsSandboxTransport:
             raise BoundaryNotEstablished(
                 "the Sandbox transport has no verified attestation; refusing to execute"
             )
-        job = protocol.read_job(staging)
+        if self.job_protocol == "immutable":
+            scan = protocol.scan_immutable_jobs(staging)
+            if scan["errors"]:
+                raise FatalBoundaryError(
+                    "immutable request is unusable: "
+                    + "; ".join(f"{item['file']}: {item['error']}" for item in scan["errors"])
+                )
+            if not scan["requests"]:
+                raise FatalBoundaryError("no immutable request is visible in the staging folder")
+            job = scan["requests"][-1]
+        else:
+            job = protocol.read_job(staging)
         path = protocol.response_path(Path(response_dir), job["job_id"])
         deadline = time.monotonic() + timeout + self.response_slack
         while time.monotonic() < deadline:

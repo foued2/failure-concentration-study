@@ -433,7 +433,7 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 
 ```
 python -m unittest discover -s tests -v
-Ran 158 tests in 142.989s
+Ran 160 tests in 118.258s
 OK
 ```
 
