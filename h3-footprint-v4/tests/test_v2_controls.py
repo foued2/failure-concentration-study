@@ -67,7 +67,7 @@ class OracleIntegrityTests(unittest.TestCase):
             for family in instrument.FAMILY_ORDER
         }
         self.assertEqual(counts, {family: 5 for family in instrument.FAMILY_ORDER})
-        review = json.loads((HERE / "coherence_review.json").read_text(encoding="utf-8"))
+        review = json.loads((HERE / "instrument_coherence_review.json").read_text(encoding="utf-8"))
         self.assertEqual(len(review), 30)
         self.assertTrue(all(item["belongs"] is True for item in review))
 
