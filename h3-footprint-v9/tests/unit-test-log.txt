@@ -139,6 +139,6 @@ test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.
 test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
 
 ----------------------------------------------------------------------
-Ran 133 tests in 119.829s
+Ran 133 tests in 122.684s
 
 OK

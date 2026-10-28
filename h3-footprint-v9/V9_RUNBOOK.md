@@ -161,10 +161,19 @@ python controller.py --rendezvous --transport sandbox ^
   --report C:\v9-stage\rendezvous-log.json
 ```
 
-Result on 2026-10-28: **FAIL**. Job A was answered correctly (111,
-`tree_empty: true`) five seconds after launch; job B was published and never
-answered, and no response for B appeared four minutes later. `ordering_ok` is
-false and the cause is unresolved. Do not proceed to step 3 or 4 on this result.
+Result on 2026-10-28: **FAIL**, cause unresolved. Job A was answered correctly
+(111, `tree_empty: true`) five seconds after launch; job B was published and
+never answered, and no response for B appeared four minutes later. `ordering_ok`
+is false. Do not proceed to step 3 or 4 on this result.
+
+One instrumented rerun was then made, on `echo_input.py` only, and it classified
+the failure as `inbox_not_refreshed`: the agent stayed alive (heartbeats
+throughout), job B was never discovered, and there were no exceptions or
+telemetry anomalies. Job A was fully instrumented. That excludes an agent crash
+and a response-path failure for this run and points at the guest's view of the
+rewritten `job.json`; it does not prove the mechanism, so no protocol change was
+made. Raw set: `evidence/rendezvous-instrumented-2026-10-28.json` and
+`evidence/rendezvous-instrumented-*`.
 
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It

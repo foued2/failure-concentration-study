@@ -17,7 +17,8 @@
     {
       "id": "sandbox_rendezvous_ordering",
       "evidence": [
-        "evidence/rendezvous-sandbox-2026-10-28.json"
+        "evidence/rendezvous-sandbox-2026-10-28.json",
+        "evidence/rendezvous-instrumented-2026-10-28.json"
       ],
       "require_json": {
         "ordering_ok": true
@@ -41,7 +42,14 @@
   "evidence_pins": {
     "evidence/preflight-sandbox-2026-10-28.json": "f10b980acb3ea6d5dc15f77e09c336e56f4ead0a5df4b6ea31c3a6e32f5789a9",
     "evidence/rendezvous-sandbox-2026-10-28.json": "c373cf967638ddb18388dfdbcd0436fdb93a980821fa1f2a3e7854e6c938c9cc",
-    "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3"
+    "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3",
+    "evidence/rendezvous-instrumented-2026-10-28.json": "17229d4f9033861e3aeae8df09722586c960f14773fb1c391a449a17ee78c03d",
+    "evidence/rendezvous-instrumented-hello-2026-10-28.json": "5ecef88865c39560ed2c84a792241f802cc95371666cca3b911c5aa5d0e5c704",
+    "evidence/rendezvous-instrumented-response-A-2026-10-28.json": "b0bb859c7aec47c8f379e45c4c99b06066501547f2aa2e727aaf3654b5c4b905",
+    "evidence/rendezvous-instrumented-job-B-2026-10-28.json": "cbe3b90a0050ffdf19bcb966ffde1ec13ae2e1930619f80573a22bf514cc7cff",
+    "evidence/rendezvous-instrumented-session-2026-10-28.json": "dd1282fb1650318ef8dcf9bea84f92edd7d6e1f9ccfd6529ff4c7d1fe6e11577",
+    "evidence/rendezvous-instrumented-events-2026-10-28.sha256": "fd39ff81e5569719f5646d73ac3024af6ad5efab3aef4863f305c7f11124cdb8",
+    "evidence/v9-rendezvous-instrumented-2026-10-28.wsb": "f65405437a515444527adf6aab7ffaafb8e1923145d6b94c904196546df7a0d4"
   },
   "verdict_rules": {
     "path": "verdict_rules.py",

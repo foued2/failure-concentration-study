@@ -98,11 +98,16 @@ Windows Sandbox has now run here. The preflight handshake is verified
 job B was never answered, and the cause is unresolved. The measured mapping
 behaviour is in `STATUS.json` under `sandbox_mapping_write_constraints`.
 
-Revision 7 instruments the guest so that the next rendezvous can say *where* it
-stopped. The agent writes bounded diagnostic events (`agent_start`, `heartbeat`,
+Revision 7 instruments the guest so that a rendezvous can say *where* it stopped.
+The agent writes bounded diagnostic events (`agent_start`, `heartbeat`,
 `job_discovered`, `job_started`, `response_written`, `exception`) as uniquely
 named files in the outbox, written directly and closed. The host validates them
-as untrusted input and attaches the classification to the failing report:
+as untrusted input and attaches the classification to the failing report. One
+instrumented run was then made, on `echo_input.py` only: the agent stayed alive,
+job A was fully instrumented, job B was never discovered, and the result is
+`inbox_not_refreshed` (`evidence/rendezvous-instrumented-2026-10-28.json`).
+
+The host reports one of these classifications:
 
 | observation | classification |
 | --- | --- |
@@ -150,10 +155,12 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 - **The one-item broker is not proven.** A Sandbox handshake verifies
   (`evidence/preflight-sandbox-2026-10-28.json`), but the two-token rendezvous
-  failed: job A was answered, job B was published and never answered. The cause
-  is unresolved; the guest was not instrumented in that run. Until an
-  instrumented run explains it, no isolation report, no live ordering result and
-  no authorized evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
+  failed: job A was answered, job B was published and never answered. The
+  instrumented rerun classifies it as `inbox_not_refreshed` — the agent was alive
+  throughout and never saw B — so the leading question is how updates to the
+  mapped inbox become visible. The cause is not proven, and until it is, no
+  isolation report, no live ordering result and no authorized evaluation exist
+  (`sandbox_rendezvous_ordering: FAIL`).
 - **A live mapping constrains the host.** The host cannot `os.replace` inside a
   folder a running Sandbox maps (`WinError 32`), and the guest cannot label a
   mapped folder with an integrity level. Staging is now idempotent and job

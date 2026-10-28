@@ -80,7 +80,7 @@
   },
   "evidence_scopes": {
     "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json, evidence/sandbox-capability-post-restart-2026-10-28.json",
-    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); no isolation probes were run"
+    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); no isolation probes were run"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -116,7 +116,10 @@
     "the guest agent now writes bounded diagnostic events (agent_start, heartbeat, job_discovered, job_started, response_written, exception) as uniquely named files, written directly and closed because a live mapping rejects renames",
     "the host validates guest telemetry as untrusted input: size cap, allowed names, strict schema, nonce and pid correlation, reparse-point rejection, filename/content agreement; telemetry is never treated as proof of isolation",
     "run_rendezvous keeps a job-B failure a FAIL but attaches the event snapshot and one of the named diagnostics (inbox_not_refreshed, agent_stopped, supervisor_or_response_path, response_written_but_not_visible, stalled_after_discovery, agent_not_instrumented, ambiguous_telemetry, unresolved)",
-    "the original rendezvous report and raw files are unchanged; the gate now also refuses because that pinned report still records ordering_ok false"
+    "the original rendezvous report and raw files are unchanged; the gate now also refuses because that pinned report still records ordering_ok false",
+    "one instrumented rendezvous ran on tests/fixtures/echo_input.py only: job A was discovered, started and answered (111, tree_empty true), the agent heartbeated throughout, job B was never discovered, and the report classifies the failure as inbox_not_refreshed with no telemetry anomalies",
+    "the raw run is preserved beside the report: hello, response A, job B, session and all 100 validated guest events (single agent pid 3612), whose filenames and hashes are pinned",
+    "the cause is narrowed, not closed: the guest's view of the rewritten job.json stayed stale while the agent was demonstrably alive, so mapped-inbox refresh is now the leading question and no protocol change was made before this run"
   ],
   "gates": [
     {
@@ -284,8 +287,15 @@
       "id": "sandbox_rendezvous_ordering",
       "status": "FAIL",
       "scope": "sandbox",
-      "evidence": "evidence/rendezvous-sandbox-2026-10-28.json, evidence/rendezvous-response-A-2026-10-28.json, evidence/rendezvous-job-B-2026-10-28.json",
-      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s and still none four minutes later). The cause is unresolved: the guest was not instrumented in that run, so a stale view of the rewritten job.json, an agent stop and a response-path failure are all still possible. The raw report and files are unchanged."
+      "evidence": "evidence/rendezvous-sandbox-2026-10-28.json, evidence/rendezvous-response-A-2026-10-28.json, evidence/rendezvous-job-B-2026-10-28.json, evidence/rendezvous-instrumented-2026-10-28.json",
+      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s). The instrumented rerun narrows where to look but does not close the cause: the agent stayed alive (62 heartbeats after B was published, event seq 68 at report time and 100 in the raw outbox), never recorded job_discovered for B, and produced no exceptions or telemetry anomalies. Classification inbox_not_refreshed points at the guest's view of the rewritten job.json staying stale; it rules out an agent crash and a supervisor/response-path failure for this run, but it does not prove the refresh mechanism. Cause remains unresolved and ordering is still not established, so the gate stays FAIL."
+    },
+    {
+      "id": "rendezvous_diagnostic",
+      "status": "PASS",
+      "scope": "sandbox",
+      "evidence": "evidence/rendezvous-instrumented-2026-10-28.json, evidence/rendezvous-instrumented-events-2026-10-28.sha256",
+      "detail": "one instrumented run of echo_input.py only; job A fully instrumented, job B never discovered while heartbeats continued; 100 raw guest events validated with one pid (3612) and zero anomalies; classification inbox_not_refreshed. This is diagnostic telemetry, not isolation evidence."
     },
     {
       "id": "sandbox_agent_acceptance",

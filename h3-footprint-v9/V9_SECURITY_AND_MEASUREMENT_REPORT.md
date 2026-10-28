@@ -175,9 +175,30 @@ one of the named classifications. Telemetry explains a failure; it is never
 isolation evidence, and a missing or ambiguous diagnostic remains `unresolved`.
 The original rendezvous report and its raw files are unchanged.
 
-**Still unresolved.** The cause of the missing job-B response is not known. It
-is recorded as *cause unresolved*, not as a stale inbox, until an instrumented
-run says otherwise. Evaluation remains blocked by the gate and by decision.
+**One instrumented run.** Exactly one rerun was made, on `echo_input.py` only, with
+no candidate and no evaluation. It is decisive about *where* the failure sits and
+silent about the exact mechanism:
+
+- job A was discovered, started and answered (111, `tree_empty: true`), and its
+  three lifecycle events are present;
+- after job B was published the agent kept heartbeating — 62 heartbeats, with
+  event sequence 68 at report time and 100 in the raw outbox;
+- it never recorded `job_discovered` for B, never raised, and produced no
+  telemetry anomaly;
+- the host therefore classified the failure as `inbox_not_refreshed`.
+
+That rules out, for this run, an agent that stopped after A and a
+supervisor/response-path failure. It points at the guest's view of the rewritten
+`job.json` staying stale. It does not prove the refresh mechanism, so the cause
+is still recorded as unresolved, ordering is still `FAIL`, and no protocol change
+was made before the run. The raw set — hello, response A, job B, session and all
+100 events — is preserved beside the report and pinned by hash; the report's own
+snapshot was taken at 130 s with 68 events, which is why the raw directory is
+longer.
+
+**Still blocked.** Evaluation remains refused by the gate and by decision. The
+isolation probes have not run, the caps are only `PARTIAL`, the verdict layer does
+not exist and no authorization file is committed.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 
