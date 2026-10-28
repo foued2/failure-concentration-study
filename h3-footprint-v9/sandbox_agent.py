@@ -146,10 +146,10 @@ class Heartbeat(threading.Thread):
         self.log = log
         self.interval = max(0.2, float(interval))
         self.state = state
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
 
     def run(self) -> None:
-        while not self._stop.wait(self.interval):
+        while not self._stop_event.wait(self.interval):
             try:
                 snapshot = self.state() if self.state is not None else None
                 self.log.emit("heartbeat", phase="serve", detail="alive", state=snapshot)
@@ -157,7 +157,7 @@ class Heartbeat(threading.Thread):
                 return
 
     def stop(self) -> None:
-        self._stop.set()
+        self._stop_event.set()
 
 
 def wait_for_session(inbox: Path, timeout: float, poll: float = 0.1) -> dict | None:
