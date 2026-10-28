@@ -5,4 +5,4 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /opt/runner
 COPY sandbox_worker.py /opt/runner/sandbox_worker.py
 USER 65534:65534
-ENTRYPOINT ["python", "-I", "/opt/runner/sandbox_worker.py"]
+ENTRYPOINT ["python", "-I", "-B", "/opt/runner/sandbox_worker.py"]
