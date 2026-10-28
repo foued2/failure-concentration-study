@@ -98,7 +98,7 @@ def run_battery(report_path: Path) -> dict[str, Any]:
         host_path_literal = json.dumps(str(sentinel))
         oracle_path_literal = json.dumps(str(host_oracle_path))
 
-        host_source = String = (
+        host_source = (
             "from pathlib import Path\n"
             "def solve(n, edges, s, t):\n"
             f"    host_path = Path({host_path_literal})\n"
@@ -138,7 +138,7 @@ def run_battery(report_path: Path) -> dict[str, Any]:
         host_value = host_result.get("value") if host_result.get("status") == "fixture_ok" else None
         source_hash_after = hashlib.sha256(host_fixture.read_bytes()).hexdigest()
 
-        network_source = String = String = (
+        network_source = (
             "import socket\n"
             "def solve(n, edges, s, t):\n"
             "    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
@@ -162,7 +162,7 @@ def run_battery(report_path: Path) -> dict[str, Any]:
         network_result = container_eval.run_fixture(network_fixture, timeout=5.0)
         network_value = network_result.get("value") if network_result.get("status") == "fixture_ok" else None
 
-        pids_source = String = (
+        pids_source = (
             "import subprocess\n"
             "def solve(n, edges, s, t):\n"
             "    children = []; cap_hit = False; error_type = None\n"
@@ -191,7 +191,7 @@ def run_battery(report_path: Path) -> dict[str, Any]:
         exit_result = container_eval.run_fixture(exit_fixture, timeout=5.0)
         exit_value = exit_result.get("value") if exit_result.get("status") == "fixture_ok" else None
 
-        tree_source = String = (
+        tree_source = (
             "import os, subprocess, time\n"
             "def solve(n, edges, s, t):\n"
             "    child = subprocess.Popen(['/bin/sleep', '60'])\n"
