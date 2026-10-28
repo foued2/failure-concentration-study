@@ -33,14 +33,15 @@ def validate_oracles() -> dict:
         normalized = -1 if value is None else value
         if expected[probe_id] != normalized:
             raise AssertionError(f"frozen expected value mismatch on {probe_id}")
-    review = json.loads((ROOT / "coherence_review.json").read_text(encoding="utf-8"))
+    review = json.loads((ROOT / "instrument_coherence_review.json").read_text(encoding="utf-8"))
     if len(review) != 30 or any(item.get("belongs") is not True for item in review):
         raise AssertionError("coherence review coverage is incomplete")
     return {
         "probe_count": 30,
         "family_counts": family_counts,
         "oracle_agreement_count": 30,
-        "coherence_review_entries": len(review),
+        "instrument_coherence_review_entries": len(review),
+        "v4_design_review_status": json.loads((ROOT / "coherence_review.json").read_text(encoding="utf-8")).get("status"),
         "expected_values_match": True,
     }
 
