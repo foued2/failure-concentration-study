@@ -79,7 +79,9 @@ def main() -> int:
 
     try:
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-            value = solve(probe["n"], probe["edges"], probe["s"], probe["t"])
+            # JSON converts nested tuples to lists; restore the frozen solve signature.
+            edges = [tuple(edge) for edge in probe["edges"]]
+            value = solve(probe["n"], edges, probe["s"], probe["t"])
     except BaseException as exc:
         _emit({
             "status": "runtime_error",
