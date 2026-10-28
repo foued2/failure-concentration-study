@@ -30,7 +30,10 @@ the strength of the local backend.
 from __future__ import annotations
 
 import json
+import ntpath
 import os
+import re
+import stat
 import subprocess
 import sys
 import time
@@ -44,6 +47,11 @@ import winjob
 
 HANDLE_HELLO = "hello.json"
 HANDLE_SESSION = "session.json"
+RESPONSE_LIMIT_BYTES = 64 * 1024
+RESPONSE_STATUSES = {
+    "ok", "error", "timeout", "load_error", "output_limit",
+    "staging_mismatch", "boundary_error",
+}
 
 
 class FatalBoundaryError(RuntimeError):
@@ -52,6 +60,10 @@ class FatalBoundaryError(RuntimeError):
 
 class BoundaryNotEstablished(FatalBoundaryError):
     """Evaluation was attempted on a transport that cannot attest isolation."""
+
+
+class SandboxConfigError(ValueError):
+    """A .wsb config would not launch, or would not enforce the boundary."""
 
 
 def current_identity() -> dict:
@@ -225,54 +237,305 @@ class WindowsSandboxTransport:
         deadline = time.monotonic() + timeout + self.response_slack
         while time.monotonic() < deadline:
             if path.exists():
-                try:
-                    return json.loads(path.read_text(encoding="utf-8"))
-                except (OSError, json.JSONDecodeError):
-                    pass
+                # The outbox is candidate-writable, so the file is untrusted
+                # input: bounded size, no reparse point, strict schema. A file
+                # that exists but is invalid is tampering, not a late response.
+                return read_trusted_response(path, job["job_id"])
             time.sleep(0.1)
         raise FatalBoundaryError(
             f"no Sandbox response for job {job['job_id']} within {timeout + self.response_slack:.0f}s"
         )
+
+    def preflight(self, inbox: Path, outbox: Path, *, launch: Any = None) -> dict[str, Any]:
+        """Handshake only. Never publishes a job and never evaluates anything.
+
+        ``prepare`` writes ``session.json`` *before* ``launch`` runs, so the agent
+        can never start against a missing session. The agent also polls for the
+        session, so either order works; this ordering is the deterministic one.
+        """
+        inbox, outbox = Path(inbox), Path(outbox)
+        self.prepare(inbox, outbox)
+        session = json.loads((inbox / HANDLE_SESSION).read_text(encoding="utf-8"))
+
+        launched = launch() if launch is not None else None
+        attestation = self.await_handshake()
+
+        jobs = sorted(p.name for p in inbox.glob("job.json"))
+        responses = sorted(p.name for p in outbox.glob("response-*.json"))
+        if jobs or responses:
+            raise BoundaryNotEstablished(
+                "preflight must not run a job, but found job files "
+                f"{jobs} and response files {responses}"
+            )
+
+        return {
+            "transport": self.name,
+            "nonce": session["nonce"],
+            "session_written_before_launch": True,
+            "launched": launched,
+            "attestation": attestation,
+            "jobs_published": 0,
+            "response_files": [],
+            "evaluation_attempted": False,
+            "started": time.time(),
+        }
+
+
+# -- what crosses back ---------------------------------------------------------
+# The outbox is written by whatever runs inside the Sandbox, so the host has to
+# treat it as hostile input, not as data from its own supervisor.
+
+
+def _is_reparse_point(path: Path) -> bool:
+    try:
+        attributes = os.stat(path, follow_symlinks=False).st_file_attributes
+    except (OSError, AttributeError):
+        return False
+    return bool(attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400))
+
+
+def validate_response(record: Any, job_id: str | None = None) -> dict[str, Any]:
+    """Strict schema for a response that crossed the boundary."""
+    if not isinstance(record, dict):
+        raise FatalBoundaryError("response is not a JSON object")
+    checks = (
+        ("v9", int), ("job_id", str), ("sequence", int), ("kind", str),
+        ("body_sha256", str), ("status", str), ("tree_empty", bool),
+    )
+    for key, expected in checks:
+        if key not in record:
+            raise FatalBoundaryError(f"response is missing {key!r}")
+        value = record[key]
+        if expected is bool:
+            if not isinstance(value, bool):
+                raise FatalBoundaryError(f"response field {key!r} is not a boolean")
+        elif isinstance(value, bool) or not isinstance(value, expected):
+            raise FatalBoundaryError(
+                f"response field {key!r} has type {type(value).__name__}"
+            )
+    answer = record.get("answer")
+    if answer is not None and (isinstance(answer, bool) or not isinstance(answer, int)):
+        raise FatalBoundaryError(f"response answer has type {type(answer).__name__}")
+    if record["v9"] != protocol.JOB_SCHEMA:
+        raise FatalBoundaryError("response schema version mismatch")
+    if not re.fullmatch(r"[0-9a-f]{32}", record["job_id"]):
+        raise FatalBoundaryError("response job_id is not a 32-hex id")
+    if not re.fullmatch(r"[0-9a-f]{64}", record["body_sha256"]):
+        raise FatalBoundaryError("response body_sha256 is not a 64-hex hash")
+    if record["status"] not in RESPONSE_STATUSES:
+        raise FatalBoundaryError(f"response status {record['status']!r} is not a known status")
+    if job_id is not None and record["job_id"] != job_id:
+        raise FatalBoundaryError(
+            f"response is for job {record['job_id']}, expected {job_id}"
+        )
+    if not isinstance(record.get("raw_stdout", ""), str):
+        raise FatalBoundaryError("response raw_stdout is not text")
+    return record
+
+
+def read_trusted_response(path: Path, job_id: str | None = None) -> dict[str, Any]:
+    path = Path(path)
+    if _is_reparse_point(path):
+        raise FatalBoundaryError("response file is a reparse point (symlink or junction)")
+    try:
+        size = path.stat().st_size
+    except OSError as exc:
+        raise FatalBoundaryError(f"cannot stat response: {exc}") from exc
+    if size > RESPONSE_LIMIT_BYTES:
+        raise FatalBoundaryError(
+            f"response file is {size} bytes, over the {RESPONSE_LIMIT_BYTES}-byte limit"
+        )
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise FatalBoundaryError(f"response is not valid JSON: {type(exc).__name__}") from exc
+    return validate_response(record, job_id)
+
+
+# -- .wsb configuration --------------------------------------------------------
+# Windows maps a folder into the guest at the Desktop of WDAGUtilityAccount
+# unless SandboxFolder says otherwise, so the path is always explicit here.
+
+SANDBOX_DESKTOP = r"C:\Users\WDAGUtilityAccount\Desktop"
+SANDBOX_INBOX_NAME = "h3-in"
+SANDBOX_OUTBOX_NAME = "h3-out"
+SANDBOX_PYTHON_NAME = "h3-py"
+
+
+def _tokens(command: str) -> list[str]:
+    return [quoted or bare for quoted, bare in re.findall(r'"([^"]*)"|(\S+)', command)]
+
+
+def _norm(path: str) -> str:
+    return ntpath.normcase(ntpath.normpath(path))
+
+
+def _under(path: str, folder: str) -> bool:
+    path, folder = _norm(path), _norm(folder)
+    return path == folder or path.startswith(folder.rstrip("\\") + "\\")
 
 
 SANDBOX_CONFIG_TEMPLATE = """<Configuration>
   <Networking>Disable</Networking>
   <ClipboardRedirection>Disable</ClipboardRedirection>
   <vGPU>Disable</vGPU>
+  <AudioInput>Disable</AudioInput>
+  <VideoInput>Disable</VideoInput>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <MemoryInMB>{memory_mb}</MemoryInMB>
   <MappedFolders>
-    <MappedFolder>
-      <HostFolder>{inbox}</HostFolder>
-      <SandboxFolder>{sandbox_inbox}</SandboxFolder>
-      <ReadOnly>true</ReadOnly>
-    </MappedFolder>
-    <MappedFolder>
-      <HostFolder>{outbox}</HostFolder>
-      <SandboxFolder>{sandbox_outbox}</SandboxFolder>
-      <ReadOnly>false</ReadOnly>
-    </MappedFolder>
+{mappings}
   </MappedFolders>
   <LogonCommand>
-    <Command>{python} {sandbox_inbox}\\sandbox_agent.py --inbox {sandbox_inbox} --outbox {sandbox_outbox}</Command>
+    <Command>{command}</Command>
   </LogonCommand>
 </Configuration>
 """
 
+MAPPING_TEMPLATE = """    <MappedFolder>
+      <HostFolder>{host}</HostFolder>
+      <SandboxFolder>{sandbox}</SandboxFolder>
+      <ReadOnly>{readonly}</ReadOnly>
+    </MappedFolder>"""
 
-def sandbox_config_xml(inbox: Path, outbox: Path, *,
-                       sandbox_inbox: str = r"C:\h3-in",
-                       sandbox_outbox: str = r"C:\h3-out",
-                       python_exe: str = r"C:\h3-py\python.exe") -> str:
+
+def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
+                       mode: str = "preflight",
+                       sandbox_root: str = SANDBOX_DESKTOP,
+                       python_exe_name: str = "python.exe",
+                       memory_mb: int = 4096) -> str:
     """Config for Windows Sandbox.
 
-    The Sandbox base image ships no Python interpreter. ``python_exe`` must be a
-    portable interpreter staged into the read-only mapping, or an interpreter
-    installed in the image. This is a preflight requirement, not something the
-    config can arrange on its own.
+    ``python_root`` is mandatory and is mapped read-only, because the Sandbox
+    base image ships no interpreter and an unmapped interpreter path is a config
+    that cannot start. The previous revision emitted ``C:\\h3-py\\python.exe``
+    while mapping only the inbox and outbox, so the agent could never launch.
     """
-    return SANDBOX_CONFIG_TEMPLATE.format(
-        inbox=escape(str(inbox)),
-        outbox=escape(str(outbox)),
-        sandbox_inbox=escape(sandbox_inbox),
-        sandbox_outbox=escape(sandbox_outbox),
-        python=escape(python_exe),
+    if mode not in ("preflight", "serve"):
+        raise SandboxConfigError(f"unknown mode {mode!r}")
+    python_root = Path(python_root)
+
+    sandbox_inbox = ntpath.join(sandbox_root, SANDBOX_INBOX_NAME)
+    sandbox_outbox = ntpath.join(sandbox_root, SANDBOX_OUTBOX_NAME)
+    sandbox_python = ntpath.join(sandbox_root, SANDBOX_PYTHON_NAME)
+    python_exe = ntpath.join(sandbox_python, python_exe_name)
+    agent = ntpath.join(sandbox_inbox, "sandbox_agent.py")
+
+    mappings = "\n".join([
+        MAPPING_TEMPLATE.format(host=escape(str(inbox)), sandbox=escape(sandbox_inbox),
+                                readonly="true"),
+        MAPPING_TEMPLATE.format(host=escape(str(outbox)), sandbox=escape(sandbox_outbox),
+                                readonly="false"),
+        MAPPING_TEMPLATE.format(host=escape(str(python_root)), sandbox=escape(sandbox_python),
+                                readonly="true"),
+    ])
+
+    tail = " --handshake-only" if mode == "preflight" else ""
+    command = (
+        f'"{python_exe}" "{agent}" --inbox "{sandbox_inbox}" '
+        f'--outbox "{sandbox_outbox}"{tail}'
     )
+
+    return SANDBOX_CONFIG_TEMPLATE.format(
+        memory_mb=int(memory_mb), mappings=mappings, command=escape(command)
+    )
+
+
+def verify_sandbox_config(xml: str, *, mode: str | None = None) -> dict[str, Any]:
+    """Parse the emitted config and prove it is launchable *and* bounded.
+
+    This is deliberately independent of how the XML was built: it reads what
+    would be handed to Windows Sandbox and checks the guest-side paths, not the
+    host intent.
+    """
+    import xml.etree.ElementTree as ET
+
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as exc:
+        raise SandboxConfigError(f"config is not valid XML: {exc}") from exc
+
+    folders = []
+    for folder in root.findall("MappedFolders/MappedFolder"):
+        folders.append({
+            "host": folder.findtext("HostFolder") or "",
+            "sandbox": folder.findtext("SandboxFolder") or "",
+            "readonly": (folder.findtext("ReadOnly") or "").strip().lower() == "true",
+        })
+    command = root.findtext("LogonCommand/Command") or ""
+    tokens = _tokens(command)
+
+    read_only = [f["sandbox"] for f in folders if f["readonly"]]
+    writable = [f["sandbox"] for f in folders if not f["readonly"]]
+    host_paths = [f["host"] for f in folders]
+
+    exe = tokens[0] if tokens else ""
+    agent = next((t for t in tokens if t.lower().endswith("sandbox_agent.py")), "")
+
+    checks = {
+        "parses": True,
+        "networking_disabled": (root.findtext("Networking") or "").strip().lower() == "disable",
+        "clipboard_disabled": (root.findtext("ClipboardRedirection") or "").strip().lower() == "disable",
+        "vgpu_disabled": (root.findtext("vGPU") or "").strip().lower() == "disable",
+        "audio_input_disabled": (root.findtext("AudioInput") or "").strip().lower() == "disable",
+        "video_input_disabled": (root.findtext("VideoInput") or "").strip().lower() == "disable",
+        "printer_disabled": (root.findtext("PrinterRedirection") or "").strip().lower() == "disable",
+        "outbox_is_the_only_writable_mapping": len(writable) == 1,
+        "at_least_one_read_only_mapping": len(read_only) >= 1,
+        "interpreter_mapped_read_only": bool(exe) and any(_under(exe, f) for f in read_only),
+        "agent_mapped_read_only": bool(agent) and any(_under(agent, f) for f in read_only),
+        "interpreter_is_python": ntpath.basename(exe).lower().startswith("python"),
+        "guest_paths_absolute": all(
+            ntpath.isabs(f["sandbox"]) and not f["sandbox"].startswith("\\\\") for f in folders
+        ),
+        "guest_paths_unique": len({_norm(f["sandbox"]) for f in folders}) == len(folders),
+        "no_host_path_in_command": not any(
+            host and _norm(host) in _norm(command) for host in host_paths
+        ),
+        "handshake_only_matches_mode": (
+            mode is None
+            or ("--handshake-only" in command) == (mode == "preflight")
+        ),
+    }
+    violations = [name for name, ok in checks.items() if not ok]
+    return {"ok": not violations, "checks": checks, "violations": violations,
+            "mappings": folders, "command": command}
+
+
+def interpreter_preflight(python_root: Path, exe_name: str = "python.exe") -> dict[str, Any]:
+    """Check, on the host, that the mapped interpreter is actually runnable.
+
+    A mapped Windows *venv* usually keeps absolute paths in ``pyvenv.cfg`` and
+    ``python*._pth``, so the portable/embeddable distribution is the supported
+    option. The check is about presence and portability, not a guarantee.
+    """
+    python_root = Path(python_root)
+    exe = python_root / exe_name
+    files = sorted(p.name for p in python_root.iterdir()) if python_root.is_dir() else []
+    lowered = [name.lower() for name in files]
+    has_stdlib_zip = any(name.startswith("python") and name.endswith(".zip") for name in lowered)
+    has_runtime_dll = any(name.startswith("python3") and name.endswith(".dll") for name in lowered)
+    checks = {
+        "directory_exists": python_root.is_dir(),
+        "interpreter_present": exe.is_file(),
+        "stdlib_zip_present": has_stdlib_zip,
+        "runtime_dll_present": has_runtime_dll,
+        "no_venv_marker": "pyvenv.cfg" not in lowered,
+    }
+    violations = [name for name, ok in checks.items() if not ok]
+    return {"ok": not violations, "checks": checks, "violations": violations,
+            "python_root": str(python_root), "python_exe": str(exe),
+            "files": files[:40]}
+
+
+def launch_sandbox(wsb: Path) -> dict[str, Any]:
+    """Start Windows Sandbox with this config, detached from the controller."""
+    exe = Path(os.environ.get("WINDIR", r"C:\Windows")) / "System32" / "WindowsSandbox.exe"
+    if not exe.is_file():
+        raise FatalBoundaryError(
+            f"Windows Sandbox is not installed on this host ({exe} is absent); "
+            "the preflight cannot run here"
+        )
+    flags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+    proc = subprocess.Popen([str(exe), str(wsb)], close_fds=True, creationflags=flags)
+    return {"launched": True, "pid": proc.pid, "exe": str(exe), "config": str(wsb)}

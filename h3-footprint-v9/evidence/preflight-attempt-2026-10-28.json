@@ -1,0 +1,43 @@
+{
+  "candidate_files": [],
+  "error": "interpreter_preflight_failed",
+  "evaluation_attempted": false,
+  "host_identity": {
+    "computer": "DESKTOP-NN8TBG0",
+    "inside_sandbox": false,
+    "source": "GetUserNameW",
+    "user": "Foued"
+  },
+  "interpreter": {
+    "checks": {
+      "directory_exists": true,
+      "interpreter_present": true,
+      "no_venv_marker": true,
+      "runtime_dll_present": true,
+      "stdlib_zip_present": false
+    },
+    "files": [
+      "DLLs",
+      "LICENSE.txt",
+      "Lib",
+      "NEWS.txt",
+      "Scripts",
+      "include",
+      "libs",
+      "python.exe",
+      "python3.dll",
+      "python314.dll",
+      "pythonw.exe",
+      "vcruntime140.dll",
+      "vcruntime140_1.dll"
+    ],
+    "ok": false,
+    "python_exe": "C:\\Program Files\\Python314\\python.exe",
+    "python_root": "C:\\Program Files\\Python314",
+    "violations": [
+      "stdlib_zip_present"
+    ]
+  },
+  "ok": false,
+  "stage": "sandbox-preflight"
+}

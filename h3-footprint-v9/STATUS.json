@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 2,
+  "revision": 3,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -9,16 +9,23 @@
   "authorization": {
     "generation": false,
     "evaluation": false,
-    "note": "evaluate_authorized raises unless the transport has a verified Windows Sandbox attestation. No Sandbox has been run, so evaluation is blocked in code. Generation is not implemented."
+    "note": "evaluate_authorized raises unless the transport carries a verified Windows Sandbox attestation. No Sandbox has ever run, so evaluation is blocked in code. Generation is not implemented."
   },
-  "revision_2_repairs": [
-    "controller requires an explicit transport; the local path can no longer stand in for Sandbox execution",
-    "evaluate_authorized refuses any transport without a verified attestation",
-    "Sandbox broker implemented: read-only inbox, writable outbox, nonce handshake, token-derived identity",
-    "new fixtures assert the host exposure instead of hiding it",
-    "generation rejects incomplete batches, permission events and malformed event streams",
-    "controller CLI exists and matches the runbook; generation is declared unimplemented",
-    "ACL fixture resolves the account SID and asserts exit codes and resulting ACL state"
+  "environment": {
+    "windows_sandbox_installed": false,
+    "evidence": "evidence/sandbox-unavailable-2026-10-28.json",
+    "detail": "Windows 10 Pro 19045, HypervisorPresent False, WindowsSandbox.exe absent, zero Sandbox packages. A real preflight cannot be run on this host."
+  },
+  "evidence_scopes": {
+    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json",
+    "sandbox": "none - every Sandbox gate is NOT_RUN"
+  },
+  "revision_3_repairs": [
+    "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
+    "the Sandbox agent polls for session.json with a timeout, so either launch order works",
+    "a preflight-only CLI handshakes, records the attestation and cannot publish a job or evaluate a candidate",
+    "a two-token rendezvous harness records ordering and early-visibility of token B",
+    "outbox responses are treated as hostile input: size cap, reparse-point rejection, strict schema"
   ],
   "gates": [
     {
@@ -26,7 +33,7 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "57 tests, 0 failures"
+      "detail": "88 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -47,27 +54,27 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_boundary.py::HostBoundaryExposure",
-      "detail": "oracle.py and expected_values.json read successfully from a low-integrity child; a key-reading fixture scores k=0. This is a finding, not a barrier."
+      "detail": "oracle.py and expected_values.json are readable from a low-integrity child; key_reader scores k=0. A finding, not a barrier."
     },
     {
       "id": "evaluation_requires_sandbox",
       "status": "PASS",
       "scope": "host",
-      "evidence": "tests/test_backend.py::TransportTests, tests/test_boundary.py::HostBoundaryExposure",
+      "evidence": "tests/test_backend.py::TransportTests",
       "detail": "evaluate_authorized raises BoundaryNotEstablished for any unverified transport"
     },
     {
       "id": "sandbox_handshake_rejections",
       "status": "PASS",
       "scope": "host",
-      "evidence": "tests/test_backend.py",
-      "detail": "rejects missing agent, stale nonce, host-running agent, and each failed predicate; acceptance path untested without a Sandbox"
+      "evidence": "tests/test_backend.py::TransportTests, PreflightTests",
+      "detail": "missing agent, stale nonce, host-running agent, wrong identity and untrusted inside_sandbox flag all rejected; acceptance path synthesised, not observed"
     },
     {
       "id": "compound_disclosure_and_forgery",
       "status": "PASS",
       "scope": "host",
-      "evidence": "tests/test_boundary.py",
+      "evidence": "tests/test_boundary.py::HostBoundaryExposure",
       "detail": "the compound attack is demonstrated on the host transport and is the reason evaluation is gated"
     },
     {
@@ -82,7 +89,7 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_isolation.py",
-      "detail": "SID resolved; all eight escape attempts rc=5/1 with recorded output; deny ACE survives; writes raise PermissionError"
+      "detail": "SID resolved; icacls attempts rc=5, takeown denied, deny ACE survives, writes raise PermissionError"
     },
     {
       "id": "generation_parser_completeness",
@@ -106,25 +113,53 @@
       "detail": "all three frozen IDs present in the local catalog; no model call made"
     },
     {
+      "id": "sandbox_config_interpreter_mapped",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::SandboxConfigMappingTests, InterpreterPreflightTests",
+      "detail": "emitted .wsb is re-parsed; interpreter and agent must sit in read-only mappings; host's own install correctly rejected as non-portable"
+    },
+    {
+      "id": "preflight_workflow",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::PreflightTests, CommandLineTests",
+      "detail": "session written before launch, agent survives a missing session, attestation recorded, no job or response published. Uses a synthetic hello.json."
+    },
+    {
+      "id": "rendezvous_harness",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::RendezvousTests",
+      "detail": "two distinct tokens ordered correctly on the host transport; proves the harness, not Sandbox mapping ordering"
+    },
+    {
+      "id": "response_channel_validation",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::ResponseTrustTests",
+      "detail": "size cap, reparse-point rejection, strict schema, status whitelist and job-id match enforced on the outbox"
+    },
+    {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "no Windows Sandbox run has occurred; all results above are host evidence"
+      "detail": "Windows Sandbox is not installed on this host; no isolation evidence exists"
     },
     {
       "id": "sandbox_rendezvous_ordering",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "mapped-folder one-item delivery and ordering not tested in a live session"
+      "detail": "harness exists and passes on the host transport; live mapped-folder ordering untested"
     },
     {
       "id": "sandbox_agent_acceptance",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "only rejection paths are tested; no WDAGUtilityAccount handshake has been observed"
+      "detail": "no WDAGUtilityAccount handshake has been observed; only rejection paths and a synthetic hello"
     },
     {
       "id": "memory_and_process_caps",
@@ -138,7 +173,7 @@
       "status": "NOT_IMPLEMENTED",
       "scope": "host",
       "evidence": null,
-      "detail": "k/C/eligibility/saturation implemented; classification and PASS/WEAK/FAIL not ported"
+      "detail": "k/C/eligibility/saturation implemented; classification and PASS/WEAK/FAIL not ported, and must be committed and hashed before generation"
     },
     {
       "id": "candidate_generation",

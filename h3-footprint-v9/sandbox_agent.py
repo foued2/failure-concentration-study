@@ -41,13 +41,35 @@ def check_environment(allow_host: bool = False) -> dict:
     return ident
 
 
-def handshake(inbox: Path, outbox: Path) -> dict:
+def wait_for_session(inbox: Path, timeout: float, poll: float = 0.1) -> dict | None:
+    """Wait for the host to publish session.json.
+
+    The Sandbox may start the LogonCommand before the controller has written the
+    session. Exiting immediately in that case made launch order mandatory; this
+    makes either order work.
+    """
+    path = Path(inbox) / SESSION
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if path.exists():
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                pass
+        time.sleep(poll)
+    return None
+
+
+def handshake(inbox: Path, outbox: Path, session: dict | None = None,
+              mode: str = "serve") -> dict:
     """Echo the host's nonce together with our own observed identity."""
-    session = json.loads((Path(inbox) / SESSION).read_text(encoding="utf-8"))
+    if session is None:
+        session = json.loads((Path(inbox) / SESSION).read_text(encoding="utf-8"))
     ident = winjob.identity()
     record = {
         "v9": protocol.JOB_SCHEMA,
         "nonce": session["nonce"],
+        "mode": mode,
         "pid": os.getpid(),
         "user": ident["user"],
         "computer": ident["computer"],
@@ -99,13 +121,33 @@ def main() -> None:
     parser.add_argument("--memory-bytes", type=int, default=512 * 1024 * 1024)
     parser.add_argument("--max-processes", type=int, default=16)
     parser.add_argument("--max-jobs", type=int, default=0)
+    parser.add_argument("--session-timeout", type=float, default=300.0,
+                        help="how long to wait for the host to publish session.json")
+    parser.add_argument("--handshake-only", action="store_true",
+                        help="prove identity and echo the nonce, then exit; serves no job")
     parser.add_argument("--allow-host", action="store_true",
                         help="local testing only; the host handshake will reject it")
     args = parser.parse_args()
 
     check_environment(args.allow_host)
     inbox, outbox = Path(args.inbox), Path(args.outbox)
-    handshake(inbox, outbox)
+
+    session = wait_for_session(inbox, args.session_timeout)
+    if session is None:
+        print(json.dumps({
+            "status": "boundary_error",
+            "error": "no_session",
+            "detail": f"session.json did not appear within {args.session_timeout:.0f}s",
+            "user": winjob.identity()["user"],
+            "inside_sandbox": winjob.identity()["inside_sandbox"],
+        }, sort_keys=True), file=sys.stderr)
+        raise SystemExit(3)
+
+    handshake(inbox, outbox, session,
+              mode="preflight" if args.handshake_only else "serve")
+    if args.handshake_only:
+        return
+
     scratch = Path(args.scratch) if args.scratch else outbox / "scratch"
     serve(inbox, outbox, scratch, timeout=args.timeout,
           memory_bytes=args.memory_bytes, max_processes=args.max_processes,

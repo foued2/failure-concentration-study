@@ -1,0 +1,28 @@
+{
+  "conclusion": "Windows Sandbox is NOT installed on this host; preflight and rendezvous cannot run here and their gates must stay NOT_RUN",
+  "host_identity": {
+    "computer": "DESKTOP-NN8TBG0",
+    "inside_sandbox": false,
+    "source": "GetUserNameW",
+    "user": "Foued"
+  },
+  "launch_attempt": "FatalBoundaryError: Windows Sandbox is not installed on this host (C:\\Windows\\System32\\WindowsSandbox.exe is absent); the preflight cannot run here",
+  "platform": {
+    "caption": "Microsoft Windows 10 Professionnel",
+    "hvhost_service": "Stopped",
+    "hypervisor_present": "False",
+    "release": "10",
+    "sandbox_packages": "0",
+    "system": "Windows",
+    "version": "10.0.19045",
+    "vmcompute_service": "",
+    "windows_sandbox_exe": "C:\\Windows\\System32\\WindowsSandbox.exe",
+    "windows_sandbox_exe_present": false
+  },
+  "recorded_at": "2026-10-28T09:38:09Z",
+  "sandbox_gates": [
+    "sandbox_isolation_report",
+    "sandbox_rendezvous_ordering",
+    "sandbox_agent_acceptance"
+  ]
+}

@@ -22,6 +22,7 @@ import argparse
 import json
 import shutil
 import sys
+import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -56,8 +57,106 @@ __all__ = [
     "FatalBoundaryError",
     "BoundaryNotEstablished",
     "SANDBOX_RUNTIME_FILES",
+    "stage_runtime",
+    "run_rendezvous",
     "main",
 ]
+
+
+def stage_runtime(dest: Path | str) -> list[str]:
+    """Copy the secret-free runtime into a staging or inbox directory."""
+    dest = Path(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+    for name in SANDBOX_RUNTIME_FILES:
+        shutil.copy2(HERE / name, dest / name)
+    return list(SANDBOX_RUNTIME_FILES)
+
+
+def _case_dirs(ctl: "Controller", name: str) -> tuple[Path, Path, Path]:
+    if ctl._case_paths is not None:
+        staging, response, scratch = (Path(p) for p in ctl._case_paths)
+    else:
+        root = ctl.work_root / name
+        staging, response, scratch = root / "staging", root / "response", root / "scratch"
+    for path in (staging, response, scratch):
+        path.mkdir(parents=True, exist_ok=True)
+    return staging, response, scratch
+
+
+def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
+                   token_a: int = 111, token_b: int = 222) -> dict[str, Any]:
+    """Publish token A, confirm its tree is gone, then publish token B.
+
+    The answer the host receives proves which token the candidate saw, so a
+    mapping that exposed B early would surface as ``token`` = B in A's response.
+    ``Controller._verify`` refuses to continue unless the previous process tree
+    is confirmed dead, which is what makes this ordering testable at all.
+    """
+    body = Path(body_path).read_bytes()
+    staging, response_dir, scratch = _case_dirs(ctl, "rendezvous")
+    started = time.time()
+    events: list[dict[str, Any]] = []
+
+    def stamp(event: str, **fields: Any) -> None:
+        events.append({"at": round(time.time() - started, 4), "event": event, **fields})
+
+    def publish(token: int) -> dict[str, Any]:
+        job = ctl._publish(staging, body, "system", None,
+                           {"n": token, "edges": [], "s": 0, "t": 0})
+        return job
+
+    def visible_token() -> str:
+        try:
+            return (staging / protocol.JOB_FILENAME).read_text(encoding="utf-8")
+        except OSError:
+            return ""
+
+    job_a = publish(token_a)
+    stamp("publish_A", job_id=job_a["job_id"], token=token_a,
+          token_b_visible=str(token_b) in visible_token())
+
+    record_a = ctl.transport.execute(
+        staging, response_dir, scratch,
+        timeout=ctl.preflight_timeout, memory_bytes=ctl.memory_bytes,
+        max_processes=ctl.max_processes,
+    )
+    ctl._verify(job_a, record_a)
+    stamp("response_A", job_id=job_a["job_id"], token_seen=record_a.get("answer"),
+          status=record_a["status"], tree_empty=record_a["tree_empty"])
+
+    token_b_visible_before_publish = str(token_b) in visible_token()
+    stamp("tree_empty_confirmed", job_id=job_a["job_id"],
+          token_b_visible=token_b_visible_before_publish)
+
+    job_b = publish(token_b)
+    stamp("publish_B", job_id=job_b["job_id"], token=token_b)
+    record_b = ctl.transport.execute(
+        staging, response_dir, scratch,
+        timeout=ctl.preflight_timeout, memory_bytes=ctl.memory_bytes,
+        max_processes=ctl.max_processes,
+    )
+    ctl._verify(job_b, record_b)
+    stamp("response_B", job_id=job_b["job_id"], token_seen=record_b.get("answer"),
+          status=record_b["status"], tree_empty=record_b["tree_empty"])
+
+    checks = {
+        "A_answered_with_A": record_a.get("answer") == token_a,
+        "A_tree_empty": record_a.get("tree_empty") is True,
+        "B_not_visible_before_A_completed": not token_b_visible_before_publish,
+        "B_answered_with_B": record_b.get("answer") == token_b,
+        "B_tree_empty": record_b.get("tree_empty") is True,
+        "distinct_tokens": token_a != token_b,
+        "transport_attested": ctl.transport.isolation_verified,
+    }
+    return {
+        "checks": checks,
+        "ordering_ok": all(checks[key] for key in checks
+                           if key != "transport_attested"),
+        "attested": checks["transport_attested"],
+        "transport": ctl.transport.name,
+        "tokens": {"A": token_a, "B": token_b},
+        "events": events,
+    }
 
 
 def _invalid(reason: str, body_hash: str, group_id: str | None,
@@ -103,11 +202,12 @@ class Controller:
 
     def _install_runtime(self) -> None:
         """Build the Sandbox image: supervisor, child and agent only."""
-        self.runtime.mkdir(parents=True, exist_ok=True)
-        for name in SANDBOX_RUNTIME_FILES:
-            shutil.copy2(HERE / name, self.runtime / name)
+        stage_runtime(self.runtime)
         if isinstance(self.transport, backend.HostLocalTransport):
             self.transport.runtime = self.runtime
+        elif self._case_paths is not None:
+            # The agent itself must arrive through the read-only inbox mapping.
+            stage_runtime(self._case_paths[0])
 
     # -- boundary helpers ----------------------------------------------------
 
@@ -262,10 +362,26 @@ def _cli(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--verify-boundary", action="store_true",
                         help="report whether this process is inside Windows Sandbox")
+    parser.add_argument("--preflight", action="store_true",
+                        help="handshake only: prove the Sandbox boundary, publish no job, "
+                             "evaluate nothing")
+    parser.add_argument("--rendezvous", action="store_true",
+                        help="publish token A, confirm its tree is gone, then publish token B")
+    parser.add_argument("--rendezvous-body", default=None,
+                        help="harmless system fixture (default: tests/fixtures/echo_input.py)")
     parser.add_argument("--write-sandbox-config", metavar="PATH",
                         help="write a .wsb config for the one-item broker")
+    parser.add_argument("--mode", choices=("preflight", "serve"), default="preflight",
+                        help="config mode for --write-sandbox-config (default: preflight)")
     parser.add_argument("--inbox", help="host path mapped read-only into the Sandbox")
     parser.add_argument("--outbox", help="host path mapped writable into the Sandbox")
+    parser.add_argument("--python-root",
+                        help="host directory holding the portable interpreter to map read-only")
+    parser.add_argument("--wsb-out", help="where --preflight writes its .wsb config")
+    parser.add_argument("--launch", action="store_true",
+                        help="start WindowsSandbox.exe after the session file is written")
+    parser.add_argument("--report", help="where --preflight writes its attestation JSON")
+    parser.add_argument("--handshake-timeout", type=float, default=300.0)
     parser.add_argument("--bodies", help="directory of candidate .py files to evaluate")
     parser.add_argument("--work-root", default=str(Path("runs") / "current"))
     parser.add_argument("--group-id", default=None)
@@ -288,17 +404,33 @@ def _cli(argv: list[str] | None = None) -> int:
     if args.write_sandbox_config:
         if not (args.inbox and args.outbox):
             parser.error("--write-sandbox-config requires --inbox and --outbox")
-        xml = backend.sandbox_config_xml(Path(args.inbox), Path(args.outbox))
+        if not args.python_root:
+            parser.error("--write-sandbox-config requires --python-root: an unmapped "
+                         "interpreter cannot start inside the Sandbox")
+        xml = backend.sandbox_config_xml(
+            Path(args.inbox), Path(args.outbox),
+            python_root=Path(args.python_root), mode=args.mode,
+        )
+        config = backend.verify_sandbox_config(xml, mode=args.mode)
+        if not config["ok"]:
+            print(json.dumps({"ok": False, "config": config}, indent=2, sort_keys=True))
+            return 3
         target = Path(args.write_sandbox_config)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(xml, encoding="utf-8")
         print(f"wrote {target}")
-        print("note: the Sandbox image ships no Python; stage a portable interpreter "
-              "or edit python_exe in the config before launching")
+        print(json.dumps({"ok": True, "checks": config["checks"]}, indent=2, sort_keys=True))
         return 0
 
+    if args.preflight:
+        return _preflight_cli(parser, args)
+
+    if args.rendezvous:
+        return _rendezvous_cli(parser, args)
+
     if not args.bodies:
-        parser.error("nothing to do: pass --verify-boundary, --write-sandbox-config or --bodies")
+        parser.error("nothing to do: pass --verify-boundary, --preflight, "
+                     "--rendezvous, --write-sandbox-config or --bodies")
 
     if args.transport == "host-local" and not args.allow_host_local:
         print("refusing to evaluate on the host: host-local execution is not an isolation "
@@ -314,7 +446,9 @@ def _cli(argv: list[str] | None = None) -> int:
     if args.transport == "sandbox":
         if not (args.inbox and args.outbox):
             parser.error("--transport sandbox requires --inbox and --outbox")
-        transport = backend.WindowsSandboxTransport()
+        transport = backend.WindowsSandboxTransport(
+            handshake_timeout=args.handshake_timeout
+        )
         transport.start(Path(args.inbox), Path(args.outbox))
         ctl = Controller(work_root, transport=transport,
                          case_paths=(Path(args.inbox), Path(args.outbox),
@@ -333,6 +467,123 @@ def _cli(argv: list[str] | None = None) -> int:
         if row["excluded"]:
             status = 2
     return status
+
+
+def _rendezvous_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
+    """Two-token ordering test. No candidate, no scoring, no oracle."""
+    if args.bodies:
+        parser.error("--rendezvous runs a system fixture and cannot be combined with --bodies")
+    if not (args.inbox and args.outbox):
+        parser.error("--rendezvous requires --inbox and --outbox")
+    if args.transport == "host-local" and not args.allow_host_local:
+        print("refusing to run on the host: host-local execution is not an isolation "
+              "boundary. Use --transport sandbox, or pass --allow-host-local for a "
+              "harness check only.", file=sys.stderr)
+        return 2
+
+    body = Path(args.rendezvous_body) if args.rendezvous_body else (
+        HERE / "tests" / "fixtures" / "echo_input.py"
+    )
+    if not body.is_file():
+        parser.error(f"rendezvous fixture not found: {body}")
+
+    work_root = Path(args.work_root)
+    report_path = Path(args.report) if args.report else work_root / "rendezvous-log.json"
+    inbox, outbox = Path(args.inbox), Path(args.outbox)
+
+    if args.transport == "sandbox":
+        transport = backend.WindowsSandboxTransport(handshake_timeout=args.handshake_timeout)
+        try:
+            transport.start(inbox, outbox)
+        except backend.FatalBoundaryError as exc:
+            result = {"ordering_ok": False, "error": type(exc).__name__,
+                      "detail": str(exc), "transport": transport.name, "attested": False}
+            return _write_report(report_path, result)
+        ctl = Controller(work_root, transport=transport,
+                         case_paths=(inbox, outbox, work_root / "sandbox-scratch"))
+    else:
+        transport = backend.HostLocalTransport(work_root / "sandbox-runtime")
+        ctl = Controller(work_root, transport=transport)
+
+    try:
+        result = run_rendezvous(ctl, body)
+    except backend.FatalBoundaryError as exc:
+        result = {"ordering_ok": False, "error": type(exc).__name__,
+                  "detail": str(exc), "transport": transport.name,
+                  "attested": transport.isolation_verified}
+        return _write_report(report_path, result)
+
+    result["preflight_attestation"] = transport.attestation()
+    return _write_report(report_path, result)
+
+
+def _write_report(path: Path, payload: dict[str, Any]) -> int:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    print(f"report: {path}", file=sys.stderr)
+    return 0 if payload.get("ordering_ok") else 2
+
+
+def _preflight_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
+    """Prove the boundary, record it, exit. No job, no candidate, no scoring."""
+    if args.bodies:
+        parser.error("--preflight is handshake-only and cannot be combined with --bodies")
+    if not (args.inbox and args.outbox):
+        parser.error("--preflight requires --inbox and --outbox")
+    if not args.python_root:
+        parser.error("--preflight requires --python-root: an unmapped interpreter "
+                     "cannot start inside the Sandbox")
+
+    work_root = Path(args.work_root)
+    report_path = Path(args.report) if args.report else work_root / "preflight-attestation.json"
+    report: dict[str, Any] = {
+        "stage": "sandbox-preflight",
+        "host_identity": backend.current_identity(),
+        "evaluation_attempted": False,
+        "candidate_files": [],
+    }
+
+    def finish(status: int) -> int:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return status
+
+    python_root = Path(args.python_root)
+    interpreter = backend.interpreter_preflight(python_root)
+    report["interpreter"] = interpreter
+    if not interpreter["ok"]:
+        report.update(ok=False, error="interpreter_preflight_failed")
+        return finish(3)
+
+    inbox, outbox = Path(args.inbox), Path(args.outbox)
+    inbox.mkdir(parents=True, exist_ok=True)
+    outbox.mkdir(parents=True, exist_ok=True)
+    report["staged_runtime"] = stage_runtime(inbox)
+
+    xml = backend.sandbox_config_xml(inbox, outbox, python_root=python_root, mode="preflight")
+    config = backend.verify_sandbox_config(xml, mode="preflight")
+    report["config"] = config
+    if not config["ok"]:
+        report.update(ok=False, error="sandbox_config_invalid")
+        return finish(3)
+
+    wsb = Path(args.wsb_out) if args.wsb_out else work_root / "v9-preflight.wsb"
+    wsb.parent.mkdir(parents=True, exist_ok=True)
+    wsb.write_text(xml, encoding="utf-8")
+    report["wsb"] = str(wsb)
+
+    transport = backend.WindowsSandboxTransport(handshake_timeout=args.handshake_timeout)
+    launcher = (lambda: backend.launch_sandbox(wsb)) if args.launch else None
+    try:
+        report["preflight"] = transport.preflight(inbox, outbox, launch=launcher)
+    except backend.FatalBoundaryError as exc:
+        report.update(ok=False, error=type(exc).__name__, detail=str(exc))
+        return finish(2)
+
+    report["ok"] = bool(report["preflight"]["attestation"]["verified"])
+    return finish(0 if report["ok"] else 2)
 
 
 def main() -> None:
