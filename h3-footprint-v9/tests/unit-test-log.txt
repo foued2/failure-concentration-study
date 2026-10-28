@@ -58,8 +58,10 @@ test_unmapped_interpreter_is_rejected (test_backend.SandboxConfigMappingTests.te
 test_staging_is_idempotent (test_backend.StagingTests.test_staging_is_idempotent) ... ok
 test_staging_repairs_a_differing_runtime_when_writing_is_allowed (test_backend.StagingTests.test_staging_repairs_a_differing_runtime_when_writing_is_allowed) ... ok
 test_verify_only_rejects_a_differing_runtime (test_backend.StagingTests.test_verify_only_rejects_a_differing_runtime) ... ok
+test_a_heartbeat_before_the_first_poll_is_valid (test_backend.TelemetryValidationTests.test_a_heartbeat_before_the_first_poll_is_valid) ... ok
 test_a_malformed_filename_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_malformed_filename_is_an_anomaly) ... ok
 test_a_pid_that_differs_from_the_handshake_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_pid_that_differs_from_the_handshake_is_an_anomaly) ... ok
+test_a_poll_state_must_report_a_completed_poll (test_backend.TelemetryValidationTests.test_a_poll_state_must_report_a_completed_poll) ... ok
 test_a_schema_violation_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_schema_violation_is_an_anomaly) ... ok
 test_agent_event_log_writes_unique_direct_files (test_backend.TelemetryValidationTests.test_agent_event_log_writes_unique_direct_files) ... ok
 test_an_invented_scan_outcome_is_an_anomaly (test_backend.TelemetryValidationTests.test_an_invented_scan_outcome_is_an_anomaly) ... ok
@@ -144,6 +146,7 @@ test_one_response_per_job (test_immutable_protocol.RendezvousProtocolTests.test_
 test_tree_empty_is_still_required (test_immutable_protocol.RendezvousProtocolTests.test_tree_empty_is_still_required) ... ok
 test_a_handled_job_is_not_processed_twice (test_immutable_protocol.ServeTests.test_a_handled_job_is_not_processed_twice) ... ok
 test_telemetry_distinguishes_empty_old_new_and_broken (test_immutable_protocol.ServeTests.test_telemetry_distinguishes_empty_old_new_and_broken) ... ok
+test_the_heartbeat_snapshots_the_real_loop_state (test_immutable_protocol.ServeTests.test_the_heartbeat_snapshots_the_real_loop_state) ... ok
 test_two_jobs_are_discovered_and_answered_in_sequence (test_immutable_protocol.ServeTests.test_two_jobs_are_discovered_and_answered_in_sequence) ... ok
 test_sandbox_transport_rejects_an_unusable_immutable_request (test_immutable_protocol.TransportSelectionTests.test_sandbox_transport_rejects_an_unusable_immutable_request) ... ok
 test_sandbox_transport_selects_the_immutable_request (test_immutable_protocol.TransportSelectionTests.test_sandbox_transport_selects_the_immutable_request) ... ok
@@ -166,6 +169,6 @@ test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.
 test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
 
 ----------------------------------------------------------------------
-Ran 160 tests in 118.258s
+Ran 163 tests in 141.055s
 
 OK

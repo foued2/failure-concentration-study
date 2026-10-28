@@ -286,6 +286,32 @@ class ServeTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 1)
         self.assertTrue(state)
 
+    def test_the_heartbeat_snapshots_the_real_loop_state(self):
+        job = make_job(1)
+        protocol.publish_immutable_job(self.inbox, job, BODY)
+        log = sandbox_agent.EventLog(self.outbox, NONCE)
+        state = sandbox_agent.JobLoopState()
+        sandbox_agent.serve_immutable(
+            self.inbox, self.outbox, self.scratch, timeout=1.0,
+            memory_bytes=constants.MEMORY_LIMIT_BYTES,
+            max_processes=4, max_jobs=1, poll=0.01, events=log,
+            state_interval=0.01, runner=self.runner, state=state,
+        )
+        snapshot = state.snapshot()
+        self.assertGreaterEqual(snapshot["poll_count"], 1)
+        self.assertEqual(snapshot["last_job_id"], job["job_id"])
+        heartbeat = sandbox_agent.Heartbeat(log, 0.2, state=state.snapshot)
+        heartbeat.start()
+        time.sleep(0.3)
+        heartbeat.stop()
+        heartbeat.join(timeout=2.0)
+        collected = backend.collect_events(self.outbox, NONCE)
+        self.assertEqual(collected["anomalies"], [])
+        beats = [event for event in collected["events"] if event["event"] == "heartbeat"]
+        self.assertTrue(beats)
+        self.assertGreaterEqual(beats[-1]["state"]["poll_count"], 1)
+        self.assertEqual(beats[-1]["state"]["last_job_id"], job["job_id"])
+
 
 class TransportSelectionTests(unittest.TestCase):
     """The real transport must read the request it actually published."""

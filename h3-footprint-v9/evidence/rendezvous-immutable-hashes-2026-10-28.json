@@ -1,0 +1,17 @@
+{
+  "files": {
+    "evidence/rendezvous-immutable-2026-10-28.json": "da07bd9a6547743282f0cf4367999089fb136d7e94a71e6a77a993ad7d6eb5e8",
+    "evidence/rendezvous-immutable-body-2026-10-28.py": "cd618a3ecd497139abf15a1848801de18ad192481657223db7e1708f33a6e465",
+    "evidence/rendezvous-immutable-controller-2026-10-28.stderr.txt": "4ee211c46d122fe8731f6eb1408de3c1e42f4c0b7bfeb69897846b3327acd164",
+    "evidence/rendezvous-immutable-controller-2026-10-28.stdout.txt": "6319611b8e8c4fe1fdbb09e7e01e0b73174a8e8a8d3ea9b8d31a8485a96615a0",
+    "evidence/rendezvous-immutable-events-2026-10-28.sha256": "382172e748fd6b405e7ce2307c672cd200dc8231c35108f146f33450b5758b71",
+    "evidence/rendezvous-immutable-hello-2026-10-28.json": "c48da88ea4a35fded4e144ddd48f9131dfa819abe34a9266c6cb6be991d0ac9b",
+    "evidence/rendezvous-immutable-job-A-2026-10-28.json": "3e28e3d723c1d8fad1770ca29f5fafbeb91a878ad09812e50ed187358751ccf1",
+    "evidence/rendezvous-immutable-job-B-2026-10-28.json": "240867f3a0139989d17f93e9123811692c8e7182d6134a13ae7ac1627a595c07",
+    "evidence/rendezvous-immutable-response-A-2026-10-28.json": "416edc45bff425696db81f39f4d7c53d48a64ae3e9fbded7655973508fc2dc59",
+    "evidence/rendezvous-immutable-response-B-2026-10-28.json": "d940d194614e35d0da371bbb430307900d9945a7173e6347a4cce314e0694b34",
+    "evidence/rendezvous-immutable-session-2026-10-28.json": "17645077e6e253df50061755b8845194e02653e217f055ecd2895ae6f54c80c6",
+    "evidence/v9-rendezvous-immutable-2026-10-28.wsb": "91534ac438b4c5400255e4907ba781388c4d6bdb930a62b937a8b2be5c789d34"
+  },
+  "run": "one diagnostic rendezvous on 2026-10-28, echo_input.py, immutable opt-in protocol"
+}

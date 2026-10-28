@@ -136,6 +136,22 @@ that requires observed poll progress with no B request listed. Telemetry
 explains a failure; it never establishes isolation, and a missing or ambiguous
 diagnostic stays `unresolved`.
 
+One diagnostic run of the immutable variant was then made on `echo_input.py`
+only. The guest scan listed the A request at poll 2 and the B request at poll 4;
+both were discovered, started and answered (111 then 222) with `tree_empty: true`
+(`evidence/rendezvous-immutable-2026-10-28.json`, 199 raw events). That is
+evidence the immutable handoff works for this fixture. It is not a production
+ordering pass: `sandbox_rendezvous_ordering` stays **FAIL** and evaluation stays
+blocked.
+
+The raw set also exposed a telemetry defect. The heartbeat thread had been given
+a detached state object, so 132 of the 199 events are heartbeat snapshots with
+`poll_count: 0` and no poll time; the host rejects them. The 67 loop and job
+events are valid and the A/B handoff is unaffected, but the run is not
+anomaly-free. The defect is fixed after the run by sharing one state object and
+by validating a pre-first-poll heartbeat separately; the run was not repeated, so
+the archived raw set keeps its anomalies.
+
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
 refuses to extract anything whose SHA-256 does not match python.org's published
@@ -174,7 +190,9 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
   instrumented rerun shows the agent was alive and never discovered B, but its
   heartbeat-only telemetry cannot prove the loop kept scanning; under revision 8
   rules that observation is `job_loop_progress_unknown`, not proof of a stale
-  mapping. A single opt-in immutable-protocol diagnostic run follows. Until the
+  mapping. One opt-in immutable-protocol diagnostic then answered both A and B
+  correctly (111, 222; `tree_empty: true`), which shows the experimental handoff
+  works for `echo_input.py` but does not change the production verdict. Until the
   production path is shown to work, no isolation report, no live ordering result
   and no authorized evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
 - **A live mapping constrains the host.** The host cannot `os.replace` inside a

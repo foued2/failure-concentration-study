@@ -80,7 +80,7 @@
   },
   "evidence_scopes": {
     "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json, evidence/sandbox-capability-post-restart-2026-10-28.json",
-    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); no isolation probes were run"
+    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); one opt-in immutable-protocol diagnostic under evidence/rendezvous-immutable-2026-10-28.json and evidence/rendezvous-immutable-* with 199 raw events (A and B both discovered and answered); no isolation probes were run"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -130,7 +130,11 @@
     "an opt-in immutable request protocol publishes job-<sequence>-<job_id>.json and bodies/<sha256>.py, writes and closes the body before the final job name, never renames or overwrites a request, rescans, checks filename against payload, enforces sequence and processes each job at most once",
     "duplicate ids, conflicting sequences, malformed requests, filename/payload mismatches and out-of-order requests are rejected; response files stay unique per job and tree-empty checks are unchanged",
     "--job-protocol immutable selects the variant on both the agent and the generated .wsb; the default remains the legacy job.json transport and sandbox_rendezvous_ordering stays FAIL",
-    "the earlier report and raw event set are preserved unchanged; this revision adds diagnostic capability only and makes no model calls"
+    "the earlier report and raw event set are preserved unchanged; this revision adds diagnostic capability only and makes no model calls",
+    "one diagnostic rendezvous then ran with the immutable variant on echo_input.py only: both immutable job files were listed by the guest scan (poll counts 2 and 4), job A was answered with 111 and job B with 222, both tree_empty true, ordering_ok true in that diagnostic report, with 199 raw events and one pid (3696)",
+    "that run also exposed a telemetry defect: the heartbeat thread was given a detached JobLoopState, so 132 of its 199 events were heartbeat snapshots with poll_count 0 and no poll time, which the host rejects; the 67 poll_state/job events are valid and the A/B handoff is unaffected, but the raw set is not anomaly-free",
+    "the defect is fixed after the run by sharing one JobLoopState between the loop and the heartbeat and by validating a pre-first-poll heartbeat separately; the run was not repeated, so the archived raw set keeps its anomalies and is reported as such",
+    "that result is evidence that the immutable handoff works for this fixture, not proof of isolation and not authorization to switch the production transport; sandbox_rendezvous_ordering remains FAIL and the gate still refuses"
   ],
   "gates": [
     {
@@ -138,7 +142,7 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "160 tests, 0 failures"
+      "detail": "163 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -314,6 +318,13 @@
       "scope": "sandbox",
       "evidence": "evidence/rendezvous-instrumented-2026-10-28.json, evidence/rendezvous-instrumented-events-2026-10-28.sha256",
       "detail": "one instrumented run of echo_input.py only; job A fully instrumented, job B never discovered while heartbeats continued; 100 raw guest events validated with one pid (3612) and zero anomalies. The report's label inbox_not_refreshed was computed under the revision-7 heartbeat rule; revision 8 would classify the same evidence as job_loop_progress_unknown because that build emitted no poll_state. This is diagnostic telemetry, not isolation evidence."
+    },
+    {
+      "id": "immutable_protocol_diagnostic",
+      "status": "PARTIAL",
+      "scope": "sandbox",
+      "evidence": "evidence/rendezvous-immutable-2026-10-28.json, evidence/rendezvous-immutable-events-2026-10-28.sha256",
+      "detail": "one rendezvous with the opt-in immutable request protocol on echo_input.py only. The guest scan listed job-000001 at poll 2 and job-000002 at poll 4; A and B were discovered, started and answered in sequence (111 then 222), both with tree_empty true, and the diagnostic report records ordering_ok true. The handoff is established for this fixture, but the raw set is not anomaly-free: 132 of 199 events are heartbeat snapshots written from a detached JobLoopState (poll_count 0, no poll time) and fail host validation, while the 67 poll_state/job events are valid. The sharing defect is fixed after the run and the run was not repeated. Diagnostic only: it does not prove mapped-folder ordering for the production job.json transport, does not establish isolation and does not authorize evaluation."
     },
     {
       "id": "sandbox_agent_acceptance",

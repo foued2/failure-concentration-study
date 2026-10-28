@@ -191,6 +191,23 @@ requests, and processes each job at most once. It is a diagnostic variant only;
 the default remains `job.json`, and a successful diagnostic does not change
 `sandbox_rendezvous_ordering` from FAIL.
 
+Result on 2026-10-28: the immutable diagnostic **handed off both jobs**. The
+guest scan listed job A at poll 2 and job B at poll 4; both were discovered,
+started and answered in sequence (111 then 222) with `tree_empty: true`. The
+report's `ordering_ok` is true for this variant. Raw set:
+`evidence/rendezvous-immutable-2026-10-28.json`,
+`evidence/rendezvous-immutable-*` and 199 events under
+`evidence/rendezvous-immutable-events-2026-10-28/`.
+
+The raw set also caught a defect: the heartbeat was built with a detached state
+object, so 132 of the 199 events are heartbeat snapshots with `poll_count: 0` and
+no poll time, which the host rejects. The 67 loop and job events are valid and
+the handoff result stands, but the run is not anomaly-free. The code now shares
+one `JobLoopState` and accepts a pre-first-poll heartbeat; the run was not
+repeated, so the archived anomalies remain. This does not establish ordering for
+the legacy `job.json` path, does not prove isolation and does not authorize
+evaluation.
+
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It
 records whether the next request was visible before A completed.

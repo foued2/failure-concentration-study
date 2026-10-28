@@ -895,6 +895,25 @@ class TelemetryValidationTests(unittest.TestCase):
         collected = backend.collect_events(outbox, NONCE)
         self.assertIn("event state keys differ", collected["anomalies"][0]["error"])
 
+    def test_a_heartbeat_before_the_first_poll_is_valid(self):
+        outbox = self._outbox()
+        state = self._state(poll_count=0, last_poll_at=None, scanned=False,
+                            visible=[], visible_count=0, outcome="no_jobs",
+                            last_job_id=None, last_job_sequence=None)
+        self._write(outbox, self._record(1, "heartbeat", state=state))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertEqual(collected["anomalies"], [])
+        self.assertEqual(collected["events"][0]["state"]["poll_count"], 0)
+
+    def test_a_poll_state_must_report_a_completed_poll(self):
+        outbox = self._outbox()
+        state = self._state(poll_count=0, last_poll_at=None, scanned=False,
+                            visible=[], visible_count=0, outcome="no_jobs",
+                            last_job_id=None, last_job_sequence=None)
+        self._write(outbox, self._record(1, "poll_state", state=state))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("no completed poll", collected["anomalies"][0]["error"])
+
 
 class ScriptedGuestTransport:
     """A Sandbox-shaped transport that emits guest telemetry from a script."""

@@ -1,0 +1,296 @@
+{
+  "attested": true,
+  "checks": {
+    "A_answered_with_A": true,
+    "A_tree_empty": true,
+    "B_answered_with_B": true,
+    "B_not_visible_before_A_completed": true,
+    "B_tree_empty": true,
+    "distinct_tokens": true,
+    "transport_attested": true
+  },
+  "diagnostic": null,
+  "events": [
+    {
+      "at": 0.0366,
+      "event": "publish_A",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "next_request_visible": false,
+      "token": 111
+    },
+    {
+      "at": 0.5411,
+      "event": "response_A",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "status": "ok",
+      "token_seen": 111,
+      "tree_empty": true
+    },
+    {
+      "at": 0.5444,
+      "event": "telemetry_after_A",
+      "event_count": 6,
+      "max_seq": 6
+    },
+    {
+      "at": 0.5446,
+      "event": "tree_empty_confirmed",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "token_b_visible": false
+    },
+    {
+      "at": 0.5562,
+      "event": "publish_B",
+      "job_id": "f0581495e2884ad1baf13b476a5cbff1",
+      "token": 222
+    },
+    {
+      "at": 1.2678,
+      "event": "response_B",
+      "job_id": "f0581495e2884ad1baf13b476a5cbff1",
+      "status": "ok",
+      "token_seen": 222,
+      "tree_empty": true
+    }
+  ],
+  "guest_events": [
+    {
+      "detail": "mode=serve pid=3696 protocol=immutable",
+      "event": "agent_start",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "startup",
+      "pid": 3696,
+      "seq": 1,
+      "timestamp": 1793192415.0871713,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 2,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": null,
+        "last_job_sequence": null,
+        "last_poll_at": 1793192415.1227052,
+        "outcome": "no_jobs",
+        "poll_count": 1,
+        "scanned": true,
+        "visible": [],
+        "visible_count": 0
+      },
+      "timestamp": 1793192415.12272,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 3,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": null,
+        "last_job_sequence": null,
+        "last_poll_at": 1793192415.2422707,
+        "outcome": "new_job",
+        "poll_count": 2,
+        "scanned": true,
+        "visible": [
+          "job-000001-af18490e1510412aa294281f0a7cc2b5.json"
+        ],
+        "visible_count": 1
+      },
+      "timestamp": 1793192415.2422855,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_discovered",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "job_sequence": 1,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 4,
+      "timestamp": 1793192415.2542295,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_started",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "job_sequence": 1,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 5,
+      "timestamp": 1793192415.2720768,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "response_written",
+      "job_id": "af18490e1510412aa294281f0a7cc2b5",
+      "job_sequence": 1,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 6,
+      "timestamp": 1793192415.6727693,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 7,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": "af18490e1510412aa294281f0a7cc2b5",
+        "last_job_sequence": 1,
+        "last_poll_at": 1793192415.685629,
+        "outcome": "only_handled",
+        "poll_count": 3,
+        "scanned": true,
+        "visible": [
+          "job-000001-af18490e1510412aa294281f0a7cc2b5.json"
+        ],
+        "visible_count": 1
+      },
+      "timestamp": 1793192415.6856418,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 8,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": "af18490e1510412aa294281f0a7cc2b5",
+        "last_job_sequence": 1,
+        "last_poll_at": 1793192415.8012965,
+        "outcome": "new_job",
+        "poll_count": 4,
+        "scanned": true,
+        "visible": [
+          "job-000001-af18490e1510412aa294281f0a7cc2b5.json",
+          "job-000002-f0581495e2884ad1baf13b476a5cbff1.json"
+        ],
+        "visible_count": 2
+      },
+      "timestamp": 1793192415.8013096,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_discovered",
+      "job_id": "f0581495e2884ad1baf13b476a5cbff1",
+      "job_sequence": 2,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 9,
+      "timestamp": 1793192415.8163905,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_started",
+      "job_id": "f0581495e2884ad1baf13b476a5cbff1",
+      "job_sequence": 2,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 10,
+      "timestamp": 1793192415.825813,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "response_written",
+      "job_id": "f0581495e2884ad1baf13b476a5cbff1",
+      "job_sequence": 2,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 11,
+      "timestamp": 1793192416.3517609,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "phase": "serve",
+      "pid": 3696,
+      "seq": 12,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": "f0581495e2884ad1baf13b476a5cbff1",
+        "last_job_sequence": 2,
+        "last_poll_at": 1793192416.3789663,
+        "outcome": "only_handled",
+        "poll_count": 5,
+        "scanned": true,
+        "visible": [
+          "job-000001-af18490e1510412aa294281f0a7cc2b5.json",
+          "job-000002-f0581495e2884ad1baf13b476a5cbff1.json"
+        ],
+        "visible_count": 2
+      },
+      "timestamp": 1793192416.3789823,
+      "v9": 1
+    }
+  ],
+  "ordering_ok": true,
+  "preflight_attestation": {
+    "agent": {
+      "computer": "0E3D64FC-DC7E-4",
+      "nonce": "c9a79c31c4aa4210bd9bc45344240084",
+      "pid": 3696,
+      "user": "WDAGUtilityAccount"
+    },
+    "checks": {
+      "account": true,
+      "inside_sandbox": true,
+      "nonce": true
+    },
+    "handshake": "nonce+account",
+    "transport": "windows-sandbox",
+    "verified": true
+  },
+  "protocol": "immutable-v1",
+  "telemetry_anomalies": [],
+  "tokens": {
+    "A": 111,
+    "B": 222
+  },
+  "transport": "windows-sandbox"
+}

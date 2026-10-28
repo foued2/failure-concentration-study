@@ -242,6 +242,36 @@ broken scan, tree-empty enforcement and one response per job. This is a
 diagnostic protocol, not a change to the production path, and it cannot turn
 `sandbox_rendezvous_ordering` into a pass.
 
+**One diagnostic run of the variant.** On 2026-10-28, one rendezvous ran with
+`--job-protocol immutable` on `echo_input.py`, after closing the previous
+Sandbox and clearing the staging folders. The guest's poll telemetry shows the
+handoff stage by stage:
+
+- poll 1: empty scan, `no_jobs`;
+- poll 2: `job-000001-…json` visible, `new_job`; A was discovered, started and
+  answered with 111, `tree_empty: true`;
+- poll 3: A still visible, `only_handled` — it was not processed twice;
+- poll 4: both filenames visible, `new_job` for sequence 2; B was discovered,
+  started and answered with 222, `tree_empty: true`;
+- later polls: `only_handled`, with the last parsed job id/sequence updated.
+
+The diagnostic report records `ordering_ok: true`, `protocol: immutable-v1`, one
+agent pid (3696) and 199 raw events. That is evidence the immutable handoff works
+for this fixture. It is **not** a clean telemetry run: the heartbeat thread had
+been given a detached state object, so 132 of the 199 events are heartbeat
+snapshots with `poll_count: 0` and no poll time, which the host rejects; the 67
+loop and job events are valid. The defect is fixed after the run by sharing one
+`JobLoopState` and validating a pre-first-poll heartbeat separately. The run was
+not repeated, so the archived raw set keeps its anomalies and this revision
+reports it as `PARTIAL`, not a clean pass.
+
+The result does **not** establish ordering for the production `job.json` path,
+does not prove isolation and does not authorize evaluation;
+`sandbox_rendezvous_ordering` remains `FAIL` and the gate still refuses. Raw set:
+`evidence/rendezvous-immutable-2026-10-28.json`,
+`evidence/rendezvous-immutable-*`, the `.wsb`, and
+`evidence/rendezvous-immutable-events-2026-10-28/` with its hash index.
+
 ## Revision 4: the interpreter is now real, pinned and verified
 
 Third-party binaries are not acceptable, so the runtime comes from python.org
@@ -433,7 +463,7 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 
 ```
 python -m unittest discover -s tests -v
-Ran 160 tests in 118.258s
+Ran 163 tests in 141.055s
 OK
 ```
 

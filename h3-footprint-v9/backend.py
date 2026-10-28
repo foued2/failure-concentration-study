@@ -411,10 +411,13 @@ def validate_event_state(state: Any) -> dict[str, Any]:
             f"event state keys differ (missing={missing}, unexpected={extra})"
         )
     poll_count = state["poll_count"]
-    if not _is_int(poll_count) or poll_count < 1:
-        raise FatalBoundaryError("event state poll_count is not a positive integer")
+    if not _is_int(poll_count) or poll_count < 0:
+        raise FatalBoundaryError("event state poll_count is not a non-negative integer")
     last_poll_at = state["last_poll_at"]
-    if (isinstance(last_poll_at, bool) or not isinstance(last_poll_at, (int, float))
+    if poll_count == 0:
+        if last_poll_at is not None:
+            raise FatalBoundaryError("event state has a poll time but no completed poll")
+    elif (isinstance(last_poll_at, bool) or not isinstance(last_poll_at, (int, float))
             or last_poll_at <= 0):
         raise FatalBoundaryError("event state last_poll_at is not a positive number")
     if not isinstance(state["scanned"], bool):
@@ -510,6 +513,8 @@ def validate_event(record: Any, *, nonce: str,
                 "event state is only allowed on heartbeat or poll_state"
             )
         validate_event_state(record["state"])
+        if record["event"] == "poll_state" and record["state"]["poll_count"] < 1:
+            raise FatalBoundaryError("poll_state event has no completed poll")
     return record
 
 

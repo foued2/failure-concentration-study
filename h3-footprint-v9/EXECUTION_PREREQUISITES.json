@@ -49,7 +49,17 @@
     "evidence/rendezvous-instrumented-job-B-2026-10-28.json": "cbe3b90a0050ffdf19bcb966ffde1ec13ae2e1930619f80573a22bf514cc7cff",
     "evidence/rendezvous-instrumented-session-2026-10-28.json": "dd1282fb1650318ef8dcf9bea84f92edd7d6e1f9ccfd6529ff4c7d1fe6e11577",
     "evidence/rendezvous-instrumented-events-2026-10-28.sha256": "fd39ff81e5569719f5646d73ac3024af6ad5efab3aef4863f305c7f11124cdb8",
-    "evidence/v9-rendezvous-instrumented-2026-10-28.wsb": "f65405437a515444527adf6aab7ffaafb8e1923145d6b94c904196546df7a0d4"
+    "evidence/v9-rendezvous-instrumented-2026-10-28.wsb": "f65405437a515444527adf6aab7ffaafb8e1923145d6b94c904196546df7a0d4",
+    "evidence/rendezvous-immutable-2026-10-28.json": "a1017db313e8c7bbd75302a928146f9621eef81b9fe8f9581abe7912f6be3825",
+    "evidence/rendezvous-immutable-hello-2026-10-28.json": "c48da88ea4a35fded4e144ddd48f9131dfa819abe34a9266c6cb6be991d0ac9b",
+    "evidence/rendezvous-immutable-job-A-2026-10-28.json": "3e28e3d723c1d8fad1770ca29f5fafbeb91a878ad09812e50ed187358751ccf1",
+    "evidence/rendezvous-immutable-job-B-2026-10-28.json": "240867f3a0139989d17f93e9123811692c8e7182d6134a13ae7ac1627a595c07",
+    "evidence/rendezvous-immutable-body-2026-10-28.py": "cd618a3ecd497139abf15a1848801de18ad192481657223db7e1708f33a6e465",
+    "evidence/rendezvous-immutable-session-2026-10-28.json": "17645077e6e253df50061755b8845194e02653e217f055ecd2895ae6f54c80c6",
+    "evidence/rendezvous-immutable-response-A-2026-10-28.json": "416edc45bff425696db81f39f4d7c53d48a64ae3e9fbded7655973508fc2dc59",
+    "evidence/rendezvous-immutable-response-B-2026-10-28.json": "d940d194614e35d0da371bbb430307900d9945a7173e6347a4cce314e0694b34",
+    "evidence/rendezvous-immutable-events-2026-10-28.sha256": "c03427b5d7c6252a60d3f33c35c1192a6c37868b7bb0a721ec83f3b0d2445be1",
+    "evidence/v9-rendezvous-immutable-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf"
   },
   "verdict_rules": {
     "path": "verdict_rules.py",

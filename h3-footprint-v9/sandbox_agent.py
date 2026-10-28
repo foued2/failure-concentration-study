@@ -274,7 +274,8 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
                     memory_bytes: int, max_processes: int, max_jobs: int = 0,
                     poll: float = 0.1, events: EventLog | None = None,
                     state_interval: float = 2.0, state_max: int = 60,
-                    runner: Callable | None = None) -> int:
+                    runner: Callable | None = None,
+                    state: JobLoopState | None = None) -> int:
     """Serve the opt-in immutable request protocol.
 
     Every poll is decided from a fresh directory scan. The loop records what it
@@ -282,11 +283,14 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
     directory, a visible-but-already-handled request, a malformed request and a
     valid new one. Requests are processed in sequence, at most once, and a body
     is addressed by its content hash.
+
+    ``state`` is shared with the heartbeat thread so the heartbeat reports the
+    loop's last known snapshot rather than a detached, never-updated object.
     """
     inbox, outbox, scratch = Path(inbox), Path(outbox), Path(scratch)
     scratch.mkdir(parents=True, exist_ok=True)
     run = runner or supervisor.run_immutable_job
-    state = JobLoopState()
+    state = state if state is not None else JobLoopState()
     handled: set[str] = set()
     last_sequence = 0
     done = 0
@@ -406,7 +410,7 @@ def main() -> None:
             serve_immutable(inbox, outbox, scratch, timeout=args.timeout,
                             memory_bytes=args.memory_bytes,
                             max_processes=args.max_processes,
-                            max_jobs=args.max_jobs, events=events)
+                            max_jobs=args.max_jobs, events=events, state=state)
         finally:
             if heartbeat is not None:
                 heartbeat.stop()
