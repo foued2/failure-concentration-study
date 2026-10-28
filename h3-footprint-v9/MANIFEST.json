@@ -1,16 +1,18 @@
 {
   "artifact_hashes_sha256": {
-    "backend.py": "2b775070904ba1f335eb03a5d45a3a05ee87fba4deebe4359a509fde6625e914",
-    "child_runner.py": "82122516355a65b01bfebae565c597e23335832976c70f482fa475ad065b9bf5",
+    "backend.py": "81e4f16b03ba63624e0077e1a7af6fbd0082c43a1432471492841c447a12e420",
+    "child_runner.py": "89f3366acbd9d638318cb3764db4e1060b4704f072a2df5eba8745e074fa0838",
     "constants.py": "aa47f54889bd4411a766eeafa5ece5c8a0217753d54c20414c255b8da294c835",
-    "controller.py": "bf13e12c5dee0bb310954fa0e808031a164ae6e2c7f9381450cfd35e2f6f2733",
+    "controller.py": "12c7ef81ee74359778a6e1e52f7e0ad5a2d0168e5350afdc6e265e61bb2bb2b9",
     "gates.py": "bae544b1ed96b737746bfbdd058ad7ea5b7cf5d53d77e8307a6ad63a2d0308a7",
     "generation/agent/h3-generator.md": "26362c11e09283e7d4d88c45f0a3dd8dca6eb0e1b9895c9c75c8c9fa804bc49c",
     "generation/generate_v9.py": "ef1b3dd2f8b85817b4deaef5db5f9a08cf4186e0ab87e64abec4bd639b035bba",
+    "isolation_battery.py": "d87bf4bf2b35c91d1b32d36548375c4ec5d5fbf87b3e6a07e196795bfad30080",
     "oracle.py": "27b78414180e3808a127bfd5cab177e369a72e76f7f815585b10f3ffd270d3fb",
     "protocol.py": "ae5c6bdb7d1d64dd54527687daa5cc8343b693910c5d61f7bd815344243ef266",
-    "sandbox_agent.py": "114fe3847a8f32f9dc9424f8d31f84ad36c44fd972e1900e07cae74929b003bb",
-    "supervisor.py": "28ec6e7d1ba8a769af8fa02a35dd74f03e6211a8401792d5119ce6db6a859830",
+    "runtime_stage.py": "f248da2d836893ea51132164a9438a0d87679a625f7a7b214f896e301f8b7db8",
+    "sandbox_agent.py": "5ecfddb1c1761677f7c0ce16ed08943cb7a3d4d4a1dfc42ab64da801675c692e",
+    "supervisor.py": "8a2d5100daf97a3bc7d9b57be1bb44c82c66471d6b104572d4e1171e6998b182",
     "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3"
   },
   "note": "Executable surface only. Regenerate at freeze time.",

@@ -234,6 +234,7 @@ def serve(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
                 inbox, outbox, scratch,
                 timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
                 lock_staging=False, lock_response=False,
+                paths=supervisor.runtime_paths(inbox, outbox, scratch),
             )
         except Exception as exc:  # noqa: BLE001 - the agent must record, not die
             if events is not None:
@@ -338,7 +339,8 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
         body = protocol.immutable_body_path(inbox, job["body_sha256"])
         try:
             run(job, body, outbox, scratch, timeout=timeout,
-                memory_bytes=memory_bytes, max_processes=max_processes)
+                memory_bytes=memory_bytes, max_processes=max_processes,
+                paths=supervisor.runtime_paths(inbox, outbox, scratch))
         except Exception as exc:  # noqa: BLE001 - the agent must record, not die
             if events is not None:
                 events.emit("exception", phase="serve", job=job,

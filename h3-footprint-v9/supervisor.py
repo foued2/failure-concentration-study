@@ -71,6 +71,45 @@ def _minimal_env(scratch: Path) -> dict[str, str]:
     return {k: v for k, v in keep.items() if v}
 
 
+def runtime_paths(inbox: Path, outbox: Path, scratch: Path) -> dict[str, str]:
+    """The guest's real mapped directories, resolved once, for a diagnostic probe.
+
+    A probe must not guess these from its working directory: the child's cwd is
+    the guest-local scratch folder, so ``../staging`` or ``../response`` resolves
+    beside scratch and would test the wrong directory. The agent passes the paths
+    it was actually launched with, and these are the paths the probe receives.
+    """
+    paths = {
+        "inbox": str(Path(inbox).resolve()),
+        "outbox": str(Path(outbox).resolve()),
+        "scratch": str(Path(scratch).resolve()),
+    }
+    for name, value in paths.items():
+        if not value or not os.path.isabs(value):
+            raise ValueError(f"runtime path {name} is not absolute: {value!r}")
+    if len(set(paths.values())) != len(paths):
+        raise ValueError("runtime paths must be distinct directories")
+    return paths
+
+
+def _child_payload(job: dict, paths: dict[str, str] | None) -> str:
+    """Serialize the child's input, adding the resolved runtime paths if given.
+
+    The paths are runtime facts, not host expectations, and they are not secret:
+    the guest can already read them from its own launch command. They are passed
+    explicitly so a probe cannot silently target a look-alike directory.
+    """
+    payload = job.get("input")
+    if paths is not None:
+        base: dict = dict(payload) if isinstance(payload, dict) else (
+            {} if payload is None else {"input": payload}
+        )
+        base["paths"] = dict(paths)
+        payload = base
+    return json.dumps(payload, sort_keys=True)
+
+
+
 class _CappedReader(threading.Thread):
     """Read the child's stdout without letting it exhaust supervisor memory."""
 
@@ -121,18 +160,21 @@ def _parse(text: str) -> dict | None:
 
 def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
             memory_bytes: int, max_processes: int,
-            lock_staging: bool = True, lock_response: bool = True) -> dict:
+            lock_staging: bool = True, lock_response: bool = True,
+            paths: dict[str, str] | None = None) -> dict:
     staging, response_dir, scratch = Path(staging), Path(response_dir), Path(scratch)
     job = protocol.read_job(staging)
     return execute_job(
         job, staging / protocol.BODY_FILENAME, response_dir, scratch,
         timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
         lock_staging=lock_staging, lock_response=lock_response, clear_stale=True,
+        paths=paths,
     )
 
 
 def run_immutable_job(job: dict, body_path: Path, response_dir: Path, scratch: Path, *,
-                      timeout: float, memory_bytes: int, max_processes: int) -> dict:
+                      timeout: float, memory_bytes: int, max_processes: int,
+                      paths: dict[str, str] | None = None) -> dict:
     """Execute one request from the immutable protocol.
 
     The body path is content-addressed by the host, so there is no staging file to
@@ -143,13 +185,15 @@ def run_immutable_job(job: dict, body_path: Path, response_dir: Path, scratch: P
         job, Path(body_path), Path(response_dir), Path(scratch),
         timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
         lock_staging=False, lock_response=False, clear_stale=False,
+        paths=paths,
     )
 
 
 def execute_job(job: dict, body: Path, response_dir: Path, scratch: Path, *,
                 timeout: float, memory_bytes: int, max_processes: int,
                 lock_staging: bool = True, lock_response: bool = True,
-                clear_stale: bool = True) -> dict:
+                clear_stale: bool = True,
+                paths: dict[str, str] | None = None) -> dict:
     response_dir, scratch = Path(response_dir), Path(scratch)
     ident = winjob.identity()
     base = {
@@ -222,7 +266,7 @@ def execute_job(job: dict, body: Path, response_dir: Path, scratch: Path, *,
         )
         winjob.assign(handle, proc.pid)
 
-        payload = json.dumps(job.get("input"), sort_keys=True)
+        payload = _child_payload(job, paths)
         assert proc.stdin is not None
         try:
             proc.stdin.write(b"GO\n" + payload.encode("utf-8") + b"\n")

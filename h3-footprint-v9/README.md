@@ -165,6 +165,21 @@ fix is covered by the host test, not by this run. The earlier 199-event set is
 preserved unchanged. Neither run is a production ordering pass:
 `sandbox_rendezvous_ordering` stays **FAIL** and evaluation stays blocked.
 
+The isolation-probe path is now a separate harness, `isolation_battery.py`. It
+never imports `controller` or `oracle`, never runs a candidate, and publishes
+only five hand-authored fixtures through the immutable variant. The previous
+`boundary_probe.py` derived `../staging` and `../response` from the child's
+working directory, which is the guest-local scratch folder, so it tested
+look-alike siblings rather than the mapped Desktop folders. The fixture and
+agent now receive the real inbox, outbox and scratch paths; the host re-reads
+them from the emitted `.wsb` and rejects any report that does not match. The
+battery covers host-file denial, network blocking, read-only inbox writes,
+process-tree termination and response-channel reparse points, each with a safe
+positive control. It stops the guest before collecting the complete event set,
+and a permitted host-file open stops the run immediately. Status on 2026-10-28:
+the harness and its host tests are committed, but the Sandbox battery has not
+run, so `sandbox_isolation_report` remains **NOT_RUN**.
+
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
 refuses to extract anything whose SHA-256 does not match python.org's published

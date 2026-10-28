@@ -80,7 +80,7 @@
   },
   "evidence_scopes": {
     "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json, evidence/sandbox-capability-post-restart-2026-10-28.json",
-    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); one opt-in immutable-protocol diagnostic under evidence/rendezvous-immutable-2026-10-28.json and evidence/rendezvous-immutable-* with 199 raw events (A and B both discovered and answered, 132 heartbeat events invalid); one clean immutable rerun after the fail-closed and heartbeat fixes under evidence/rendezvous-immutable-rerun-2026-10-28.json and evidence/rendezvous-immutable-rerun-* with 12 raw events, one pid and zero anomalies (A=111, B=222, both tree_empty true); no isolation probes were run"
+    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); one opt-in immutable-protocol diagnostic under evidence/rendezvous-immutable-2026-10-28.json and evidence/rendezvous-immutable-* with 199 raw events (A and B both discovered and answered, 132 heartbeat events invalid); one clean immutable rerun after the fail-closed and heartbeat fixes under evidence/rendezvous-immutable-rerun-2026-10-28.json and evidence/rendezvous-immutable-rerun-* with 12 raw events, one pid and zero anomalies (A=111, B=222, both tree_empty true); the fixed-fixture isolation battery is implemented and host-tested but has not run, so no isolation evidence exists"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -147,7 +147,16 @@
     "the complete archived event set (12 events, collected after the guest was stopped) validates with one pid (3688), zero anomalies, and the expected poll outcomes no_jobs, new_job, only_handled, new_job, only_handled; the report snapshot holds 10 events because it was written before the final two, so validation used the archive, not the snapshot",
     "the run was shorter than one heartbeat interval, so it contains no heartbeat event; the heartbeat state-sharing fix is therefore covered by a host regression test, not by this guest run",
     "the earlier 199-event revision-8 run is preserved unchanged and still carries its 132 heartbeat anomalies; the new run is separate evidence under rendezvous-immutable-rerun-2026-10-28.*",
-    "the rerun is still diagnostic only: echo_input.py, two sequential jobs, this host, this opt-in protocol; the production default remains legacy, sandbox_rendezvous_ordering remains FAIL and evaluation remains blocked"
+    "the rerun is still diagnostic only: echo_input.py, two sequential jobs, this host, this opt-in protocol; the production default remains legacy, sandbox_rendezvous_ordering remains FAIL and evaluation remains blocked",
+    "the probe-path defect is corrected: boundary_probe.py derived ../staging and ../response from the child working directory, which is the guest-local scratch folder, so it tested look-alike siblings rather than the mapped Desktop folders; a replacement harness passes the agent's real inbox, outbox and scratch paths into the child payload",
+    "the host re-reads the mapped guest paths from the emitted .wsb and requires every probe report to match them; a report that points beside scratch, inside a mapped folder or at a relative path is rejected, and tests prove the difference",
+    "isolation_battery.py is a dedicated fixed-fixture harness: it does not import controller, oracle or gates, never calls a model and never publishes a candidate; it uses the immutable request variant explicitly and publishes five jobs, far below the 256-request scan limit",
+    "five hand-authored fixtures cover host-file denial with a mapped-body positive control, external network denial with a loopback control, read-only inbox and outbox writes with a scratch control, a child that outlives its parent plus a normal-exit control, and host rejection of a reparse-point response with a normal response accepted",
+    "the host-file probe opens the private path and closes it without reading or returning any bytes; tests prove a sentinel answer in oracle.py never appears in the report, and a permitted open stops the battery immediately",
+    "the emitted .wsb now states explicit guest caps (30 s supervisor timeout, 8 processes, 512 MiB); the host waits within timeout plus a 45 s response slack, so a hung probe returns a recorded timeout instead of a silent wait",
+    "runtime staging moved to runtime_stage.py so the diagnostic harness can stage the same five-file runtime without importing the evaluation controller",
+    "the immutable inbox still retains requests and has a 256-file scan limit; a production switch needs a session-scoped inbox or another bounded design, because one candidate is 31 jobs and the ninth would exceed the limit. This battery uses five jobs in a fresh inbox",
+    "the battery harness and its 55 host tests are committed before the Sandbox run; sandbox_isolation_report remains NOT_RUN until every probe and positive control passes with complete evidence"
   ],
   "gates": [
     {
@@ -155,7 +164,7 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "167 tests, 0 failures"
+      "detail": "222 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -312,11 +321,18 @@
       "detail": "opt-in diagnostic variant: two immutable jobs in sequence, content-addressed bodies, no overwrite or rename, duplicate/missing/corrupt/out-of-order rejection, filename/payload and body-hash mismatch rejection, repeated polling, empty/old/new/broken poll telemetry, tree-empty enforcement and one response per job. Any scan error or truncation blocks execution, even beside a valid expected job. The legacy job.json path remains the default; this gate says nothing about the Sandbox."
     },
     {
+      "id": "isolation_battery_harness",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_isolation_battery.py",
+      "detail": "55 host tests: mapped guest paths are read from the emitted .wsb and enforced, look-alike siblings of scratch are rejected, every probe and positive control must be present and unambiguous, a permitted host-file open stops the run, the guest is stopped before events are collected, and the harness/fixtures do not import controller, oracle or gates. Host-only: this exercises the harness, not the Sandbox boundary."
+    },
+    {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "Windows Sandbox runs, but the isolation probes (host read denied, network blocked, read-only inbox, junction rejected) have not been executed; no isolation claim is made"
+      "detail": "The fixed-fixture battery (host-file denial, network blocking, read-only inbox/outbox, process-tree termination, response-channel reparse points, each with a positive control) is implemented and host-tested, but no Sandbox battery has run. No isolation claim is made."
     },
     {
       "id": "sandbox_rendezvous_ordering",

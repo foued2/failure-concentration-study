@@ -128,7 +128,8 @@ def main() -> None:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         solve = getattr(module, "solve", None)
-        if not callable(solve):
+        solve_job = getattr(module, "solve_job", None)
+        if not callable(solve) and not callable(solve_job):
             _emit({"error": "missing_solve"})
             return
     except BaseException as exc:  # noqa: BLE001 - untrusted module
@@ -140,8 +141,13 @@ def main() -> None:
         return
 
     try:
-        edges = [tuple(edge) for edge in job_input["edges"]]
-        answer = solve(job_input["n"], edges, job_input["s"], job_input["t"])
+        if callable(solve_job):
+            # System fixtures receive the whole job input, including the runtime
+            # paths the agent was launched with. They never receive reference data.
+            answer = solve_job(job_input)
+        else:
+            edges = [tuple(edge) for edge in job_input["edges"]]
+            answer = solve(job_input["n"], edges, job_input["s"], job_input["t"])
     except BaseException as exc:  # noqa: BLE001 - untrusted module
         _emit({"error": type(exc).__name__})
         return

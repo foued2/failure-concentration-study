@@ -24,6 +24,8 @@ INCLUDE = (
     "winjob.py",
     "protocol.py",
     "gates.py",
+    "runtime_stage.py",
+    "isolation_battery.py",
     "generation/generate_v9.py",
     "generation/agent/h3-generator.md",
 )

@@ -187,9 +187,11 @@ class ServeTests(unittest.TestCase):
         self.calls: list[tuple[int, str]] = []
 
     def runner(self, job, body, response_dir, scratch, *, timeout, memory_bytes,
-               max_processes):
+               max_processes, paths=None):
         self.calls.append((job["sequence"], job["job_id"]))
         self.assertEqual(body.read_bytes(), BODY)
+        self.assertIsInstance(paths, dict)
+        self.assertEqual(set(paths), {"inbox", "outbox", "scratch"})
         protocol.write_response_exclusive(response_dir, response_for(job))
 
     def test_two_jobs_are_discovered_and_answered_in_sequence(self):

@@ -662,7 +662,10 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
                        mode: str = "preflight", job_protocol: str = "legacy",
                        sandbox_root: str = SANDBOX_DESKTOP,
                        python_exe_name: str = "python.exe",
-                       memory_mb: int = 4096) -> str:
+                       memory_mb: int = 4096,
+                       agent_timeout: float | None = None,
+                       agent_memory_bytes: int | None = None,
+                       agent_max_processes: int | None = None) -> str:
     """Config for Windows Sandbox.
 
     ``python_root`` is mandatory and is mapped read-only, because the Sandbox
@@ -672,6 +675,12 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
 
     ``job_protocol`` selects the opt-in diagnostic request protocol. Legacy stays
     the default so an ordinary config is unchanged.
+
+    ``agent_timeout``, ``agent_memory_bytes`` and ``agent_max_processes`` are
+    optional explicit guest-side caps. They are unset by default, so every
+    existing caller emits exactly the same command; a diagnostic battery that
+    needs a longer probe must state that cap in the config rather than rely on a
+    launch default it did not choose.
     """
     if mode not in ("preflight", "serve"):
         raise SandboxConfigError(f"unknown mode {mode!r}")
@@ -701,9 +710,16 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
         tail = " --handshake-only"
     elif job_protocol == "immutable":
         tail = " --job-protocol immutable"
+    caps = ""
+    if agent_timeout is not None:
+        caps += f" --timeout {float(agent_timeout):g}"
+    if agent_memory_bytes is not None:
+        caps += f" --memory-bytes {int(agent_memory_bytes)}"
+    if agent_max_processes is not None:
+        caps += f" --max-processes {int(agent_max_processes)}"
     command = (
         f'"{python_exe}" "{agent}" --inbox "{sandbox_inbox}" '
-        f'--outbox "{sandbox_outbox}"{tail}'
+        f'--outbox "{sandbox_outbox}"{tail}{caps}'
     )
 
     return SANDBOX_CONFIG_TEMPLATE.format(

@@ -250,6 +250,46 @@ Stop if `ordering_ok` is false or if the mapping's refresh behaviour is
 ambiguous. Do **not** substitute a slower or weaker transport; that decision goes
 back to design review.
 
+## Step 2b: fixed-fixture isolation battery (Sandbox)
+
+This is a separate authorization from candidate evaluation. It runs only the
+hand-authored files under `tests/fixtures/`, never a candidate body, a model, the
+controller or the oracle. Start from **fresh** `in`, `out` and `work` folders;
+the battery refuses a non-empty directory. Only one Sandbox may run at a time.
+
+```
+python isolation_battery.py ^
+  --inbox C:\v9-stage\in --outbox C:\v9-stage\out ^
+  --work-root C:\v9-stage\work --python-root C:\v9-stage\py-embed ^
+  --config C:\v9-stage\isolation-battery-2026-10-28.wsb ^
+  --report C:\v9-stage\isolation-battery-2026-10-28.json --launch
+```
+
+The emitted `.wsb` selects the immutable request variant and states explicit
+guest caps (`--timeout 30 --max-processes 8 --memory-bytes 536870912`). Five
+requests are published in sequence, far below the 256-request scan limit. Each
+probe receives the guest's real mapped inbox, outbox and scratch paths from the
+agent; the host re-reads those paths from the emitted config and rejects a report
+whose paths are look-alike siblings of scratch.
+
+| probe | expected negative | positive control |
+|---|---|---|
+| open host `oracle.py` | denied, error class recorded; repo absent | the mapped probe body opens |
+| connect `1.1.1.1:443` | denied, exact error recorded | loopback connect to a local listener |
+| write mapped inbox and outbox | both denied | write into low-integrity scratch |
+| child outlives parent | recorded `tree_empty: true` | normal-exit control is `ok` and empty |
+| response channel | junction rejected by the host | normal response accepted |
+
+The harness also verifies that the live outbox holds no reparse point, stops the
+guest **before** collecting the complete event set, then requires one agent pid
+and zero telemetry anomalies. Any missing probe, missing control, ambiguous
+result or unexpected host-file access fails the report; a permitted host-file
+open stops the battery immediately. `sandbox_isolation_report` becomes `PASS`
+only when every probe and control passed with complete evidence.
+
+Status on 2026-10-28: harness, fixtures and host tests are committed; the Sandbox
+battery itself has **not** run, so the gate remains `NOT_RUN`.
+
 ## Step 3: generation — **NOT IMPLEMENTED / BLOCKED**
 
 ```
