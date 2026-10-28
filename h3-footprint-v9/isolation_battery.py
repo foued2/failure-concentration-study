@@ -40,7 +40,6 @@ import protocol  # noqa: E402
 import runtime_stage  # noqa: E402
 
 FIXTURES = HERE / "tests" / "fixtures"
-SANDBOX_EXE = r"C:\Windows\System32\WindowsSandbox.exe"
 PROBE_MARKER = "V9PROBE"
 
 # id, fixture file, supervisor timeout in seconds
@@ -313,8 +312,9 @@ def _require_empty(path: Path, label: str) -> None:
 def launch_sandbox(config: Path) -> int:
     if sys.platform != "win32":
         raise ValueError("Windows Sandbox can only be launched on Windows")
-    proc = subprocess.Popen([SANDBOX_EXE, str(config)])
-    return proc.pid
+    # Reuse the detached launcher the preflight already uses: the GUI process
+    # must outlive this host-side battery, which keeps running the probes.
+    return int(backend.launch_sandbox(Path(config))["pid"])
 
 
 def run_battery(*, inbox: Path, outbox: Path, work_root: Path, python_root: Path,
