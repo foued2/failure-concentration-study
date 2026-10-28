@@ -1,0 +1,314 @@
+name: H3 V4 bounded footprint-only run
+
+on:
+  push:
+    branches:
+      - research/h3-v4-anonymous-model-prototype-2026-10-28
+    paths:
+      - "h3-footprint-v4/EVALUATION_AUTHORIZATION.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: h3-v4-footprint-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  segment-100:
+    name: V4 batches 000-099
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    outputs:
+      futility_stop: ${{ steps.score.outputs.futility_stop }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the frozen protocol commit
+        uses: actions/checkout@v4
+
+      - name: Set up pinned host Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+
+      - name: Enforce explicit V4 freeze and authorization
+        run: python3 h3-footprint-v4/pipeline_guard.py
+
+      - name: Validate controls, host tests and the Docker boundary
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/validate_controls.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-validation.log"
+          python3 h3-footprint-v4/isolation_battery.py --report "$RUNNER_TEMP/h3-v4-isolation.json" 2>&1 | tee "$RUNNER_TEMP/h3-v4-isolation-console.log"
+
+      - name: Generate only batches 000-099
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/generate.py --start-batch 0 --end-batch 100 2>&1 | tee "$RUNNER_TEMP/h3-v4-generation-000-099.log"
+
+      - name: Score candidate footprints in fresh Docker containers
+        id: score
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/run_gate.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-score-100.log"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          report = json.loads(Path("h3-footprint-v4/results/footprint.json").read_text(encoding="utf-8"))
+          futility = report["futility"]
+          print("futility_stop=" + ("true" if futility["triggered"] else "false"))
+          print("completed_batches=" + str(futility["completed_batches"]))
+          PY
+
+      - name: Preserve exact stage state for audit and continuation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-state-after-100-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            h3-footprint-v4/generated/
+            h3-footprint-v4/results/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Preserve stage logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-logs-100-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/h3-v4-validation.log
+            ${{ runner.temp }}/h3-v4-isolation.json
+            ${{ runner.temp }}/h3-v4-isolation-console.log
+            ${{ runner.temp }}/h3-v4-generation-000-099.log
+            ${{ runner.temp }}/h3-v4-score-100.log
+          if-no-files-found: warn
+          retention-days: 90
+
+  segment-200:
+    name: V4 batches 100-199
+    needs: segment-100
+    if: needs.segment-100.result == 'success' && needs.segment-100.outputs.futility_stop != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    outputs:
+      futility_stop: ${{ steps.score.outputs.futility_stop }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the same frozen protocol commit
+        uses: actions/checkout@v4
+
+      - name: Set up pinned host Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+
+      - name: Restore stage-100 state
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v4-state-after-100-${{ github.run_id }}-${{ github.run_attempt }}
+          path: h3-footprint-v4/
+
+      - name: Reverify freeze and authorization
+        run: python3 h3-footprint-v4/pipeline_guard.py
+
+      - name: Revalidate controls and isolation on this fresh runner
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/validate_controls.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-validation.log"
+          python3 h3-footprint-v4/isolation_battery.py --report "$RUNNER_TEMP/h3-v4-isolation.json" 2>&1 | tee "$RUNNER_TEMP/h3-v4-isolation-console.log"
+
+      - name: Generate only batches 100-199
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/generate.py --start-batch 100 --end-batch 200 2>&1 | tee "$RUNNER_TEMP/h3-v4-generation-100-199.log"
+
+      - name: Score candidate footprints in fresh Docker containers
+        id: score
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/run_gate.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-score-200.log"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          report = json.loads(Path("h3-footprint-v4/results/footprint.json").read_text(encoding="utf-8"))
+          futility = report["futility"]
+          print("futility_stop=" + ("true" if futility["triggered"] else "false"))
+          print("completed_batches=" + str(futility["completed_batches"]))
+          PY
+
+      - name: Preserve exact stage state for audit and continuation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-state-after-200-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            h3-footprint-v4/generated/
+            h3-footprint-v4/results/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Preserve stage logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-logs-200-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/h3-v4-validation.log
+            ${{ runner.temp }}/h3-v4-isolation.json
+            ${{ runner.temp }}/h3-v4-isolation-console.log
+            ${{ runner.temp }}/h3-v4-generation-100-199.log
+            ${{ runner.temp }}/h3-v4-score-200.log
+          if-no-files-found: warn
+          retention-days: 90
+
+  segment-300:
+    name: V4 batches 200-299
+    needs: segment-200
+    if: needs.segment-200.result == 'success' && needs.segment-200.outputs.futility_stop != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    outputs:
+      futility_stop: ${{ steps.score.outputs.futility_stop }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the same frozen protocol commit
+        uses: actions/checkout@v4
+
+      - name: Set up pinned host Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+
+      - name: Restore stage-200 state
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v4-state-after-200-${{ github.run_id }}-${{ github.run_attempt }}
+          path: h3-footprint-v4/
+
+      - name: Reverify freeze and authorization
+        run: python3 h3-footprint-v4/pipeline_guard.py
+
+      - name: Revalidate controls and isolation on this fresh runner
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/validate_controls.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-validation.log"
+          python3 h3-footprint-v4/isolation_battery.py --report "$RUNNER_TEMP/h3-v4-isolation.json" 2>&1 | tee "$RUNNER_TEMP/h3-v4-isolation-console.log"
+
+      - name: Generate only batches 200-299
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/generate.py --start-batch 200 --end-batch 300 2>&1 | tee "$RUNNER_TEMP/h3-v4-generation-200-299.log"
+
+      - name: Score candidate footprints in fresh Docker containers
+        id: score
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/run_gate.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-score-300.log"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          report = json.loads(Path("h3-footprint-v4/results/footprint.json").read_text(encoding="utf-8"))
+          futility = report["futility"]
+          print("futility_stop=" + ("true" if futility["triggered"] else "false"))
+          print("completed_batches=" + str(futility["completed_batches"]))
+          PY
+
+      - name: Preserve exact stage state for audit and continuation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-state-after-300-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            h3-footprint-v4/generated/
+            h3-footprint-v4/results/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Preserve stage logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-logs-300-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/h3-v4-validation.log
+            ${{ runner.temp }}/h3-v4-isolation.json
+            ${{ runner.temp }}/h3-v4-isolation-console.log
+            ${{ runner.temp }}/h3-v4-generation-200-299.log
+            ${{ runner.temp }}/h3-v4-score-300.log
+          if-no-files-found: warn
+          retention-days: 90
+
+  segment-400:
+    name: V4 batches 300-399 (final)
+    needs: segment-300
+    if: needs.segment-300.result == 'success' && needs.segment-300.outputs.futility_stop != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the same frozen protocol commit
+        uses: actions/checkout@v4
+
+      - name: Set up pinned host Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+
+      - name: Restore stage-300 state
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v4-state-after-300-${{ github.run_id }}-${{ github.run_attempt }}
+          path: h3-footprint-v4/
+
+      - name: Reverify freeze and authorization
+        run: python3 h3-footprint-v4/pipeline_guard.py
+
+      - name: Revalidate controls and isolation on this fresh runner
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/validate_controls.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-validation.log"
+          python3 h3-footprint-v4/isolation_battery.py --report "$RUNNER_TEMP/h3-v4-isolation.json" 2>&1 | tee "$RUNNER_TEMP/h3-v4-isolation-console.log"
+
+      - name: Generate only batches 300-399
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/generate.py --start-batch 300 --end-batch 400 2>&1 | tee "$RUNNER_TEMP/h3-v4-generation-300-399.log"
+
+      - name: Score candidate footprints in fresh Docker containers
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/run_gate.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-final-score.log"
+
+      - name: Preserve final state and full footprint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-final-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            h3-footprint-v4/generated/
+            h3-footprint-v4/results/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Preserve final logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-final-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/h3-v4-validation.log
+            ${{ runner.temp }}/h3-v4-isolation.json
+            ${{ runner.temp }}/h3-v4-isolation-console.log
+            ${{ runner.temp }}/h3-v4-generation-300-399.log
+            ${{ runner.temp }}/h3-v4-final-score.log
+          if-no-files-found: warn
+          retention-days: 90
