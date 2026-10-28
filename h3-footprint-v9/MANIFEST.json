@@ -1,0 +1,15 @@
+{
+  "artifact_hashes_sha256": {
+    "child_runner.py": "82122516355a65b01bfebae565c597e23335832976c70f482fa475ad065b9bf5",
+    "constants.py": "aa47f54889bd4411a766eeafa5ece5c8a0217753d54c20414c255b8da294c835",
+    "controller.py": "4e9d5bf486eb0c60a93957262ca9fd412ab275b2a59097ac33e58e7dc4847560",
+    "generation/agent/h3-generator.md": "26362c11e09283e7d4d88c45f0a3dd8dca6eb0e1b9895c9c75c8c9fa804bc49c",
+    "generation/generate_v9.py": "66220035275490211e47d441d6f1602fa6c8dec71f89ba65552a32dc5064c79a",
+    "oracle.py": "27b78414180e3808a127bfd5cab177e369a72e76f7f815585b10f3ffd270d3fb",
+    "protocol.py": "3eb7c8ffb98c47b33ee8d807cd5d16cddd629ffabf8dd3809da82c304f2ae009",
+    "supervisor.py": "361faa5fff4bb4de89a83c8551a2acfdcd7a221cd0c42bf53dbcd66c44322369",
+    "winjob.py": "bfce038ad12bfbe6a6f974089f3b9b343daea2e392ce5a69e294d2ebbdd8c58b"
+  },
+  "note": "Executable surface only. Regenerate at freeze time.",
+  "version": 9
+}

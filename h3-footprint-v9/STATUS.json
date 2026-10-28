@@ -1,0 +1,113 @@
+{
+  "version": 9,
+  "date": "2026-10-28",
+  "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
+  "base_tag": "h3-footprint-v8-freeze-2026-10-27",
+  "base_commit": "d5b002cf0802b54b5a18b81e6bb99a9566cdd5ff",
+  "frozen": false,
+  "authorization": {
+    "generation": false,
+    "evaluation": false,
+    "note": "No candidate generation or evaluation is authorized. generate_v9 refuses unless V9_AUTHORIZE_GENERATION=1."
+  },
+  "gates": [
+    {
+      "id": "unit_tests",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/unit-test-log.txt",
+      "detail": "32 tests, 0 failures"
+    },
+    {
+      "id": "constants_match_v8",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_oracle.py::test_expected_matches_frozen_v8",
+      "detail": "30 probe answers identical to frozen V8 expected_values.json"
+    },
+    {
+      "id": "oracle_outside_sandbox_image",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_secrecy.py",
+      "detail": "Sandbox image is four files; no answers, probe bank or scoring"
+    },
+    {
+      "id": "compound_disclosure_and_forgery",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_boundary.py",
+      "detail": "attack finds no reference data; forged answer cannot score perfect"
+    },
+    {
+      "id": "process_tree_kill_on_timeout",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_process_tree.py",
+      "detail": "grandchild pid confirmed dead after timeout"
+    },
+    {
+      "id": "output_boundary_low_integrity",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_isolation.py",
+      "detail": "icacls/takeown escapes fail; writes raise PermissionError"
+    },
+    {
+      "id": "opencode_agent_fully_denied",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "evidence/opencode-config.json",
+      "detail": "v2.2.0; no probed action resolves to allow or ask"
+    },
+    {
+      "id": "opencode_frozen_models_visible",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "evidence/opencode-config.json",
+      "detail": "all three frozen IDs present in the local catalog; no model call made"
+    },
+    {
+      "id": "sandbox_isolation_report",
+      "status": "NOT_RUN",
+      "scope": "sandbox",
+      "evidence": null,
+      "detail": "no Windows Sandbox isolation report produced"
+    },
+    {
+      "id": "sandbox_rendezvous_ordering",
+      "status": "NOT_RUN",
+      "scope": "sandbox",
+      "evidence": null,
+      "detail": "mapped-folder one-item delivery not tested in a live session"
+    },
+    {
+      "id": "memory_and_process_caps",
+      "status": "PARTIAL",
+      "scope": "host",
+      "evidence": "winjob.py",
+      "detail": "enforced by the Job Object but not adversarially stress-tested"
+    },
+    {
+      "id": "verdict_and_support_cells",
+      "status": "NOT_IMPLEMENTED",
+      "scope": "host",
+      "evidence": null,
+      "detail": "k/C/eligibility/saturation implemented; classification and verdict not ported"
+    },
+    {
+      "id": "candidate_generation",
+      "status": "BLOCKED",
+      "scope": "host",
+      "evidence": null,
+      "detail": "not authorized during implementation"
+    },
+    {
+      "id": "candidate_evaluation",
+      "status": "BLOCKED",
+      "scope": "sandbox",
+      "evidence": null,
+      "detail": "no generated bodies exist and evaluation is not authorized"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+generation/work/
+sandbox-runtime/
+case/
+*.tmp

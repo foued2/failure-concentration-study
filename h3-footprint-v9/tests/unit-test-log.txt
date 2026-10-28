@@ -1,0 +1,38 @@
+test_publish_refuses_after_untidy_tree (test_boundary.JobOrdering.test_publish_refuses_after_untidy_tree) ... ok
+test_compound_read_and_forge_attack_never_passes (test_boundary.OracleControls.test_compound_read_and_forge_attack_never_passes) ... ok
+test_constant_wrong_solver_fails_every_probe (test_boundary.OracleControls.test_constant_wrong_solver_fails_every_probe) ... ok
+test_correct_solver_scores_zero_failures (test_boundary.OracleControls.test_correct_solver_scores_zero_failures) ... ok
+test_stdout_hijack_cannot_improve_score (test_boundary.OracleControls.test_stdout_hijack_cannot_improve_score) ... ok
+test_sys_exit_counts_as_probe_failure (test_boundary.OracleControls.test_sys_exit_counts_as_probe_failure) ... ok
+test_ask_is_not_denial (test_generation.GenerationControlTests.test_ask_is_not_denial) ... ok
+test_command_never_auto_approves (test_generation.GenerationControlTests.test_command_never_auto_approves) ... ok
+test_deny_resolution_is_last_match_wins (test_generation.GenerationControlTests.test_deny_resolution_is_last_match_wins) ... ok
+test_eight_body_cap_is_enforced (test_generation.GenerationControlTests.test_eight_body_cap_is_enforced) ... ok
+test_env_is_sanitized_and_pinned (test_generation.GenerationControlTests.test_env_is_sanitized_and_pinned) ... ok
+test_extract_rejects_malformed_and_multi_solve (test_generation.GenerationControlTests.test_extract_rejects_malformed_and_multi_solve) ... ok
+test_nonzero_exit_rejects_the_whole_batch (test_generation.GenerationControlTests.test_nonzero_exit_rejects_the_whole_batch) ... ok
+test_overproduction_is_recorded_not_counted (test_generation.GenerationControlTests.test_overproduction_is_recorded_not_counted) ... ok
+test_partial_response_is_rejected (test_generation.GenerationControlTests.test_partial_response_is_rejected) ... ok
+test_permission_profile_denies_everything (test_generation.GenerationControlTests.test_permission_profile_denies_everything) ... ok
+test_tool_event_rejects_the_whole_batch (test_generation.GenerationControlTests.test_tool_event_rejects_the_whole_batch) ... ok
+test_candidate_cannot_tamper_with_job_or_response (test_isolation.OutputBoundaryTests.test_candidate_cannot_tamper_with_job_or_response) ... ok
+test_output_flood_is_bounded_and_contained (test_isolation.OutputBoundaryTests.test_output_flood_is_bounded_and_contained) ... ok
+test_c_can_vary_at_fixed_k_below_25 (test_oracle.ConcentrationMathTests.test_c_can_vary_at_fixed_k_below_25) ... ok
+test_saturation_forced_at_k_ge_25 (test_oracle.ConcentrationMathTests.test_saturation_forced_at_k_ge_25)
+Six families x five probes: k >= 25 forces a fully failed family. ... ok
+test_saturation_implies_c_equals_five_over_k (test_oracle.ConcentrationMathTests.test_saturation_implies_c_equals_five_over_k) ... ok
+test_answer_type_is_strict (test_oracle.InstrumentTests.test_answer_type_is_strict) ... ok
+test_expected_matches_frozen_v8 (test_oracle.InstrumentTests.test_expected_matches_frozen_v8) ... ok
+test_probe_count_and_families (test_oracle.InstrumentTests.test_probe_count_and_families) ... ok
+test_probe_input_hides_identity (test_oracle.InstrumentTests.test_probe_input_hides_identity) ... ok
+test_timeout_kills_descendants (test_process_tree.ProcessTreeTests.test_timeout_kills_descendants) ... ok
+test_active_job_is_one_body_and_one_input (test_secrecy.SandboxImageTests.test_active_job_is_one_body_and_one_input) ... ok
+test_controller_never_imports_candidate (test_secrecy.SandboxImageTests.test_controller_never_imports_candidate) ... ok
+test_no_reference_data_anywhere_in_runtime (test_secrecy.SandboxImageTests.test_no_reference_data_anywhere_in_runtime) ... ok
+test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.test_runtime_contains_only_supervisor_and_child) ... ok
+test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 64.646s
+
+OK
