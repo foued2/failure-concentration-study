@@ -183,6 +183,7 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
             state = item.get("State") or {}
             inspect = {
                 "name": item.get("Name", "").lstrip("/"),
+                "user": (item.get("Config") or {}).get("User"),
                 "running": state.get("Running"),
                 "exit_code": state.get("ExitCode"),
                 "oom_killed": state.get("OOMKilled"),
@@ -218,6 +219,12 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
         timeout=15,
         check=False,
     )
+    removed_check = subprocess.run(
+        ["docker", "inspect", name],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        timeout=10, check=False,
+    )
+    container_removed = removed_check.returncode != 0
 
     stdout = stdout_bytes.decode("utf-8", "replace")
     stderr = stderr_bytes.decode("utf-8", "replace")
@@ -237,6 +244,9 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
         return {
             "status": "timed_out",
             "timed_out": True,
+            "stdout_tail": stdout[-1000:],
+            "container_name": name,
+            "container_removed": container_removed,
             "elapsed_seconds": elapsed,
             "exit_code": proc.returncode,
             "stderr_tail": stderr[-1000:],
@@ -247,6 +257,8 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
         return {
             "status": "no_result",
             "timed_out": False,
+            "container_name": name,
+            "container_removed": container_removed,
             "elapsed_seconds": elapsed,
             "exit_code": proc.returncode,
             "stdout_tail": stdout[-1000:],
@@ -256,6 +268,8 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
         }
     result.update({
         "timed_out": False,
+        "container_name": name,
+        "container_removed": container_removed,
         "elapsed_seconds": elapsed,
         "exit_code": proc.returncode,
         "stderr_tail": stderr[-1000:],
