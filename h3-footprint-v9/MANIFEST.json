@@ -9,8 +9,8 @@
     "generation/generate_v9.py": "ef1b3dd2f8b85817b4deaef5db5f9a08cf4186e0ab87e64abec4bd639b035bba",
     "oracle.py": "27b78414180e3808a127bfd5cab177e369a72e76f7f815585b10f3ffd270d3fb",
     "protocol.py": "ae5c6bdb7d1d64dd54527687daa5cc8343b693910c5d61f7bd815344243ef266",
-    "sandbox_agent.py": "114fe3847a8f32f9dc9424f8d31f84ad36c44fd972e1900e07cae74929b003bb",
-    "supervisor.py": "28ec6e7d1ba8a769af8fa02a35dd74f03e6211a8401792d5119ce6db6a859830",
+    "sandbox_agent.py": "c7628b001879129d0c5ba9c6802e84fd94765b0be97d5bae11b3f4d2cc0ec9b6",
+    "supervisor.py": "994df05a570302abc6306935423eae23f8befd858209303cc24e3dc87d6cb84f",
     "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3"
   },
   "note": "Executable surface only. Regenerate at freeze time.",
