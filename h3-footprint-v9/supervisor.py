@@ -81,11 +81,11 @@ class _CappedReader(threading.Thread):
         self.chunks: list[bytes] = []
         self.total = 0
         self.overflow = False
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
 
     def run(self) -> None:
         try:
-            while not self._stop.is_set():
+            while not self._stop_event.is_set():
                 chunk = self.stream.read(4096)
                 if not chunk:
                     break
@@ -98,7 +98,7 @@ class _CappedReader(threading.Thread):
             pass
 
     def stop(self) -> None:
-        self._stop.set()
+        self._stop_event.set()
 
     def payload(self) -> bytes:
         return b"".join(self.chunks)
