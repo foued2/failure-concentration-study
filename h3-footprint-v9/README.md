@@ -112,7 +112,9 @@ rewriting `job.json`, each request is a new immutable
 `bodies/<sha256>.py`. The guest rescans, checks the filename against the payload,
 enforces sequence, and processes each job at most once. Duplicate ids,
 conflicting sequences, malformed requests, filename/payload mismatches and
-out-of-order requests are rejected. This variant is selected with
+out-of-order requests are rejected. Any scan error or a truncated scan blocks all
+execution for that poll, even when one expected-sequence file looks valid; a
+transient read failure is retried on the next poll. This variant is selected with
 `--job-protocol immutable` on the agent and the `.wsb`; the default transport is
 still the legacy `job.json` path, and ordering remains **FAIL** until a run on
 the production path succeeds.

@@ -286,6 +286,64 @@ class ServeTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 1)
         self.assertTrue(state)
 
+    def _serve_bounded(self, max_polls: int = 3) -> int:
+        log = sandbox_agent.EventLog(self.outbox, NONCE)
+        return sandbox_agent.serve_immutable(
+            self.inbox, self.outbox, self.scratch, timeout=1.0,
+            memory_bytes=constants.MEMORY_LIMIT_BYTES,
+            max_processes=4, poll=0.01, events=log,
+            state_interval=0.01, runner=self.runner, max_polls=max_polls,
+        )
+
+    def test_a_malformed_extra_request_blocks_the_valid_job(self):
+        protocol.publish_immutable_job(self.inbox, make_job(1), BODY)
+        broken = self.inbox / protocol.immutable_job_filename(2, "b" * 32)
+        broken.write_text("{not json", encoding="utf-8")
+        self._serve_bounded()
+        self.assertEqual(self.calls, [])
+        self.assertEqual(list(self.outbox.glob("response-*.json")), [])
+        collected = backend.collect_events(self.outbox, NONCE)
+        self.assertTrue(any(
+            event["event"] == "poll_state" and event["state"]["outcome"] == "error"
+            for event in collected["events"]
+        ))
+
+    def test_a_duplicate_job_id_blocks_the_valid_job(self):
+        job = make_job(1)
+        protocol.publish_immutable_job(self.inbox, job, BODY)
+        duplicate = self.inbox / protocol.immutable_job_filename(2, job["job_id"])
+        duplicate.write_text(json.dumps(dict(job, sequence=2)), encoding="utf-8")
+        self._serve_bounded()
+        self.assertEqual(self.calls, [])
+        self.assertEqual(list(self.outbox.glob("response-*.json")), [])
+
+    def test_a_conflicting_sequence_blocks_the_valid_job(self):
+        protocol.publish_immutable_job(self.inbox, make_job(1), BODY)
+        conflict = self.inbox / protocol.immutable_job_filename(1, "c" * 32)
+        conflict.write_text(json.dumps(make_job(1, job_id="c" * 32)), encoding="utf-8")
+        self._serve_bounded()
+        self.assertEqual(self.calls, [])
+        self.assertEqual(list(self.outbox.glob("response-*.json")), [])
+
+    def test_a_truncated_scan_never_yields_an_executable_job(self):
+        protocol.publish_immutable_job(self.inbox, make_job(1), BODY)
+        scan = protocol.scan_immutable_jobs(self.inbox)
+        scan["truncated"] = True
+        outcome, job, error, _ = sandbox_agent._decide_immutable(scan, 1, set())
+        self.assertEqual((outcome, job, error), ("error", None, "scan_truncated"))
+
+        original = protocol.IMMUTABLE_SCAN_LIMIT
+        self.addCleanup(setattr, protocol, "IMMUTABLE_SCAN_LIMIT", original)
+        protocol.IMMUTABLE_SCAN_LIMIT = 1
+        protocol.publish_immutable_job(self.inbox, make_job(2), BODY)
+        self.assertGreater(
+            protocol.scan_immutable_jobs(self.inbox)["visible_count"], 1
+        )
+        self.assertTrue(protocol.scan_immutable_jobs(self.inbox)["truncated"])
+        self._serve_bounded()
+        self.assertEqual(self.calls, [])
+        self.assertEqual(list(self.outbox.glob("response-*.json")), [])
+
     def test_the_heartbeat_snapshots_the_real_loop_state(self):
         job = make_job(1)
         protocol.publish_immutable_job(self.inbox, job, BODY)

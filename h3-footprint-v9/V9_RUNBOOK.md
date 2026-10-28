@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 8. Every command below exists and is exercised by the test suite.
+Revision 9. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -187,9 +187,10 @@ Generate the serve `.wsb` with the same `--mode serve --job-protocol immutable`
 so the guest agent uses the matching loop. The immutable variant publishes
 `job-<sequence>-<job_id>.json` and `bodies/<sha256>.py`, never renames or
 overwrites a request, rejects duplicate/conflicting/malformed/out-of-order
-requests, and processes each job at most once. It is a diagnostic variant only;
-the default remains `job.json`, and a successful diagnostic does not change
-`sandbox_rendezvous_ordering` from FAIL.
+requests, and processes each job at most once. A scan error or a truncated scan
+blocks all execution for that poll, even beside a valid expected job. It is a
+diagnostic variant only; the default remains `job.json`, and a successful
+diagnostic does not change `sandbox_rendezvous_ordering` from FAIL.
 
 Result on 2026-10-28: the immutable diagnostic **handed off both jobs**. The
 guest scan listed job A at poll 2 and job B at poll 4; both were discovered,

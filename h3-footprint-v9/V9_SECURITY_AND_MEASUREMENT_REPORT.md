@@ -1,6 +1,6 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 8)
+**Date:** 2026-10-28 (revision 9)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
@@ -14,7 +14,9 @@ closes the authorization gap that the handshake exposed and instruments the gues
 so the failure can be explained; the failure itself is still unresolved and
 evaluation stays blocked. Revision 8 records what the job loop sees on each poll
 and makes an immutable per-job request protocol available as an opt-in diagnostic;
-the default transport and the FAIL verdict are unchanged.
+the default transport and the FAIL verdict are unchanged. Revision 9 makes that
+protocol fail closed on any ambiguous or truncated scan and exercises the
+heartbeat state-sharing fix in a second diagnostic run.
 
 ## Revision 4: capability, not assumption
 
@@ -272,6 +274,28 @@ does not prove isolation and does not authorize evaluation;
 `evidence/rendezvous-immutable-*`, the `.wsb`, and
 `evidence/rendezvous-immutable-events-2026-10-28/` with its hash index.
 
+## Revision 9: the immutable scan fails closed
+
+Source review found that `_decide_immutable()` could execute the expected job
+from a scan that also reported a malformed request, a duplicate job id or a
+conflicting sequence, and it did not act on the scan's `truncated` flag. That
+contradicted the protocol's promise to reject such requests.
+
+The decision is now fail-closed:
+
+- any `scan["errors"]` entry blocks **all** execution for that poll, even when a
+  valid expected-sequence job is present;
+- `scan["truncated"]` reports `scan_truncated` and yields no job;
+- a transient read failure is retried on the next poll; a permanent malformed,
+  duplicate or conflicting condition keeps blocking until repaired.
+
+Regression tests cover a valid next job beside a malformed request, a duplicate
+id, a conflicting sequence, and a scan artificially truncated below the visible
+count, asserting no runner call and no response while blocked. A `max_polls`
+bound keeps the blocked-loop tests from hanging. The ordinary A/B sequence,
+filename/payload agreement, content-addressed bodies, one-response-per-job and
+tree-empty checks are unchanged.
+
 ## Revision 4: the interpreter is now real, pinned and verified
 
 Third-party binaries are not acceptable, so the runtime comes from python.org
@@ -463,7 +487,7 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 
 ```
 python -m unittest discover -s tests -v
-Ran 163 tests in 141.055s
+Ran 167 tests in 121.690s
 OK
 ```
 

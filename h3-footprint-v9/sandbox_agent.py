@@ -250,19 +250,26 @@ def serve(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
 
 def _decide_immutable(scan: dict, expected_sequence: int,
                       handled_ids: set[str]) -> tuple[str, dict | None, str | None, str | None]:
-    """Return (outcome, processable job, error, error file) for one scan."""
+    """Return (outcome, processable job, error, error file) for one scan.
+
+    Fail closed: an incomplete scan, or any malformed, duplicate or conflicting
+    request, blocks *all* execution for this poll, even if one expected-sequence
+    file looks valid. A transient read failure is simply retried on the next
+    poll; a permanent condition keeps blocking.
+    """
     if not scan["scanned"]:
         return "error", None, scan["scan_error"], None
+    if scan.get("truncated"):
+        return "error", None, "scan_truncated", None
     errors = scan["errors"]
-    for job in scan["requests"]:
-        if job["sequence"] == expected_sequence:
-            if job["job_id"] in handled_ids:
-                return "only_handled", None, None, None
-            first = errors[0] if errors else None
-            return "new_job", job, first["detail"] if first else None, first["file"] if first else None
     if errors:
         return "error", None, errors[0]["detail"], errors[0]["file"]
     requests = scan["requests"]
+    for job in requests:
+        if job["sequence"] == expected_sequence:
+            if job["job_id"] in handled_ids:
+                return "only_handled", None, None, None
+            return "new_job", job, None, None
     if not requests:
         return "no_jobs", None, None, None
     if any(job["sequence"] > expected_sequence for job in requests):
@@ -275,7 +282,8 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
                     poll: float = 0.1, events: EventLog | None = None,
                     state_interval: float = 2.0, state_max: int = 60,
                     runner: Callable | None = None,
-                    state: JobLoopState | None = None) -> int:
+                    state: JobLoopState | None = None,
+                    max_polls: int = 0) -> int:
     """Serve the opt-in immutable request protocol.
 
     Every poll is decided from a fresh directory scan. The loop records what it
@@ -294,11 +302,13 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
     handled: set[str] = set()
     last_sequence = 0
     done = 0
+    polls = 0
     emitted = 0
     last_outcome: str | None = None
     next_state = 0.0
 
     while True:
+        polls += 1
         scan = protocol.scan_immutable_jobs(inbox)
         outcome, job, error, error_file = _decide_immutable(
             scan, last_sequence + 1, handled
@@ -317,6 +327,8 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
             next_state = now + state_interval
 
         if job is None:
+            if max_polls and polls >= max_polls:
+                return done
             time.sleep(poll)
             continue
 
@@ -339,6 +351,8 @@ def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
         state.mark_job(job)
         done += 1
         if max_jobs and done >= max_jobs:
+            return done
+        if max_polls and polls >= max_polls:
             return done
 
 
