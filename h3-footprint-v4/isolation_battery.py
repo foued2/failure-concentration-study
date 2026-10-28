@@ -92,8 +92,8 @@ def run_battery(report_path: Path) -> dict[str, Any]:
         sentinel_root.mkdir()
         sentinel = sentinel_root / "expected-values-sentinel.txt"
         sentinel.write_text("HOST_ONLY_SECRET_SENTINEL", encoding="utf-8")
-        host_oracle_path = (Path(os.environ.get("GITHUB_WORKSPACE", str(ROOT))).resolve()
-                            / "h3-footprint-v4" / "expected_values.json")
+        workspace = Path(os.environ.get("GITHUB_WORKSPACE", str(ROOT.parent))).resolve()
+        host_oracle_path = workspace / "h3-footprint-v4" / "expected_values.json"
 
         host_path_literal = json.dumps(str(sentinel))
         oracle_path_literal = json.dumps(str(host_oracle_path))
