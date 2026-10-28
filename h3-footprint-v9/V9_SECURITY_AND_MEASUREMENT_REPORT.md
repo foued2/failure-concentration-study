@@ -1,15 +1,16 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 4)
+**Date:** 2026-10-28 (revision 5)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
 Revision 3 repaired the two operational blockers found in review of revision 2.
-Revision 4 answers the follow-up question — *can this machine run Sandbox at
-all?* — and stages the interpreter the preflight needs. It still contains **no
-Sandbox result**: the hardware looks capable, but the optional feature is
-disabled and enabling it needs an elevated session, which this agent does not
-have and did not try to obtain.
+Revision 4 answered the follow-up question — *can this machine run Sandbox at
+all?* — and staged the interpreter the preflight needs. Revision 5 applied the
+documented enable command in a session elevated through a single approved UAC
+consent prompt, and records the raw result verbatim. It still contains **no
+Sandbox result**: the feature is enabled but not effective until the machine is
+restarted, and the agent does not restart it.
 
 ## Revision 4: capability, not assumption
 
@@ -32,11 +33,12 @@ The read-only diagnostic (`evidence/windows_sandbox_capability.py`) now records:
 
 `Get-WindowsOptionalFeature` needs elevation, so the state came from
 `Win32_OptionalFeature`, which does not. That distinction matters: the feature
-is **present and disabled**, not absent, so this is a privilege blocker rather
-than a hardware or image blocker.
+was **present and disabled**, not absent, so this was a privilege blocker rather
+than a hardware or image blocker. (The table above is the pre-enable diagnosis,
+`evidence/sandbox-capability-2026-10-28.json`.)
 
-Classification: `BLOCKED_PRIVILEGES`. The documented command, which has **not**
-been applied, is:
+The pre-enable classification was `BLOCKED_PRIVILEGES`, and the documented
+command is:
 
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
@@ -44,8 +46,38 @@ Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
 
 Running it from an unelevated session returns exactly
 `L'opération demandée nécessite une élévation.` (`evidence/sandbox-enable-attempt-2026-10-28.json`,
-`applied: false`, rc 2). UAC was not bypassed, nothing was installed, and the
-machine was not restarted. This step needs Foued.
+`applied: false`, rc 2). UAC was not bypassed and nothing was installed then.
+
+## Revision 5: feature enabled, restart pending
+
+Foued approved one ordinary UAC consent prompt. In the resulting elevated
+session the documented command was run once, and its result was committed
+verbatim as `evidence/sandbox-enable-elevated-2026-10-28.json`:
+
+| Field | Value |
+|---|---|
+| `elevated` | true |
+| `applied` | true |
+| `restart_needed` | true |
+| `error` | null |
+| `before` / `after` | 0 / 2 (raw cmdlet return codes, not feature states) |
+
+No bypass, no policy change, no unofficial installer, no automatic restart. The
+elevation was scoped to that one command; the working session is still medium
+integrity, which is why the post-enable diagnostic records `elevated: false`.
+
+The post-enable diagnosis
+(`evidence/sandbox-capability-post-enable-2026-10-28.json`) is
+`ENABLED_RESTART_PENDING`: `Containers-DisposableClientVM` InstallState=1, but
+`WindowsSandbox.exe` is still absent and `HypervisorPresent` is false. The
+feature is **enabled, not yet effective**. Every Sandbox gate therefore stays
+`NOT_RUN`, generation stays `BLOCKED` and evaluation stays `BLOCKED`. The next
+action is an operator restart, not a code change.
+
+The diagnostic ladder now separates the three states that revision 4 conflated:
+absent (`InstallState=3`), disabled (`InstallState=2`), and enabled but restart
+pending (`InstallState=1` with `WindowsSandbox.exe` missing). It also accepts
+`--out`, so a new diagnosis cannot silently overwrite an earlier one.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 
@@ -192,19 +224,25 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 | 9 | **Agent could start before `session.json`** | agent polls with timeout; session written before launch | `test_backend.PreflightTests` | host |
 | 10 | **No preflight-only path** | `--preflight` records attestation, publishes nothing | `test_backend.CommandLineTests.test_preflight_failure_is_recorded_and_publishes_nothing` | host |
 | 11 | **Outbox trusted as data** | size cap, reparse-point rejection, strict schema | `test_backend.ResponseTrustTests` | host |
-| 12 | **"Feature absent" was read as "hardware unsupported"** | read-only capability diagnostic; `Win32_OptionalFeature` distinguishes disabled from absent; classification is `BLOCKED_PRIVILEGES` | `evidence/windows_sandbox_capability.py` | host |
+| 12 | **"Feature absent" was read as "hardware unsupported"** | read-only capability diagnostic; `Win32_OptionalFeature` distinguishes disabled from absent; the pre-enable classification was `BLOCKED_PRIVILEGES` | `evidence/windows_sandbox_capability.py` | host |
 | 13 | **The interpreter had to exist before a Sandbox run could mean anything** | official python.org embeddable build, pinned and hash-checked against published metadata before extraction; agent and one-job host checks | `evidence/stage_python_runtime.py` | host |
+| 14 | **"Blocked on privileges" is not an outcome** | one documented enable command under an approved UAC prompt, raw result committed verbatim; post-enable diagnosis `ENABLED_RESTART_PENDING`; Sandbox gates unchanged | `evidence/sandbox-enable-elevated-2026-10-28.json`, `evidence/sandbox-capability-post-enable-2026-10-28.json` | host |
 
 ## Residual risks
 
-1. **No Windows Sandbox run exists.** The optional feature is present but
-   disabled, and enabling it needs an elevated session; every Sandbox gate is
-   `NOT_RUN`. See `evidence/sandbox-capability-2026-10-28.json` and
+1. **No Windows Sandbox run exists.** The optional feature is enabled but not
+   effective until the host restarts (`WindowsSandbox.exe` absent,
+   `HypervisorPresent` false), so every Sandbox gate is `NOT_RUN`. See
+   `evidence/sandbox-capability-post-enable-2026-10-28.json` and
    `evidence/sandbox-unavailable-2026-10-28.json`.
-2. **Enabling the feature is a host change this agent did not make.** It needs
-   Foued to accept a UAC prompt and probably to restart. Windows 10 Pro 22H2 is
-   out of standard support, so servicing for the feature is not guaranteed; that
-   is only established by trying it, with the error recorded if it fails.
+2. **Enabling the feature was a host change made under operator consent, and it
+   is not complete.** Foued approved one UAC prompt; the agent ran the documented
+   command exactly once and recorded the result
+   (`evidence/sandbox-enable-elevated-2026-10-28.json`). A restart is still
+   required and the agent does not perform it. Windows 10 Pro 22H2 is out of
+   standard support, so whether the restart makes the feature effective is only
+   established by trying it, with the outcome recorded either way. ESU coverage
+   before running untrusted generated code remains an operator decision.
 3. **The interpreter is staged and hash-verified, but its Sandbox mapping is not
    exercised.** The host checks prove the embeddable layout can run the agent and
    one job; they do not prove the read-only mapping or mapped-folder ACL behaviour

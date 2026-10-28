@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 4,
+  "revision": 5,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -13,8 +13,9 @@
   },
   "environment": {
     "windows_sandbox_available": false,
-    "capability_classification": "BLOCKED_PRIVILEGES",
-    "capability_evidence": "evidence/sandbox-capability-2026-10-28.json",
+    "capability_classification": "ENABLED_RESTART_PENDING",
+    "capability_evidence": "evidence/sandbox-capability-post-enable-2026-10-28.json",
+    "capability_evidence_before_enable": "evidence/sandbox-capability-2026-10-28.json",
     "availability_evidence": "evidence/sandbox-unavailable-2026-10-28.json",
     "host": {
       "os": "Windows 10 Pro 22H2, build 19045.7807, x64",
@@ -32,21 +33,36 @@
     },
     "optional_feature_state": {
       "source": "Win32_OptionalFeature (readable without elevation)",
-      "Containers-DisposableClientVM": "Disabled (InstallState=2)",
+      "Containers-DisposableClientVM": "Enabled (InstallState=1), not yet effective: WindowsSandbox.exe absent and HypervisorPresent false - restart pending",
       "Microsoft-Hyper-V": "Disabled (InstallState=2)",
       "Microsoft-Hyper-V-All": "Disabled (InstallState=2)",
       "VirtualMachinePlatform": "Disabled (InstallState=2)",
       "HypervisorPlatform": "Disabled (InstallState=2)"
     },
+    "enabling_result": {
+      "evidence": "evidence/sandbox-enable-elevated-2026-10-28.json",
+      "executed_at": "2026-10-28T11:31:10.4547388+01:00",
+      "elevated": true,
+      "applied": true,
+      "restart_needed": true,
+      "error": null,
+      "method": "Start-Process -Verb RunAs, then the documented Enable-WindowsOptionalFeature -All -NoRestart command in the consented elevated session",
+      "note": "The operator approved a normal UAC consent prompt. No bypass, no policy change and no automatic restart. The before/after values are the raw numeric return codes of the cmdlet (0 then 2); the authoritative state is the Win32_OptionalFeature InstallState recorded in the post-enable diagnostic."
+    },
+    "restart": {
+      "required": true,
+      "performed": false,
+      "note": "The agent does not restart the machine. Foued restarts, then the capability diagnostic and the preflight are re-run."
+    },
     "privileges": {
       "elevated": false,
       "integrity_level": "medium (S-1-16-8192)",
       "administrator_group_member": true,
-      "detail": "UAC-filtered token: the feature is present and disabled, and enabling it needs an elevated session. UAC was not bypassed and no restart was performed."
+      "detail": "UAC-filtered token in this session. Elevation was obtained once, through a consent prompt that the operator approved, solely to run the documented enable command. The session was not bypassed and this shell is still medium integrity, which is why the post-enable diagnostic reports elevated=false."
     },
     "enabling_command": "Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart",
     "enabling_attempt_evidence": "evidence/sandbox-enable-attempt-2026-10-28.json",
-    "detail": "Hardware prerequisites look satisfied, but Windows Sandbox is not installed: WindowsSandbox.exe is absent and the optional feature is disabled. Enabling it requires Foued to accept a UAC prompt and probably restart. Until then no preflight or rendezvous can run on this host."
+    "detail": "The feature is now enabled but not effective: WindowsSandbox.exe is still absent and HypervisorPresent is false, so Windows Sandbox cannot start until the machine is restarted. No preflight or rendezvous can run before that restart. The host is not hardware-incompatible."
   },
   "interpreter": {
     "distribution": "official CPython embeddable package (64-bit) from python.org",
@@ -61,8 +77,8 @@
     "note": "3.13.18 was source-only, so the pinned 64-bit embeddable build with published release metadata is 3.14.10."
   },
   "evidence_scopes": {
-    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json",
-    "sandbox": "none - the three Sandbox gates are NOT_RUN; the optional feature is present but disabled and enabling it requires an elevated session"
+    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json",
+    "sandbox": "none - the three Sandbox gates are NOT_RUN; the optional feature is enabled but not effective until the host is restarted"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -77,6 +93,12 @@
     "an official CPython 3.14.10 embeddable distribution is staged only after its SHA-256 matches the value published by python.org",
     "the staged interpreter is proven to start the agent and to run one fixture job through supervisor + Job Object with tree_empty true",
     "the full preflight passes interpreter, config and staging gates and stops exactly at the Sandbox launch, because the feature is disabled"
+  ],
+  "revision_5_additions": [
+    "the documented enable command was run in a session elevated through a single approved UAC consent prompt; the raw result is committed verbatim",
+    "the diagnostic now separates 'enabled and restart pending' from 'disabled' and from 'absent', and can write to a named report so earlier diagnoses are preserved",
+    "the post-enable diagnosis is ENABLED_RESTART_PENDING: InstallState=1, WindowsSandbox.exe absent, HypervisorPresent false",
+    "no Sandbox gate changed status: a restart is required, and the agent does not restart the machine"
   ],
   "gates": [
     {
@@ -203,21 +225,28 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "evidence/sandbox-capability-2026-10-28.json",
-      "detail": "read-only diagnostic records OS, CPU virtualization flags, RAM, disk, physical hardware, feature state and privilege state; classification BLOCKED_PRIVILEGES, not a hardware conclusion"
+      "detail": "read-only diagnostic records OS, CPU virtualization flags, RAM, disk, physical hardware, feature state and privilege state; the pre-enable classification was BLOCKED_PRIVILEGES, not a hardware conclusion"
+    },
+    {
+      "id": "sandbox_feature_enable_applied",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json",
+      "detail": "the documented command ran in an elevated session obtained through one approved UAC consent prompt and reported applied=true, restart_needed=true; the post-enable diagnostic confirms InstallState=1 but WindowsSandbox.exe is still absent, so the feature is enabled but not effective"
     },
     {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "Windows Sandbox is not installed: WindowsSandbox.exe is absent and the feature is disabled; no isolation evidence exists"
+      "detail": "the optional feature is enabled but not effective until the host restarts; WindowsSandbox.exe is absent and the hypervisor is not running, so no isolation evidence exists"
     },
     {
       "id": "sandbox_rendezvous_ordering",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "harness exists and passes on the host transport; live mapped-folder ordering untested"
+      "detail": "harness exists and passes on the host transport; live mapped-folder ordering untested, and cannot run before the restart"
     },
     {
       "id": "sandbox_agent_acceptance",

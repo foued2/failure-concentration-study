@@ -71,9 +71,11 @@ First establish whether the host can run Sandbox at all:
 python evidence/windows_sandbox_capability.py
 ```
 
-On this machine it reports `BLOCKED_PRIVILEGES`: the hardware prerequisites are
-met and `Containers-DisposableClientVM` is present but **disabled**, so enabling
-it needs an elevated session:
+On 2026-10-28 the pre-enable diagnosis was `BLOCKED_PRIVILEGES` (hardware
+prerequisites met, feature present but disabled), the enable command was then run
+once under an approved UAC prompt, and the post-enable diagnosis is
+`ENABLED_RESTART_PENDING`: `InstallState=1`, but `WindowsSandbox.exe` is still
+absent until the machine restarts. The command, for reference:
 
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
@@ -111,10 +113,11 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 ## What is not done yet
 
-- **Windows Sandbox has never run here.** The optional feature is present but
-  disabled and cannot be enabled from this non-elevated session, so no isolation
-  report, no live rendezvous and no `WDAGUtilityAccount` handshake exist
-  (`NOT_RUN`). See `evidence/sandbox-capability-2026-10-28.json`.
+- **Windows Sandbox has never run here.** The optional feature is enabled but
+  not effective until the host restarts (`WindowsSandbox.exe` absent,
+  `HypervisorPresent` false), so no isolation report, no live rendezvous and no
+  `WDAGUtilityAccount` handshake exist (`NOT_RUN`). See
+  `evidence/sandbox-capability-post-enable-2026-10-28.json`.
 - The handshake *acceptance* path has only been exercised with a synthetic
   `hello.json`; the staged interpreter echoes a real nonce on the host, where
   `inside_sandbox` is correctly false.

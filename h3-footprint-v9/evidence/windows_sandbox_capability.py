@@ -127,6 +127,9 @@ def main() -> int:
     parser.add_argument("--attempt-enable", action="store_true",
                         help="also attempt the documented Enable-WindowsOptionalFeature "
                              "command, and record exactly what it says. Never restarts.")
+    parser.add_argument("--out", default="sandbox-capability-2026-10-28.json",
+                        help="report filename, relative to this directory; use a distinct "
+                             "name so earlier diagnoses are not overwritten")
     args = parser.parse_args()
 
     exe = Path(os.environ.get("WINDIR", r"C:\Windows")) / "System32" / "WindowsSandbox.exe"
@@ -303,6 +306,9 @@ def main() -> int:
         sandbox_state = entry["install_state"]
     facts["sandbox_feature_install_state"] = sandbox_state
     facts["sandbox_feature_present"] = sandbox_state in (1, 2)
+    facts["restart_pending"] = (
+        sandbox_state == 1 and not facts["sandbox_exe_present"]
+    )
     report["facts"] = facts
 
     if facts["firmware_virtualization_enabled"] is False:
@@ -323,9 +329,14 @@ def main() -> int:
     elif sandbox_state == 1 and facts["sandbox_exe_present"]:
         classification = "SUPPORTED_AND_READY_TO_ENABLE"
         reason = "Windows Sandbox is already installed and enabled"
+    elif sandbox_state == 1:
+        classification = "ENABLED_RESTART_PENDING"
+        reason = ("the optional feature is enabled (InstallState=1) but WindowsSandbox.exe "
+                  "is not present yet and the hypervisor is not running; a restart is "
+                  "required before Windows Sandbox can start")
     elif not report["elevated"]:
         classification = "BLOCKED_PRIVILEGES"
-        reason = ("the feature is present but disabled (Win32_OptionalFeature "
+        reason = ("the feature is present but not effective (Win32_OptionalFeature "
                   "InstallState=" + str(sandbox_state) + ") and enabling it requires an "
                   "elevated session; this session is UAC-filtered and UAC was not bypassed")
     else:
@@ -342,7 +353,7 @@ def main() -> int:
         "Run from an elevated PowerShell session. No restart was performed by this "
         "diagnostic; a restart may be required before Windows Sandbox can start.")
 
-    target = HERE / "sandbox-capability-2026-10-28.json"
+    target = HERE / args.out
     target.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
 
     if args.attempt_enable:

@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 4. Every command below exists and is exercised by the test suite.
+Revision 5. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -35,12 +35,20 @@ Expected:
 ## Step 0b: is Sandbox even available on this host?
 
 ```
-python evidence/windows_sandbox_capability.py
+python evidence/windows_sandbox_capability.py --out sandbox-capability-post-enable-2026-10-28.json
 ```
 
-Read `classification` in `evidence/sandbox-capability-2026-10-28.json`:
+Use `--out` with a distinct name so an earlier diagnosis is preserved; the
+default writes `evidence/sandbox-capability-2026-10-28.json`.
 
-- `SUPPORTED_AND_READY_TO_ENABLE` — prerequisites look satisfied; go to step 1.
+Read `classification` in the report:
+
+- `SUPPORTED_AND_READY_TO_ENABLE` — Windows Sandbox is installed and enabled; go
+  to step 1.
+- `ENABLED_RESTART_PENDING` — the feature is enabled but not effective
+  (`WindowsSandbox.exe` absent, `HypervisorPresent` false). Restart Windows, then
+  re-run the diagnostic and expect `SUPPORTED_AND_READY_TO_ENABLE`. Nothing else
+  in this runbook can pass before that restart.
 - `BLOCKED_PRIVILEGES` — the feature exists but is disabled and the session is
   not elevated. Run the documented command from an **elevated** PowerShell:
 
@@ -58,6 +66,11 @@ Read `classification` in `evidence/sandbox-capability-2026-10-28.json`:
 
 Do not bypass UAC, do not use unofficial installers, and do not treat a disabled
 feature as a hardware verdict.
+
+State on 2026-10-28: the command ran in a session elevated through one approved
+UAC prompt (`evidence/sandbox-enable-elevated-2026-10-28.json`, `applied: true`,
+`restart_needed: true`), and the post-enable diagnosis is
+`ENABLED_RESTART_PENDING`. The machine has **not** been restarted by the agent.
 
 ## Step 1: stage the Sandbox image (host)
 

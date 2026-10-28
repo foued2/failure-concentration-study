@@ -1,0 +1,10 @@
+{
+    "at":  "2026-10-28T11:31:10.4547388+01:00",
+    "feature":  "Containers-DisposableClientVM",
+    "elevated":  true,
+    "before":  0,
+    "after":  2,
+    "applied":  true,
+    "restart_needed":  true,
+    "error":  null
+}
