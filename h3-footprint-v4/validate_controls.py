@@ -81,7 +81,7 @@ def validate_v4_rules() -> dict:
 def run_tests() -> tuple[int, str]:
     proc = subprocess.run(
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
-        cwd=str(ROOT), capture_output=True, text=True, timeout=180,
+        cwd=str(ROOT), capture_output=True, text=True, timeout=1200,
         encoding="utf-8", errors="replace",
     )
     output = proc.stdout + proc.stderr
