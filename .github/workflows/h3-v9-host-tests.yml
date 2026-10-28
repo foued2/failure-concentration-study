@@ -1,107 +1,78 @@
-name: H3 V9 local Windows verification
+name: H3 V9 hosted Windows verification
 
 on:
   push:
     branches:
       - work/h3-v9-battery-hosted-agent-path-2026-10-28
+  workflow_dispatch:
 
-# Deliberately no pull_request trigger: this workflow targets a machine-local
-# runner and must only execute commits explicitly pushed to the trusted work branch.
 permissions:
   contents: read
 
 concurrency:
-  group: h3-v9-local-${{ github.ref }}
+  group: h3-v9-hosted-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  h3-v9-local-verification:
-    name: Host tests and fixed-fixture Sandbox checks
-    runs-on: [self-hosted, Windows, X64, h3-v9-local]
-    timeout-minutes: 45
+  h3-v9-hosted-verification:
+    name: Host regression tests and fail-closed gate
+    runs-on: windows-latest
+    timeout-minutes: 25
     defaults:
       run:
         shell: pwsh
         working-directory: h3-footprint-v9
-    env:
-      H3_RUN_ROOT: C:\v9-stage\h3-local-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
-      - name: Check out the trusted work branch
+      - name: Check out the committed work branch
         uses: actions/checkout@v4
 
-      - name: Confirm interactive Windows session and Sandbox prerequisites
+      - name: Record the actual hosted environment
         run: |
-          $sessionId = [System.Diagnostics.Process]::GetCurrentProcess().SessionId
-          if ($sessionId -eq 0) {
-            throw "This runner is in Session 0. Start the runner interactively with run.cmd; do not install it as a Windows service, because the Sandbox GUI must launch in the logged-in session."
+          $report = [ordered]@{
+            timestamp = (Get-Date).ToString("o")
+            runner_os = $env:RUNNER_OS
+            runner_arch = $env:RUNNER_ARCH
+            workspace = $env:GITHUB_WORKSPACE
+            working_directory = (Get-Location).Path
+            python = (python --version 2>&1 | Out-String).Trim()
+            run_id = $env:GITHUB_RUN_ID
+            run_attempt = $env:GITHUB_RUN_ATTEMPT
+            commit = $env:GITHUB_SHA
           }
+          $report | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$env:RUNNER_TEMP\h3-v9-environment.json"
+          $report | ConvertTo-Json -Depth 4
 
-          $feature = Get-CimInstance Win32_OptionalFeature -Filter "Name='Containers-DisposableClientVM'"
-          $sandboxExe = Join-Path $env:WINDIR "System32\WindowsSandbox.exe"
-          $computer = Get-CimInstance Win32_ComputerSystem
-          if (-not $feature -or $feature.InstallState -ne 1) {
-            throw "Windows Sandbox optional feature is not enabled."
-          }
-          if (-not (Test-Path -LiteralPath $sandboxExe)) {
-            throw "WindowsSandbox.exe is missing."
-          }
-          if (-not $computer.HypervisorPresent) {
-            throw "Hypervisor is not running."
-          }
-          "Interactive session $sessionId; Windows Sandbox feature, executable, and hypervisor verified."
-
-      - name: Run host regression suite
-        run: python -m unittest discover -s tests -v
-
-      - name: Verify repository manifest
-        run: python make_manifest.py --check
-
-      - name: Verify the scientific execution gate remains closed
+      - name: Run the complete host regression suite
         run: |
-          python controller.py --check-execution-gate
+          python -m unittest discover -s tests -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\h3-v9-unit-tests.txt"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Host regression suite failed with exit code $LASTEXITCODE."
+          }
+
+      - name: Verify committed manifest
+        run: |
+          python make_manifest.py --check
+          if ($LASTEXITCODE -ne 0) {
+            throw "Manifest verification failed."
+          }
+
+      - name: Verify the real execution gate still refuses candidate evaluation
+        run: |
+          python controller.py --check-execution-gate 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\h3-v9-gate-check.txt"
           $gateExitCode = $LASTEXITCODE
           if ($gateExitCode -ne 2) {
-            throw "Expected the fail-closed gate to refuse evaluation with exit code 2; got $gateExitCode."
+            throw "Expected fail-closed gate exit code 2; received $gateExitCode."
           }
 
-      - name: Prepare a fresh run directory
-        run: |
-          if (Test-Path -LiteralPath $env:H3_RUN_ROOT) {
-            throw "Run directory already exists; refusing to reuse prior evidence: $env:H3_RUN_ROOT"
-          }
-          New-Item -ItemType Directory -Path $env:H3_RUN_ROOT | Out-Null
-          New-Item -ItemType Directory -Path (Join-Path $env:H3_RUN_ROOT "in") | Out-Null
-          New-Item -ItemType Directory -Path (Join-Path $env:H3_RUN_ROOT "out") | Out-Null
-          New-Item -ItemType Directory -Path (Join-Path $env:H3_RUN_ROOT "work") | Out-Null
-
-      - name: Stage and verify the pinned embeddable Python runtime
-        run: |
-          $pythonRoot = Join-Path $env:H3_RUN_ROOT "py-embed"
-          python evidence/stage_python_runtime.py --dest $pythonRoot
-          if ($LASTEXITCODE -ne 0) {
-            throw "Pinned Python runtime staging failed."
-          }
-
-      - name: Run fixed-fixture Sandbox isolation battery only
-        run: |
-          $inbox = Join-Path $env:H3_RUN_ROOT "in"
-          $outbox = Join-Path $env:H3_RUN_ROOT "out"
-          $work = Join-Path $env:H3_RUN_ROOT "work"
-          $pythonRoot = Join-Path $env:H3_RUN_ROOT "py-embed"
-          $config = Join-Path $env:H3_RUN_ROOT "isolation-battery.wsb"
-          $report = Join-Path $env:H3_RUN_ROOT "isolation-battery.json"
-
-          python isolation_battery.py --inbox $inbox --outbox $outbox --work-root $work --python-root $pythonRoot --config $config --report $report --launch
-          if ($LASTEXITCODE -ne 0) {
-            throw "Fixed-fixture Sandbox battery failed or was incomplete. Review the report and archived raw evidence."
-          }
-
-      - name: Publish bounded local evidence as workflow artifact
+      - name: Publish host verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: h3-v9-local-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ env.H3_RUN_ROOT }}
+          name: h3-v9-hosted-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}\h3-v9-environment.json
+            ${{ runner.temp }}\h3-v9-unit-tests.txt
+            ${{ runner.temp }}\h3-v9-gate-check.txt
           if-no-files-found: warn
           retention-days: 14
