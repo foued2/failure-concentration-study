@@ -20,6 +20,8 @@ if (Test-Path $op) {
     & $op --version
 }
 Get-Command opencode -ErrorAction SilentlyContinue | Select-Object Source, Version
+& $op agent create --help
+& $op agent list
 ```
 
 If the path differs, use the executable the generation job actually calls. Do not update or replace the CLI during diagnosis; version/config changes should be documented before they are made.
@@ -30,6 +32,10 @@ If the path differs, use the executable the generation job actually calls. Do no
 "Process: $env:OPENCODE_DISABLE_FREE_MODELS"
 "User:    $([Environment]::GetEnvironmentVariable('OPENCODE_DISABLE_FREE_MODELS','User'))"
 "Machine: $([Environment]::GetEnvironmentVariable('OPENCODE_DISABLE_FREE_MODELS','Machine'))"
+"OPENCODE_PERMISSION set in process: $([bool]$env:OPENCODE_PERMISSION)"
+"OPENCODE_CONFIG set in process: $([bool]$env:OPENCODE_CONFIG)"
+"OPENCODE_CONFIG_CONTENT set in process: $([bool]$env:OPENCODE_CONFIG_CONTENT)"
+"OPENCODE_CONFIG_DIR set in process: $([bool]$env:OPENCODE_CONFIG_DIR)"
 ```
 
 A value of `1` or `true` disables free-model visibility in the documented OpenCode versions. A blank value here does not rule out a setting injected into a separate long-running OpenCode service; record whether the generation runner uses a shared service or a direct executable.
@@ -73,3 +79,12 @@ Interpretation:
 ## Current status
 
 Until these observations are recorded, the evidence supports `BLOCKED_GENERATION_ACCESS_UNDIAGNOSED` rather than either “all free models were removed” or “generation access is available.” No generation batch is authorized by this document.
+
+
+## Tool-permission compatibility note
+
+The official [agent-create CLI reference](https://dev.opencode.ai/docs/cli/) documents `opencode agent create --permissions <comma-separated allowlist>` (alias `--tools`); omitted permissions are denied in the generated agent configuration. The [permissions reference](https://dev.opencode.ai/docs/permissions/) documents `OPENCODE_PERMISSION` as an environment-supplied JSON permission config and confirms that `--auto` auto-approves requests not explicitly denied.
+
+Do not use `--auto`. Do not assume `OPENCODE_PERMISSION='{"*":"deny"}'` is a compatible fix for the frozen free models: recent upstream reports include 403 errors when all tools or `bash` are denied for free-tier models ([issue #50627](https://github.com/anomalyco/opencode/issues/50627), [issue #49433](https://github.com/anomalyco/opencode/issues/49433)). This remains a compatibility uncertainty that must be resolved without weakening the no-tools requirement. The environment-variable policy is not intrinsically immutable; run with a controlled/sanitized environment and verify the effective loaded agent/config rather than merely checking one variable.
+
+No model generation should be used as an unrecorded smoke test. If an actual model request is needed to determine whether the frozen no-tools configuration is accepted, it must be treated as the next prespecified generation batch under a properly frozen successor protocol. If the required permission profile is rejected by the fixed provider, stop and record the operational incompatibility; do not relax permissions or substitute a model silently.
