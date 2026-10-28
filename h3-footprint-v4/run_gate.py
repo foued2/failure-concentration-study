@@ -197,7 +197,7 @@ def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
         detail = pre.get("error") or pre.get("error_type") or pre.get("status") or "candidate did not load"
         return _invalid_candidate(row, "container_preflight:" + str(detail))
 
-    expected_values = instrument.expected_values()
+    expected_values = json.loads((ROOT / "expected_values.json").read_text(encoding="utf-8"))
     fails: list[bool] = []
     had_probe_timeout = False
     probe_summaries: list[dict] = []
