@@ -56,9 +56,24 @@ Candidate execution should receive only:
 
 The candidate-visible environment must not contain `expected_values.json`, `instrument.py`, `run_gate.py`, a full harness checkout, a hidden input bank, credentials, or the Git repository. In V8, a read-only mapping is readable by candidate code and therefore does not qualify as secret storage.
 
-A useful implementation pattern is a host-side coordinator that writes one candidate/input pair to a narrowly scoped staging directory, launches it inside a network-disabled Sandbox, and receives only the raw response. Expected values stay in the trusted controller on the host and are never mapped into the candidate Sandbox. Candidate execution must remain wholly within the Sandbox; the host may only stage inputs and score returned output.
+### Recommended host/Sandbox broker protocol
 
-If this is implemented with a trusted wrapper running inside the Sandbox, ensure its write capability is not inherited by candidate code and ensure the wrapper has no file path or process route through which candidate code can recover reference data. A different process in the same user account is not by itself a file-read security boundary.
+Use a trusted controller on the host and a secret-free execution supervisor inside Windows Sandbox. The host controller retains the complete probe bank, expected outputs, family labels, scoring code, and provenance metadata. None of those reference artifacts is mapped into the Sandbox.
+
+For each individual probe invocation:
+
+1. The host controller stages exactly one candidate source file and one probe input in a narrowly scoped active-job folder mapped read-only into the Sandbox. The folder contains no sibling candidate files, no other probe inputs, no expected outputs, and no score or family labels.
+2. The secret-free Sandbox supervisor starts a fresh low-integrity candidate process in a dedicated Windows Job Object. A minimal wrapper imports/executes that candidate and provides only the current input. The candidate and its wrapper share an interpreter only inside this untrusted child process; the supervisor is a separate process and does not contain or import the candidate.
+3. The supervisor treats the child's externally observed stdout/result as the candidate's answer. It does not try to attest that a Python-level function return was untouched. Candidate stdout is data, never an instruction or a trusted result record.
+4. The Job Object enforces the deadline and memory/process limits and kills descendants before the supervisor publishes the response. The candidate runs at low integrity and cannot write to the normal-integrity, ACL-protected output mapping.
+5. The supervisor writes one bounded raw-response record to the output mapping only after the candidate process tree has terminated. The host controller receives that record, compares the answer with the expected value it kept locally, and computes the failure flag.
+6. Only after the host controller receives and validates the response and confirms that the previous process tree is gone does it replace the active job with the next candidate/input. The active folder must never hold multiple candidates or multiple probes at once.
+
+**Windows Sandbox rendezvous is itself a preflight requirement.** Microsoft documents that mapped folders share host paths into Sandbox, but the project must not assume without testing that host-side updates during a live session are seen with the required timing. Add a rendezvous control that stages a unique first token, verifies it in Sandbox, waits for the candidate process tree to terminate, stages a different second token, and verifies that no long-lived process can read the second token until it is made active. If this exact live-update workflow is unreliable, stop and select an equivalent restricted VM/broker design before implementing the study runner. Do not work around failed rendezvous by mapping the full probe bank or entire candidate directory.
+
+This protocol keeps the reference oracle outside both the candidate's filesystem view and its process/trust domain. A different process inside the same Sandbox is not treated as a secret boundary: the supervisor is intentionally secret-free, and all reference comparison remains on the host.
+
+The host controller may parse bounded untrusted output as data but must never execute candidate output, candidate code, or a returned serialization.
 
 ## 4. Required adversarial regression tests
 
@@ -92,7 +107,7 @@ No candidate execution until all of the following hold:
 - design review accepts the external-response contract and trust-domain split;
 - adversarial tests above are added and pass;
 - frozen-artifact/hash verification passes for the new version;
-- the real Windows Sandbox probe demonstrates network isolation, absent host repo/credentials, no access to reference outputs and probe bank, write isolation, process-tree/time/memory bounds, and unaltered trusted results;
+- the real Windows Sandbox probe demonstrates network isolation, absent host repo/credentials, no access to reference outputs and probe bank, write isolation, process-tree/time/memory bounds, live one-item rendezvous correctness, and unaltered trusted results;
 - the actual OpenCode generation route is separately diagnosed and confirmed under the frozen three-model schedule.
 
 Generation and evaluation are separate authorizations. Solving the executor issue does not authorize model calls, and restoring model access does not authorize candidate execution.
