@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 3. Every command below exists and is exercised by the test suite.
+Revision 4. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -32,12 +32,54 @@ Expected:
 - the config evidence shows `agent_loaded: true`, `agent_fully_denied: true`, and
   all three frozen model IDs present.
 
+## Step 0b: is Sandbox even available on this host?
+
+```
+python evidence/windows_sandbox_capability.py
+```
+
+Read `classification` in `evidence/sandbox-capability-2026-10-28.json`:
+
+- `SUPPORTED_AND_READY_TO_ENABLE` — prerequisites look satisfied; go to step 1.
+- `BLOCKED_PRIVILEGES` — the feature exists but is disabled and the session is
+  not elevated. Run the documented command from an **elevated** PowerShell:
+
+  ```
+  Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
+  ```
+
+  No restart is performed automatically. If `RestartNeeded` is true, restart and
+  re-run the diagnostic; `WindowsSandbox.exe` and the feature state should change.
+- `BLOCKED_FIRMWARE_VIRTUALIZATION` — enable VT-x/AMD-V in firmware, then retry.
+- `BLOCKED_WINDOWS_FEATURE_OR_POLICY` — the feature is absent from the image;
+  this needs servicing, not a hardware change.
+- `BLOCKED_HARDWARE_REQUIREMENT` / `UNSUPPORTED_ENVIRONMENT` — stop; use another
+  host.
+
+Do not bypass UAC, do not use unofficial installers, and do not treat a disabled
+feature as a hardware verdict.
+
 ## Step 1: stage the Sandbox image (host)
 
-The Sandbox base image has **no Python**. The interpreter must be a portable /
+The Sandbox base image has **no Python**. The interpreter must be an official
 embeddable distribution, not a normal install and not a virtualenv: a venv keeps
 host absolute paths in `pyvenv.cfg`, and a normal install has no relocatable
 `python3xx.zip`. The controller rejects both by construction.
+
+Stage and verify the pinned interpreter (it refuses to extract unless the
+SHA-256 and file size match python.org's published values):
+
+```
+python evidence/stage_python_runtime.py --dest C:\v9-stage\py-embed
+```
+
+Evidence: `evidence/python-runtime-2026-10-28.json`. It records the published and
+computed SHA-256, the extracted file hashes, `interpreter_preflight`, and two
+host-only checks: the staged interpreter starts the agent (nonce echoed, `mode:
+preflight`, `inside_sandbox: false`) and runs one fixture job through the
+supervisor and Job Object (`status: ok`, `tree_empty: true`).
+
+Then run the preflight:
 
 ```
 python controller.py --preflight ^

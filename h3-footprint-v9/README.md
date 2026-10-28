@@ -49,7 +49,7 @@ winjob.py           Job Object bindings + token-derived identity
 protocol.py         atomic job/response records, ACL lock helpers
 generation/         enforced no-tools agent + strictly gated generator
 tests/              regression suite and hand-authored fixtures
-evidence/           measured host facts, including the absence of Windows Sandbox here
+evidence/           measured host facts: capability classification, verified interpreter, preflight attempts
 ```
 
 ## Quick start (host, no model calls)
@@ -65,8 +65,30 @@ the reason evaluation is blocked.
 
 ## Sandbox workflow
 
-The Sandbox base image ships no Python, so stage an **embeddable** distribution
-first — a normal install or a venv keeps host paths and is rejected.
+First establish whether the host can run Sandbox at all:
+
+```
+python evidence/windows_sandbox_capability.py
+```
+
+On this machine it reports `BLOCKED_PRIVILEGES`: the hardware prerequisites are
+met and `Containers-DisposableClientVM` is present but **disabled**, so enabling
+it needs an elevated session:
+
+```
+Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
+```
+
+The base image ships no Python, so stage an **embeddable** distribution next — a
+normal install or a venv keeps host paths and is rejected. The staging script
+refuses to extract anything whose SHA-256 does not match python.org's published
+value:
+
+```
+python evidence/stage_python_runtime.py --dest C:\v9-stage\py-embed
+```
+
+Then the preflight:
 
 ```
 python controller.py --preflight ^
@@ -89,12 +111,18 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 ## What is not done yet
 
-- **Windows Sandbox is not installed on this host**, so no isolation report, no
-  live rendezvous and no `WDAGUtilityAccount` handshake exist (`NOT_RUN`). See
-  `evidence/sandbox-unavailable-2026-10-28.json`.
+- **Windows Sandbox has never run here.** The optional feature is present but
+  disabled and cannot be enabled from this non-elevated session, so no isolation
+  report, no live rendezvous and no `WDAGUtilityAccount` handshake exist
+  (`NOT_RUN`). See `evidence/sandbox-capability-2026-10-28.json`.
 - The handshake *acceptance* path has only been exercised with a synthetic
-  `hello.json`; the rejection paths are tested.
-- Memory and process-count caps are configured but not stress-tested (`PARTIAL`).
+  `hello.json`; the staged interpreter echoes a real nonce on the host, where
+  `inside_sandbox` is correctly false.
+- The staged interpreter's **Sandbox mapping** is untested: read-only behaviour,
+  mapped-folder ACLs and refresh ordering are exactly what the preflight is meant
+  to measure.
+- Memory and process-count caps are configured and one fixture job exercises the
+  Job Object path, but they are not adversarially stress-tested (`PARTIAL`).
 - Support-cell classification and the PASS/WEAK/FAIL verdict are not ported, and
   must be committed and hashed before generation.
 - Generation is not implemented. `V9_AUTHORIZE_GENERATION=1` enables nothing.

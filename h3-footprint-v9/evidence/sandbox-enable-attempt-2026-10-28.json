@@ -1,0 +1,9 @@
+{
+  "applied": false,
+  "command": "Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart",
+  "elevated": false,
+  "note": "No restart was performed. A non-elevated session cannot apply this change; UAC was not bypassed.",
+  "output": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+  "rc": 2,
+  "restart_required": null
+}

@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 3,
+  "revision": 4,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -12,13 +12,57 @@
     "note": "evaluate_authorized raises unless the transport carries a verified Windows Sandbox attestation. No Sandbox has ever run, so evaluation is blocked in code. Generation is not implemented."
   },
   "environment": {
-    "windows_sandbox_installed": false,
-    "evidence": "evidence/sandbox-unavailable-2026-10-28.json",
-    "detail": "Windows 10 Pro 19045, HypervisorPresent False, WindowsSandbox.exe absent, zero Sandbox packages. A real preflight cannot be run on this host."
+    "windows_sandbox_available": false,
+    "capability_classification": "BLOCKED_PRIVILEGES",
+    "capability_evidence": "evidence/sandbox-capability-2026-10-28.json",
+    "availability_evidence": "evidence/sandbox-unavailable-2026-10-28.json",
+    "host": {
+      "os": "Windows 10 Pro 22H2, build 19045.7807, x64",
+      "physical_machine": true,
+      "manufacturer_model": "MSI MS-7699",
+      "bios": "American Megatrends V1.2",
+      "cpu": "AMD FX-8350 Eight-Core, 4 cores / 8 logical processors",
+      "ram_gib": 16.0,
+      "free_disk_gib": 23.4,
+      "firmware_virtualization_enabled": true,
+      "vm_monitor_mode_extensions": true,
+      "second_level_address_translation": true,
+      "data_execution_prevention_available": true,
+      "hypervisor_present": false
+    },
+    "optional_feature_state": {
+      "source": "Win32_OptionalFeature (readable without elevation)",
+      "Containers-DisposableClientVM": "Disabled (InstallState=2)",
+      "Microsoft-Hyper-V": "Disabled (InstallState=2)",
+      "Microsoft-Hyper-V-All": "Disabled (InstallState=2)",
+      "VirtualMachinePlatform": "Disabled (InstallState=2)",
+      "HypervisorPlatform": "Disabled (InstallState=2)"
+    },
+    "privileges": {
+      "elevated": false,
+      "integrity_level": "medium (S-1-16-8192)",
+      "administrator_group_member": true,
+      "detail": "UAC-filtered token: the feature is present and disabled, and enabling it needs an elevated session. UAC was not bypassed and no restart was performed."
+    },
+    "enabling_command": "Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart",
+    "enabling_attempt_evidence": "evidence/sandbox-enable-attempt-2026-10-28.json",
+    "detail": "Hardware prerequisites look satisfied, but Windows Sandbox is not installed: WindowsSandbox.exe is absent and the optional feature is disabled. Enabling it requires Foued to accept a UAC prompt and probably restart. Until then no preflight or rendezvous can run on this host."
+  },
+  "interpreter": {
+    "distribution": "official CPython embeddable package (64-bit) from python.org",
+    "version": "3.14.10",
+    "url": "https://www.python.org/ftp/python/3.14.10/python-3.14.10-embed-amd64.zip",
+    "published_sha256": "90905e64a840557d8c1bc4f5b74db3d7ee85e3ffb217611cac1c7813acea4159",
+    "computed_sha256": "90905e64a840557d8c1bc4f5b74db3d7ee85e3ffb217611cac1c7813acea4159",
+    "sha256_source": "python.org release API for Python 3.14.10 (release 1171), read at staging time",
+    "verified": true,
+    "staged_at": "C:\\v9-stage\\py-embed",
+    "evidence": "evidence/python-runtime-2026-10-28.json",
+    "note": "3.13.18 was source-only, so the pinned 64-bit embeddable build with published release metadata is 3.14.10."
   },
   "evidence_scopes": {
-    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json",
-    "sandbox": "none - every Sandbox gate is NOT_RUN"
+    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json",
+    "sandbox": "none - the three Sandbox gates are NOT_RUN; the optional feature is present but disabled and enabling it requires an elevated session"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -26,6 +70,13 @@
     "a preflight-only CLI handshakes, records the attestation and cannot publish a job or evaluate a candidate",
     "a two-token rendezvous harness records ordering and early-visibility of token B",
     "outbox responses are treated as hostile input: size cap, reparse-point rejection, strict schema"
+  ],
+  "revision_4_additions": [
+    "a read-only capability diagnostic classifies the host as BLOCKED_PRIVILEGES, not hardware-incompatible",
+    "the disabled optional feature is distinguished from a missing feature using Win32_OptionalFeature, which needs no elevation",
+    "an official CPython 3.14.10 embeddable distribution is staged only after its SHA-256 matches the value published by python.org",
+    "the staged interpreter is proven to start the agent and to run one fixture job through supervisor + Job Object with tree_empty true",
+    "the full preflight passes interpreter, config and staging gates and stops exactly at the Sandbox launch, because the feature is disabled"
   ],
   "gates": [
     {
@@ -117,7 +168,14 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_backend.py::SandboxConfigMappingTests, InterpreterPreflightTests",
-      "detail": "emitted .wsb is re-parsed; interpreter and agent must sit in read-only mappings; host's own install correctly rejected as non-portable"
+      "detail": "emitted .wsb is re-parsed; interpreter and agent must sit in read-only mappings; the real staged embeddable interpreter passes interpreter_preflight"
+    },
+    {
+      "id": "python_runtime_staged_and_verified",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "evidence/python-runtime-2026-10-28.json",
+      "detail": "CPython 3.14.10 embeddable amd64; SHA-256 and size match the value published by python.org; the staged interpreter starts the agent (nonce echoed, mode preflight) and runs one fixture job through supervisor + Job Object with status ok and tree_empty true. Host-only: inside_sandbox is false."
     },
     {
       "id": "preflight_workflow",
@@ -141,11 +199,18 @@
       "detail": "size cap, reparse-point rejection, strict schema, status whitelist and job-id match enforced on the outbox"
     },
     {
+      "id": "capability_diagnostic",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "evidence/sandbox-capability-2026-10-28.json",
+      "detail": "read-only diagnostic records OS, CPU virtualization flags, RAM, disk, physical hardware, feature state and privilege state; classification BLOCKED_PRIVILEGES, not a hardware conclusion"
+    },
+    {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "Windows Sandbox is not installed on this host; no isolation evidence exists"
+      "detail": "Windows Sandbox is not installed: WindowsSandbox.exe is absent and the feature is disabled; no isolation evidence exists"
     },
     {
       "id": "sandbox_rendezvous_ordering",
@@ -159,14 +224,14 @@
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "no WDAGUtilityAccount handshake has been observed; only rejection paths and a synthetic hello"
+      "detail": "no WDAGUtilityAccount handshake has been observed; the staged interpreter echoes a nonce on the host, where inside_sandbox is correctly false"
     },
     {
       "id": "memory_and_process_caps",
       "status": "PARTIAL",
       "scope": "host",
       "evidence": "winjob.py",
-      "detail": "enforced by the Job Object but not adversarially stress-tested"
+      "detail": "enforced by the Job Object and exercised by one fixture job under the staged interpreter; not adversarially stress-tested"
     },
     {
       "id": "verdict_and_support_cells",

@@ -1,19 +1,97 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 3)
+**Date:** 2026-10-28 (revision 4)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
-Revision 3 repairs the two operational blockers found in review of revision 2
-and adds the workflow and validation needed for a real Sandbox session. It does
-**not** contain a Sandbox result: Windows Sandbox is not installed on this host
-(`evidence/sandbox-unavailable-2026-10-28.json`).
+Revision 3 repaired the two operational blockers found in review of revision 2.
+Revision 4 answers the follow-up question — *can this machine run Sandbox at
+all?* — and stages the interpreter the preflight needs. It still contains **no
+Sandbox result**: the hardware looks capable, but the optional feature is
+disabled and enabling it needs an elevated session, which this agent does not
+have and did not try to obtain.
+
+## Revision 4: capability, not assumption
+
+The revision-3 evidence showed `WindowsSandbox.exe` absent and stopped there.
+That established the feature was not installed, not that the machine was unsuitable.
+The read-only diagnostic (`evidence/windows_sandbox_capability.py`) now records:
+
+| Check | Value |
+|---|---|
+| OS | Windows 10 Pro 22H2, build 19045.7807, x64 |
+| Machine | physical, MSI MS-7699, AMI BIOS V1.2 |
+| CPU | AMD FX-8350, 4 cores / 8 logical processors |
+| Firmware virtualization | enabled |
+| VM monitor mode extensions | true |
+| Second-level address translation | true |
+| RAM / free disk on C: | 16.0 GiB / 23.4 GiB |
+| `HypervisorPresent` | false (expected while the feature is off) |
+| `Containers-DisposableClientVM` | **Disabled** (`Win32_OptionalFeature` InstallState=2) |
+| Session | medium integrity, member of Administrators, UAC-filtered |
+
+`Get-WindowsOptionalFeature` needs elevation, so the state came from
+`Win32_OptionalFeature`, which does not. That distinction matters: the feature
+is **present and disabled**, not absent, so this is a privilege blocker rather
+than a hardware or image blocker.
+
+Classification: `BLOCKED_PRIVILEGES`. The documented command, which has **not**
+been applied, is:
+
+```
+Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
+```
+
+Running it from an unelevated session returns exactly
+`L'opération demandée nécessite une élévation.` (`evidence/sandbox-enable-attempt-2026-10-28.json`,
+`applied: false`, rc 2). UAC was not bypassed, nothing was installed, and the
+machine was not restarted. This step needs Foued.
+
+## Revision 4: the interpreter is now real, pinned and verified
+
+Third-party binaries are not acceptable, so the runtime comes from python.org
+and is verified against python.org's own metadata at staging time
+(`evidence/stage_python_runtime.py`):
+
+- pinned **CPython 3.14.10**, Windows embeddable package (64-bit);
+  3.13.18 was source-only, so it has no Windows binaries to pin;
+- the script reads the release API, takes the published SHA-256 and file size
+  for that exact file, downloads it, and compares what arrived;
+- published and computed SHA-256 are both
+  `90905e64a840557d8c1bc4f5b74db3d7ee85e3ffb217611cac1c7813acea4159`;
+- only after a match does it extract, then runs `interpreter_preflight` and three
+  host checks.
+
+Evidence: `evidence/python-runtime-2026-10-28.json`. The host checks are labelled
+host checks, because that is what they are:
+
+1. the staged interpreter runs a trivial program (`cpython 3.14.10`);
+2. it starts `sandbox_agent.py`, which polls for a session, echoes the nonce with
+   `mode: preflight` and `inside_sandbox: false`, and exits 0 — so the agent
+   correctly refuses to claim the boundary on the host;
+3. it runs one harmless fixture job end to end (agent → supervisor → Job Object →
+   child) and produces `status: ok`, `answer: 7`, `tree_empty: true`, with the
+   response body hash matching.
+
+The staged tree is `C:\v9-stage\py-embed`, mapped read-only. The full preflight
+then passes the interpreter, config and staging gates and stops exactly at the
+launch:
+
+```json
+{"ok": false, "error": "FatalBoundaryError",
+ "detail": "Windows Sandbox is not installed on this host (...WindowsSandbox.exe is absent); the preflight cannot run here",
+ "evaluation_attempted": false, "candidate_files": []}
+```
+
+Evidence: `evidence/preflight-staged-runtime-2026-10-28.json`. This is the
+honest end state: every gate before the Sandbox passes, and the Sandbox gate
+stays `NOT_RUN`.
 
 ## Evidence is split by where it was produced
 
 | Scope | What it proves | Files |
 |---|---|---|
-| **Host** | configs are launchable and bounded, the handshake predicates reject what they must, the response channel is validated, the harness itself works | `tests/unit-test-log.txt`, `evidence/preflight-attempt-2026-10-28.json` |
+| **Host** | configs are launchable and bounded, the handshake predicates reject what they must, the response channel is validated, the harness itself works, and a verified interpreter can run the guest-side runtime | `tests/unit-test-log.txt`, `evidence/python-runtime-2026-10-28.json`, `evidence/preflight-staged-runtime-2026-10-28.json` |
 | **Sandbox** | the isolation actually holds | **empty — every gate is `NOT_RUN`** |
 
 No host result in this document is evidence that the candidate is contained.
@@ -114,35 +192,44 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 | 9 | **Agent could start before `session.json`** | agent polls with timeout; session written before launch | `test_backend.PreflightTests` | host |
 | 10 | **No preflight-only path** | `--preflight` records attestation, publishes nothing | `test_backend.CommandLineTests.test_preflight_failure_is_recorded_and_publishes_nothing` | host |
 | 11 | **Outbox trusted as data** | size cap, reparse-point rejection, strict schema | `test_backend.ResponseTrustTests` | host |
+| 12 | **"Feature absent" was read as "hardware unsupported"** | read-only capability diagnostic; `Win32_OptionalFeature` distinguishes disabled from absent; classification is `BLOCKED_PRIVILEGES` | `evidence/windows_sandbox_capability.py` | host |
+| 13 | **The interpreter had to exist before a Sandbox run could mean anything** | official python.org embeddable build, pinned and hash-checked against published metadata before extraction; agent and one-job host checks | `evidence/stage_python_runtime.py` | host |
 
 ## Residual risks
 
-1. **No Windows Sandbox run exists.** Windows Sandbox is not installed on this
-   host; every Sandbox gate is `NOT_RUN`. See
+1. **No Windows Sandbox run exists.** The optional feature is present but
+   disabled, and enabling it needs an elevated session; every Sandbox gate is
+   `NOT_RUN`. See `evidence/sandbox-capability-2026-10-28.json` and
    `evidence/sandbox-unavailable-2026-10-28.json`.
-2. **The interpreter must be staged by the operator.** V9 cannot fetch or verify a
-   portable Python distribution without network access; the check only rejects
-   obviously non-portable layouts.
-3. **Mapped-folder guest paths and ACL behaviour are unverified.** The config sets
+2. **Enabling the feature is a host change this agent did not make.** It needs
+   Foued to accept a UAC prompt and probably to restart. Windows 10 Pro 22H2 is
+   out of standard support, so servicing for the feature is not guaranteed; that
+   is only established by trying it, with the error recorded if it fails.
+3. **The interpreter is staged and hash-verified, but its Sandbox mapping is not
+   exercised.** The host checks prove the embeddable layout can run the agent and
+   one job; they do not prove the read-only mapping or mapped-folder ACL behaviour
+   inside the guest.
+4. **Mapped-folder guest paths and ACL behaviour are unverified.** The config sets
    `SandboxFolder` explicitly, but whether the guest sees the mapping at that path
    and whether ACL edits are rejected there must be recorded in the preflight.
-4. **`<ProtectedClient>` is not emitted.** Support varies by SKU and an
+5. **`<ProtectedClient>` is not emitted.** Support varies by SKU and an
    unsupported element can stop the Sandbox from starting; it is a documented
    manual hardening step, not something V9 can assert.
-5. **The host-local transport can read the oracle**, by design and by
+6. **The host-local transport can read the oracle**, by design and by
    measurement. Rows it produces carry `authorized: false`.
-6. **Process and memory caps are configured but not stress-tested.**
-7. **No verdict layer.** `k`, `C`, `max_f`, eligibility and saturation exist;
+7. **Process and memory caps are configured but not adversarially stress-tested.**
+   One fixture job confirmed the Job Object path under the staged interpreter.
+8. **No verdict layer.** `k`, `C`, `max_f`, eligibility and saturation exist;
    support-cell classification and PASS/WEAK/FAIL do not, and must be committed
    and hashed before generation.
-8. **Throughput is unmeasured.** One Sandbox at a time and slow cold starts may
+9. **Throughput is unmeasured.** One Sandbox at a time and slow cold starts may
    make a 400-batch schedule impractical if a fresh Sandbox per item is required.
 
 ## Test evidence
 
 ```
 python -m unittest discover -s tests -v
-Ran 88 tests in 121.097s
+Ran 88 tests in 109.057s
 OK
 ```
 

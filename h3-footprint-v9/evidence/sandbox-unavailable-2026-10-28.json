@@ -1,5 +1,5 @@
 {
-  "conclusion": "Windows Sandbox is NOT installed on this host; preflight and rendezvous cannot run here and their gates must stay NOT_RUN",
+  "conclusion": "Windows Sandbox is not available on this host: WindowsSandbox.exe is absent. The optional feature is present but disabled (see sandbox-capability-2026-10-28.json); enabling it requires an elevated session. The preflight and rendezvous cannot run here and their gates must stay NOT_RUN.",
   "host_identity": {
     "computer": "DESKTOP-NN8TBG0",
     "inside_sandbox": false,
@@ -19,7 +19,7 @@
     "windows_sandbox_exe": "C:\\Windows\\System32\\WindowsSandbox.exe",
     "windows_sandbox_exe_present": false
   },
-  "recorded_at": "2026-10-28T09:38:09Z",
+  "recorded_at": "2026-10-28T10:07:00Z",
   "sandbox_gates": [
     "sandbox_isolation_report",
     "sandbox_rendezvous_ordering",

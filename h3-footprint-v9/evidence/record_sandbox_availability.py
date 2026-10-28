@@ -70,8 +70,10 @@ def main() -> int:
     present = report["platform"]["windows_sandbox_exe_present"]
     report["conclusion"] = (
         "Windows Sandbox is launchable on this host" if present
-        else "Windows Sandbox is NOT installed on this host; preflight and rendezvous "
-             "cannot run here and their gates must stay NOT_RUN"
+        else "Windows Sandbox is not available on this host: WindowsSandbox.exe is absent. "
+             "The optional feature is present but disabled (see "
+             "sandbox-capability-2026-10-28.json); enabling it requires an elevated session. "
+             "The preflight and rendezvous cannot run here and their gates must stay NOT_RUN."
     )
     target = HERE / "sandbox-unavailable-2026-10-28.json"
     target.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
