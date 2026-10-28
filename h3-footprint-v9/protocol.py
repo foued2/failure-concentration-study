@@ -44,13 +44,30 @@ def _atomic_write(path: Path, data: bytes) -> None:
     os.replace(tmp, path)
 
 
-def publish_job(staging: Path, job: dict[str, Any], body: bytes | None = None) -> Path:
+def _direct_write(path: Path, data: bytes) -> None:
+    """Write the final name in place, with no temporary file and no rename.
+
+    A folder mapped into a *running* Windows Sandbox rejects ``os.replace`` with
+    ``WinError 32`` (the guest's view holds the source file), so the host cannot
+    use the atomic rename path there. The reader is still protected by ordering:
+    the body is flushed and closed before ``job.json`` appears, and the agent
+    retries any job it cannot parse yet.
+    """
+    with open(path, "wb") as fh:
+        fh.write(data)
+        fh.flush()
+        os.fsync(fh.fileno())
+
+
+def publish_job(staging: Path, job: dict[str, Any], body: bytes | None = None, *,
+                atomic: bool = True) -> Path:
     """Publish exactly one active job. `body` is written once per candidate."""
+    write = _atomic_write if atomic else _direct_write
     staging.mkdir(parents=True, exist_ok=True)
     if body is not None:
-        _atomic_write(staging / BODY_FILENAME, body)
+        write(staging / BODY_FILENAME, body)
     path = staging / JOB_FILENAME
-    _atomic_write(path, json.dumps(job, sort_keys=True).encode("utf-8"))
+    write(path, json.dumps(job, sort_keys=True).encode("utf-8"))
     return path
 
 

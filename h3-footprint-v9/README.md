@@ -73,13 +73,20 @@ python evidence/windows_sandbox_capability.py
 
 On 2026-10-28 the pre-enable diagnosis was `BLOCKED_PRIVILEGES` (hardware
 prerequisites met, feature present but disabled), the enable command was then run
-once under an approved UAC prompt, and the post-enable diagnosis is
-`ENABLED_RESTART_PENDING`: `InstallState=1`, but `WindowsSandbox.exe` is still
-absent until the machine restarts. The command, for reference:
+once under an approved UAC prompt, and after the operator restarted the machine
+the diagnosis is `SUPPORTED_AND_READY_TO_ENABLE`. While the hypervisor runs, the
+CPU SLAT/VMX flags read false; that is masking, not a hardware change. The
+command, for reference:
 
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
 ```
+
+Windows Sandbox has now run here. The preflight handshake is verified
+(`evidence/preflight-sandbox-2026-10-28.json`) and the two-token rendezvous
+**failed** (`evidence/rendezvous-sandbox-2026-10-28.json`): job A was answered,
+job B was never answered. The measured mapping behaviour is in
+`STATUS.json` under `sandbox_mapping_write_constraints`.
 
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
@@ -113,11 +120,16 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 ## What is not done yet
 
-- **Windows Sandbox has never run here.** The optional feature is enabled but
-  not effective until the host restarts (`WindowsSandbox.exe` absent,
-  `HypervisorPresent` false), so no isolation report, no live rendezvous and no
-  `WDAGUtilityAccount` handshake exist (`NOT_RUN`). See
-  `evidence/sandbox-capability-post-enable-2026-10-28.json`.
+- **The one-item broker is not proven.** A Sandbox handshake verifies
+  (`evidence/preflight-sandbox-2026-10-28.json`), but the two-token rendezvous
+  failed: job A was answered, job B was published and never answered. Until that
+  is explained, no isolation report, no live ordering result and no authorized
+  evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
+- **A live mapping constrains the host.** The host cannot `os.replace` inside a
+  folder a running Sandbox maps (`WinError 32`), and the guest cannot label a
+  mapped folder with an integrity level. Staging is now idempotent and job
+  publication is an ordered direct write; the guest scratch lives on its local
+  disk.
 - The handshake *acceptance* path has only been exercised with a synthetic
   `hello.json`; the staged interpreter echoes a real nonce on the host, where
   `inside_sandbox` is correctly false.

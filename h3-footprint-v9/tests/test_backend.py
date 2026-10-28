@@ -588,5 +588,68 @@ class RendezvousTests(unittest.TestCase):
             self.assertFalse(payload["attested"])
 
 
+class StagingTests(unittest.TestCase):
+    """Staging must not rewrite files a live Sandbox mapping holds open."""
+
+    def test_staging_is_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)
+            names = controller.stage_runtime(dest)
+            before = {n: (dest / n).stat().st_mtime_ns for n in names}
+            self.assertEqual(controller.stage_runtime(dest), names)
+            after = {n: (dest / n).stat().st_mtime_ns for n in names}
+            self.assertEqual(before, after, "identical files must not be rewritten")
+
+    def test_verify_only_rejects_a_differing_runtime(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)
+            controller.stage_runtime(dest)
+            (dest / "protocol.py").write_text("# tampered\n", encoding="utf-8")
+            with self.assertRaises(backend.FatalBoundaryError):
+                controller.stage_runtime(dest, verify_only=True)
+            self.assertEqual((dest / "protocol.py").read_text(encoding="utf-8"),
+                             "# tampered\n", "verify_only must not write")
+
+    def test_staging_repairs_a_differing_runtime_when_writing_is_allowed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)
+            controller.stage_runtime(dest)
+            (dest / "protocol.py").write_text("# tampered\n", encoding="utf-8")
+            controller.stage_runtime(dest)
+            self.assertEqual((dest / "protocol.py").read_bytes(),
+                             (V9 / "protocol.py").read_bytes())
+
+
+class PublishTests(unittest.TestCase):
+    """The mapped-folder path cannot rename, so publishing must be able to skip it."""
+
+    def test_direct_publish_is_readable_and_leaves_no_temp_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            staging = Path(tmp)
+            job = {
+                "v9": protocol.JOB_SCHEMA, "job_id": "a" * 32, "sequence": 1,
+                "kind": "system", "body_sha256": protocol.sha256_bytes(b"print(1)\n"),
+                "probe_index": None, "input": None, "limits": {},
+            }
+            protocol.publish_job(staging, job, body=b"print(1)\n", atomic=False)
+            self.assertEqual(protocol.read_job(staging)["job_id"], "a" * 32)
+            self.assertEqual(sorted(p.name for p in staging.iterdir()),
+                             ["body.py", "job.json"])
+
+    def test_direct_publish_overwrites_in_place(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            staging = Path(tmp)
+            for index, body in ((1, b"print(1)\n"), (2, b"print(2)\n")):
+                job = {
+                    "v9": protocol.JOB_SCHEMA, "job_id": str(index) * 32,
+                    "sequence": index, "kind": "system",
+                    "body_sha256": protocol.sha256_bytes(body),
+                    "probe_index": None, "input": None, "limits": {},
+                }
+                protocol.publish_job(staging, job, body=body, atomic=False)
+            self.assertEqual(protocol.read_job(staging)["job_id"], "2" * 32)
+            self.assertEqual((staging / "body.py").read_bytes(), b"print(2)\n")
+
+
 if __name__ == "__main__":
     unittest.main()

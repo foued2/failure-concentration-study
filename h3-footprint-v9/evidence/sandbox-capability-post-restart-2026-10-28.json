@@ -1,0 +1,171 @@
+{
+  "bcdedit": {
+    "err": "",
+    "hypervisor_launch_type": null,
+    "rc": 1
+  },
+  "bios": {
+    "Manufacturer": "American Megatrends Inc.",
+    "ReleaseDate": "/Date(1351209600000)/",
+    "SMBIOSBIOSVersion": "V1.2"
+  },
+  "build_revision": "{\"UBR\":7807,\"DisplayVersion\":\"22H2\"}",
+  "classification": "SUPPORTED_AND_READY_TO_ENABLE",
+  "classification_reason": "Windows Sandbox is installed and enabled; the hypervisor is running, so the CPU virtualization flags are masked and were not used as evidence",
+  "computer_info": {
+    "HyperVRequirementDataExecutionPreventionAvailable": null,
+    "HyperVRequirementSecondLevelAddressTranslation": null,
+    "HyperVRequirementVMMonitorModeExtensions": null,
+    "HyperVRequirementVirtualizationFirmwareEnabled": null,
+    "HyperVisorPresent": true,
+    "OsHardwareAbstractionLayer": "10.0.19041.6456",
+    "WindowsEditionId": "Professional",
+    "WindowsVersion": "2009"
+  },
+  "cpu": {
+    "Architecture": 9,
+    "Name": "AMD FX(tm)-8350 Eight-Core Processor           ",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 8,
+    "SecondLevelAddressTranslationExtensions": false,
+    "VMMonitorModeExtensions": false,
+    "VirtualizationFirmwareEnabled": true
+  },
+  "diagnostic": "windows-sandbox-capability",
+  "disk_c": {
+    "DeviceID": "C:",
+    "FreeSpace": 25235369984,
+    "Size": 119407525888
+  },
+  "dism_featureinfo": {
+    "err": "",
+    "out": "Erreur\ufffd: 740\n\nDes privil\ufffdges \ufffdlev\ufffds sont requis pour ex\ufffdcuter DISM. \nUtilisez une invite de commandes avec \ufffdl\ufffdvation de privil\ufffdges pour effectuer ces t\ufffdches.",
+    "rc": 1
+  },
+  "elevated": false,
+  "extended_security_updates": {
+    "locally_verifiable": false,
+    "note": "ESU enrolment is a licensing state; not established by these checks",
+    "registry_probe": "<empty>"
+  },
+  "facts": {
+    "administrator_group_member": true,
+    "elevated": false,
+    "feature_state_known": true,
+    "firmware_virtualization_enabled": true,
+    "free_disk_gib": 23.5,
+    "hypervisor_present": true,
+    "logical_processors": 8,
+    "ram_gib": 16.0,
+    "restart_pending": false,
+    "sandbox_exe_present": true,
+    "sandbox_feature_install_state": 1,
+    "sandbox_feature_present": true,
+    "second_level_address_translation": false,
+    "virtualization_flags_masked_by_hypervisor": true,
+    "vm_monitor_mode_extensions": false
+  },
+  "no_changes_made": true,
+  "optional_features": {
+    "Containers-DisposableClientVM": {
+      "error": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+      "rc": 2,
+      "state": null
+    },
+    "HypervisorPlatform": {
+      "error": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+      "rc": 2,
+      "state": null
+    },
+    "Microsoft-Hyper-V": {
+      "error": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+      "rc": 2,
+      "state": null
+    },
+    "Microsoft-Hyper-V-All": {
+      "error": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+      "rc": 2,
+      "state": null
+    },
+    "VirtualMachinePlatform": {
+      "error": "ERROR|L'op\ufffdration demand\ufffde n\ufffdcessite une \ufffdl\ufffdvation.",
+      "rc": 2,
+      "state": null
+    }
+  },
+  "os": {
+    "BuildNumber": "19045",
+    "Caption": "Microsoft Windows 10 Professionnel",
+    "InstallDate": "/Date(1783030381000)/",
+    "LastBootUpTime": "/Date(1793184032500)/",
+    "OSArchitecture": "64 bits",
+    "Version": "10.0.19045"
+  },
+  "read_only": true,
+  "recent_hotfixes": [
+    {
+      "HotFixID": "KB5126657",
+      "InstalledOn": {
+        "DateTime": "dimanche 25 octobre 2026 00:00:00",
+        "value": "/Date(1792882800000)/"
+      }
+    },
+    {
+      "HotFixID": "KB5127308",
+      "InstalledOn": {
+        "DateTime": "dimanche 25 octobre 2026 00:00:00",
+        "value": "/Date(1792882800000)/"
+      }
+    },
+    {
+      "HotFixID": "KB5127689",
+      "InstalledOn": {
+        "DateTime": "dimanche 25 octobre 2026 00:00:00",
+        "value": "/Date(1792882800000)/"
+      }
+    }
+  ],
+  "recommended_command": "Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart",
+  "recommended_command_note": "Run from an elevated PowerShell session. No restart was performed by this diagnostic; a restart may be required before Windows Sandbox can start.",
+  "runtime": {
+    "windows_sandbox_exe": "C:\\Windows\\System32\\WindowsSandbox.exe",
+    "windows_sandbox_exe_present": true
+  },
+  "system": {
+    "HypervisorPresent": true,
+    "Manufacturer": "MSI",
+    "Model": "MS-7699",
+    "SystemType": "x64-based PC",
+    "TotalPhysicalMemory": 17179004928
+  },
+  "systeminfo_hyperv_lines": [
+    "Configuration requise pour Hyper-V:         Un hyperviseur a \ufffdt\ufffd d\ufffdtect\ufffd. Les fonctionnalit\ufffds n\ufffdcessaires \ufffd Hyper-V ne seront pas affich\ufffdes."
+  ],
+  "token": {
+    "administrator_group_member": true,
+    "elevated": false,
+    "note": "membership is read from the token group list; a member of Administrators holding a medium-integrity token is UAC-filtered, so enabling the feature needs a consent prompt"
+  },
+  "wmi_optional_features": {
+    "Containers-DisposableClientVM": {
+      "install_state": 1,
+      "label": "Enabled"
+    },
+    "HypervisorPlatform": {
+      "install_state": 2,
+      "label": "Disabled"
+    },
+    "Microsoft-Hyper-V": {
+      "install_state": 2,
+      "label": "Disabled"
+    },
+    "Microsoft-Hyper-V-All": {
+      "install_state": 2,
+      "label": "Disabled"
+    },
+    "VirtualMachinePlatform": {
+      "install_state": 2,
+      "label": "Disabled"
+    }
+  }
+}

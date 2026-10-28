@@ -1,0 +1,7 @@
+{
+  "attested": true,
+  "detail": "no Sandbox response for job 1e903b81a4bb44038ccff2012497285e within 125s",
+  "error": "FatalBoundaryError",
+  "ordering_ok": false,
+  "transport": "windows-sandbox"
+}

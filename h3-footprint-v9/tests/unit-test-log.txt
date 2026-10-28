@@ -21,6 +21,8 @@ test_preflight_rejects_a_wrong_identity (test_backend.PreflightTests.test_prefli
 test_preflight_rejects_an_untrusted_inside_sandbox_flag (test_backend.PreflightTests.test_preflight_rejects_an_untrusted_inside_sandbox_flag) ... ok
 test_preflight_times_out_without_an_agent (test_backend.PreflightTests.test_preflight_times_out_without_an_agent) ... ok
 test_valid_handshake_records_attestation_and_publishes_no_job (test_backend.PreflightTests.test_valid_handshake_records_attestation_and_publishes_no_job) ... ok
+test_direct_publish_is_readable_and_leaves_no_temp_files (test_backend.PublishTests.test_direct_publish_is_readable_and_leaves_no_temp_files) ... ok
+test_direct_publish_overwrites_in_place (test_backend.PublishTests.test_direct_publish_overwrites_in_place) ... ok
 test_cli_refuses_rendezvous_on_the_host_without_consent (test_backend.RendezvousTests.test_cli_refuses_rendezvous_on_the_host_without_consent) ... ok
 test_cli_runs_the_harness_with_explicit_host_consent (test_backend.RendezvousTests.test_cli_runs_the_harness_with_explicit_host_consent) ... ok
 test_tokens_are_ordered_and_distinct (test_backend.RendezvousTests.test_tokens_are_ordered_and_distinct) ... ok
@@ -40,6 +42,9 @@ test_interpreter_argument_is_mandatory (test_backend.SandboxConfigMappingTests.t
 test_interpreter_is_covered_by_a_read_only_mapping (test_backend.SandboxConfigMappingTests.test_interpreter_is_covered_by_a_read_only_mapping) ... ok
 test_preflight_mode_differs_from_serve_mode (test_backend.SandboxConfigMappingTests.test_preflight_mode_differs_from_serve_mode) ... ok
 test_unmapped_interpreter_is_rejected (test_backend.SandboxConfigMappingTests.test_unmapped_interpreter_is_rejected) ... ok
+test_staging_is_idempotent (test_backend.StagingTests.test_staging_is_idempotent) ... ok
+test_staging_repairs_a_differing_runtime_when_writing_is_allowed (test_backend.StagingTests.test_staging_repairs_a_differing_runtime_when_writing_is_allowed) ... ok
+test_verify_only_rejects_a_differing_runtime (test_backend.StagingTests.test_verify_only_rejects_a_differing_runtime) ... ok
 test_authorized_evaluation_refuses_host_transport (test_backend.TransportTests.test_authorized_evaluation_refuses_host_transport) ... ok
 test_controller_requires_an_explicit_transport (test_backend.TransportTests.test_controller_requires_an_explicit_transport) ... ok
 test_handshake_rejects_a_stale_nonce (test_backend.TransportTests.test_handshake_rejects_a_stale_nonce) ... ok
@@ -93,6 +98,6 @@ test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.
 test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
 
 ----------------------------------------------------------------------
-Ran 88 tests in 109.057s
+Ran 93 tests in 109.241s
 
 OK

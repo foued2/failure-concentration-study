@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 5. Every command below exists and is exercised by the test suite.
+Revision 6. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -144,11 +144,27 @@ The fixture reports must be saved verbatim (file hashes included), not summarise
 
 ## Step 2: two-token rendezvous (Sandbox)
 
+Order matters, and it cost three runs to establish it:
+
+1. close every running Sandbox first - only one instance can exist, and a
+   stopping instance keeps the mapped folder locked;
+2. stage the runtime into the inbox and write `session.json` **before** the
+   Sandbox starts, because the host cannot rename files inside a live mapping;
+3. start the controller (it writes `session.json`, then waits), and only then
+   launch `WindowsSandbox.exe` with the serve-mode `.wsb`;
+4. the guest scratch is on the guest's local disk; a mapped folder cannot take
+   an integrity label, and the supervisor refuses to run without it.
+
 ```
 python controller.py --rendezvous --transport sandbox ^
   --inbox C:\v9-stage\in --outbox C:\v9-stage\out ^
   --report C:\v9-stage\rendezvous-log.json
 ```
+
+Result on 2026-10-28: **FAIL**. Job A was answered correctly (111,
+`tree_empty: true`) five seconds after launch; job B was published and never
+answered, and no response for B appeared four minutes later. `ordering_ok` is
+false. Do not proceed to step 3 or 4 on this result.
 
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It

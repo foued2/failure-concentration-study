@@ -34,15 +34,24 @@ CREATE_NO_WINDOW = 0x08000000
 MARKER = "V9RESULT"
 
 
-def _set_low_integrity(path: Path) -> bool:
-    """Scratch must be writable by the low-integrity child."""
+def _set_low_integrity(path: Path) -> dict:
+    """Scratch must be writable by the low-integrity child.
+
+    Returns the outcome *and* the tool's own error text: inside Windows Sandbox
+    this fails on a mapped folder (the guest cannot label a redirected path), so
+    the scratch directory has to live on the guest's local disk and the failure
+    has to be visible in the response rather than guessed at.
+    """
     if sys.platform != "win32":
-        return True
+        return {"ok": True, "error": None, "skipped": "non-windows"}
     proc = subprocess.run(
         ["icacls", str(path), "/setintegritylevel", "(OI)(CI)Low"],
         capture_output=True, text=True, timeout=30, encoding="utf-8", errors="replace",
     )
-    return proc.returncode == 0
+    if proc.returncode == 0:
+        return {"ok": True, "error": None, "path": str(path)}
+    detail = (proc.stderr.strip() or proc.stdout.strip() or f"icacls rc={proc.returncode}")
+    return {"ok": False, "error": detail[:500], "path": str(path)}
 
 
 def _minimal_env(scratch: Path) -> dict[str, str]:
@@ -152,7 +161,7 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         locks.append({"target": "staging", **protocol.lock_dir(staging)})
     if lock_response:
         locks.append({"target": "response", **protocol.lock_dir(response_dir)})
-    if not (scratch_low and all(lock["ok"] for lock in locks)):
+    if not (scratch_low["ok"] and all(lock["ok"] for lock in locks)):
         if lock_staging:
             protocol.unlock_dir(staging)
         if lock_response:
@@ -160,7 +169,10 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         record = {**base, "status": "boundary_error", "answer": None,
                   "timed_out": False, "tree_empty": True, "exit_code": None,
                   "raw_stdout": "", "stdout_bytes": 0, "stdout_overflow": False,
-                  "boundary": {"scratch_low_integrity": scratch_low, "locks": locks}}
+                  "boundary": {"scratch_low_integrity": scratch_low["ok"],
+                               "scratch_error": scratch_low["error"],
+                               "scratch_path": scratch_low.get("path"),
+                               "locks": locks}}
         protocol.write_response_exclusive(response_dir, record)
         return record
 

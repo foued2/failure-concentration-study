@@ -309,26 +309,35 @@ def main() -> int:
     facts["restart_pending"] = (
         sandbox_state == 1 and not facts["sandbox_exe_present"]
     )
+    # Once a hypervisor is running it owns the virtualization features, so
+    # Win32_Processor reports VMMonitorModeExtensions and SLAT as false and
+    # systeminfo stops displaying the Hyper-V requirements. That is not a
+    # hardware regression, so the flag checks below are skipped in that case.
+    masked = bool(hypervisor)
+    facts["virtualization_flags_masked_by_hypervisor"] = masked
     report["facts"] = facts
 
-    if facts["firmware_virtualization_enabled"] is False:
-        classification = "BLOCKED_FIRMWARE_VIRTUALIZATION"
-        reason = "firmware virtualization is disabled; enable VT-x/AMD-V in firmware"
-    elif facts["vm_monitor_mode_extensions"] is False:
-        classification = "BLOCKED_HARDWARE_REQUIREMENT"
-        reason = "CPU does not expose VM monitor mode extensions"
-    elif facts["second_level_address_translation"] is False:
-        classification = "BLOCKED_HARDWARE_REQUIREMENT"
-        reason = "CPU does not expose second-level address translation (EPT/NPT)"
-    elif (facts["ram_gib"] or 0) < 4 or (facts["logical_processors"] or 0) < 2:
+    if (facts["ram_gib"] or 0) < 4 or (facts["logical_processors"] or 0) < 2:
         classification = "BLOCKED_HARDWARE_REQUIREMENT"
         reason = "less than 4 GB RAM or fewer than 2 logical processors"
     elif sandbox_state == 3:
         classification = "BLOCKED_WINDOWS_FEATURE_OR_POLICY"
         reason = "the Windows Sandbox optional feature is absent from this image"
+    elif not masked and facts["firmware_virtualization_enabled"] is False:
+        classification = "BLOCKED_FIRMWARE_VIRTUALIZATION"
+        reason = "firmware virtualization is disabled; enable VT-x/AMD-V in firmware"
+    elif not masked and facts["vm_monitor_mode_extensions"] is False:
+        classification = "BLOCKED_HARDWARE_REQUIREMENT"
+        reason = "CPU does not expose VM monitor mode extensions"
+    elif not masked and facts["second_level_address_translation"] is False:
+        classification = "BLOCKED_HARDWARE_REQUIREMENT"
+        reason = "CPU does not expose second-level address translation (EPT/NPT)"
     elif sandbox_state == 1 and facts["sandbox_exe_present"]:
         classification = "SUPPORTED_AND_READY_TO_ENABLE"
-        reason = "Windows Sandbox is already installed and enabled"
+        reason = "Windows Sandbox is installed and enabled"
+        if masked:
+            reason += ("; the hypervisor is running, so the CPU virtualization flags are "
+                       "masked and were not used as evidence")
     elif sandbox_state == 1:
         classification = "ENABLED_RESTART_PENDING"
         reason = ("the optional feature is enabled (InstallState=1) but WindowsSandbox.exe "

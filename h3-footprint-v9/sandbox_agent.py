@@ -17,6 +17,7 @@ import argparse
 import json
 import os
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -148,7 +149,11 @@ def main() -> None:
     if args.handshake_only:
         return
 
-    scratch = Path(args.scratch) if args.scratch else outbox / "scratch"
+    # The scratch directory must be on the guest's local disk: a mapped folder
+    # cannot take an integrity label, so icacls fails there and the supervisor
+    # refuses to run the child (status boundary_error).
+    scratch = (Path(args.scratch) if args.scratch
+               else Path(tempfile.gettempdir()) / "h3-scratch")
     serve(inbox, outbox, scratch, timeout=args.timeout,
           memory_bytes=args.memory_bytes, max_processes=args.max_processes,
           max_jobs=args.max_jobs)

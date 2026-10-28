@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 5,
+  "revision": 6,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -9,12 +9,12 @@
   "authorization": {
     "generation": false,
     "evaluation": false,
-    "note": "evaluate_authorized raises unless the transport carries a verified Windows Sandbox attestation. No Sandbox has ever run, so evaluation is blocked in code. Generation is not implemented."
+    "note": "evaluate_authorized raises unless the transport carries a verified Windows Sandbox attestation, and a real handshake now satisfies that check. Evaluation is still refused by decision: the ordering gate failed, the isolation probes have not run and the verdict layer does not exist. Generation is not implemented."
   },
   "environment": {
-    "windows_sandbox_available": false,
-    "capability_classification": "ENABLED_RESTART_PENDING",
-    "capability_evidence": "evidence/sandbox-capability-post-enable-2026-10-28.json",
+    "windows_sandbox_available": true,
+    "capability_classification": "SUPPORTED_AND_READY_TO_ENABLE",
+    "capability_evidence": "evidence/sandbox-capability-post-restart-2026-10-28.json",
     "capability_evidence_before_enable": "evidence/sandbox-capability-2026-10-28.json",
     "availability_evidence": "evidence/sandbox-unavailable-2026-10-28.json",
     "host": {
@@ -24,16 +24,17 @@
       "bios": "American Megatrends V1.2",
       "cpu": "AMD FX-8350 Eight-Core, 4 cores / 8 logical processors",
       "ram_gib": 16.0,
-      "free_disk_gib": 23.4,
+      "free_disk_gib": 23.5,
       "firmware_virtualization_enabled": true,
       "vm_monitor_mode_extensions": true,
       "second_level_address_translation": true,
       "data_execution_prevention_available": true,
-      "hypervisor_present": false
+      "hypervisor_present": true,
+      "note": "The two SLAT/VMX flags were true before the enable and false after the restart, because a running hypervisor owns those features and systeminfo stops displaying the Hyper-V requirements. The diagnostic records masked_by_hypervisor and does not treat this as a hardware regression."
     },
     "optional_feature_state": {
       "source": "Win32_OptionalFeature (readable without elevation)",
-      "Containers-DisposableClientVM": "Enabled (InstallState=1), not yet effective: WindowsSandbox.exe absent and HypervisorPresent false - restart pending",
+      "Containers-DisposableClientVM": "Enabled (InstallState=1); WindowsSandbox.exe present; hypervisor running; a Sandbox instance has been launched",
       "Microsoft-Hyper-V": "Disabled (InstallState=2)",
       "Microsoft-Hyper-V-All": "Disabled (InstallState=2)",
       "VirtualMachinePlatform": "Disabled (InstallState=2)",
@@ -51,8 +52,9 @@
     },
     "restart": {
       "required": true,
-      "performed": false,
-      "note": "The agent does not restart the machine. Foued restarts, then the capability diagnostic and the preflight are re-run."
+      "performed": true,
+      "performed_at": "2026-10-28T11:40:32+01:00 (LastBootUpTime, after the enable at 11:31:10)",
+      "note": "Foued restarted the machine. The agent did not restart it. The post-restart diagnostic reports InstallState=1, WindowsSandbox.exe present and HypervisorPresent true."
     },
     "privileges": {
       "elevated": false,
@@ -62,7 +64,7 @@
     },
     "enabling_command": "Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart",
     "enabling_attempt_evidence": "evidence/sandbox-enable-attempt-2026-10-28.json",
-    "detail": "The feature is now enabled but not effective: WindowsSandbox.exe is still absent and HypervisorPresent is false, so Windows Sandbox cannot start until the machine is restarted. No preflight or rendezvous can run before that restart. The host is not hardware-incompatible."
+    "detail": "Windows Sandbox now runs on this host: the feature is enabled, WindowsSandbox.exe is present and the hypervisor is running. A real preflight handshake from WDAGUtilityAccount was verified. The two-token rendezvous then failed, so no ordering evidence exists and evaluation stays blocked."
   },
   "interpreter": {
     "distribution": "official CPython embeddable package (64-bit) from python.org",
@@ -77,8 +79,8 @@
     "note": "3.13.18 was source-only, so the pinned 64-bit embeddable build with published release metadata is 3.14.10."
   },
   "evidence_scopes": {
-    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json",
-    "sandbox": "none - the three Sandbox gates are NOT_RUN; the optional feature is enabled but not effective until the host is restarted"
+    "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json, evidence/sandbox-capability-post-restart-2026-10-28.json",
+    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); no isolation probes were run"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -100,13 +102,20 @@
     "the post-enable diagnosis is ENABLED_RESTART_PENDING: InstallState=1, WindowsSandbox.exe absent, HypervisorPresent false",
     "no Sandbox gate changed status: a restart is required, and the agent does not restart the machine"
   ],
+  "revision_6_additions": [
+    "after the operator restart the diagnostic is SUPPORTED_AND_READY_TO_ENABLE and the SLAT/VMX flags are recorded as masked by the running hypervisor, not as a hardware failure",
+    "a real preflight ran: WindowsSandbox.exe launched, the agent returned the nonce as WDAGUtilityAccount with inside_sandbox true, and no job was published",
+    "a live mapping rejects host-side renames (WinError 32), so staging became idempotent/verify-only and job publication uses an ordered direct write instead of a rename",
+    "the guest cannot set an integrity label on a mapped folder, so the scratch directory moved to the guest's local temp and the failure text is now recorded in the response",
+    "the two-token rendezvous failed: job A was answered (111, tree_empty true) and job B was never answered, so ordering is not established and evaluation stays blocked"
+  ],
   "gates": [
     {
       "id": "unit_tests",
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "88 tests, 0 failures"
+      "detail": "93 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -235,25 +244,32 @@
       "detail": "the documented command ran in an elevated session obtained through one approved UAC consent prompt and reported applied=true, restart_needed=true; the post-enable diagnostic confirms InstallState=1 but WindowsSandbox.exe is still absent, so the feature is enabled but not effective"
     },
     {
+      "id": "sandbox_mapping_write_constraints",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::StagingTests, PublishTests",
+      "detail": "measured on a live mapping: create, direct write and delete succeed, os.replace fails with WinError 32, and icacls cannot label a mapped folder. Staging is therefore idempotent/verify-only and job publication is an ordered direct write"
+    },
+    {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "the optional feature is enabled but not effective until the host restarts; WindowsSandbox.exe is absent and the hypervisor is not running, so no isolation evidence exists"
+      "detail": "Windows Sandbox runs, but the isolation probes (host read denied, network blocked, read-only inbox, junction rejected) have not been executed; no isolation claim is made"
     },
     {
       "id": "sandbox_rendezvous_ordering",
-      "status": "NOT_RUN",
+      "status": "FAIL",
       "scope": "sandbox",
-      "evidence": null,
-      "detail": "harness exists and passes on the host transport; live mapped-folder ordering untested, and cannot run before the restart"
+      "evidence": "evidence/rendezvous-sandbox-2026-10-28.json, evidence/rendezvous-response-A-2026-10-28.json, evidence/rendezvous-job-B-2026-10-28.json",
+      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s and still none four minutes later). The guest never observed the rewritten job.json, so a late-visibility ordering hazard cannot be excluded"
     },
     {
       "id": "sandbox_agent_acceptance",
-      "status": "NOT_RUN",
+      "status": "PASS",
       "scope": "sandbox",
-      "evidence": null,
-      "detail": "no WDAGUtilityAccount handshake has been observed; the staged interpreter echoes a nonce on the host, where inside_sandbox is correctly false"
+      "evidence": "evidence/preflight-sandbox-2026-10-28.json",
+      "detail": "verified handshake: nonce matched, account WDAGUtilityAccount, inside_sandbox true, computer 0E3D64FC-DC7E-4, jobs_published 0, no response files; evaluation_attempted false"
     },
     {
       "id": "memory_and_process_caps",
@@ -281,7 +297,7 @@
       "status": "BLOCKED",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "requires a verified Sandbox attestation; none exists"
+      "detail": "the handshake now verifies, so the code would authorise execution, but the ordering gate FAILED and the verdict layer is missing; evaluation stays blocked by decision, not by the code alone"
     }
   ]
 }

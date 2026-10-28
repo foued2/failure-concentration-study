@@ -63,12 +63,35 @@ __all__ = [
 ]
 
 
-def stage_runtime(dest: Path | str) -> list[str]:
-    """Copy the secret-free runtime into a staging or inbox directory."""
+def stage_runtime(dest: Path | str, *, verify_only: bool = False) -> list[str]:
+    """Copy the secret-free runtime into a staging or inbox directory.
+
+    Staging is idempotent. Files that already match are left untouched, because
+    a running Sandbox holds its mapped folders open and the host cannot overwrite
+    them: attempting the copy produced ``WinError 32`` on a live mapping.
+    ``verify_only`` turns a mismatch into a boundary error instead of a write.
+    """
     dest = Path(dest)
     dest.mkdir(parents=True, exist_ok=True)
     for name in SANDBOX_RUNTIME_FILES:
-        shutil.copy2(HERE / name, dest / name)
+        source = HERE / name
+        target = dest / name
+        identical = target.is_file() and target.read_bytes() == source.read_bytes()
+        if identical:
+            continue
+        if verify_only:
+            raise backend.FatalBoundaryError(
+                f"{target} is missing or differs from {source}; restage the runtime "
+                "before launching the Sandbox, because a live mapping cannot be "
+                "overwritten from the host"
+            )
+        try:
+            shutil.copy2(source, target)
+        except PermissionError as exc:
+            raise backend.FatalBoundaryError(
+                f"cannot restage {target}: a running Sandbox holds the mapped folder "
+                f"open ({exc}); close the Sandbox, restage, then launch it again"
+            ) from exc
     return list(SANDBOX_RUNTIME_FILES)
 
 
@@ -207,7 +230,10 @@ class Controller:
             self.transport.runtime = self.runtime
         elif self._case_paths is not None:
             # The agent itself must arrive through the read-only inbox mapping.
-            stage_runtime(self._case_paths[0])
+            # Once that mapping is live the guest holds the files open, so staging
+            # here is a verification step, not a rewrite.
+            stage_runtime(self._case_paths[0],
+                          verify_only=self.transport.isolation_verified)
 
     # -- boundary helpers ----------------------------------------------------
 
@@ -243,7 +269,10 @@ class Controller:
                 "max_processes": self.max_processes,
             },
         }
-        protocol.publish_job(staging, job, body=body)
+        protocol.publish_job(
+            staging, job, body=body,
+            atomic=not getattr(self.transport, "requires_sandbox", False),
+        )
         return job
 
     def _verify(self, job: dict[str, Any], record: dict[str, Any]) -> None:
@@ -449,6 +478,7 @@ def _cli(argv: list[str] | None = None) -> int:
         transport = backend.WindowsSandboxTransport(
             handshake_timeout=args.handshake_timeout
         )
+        stage_runtime(Path(args.inbox))
         transport.start(Path(args.inbox), Path(args.outbox))
         ctl = Controller(work_root, transport=transport,
                          case_paths=(Path(args.inbox), Path(args.outbox),
@@ -492,6 +522,7 @@ def _rendezvous_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -
     inbox, outbox = Path(args.inbox), Path(args.outbox)
 
     if args.transport == "sandbox":
+        stage_runtime(inbox)
         transport = backend.WindowsSandboxTransport(handshake_timeout=args.handshake_timeout)
         try:
             transport.start(inbox, outbox)

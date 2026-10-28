@@ -4,3 +4,5 @@ generation/work/
 sandbox-runtime/
 case/
 *.tmp
+runs/
+

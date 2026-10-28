@@ -1,6 +1,6 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 5)
+**Date:** 2026-10-28 (revision 6)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
@@ -8,9 +8,10 @@ Revision 3 repaired the two operational blockers found in review of revision 2.
 Revision 4 answered the follow-up question — *can this machine run Sandbox at
 all?* — and staged the interpreter the preflight needs. Revision 5 applied the
 documented enable command in a session elevated through a single approved UAC
-consent prompt, and records the raw result verbatim. It still contains **no
-Sandbox result**: the feature is enabled but not effective until the machine is
-restarted, and the agent does not restart it.
+consent prompt. Revision 6 is the first with the Sandbox actually running: the
+preflight handshake verifies, and the two-token rendezvous **fails**. The failure
+is the finding: the host-to-guest direction of the mapped folder did not deliver
+a second job, so no ordering claim can be made and evaluation stays blocked.
 
 ## Revision 4: capability, not assumption
 
@@ -78,6 +79,55 @@ The diagnostic ladder now separates the three states that revision 4 conflated:
 absent (`InstallState=3`), disabled (`InstallState=2`), and enabled but restart
 pending (`InstallState=1` with `WindowsSandbox.exe` missing). It also accepts
 `--out`, so a new diagnosis cannot silently overwrite an earlier one.
+
+## Revision 6: the Sandbox runs, the broker does not
+
+After Foued restarted the machine, the post-restart diagnosis
+(`evidence/sandbox-capability-post-restart-2026-10-28.json`) is
+`SUPPORTED_AND_READY_TO_ENABLE`: `InstallState=1`, `WindowsSandbox.exe` present,
+`HypervisorPresent` true. `VMMonitorModeExtensions` and SLAT read false in the
+same report because a running hypervisor owns those features — `systeminfo`
+says so explicitly ("un hyperviseur a été détecté"). The diagnostic now records
+`virtualization_flags_masked_by_hypervisor` and stops treating that masking as a
+hardware verdict, which the revision-5 ladder would have reported as
+`BLOCKED_HARDWARE_REQUIREMENT` on a host that had just started a Sandbox.
+
+**Preflight passes.** A real Sandbox was launched and the agent replied with the
+host nonce as `WDAGUtilityAccount`, `inside_sandbox: true`, computer
+`0E3D64FC-DC7E-4`, `jobs_published: 0`, no response files
+(`evidence/preflight-sandbox-2026-10-28.json`). This is the first Sandbox
+evidence in V9.
+
+**Rendezvous fails.** `evidence/rendezvous-sandbox-2026-10-28.json` records
+`ordering_ok: false`. Job A (token 111) was answered in five seconds with
+`tree_empty: true`; job B (token 222) was published and never answered, and no
+response for B existed four minutes later. The raw job and response files are
+committed beside the report. Because B's invisibility is indistinguishable from
+a slow refresh, the ordering hazard the harness exists to exclude is **not**
+excluded.
+
+Three transport defects surfaced on the way and are fixed, with tests:
+
+1. **A live mapping rejects renames.** `os.replace` inside a mapped folder fails
+   with `WinError 32` while the Sandbox holds the view, so the atomic
+   write-then-rename pattern could not publish a single job. Publication is now
+   an ordered direct write: body flushed and closed, `job.json` last, and the
+   agent already retries an unparseable job.
+2. **Staging after launch is impossible.** The controller re-staged the runtime
+   into the inbox after the handshake and hit the same error. Staging is now
+   idempotent and, once an attestation exists, verification-only.
+3. **The guest cannot label a mapped folder.** `icacls /setintegritylevel` on
+   the scratch directory failed inside the Sandbox (`scratch_low_integrity:
+   false`, `boundary_error`), because that directory was inside the moved
+   outbox. The scratch now lives on the guest's local disk and the failure text
+   is recorded in the response instead of being inferred.
+
+What is *not* established: why job B was never observed. The two candidates are
+a stale guest-side view of the rewritten `job.json` and an agent that stopped
+after its first job; the current harness cannot distinguish them, because
+nothing on the guest side records that it is alive. Answering that needs a guest
+liveness record or a per-job filename, both of which are protocol changes for
+design review, not a quiet patch before an evidence run.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 
@@ -227,22 +277,23 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 | 12 | **"Feature absent" was read as "hardware unsupported"** | read-only capability diagnostic; `Win32_OptionalFeature` distinguishes disabled from absent; the pre-enable classification was `BLOCKED_PRIVILEGES` | `evidence/windows_sandbox_capability.py` | host |
 | 13 | **The interpreter had to exist before a Sandbox run could mean anything** | official python.org embeddable build, pinned and hash-checked against published metadata before extraction; agent and one-job host checks | `evidence/stage_python_runtime.py` | host |
 | 14 | **"Blocked on privileges" is not an outcome** | one documented enable command under an approved UAC prompt, raw result committed verbatim; post-enable diagnosis `ENABLED_RESTART_PENDING`; Sandbox gates unchanged | `evidence/sandbox-enable-elevated-2026-10-28.json`, `evidence/sandbox-capability-post-enable-2026-10-28.json` | host |
+| 15 | **The hardware verdict flipped when the hypervisor started** | SLAT/VMX masking recorded as `virtualization_flags_masked_by_hypervisor`; not treated as a hardware failure | `evidence/windows_sandbox_capability.py`, `evidence/sandbox-capability-post-restart-2026-10-28.json` | host |
+| 16 | **A live mapping rejects renames, so no job could be published** | ordered direct write (body first, `job.json` last), idempotent verify-only staging | `tests/test_backend.py::PublishTests, StagingTests` | host |
+| 17 | **The guest scratch could not take an integrity label on a mapped folder** | scratch moved to the guest's local disk; the `icacls` error is recorded in the response | `supervisor.py`, `sandbox_agent.py` | host |
 
 ## Residual risks
 
-1. **No Windows Sandbox run exists.** The optional feature is enabled but not
-   effective until the host restarts (`WindowsSandbox.exe` absent,
-   `HypervisorPresent` false), so every Sandbox gate is `NOT_RUN`. See
-   `evidence/sandbox-capability-post-enable-2026-10-28.json` and
-   `evidence/sandbox-unavailable-2026-10-28.json`.
-2. **Enabling the feature was a host change made under operator consent, and it
-   is not complete.** Foued approved one UAC prompt; the agent ran the documented
-   command exactly once and recorded the result
-   (`evidence/sandbox-enable-elevated-2026-10-28.json`). A restart is still
-   required and the agent does not perform it. Windows 10 Pro 22H2 is out of
-   standard support, so whether the restart makes the feature effective is only
-   established by trying it, with the outcome recorded either way. ESU coverage
-   before running untrusted generated code remains an operator decision.
+1. **No isolation report and no ordering proof.** A Sandbox handshake verifies,
+   but the two-token rendezvous failed: job B was never answered, so a mapping
+   that exposes a later job early cannot be excluded. Every isolation probe is
+   still `NOT_RUN` (`evidence/rendezvous-sandbox-2026-10-28.json`,
+   `evidence/preflight-sandbox-2026-10-28.json`).
+2. **Enabling the feature was a host change made under operator consent.** Foued
+   approved one UAC prompt; the agent ran the documented command exactly once,
+   recorded the result, and did not restart anything. Windows 10 Pro 22H2 is out
+   of standard support, so the fact that the feature works on this build is
+   observed, not guaranteed. ESU coverage before running untrusted generated
+   code remains an operator decision.
 3. **The interpreter is staged and hash-verified, but its Sandbox mapping is not
    exercised.** The host checks prove the embeddable layout can run the agent and
    one job; they do not prove the read-only mapping or mapped-folder ACL behaviour

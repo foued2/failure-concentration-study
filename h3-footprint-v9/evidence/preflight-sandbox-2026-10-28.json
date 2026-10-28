@@ -1,0 +1,143 @@
+{
+  "candidate_files": [],
+  "config": {
+    "checks": {
+      "agent_mapped_read_only": true,
+      "at_least_one_read_only_mapping": true,
+      "audio_input_disabled": true,
+      "clipboard_disabled": true,
+      "guest_paths_absolute": true,
+      "guest_paths_unique": true,
+      "handshake_only_matches_mode": true,
+      "interpreter_is_python": true,
+      "interpreter_mapped_read_only": true,
+      "networking_disabled": true,
+      "no_host_path_in_command": true,
+      "outbox_is_the_only_writable_mapping": true,
+      "parses": true,
+      "printer_disabled": true,
+      "vgpu_disabled": true,
+      "video_input_disabled": true
+    },
+    "command": "\"C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-py\\python.exe\" \"C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-in\\sandbox_agent.py\" --inbox \"C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-in\" --outbox \"C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-out\" --handshake-only",
+    "mappings": [
+      {
+        "host": "C:\\v9-stage\\in",
+        "readonly": true,
+        "sandbox": "C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-in"
+      },
+      {
+        "host": "C:\\v9-stage\\out",
+        "readonly": false,
+        "sandbox": "C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-out"
+      },
+      {
+        "host": "C:\\v9-stage\\py-embed",
+        "readonly": true,
+        "sandbox": "C:\\Users\\WDAGUtilityAccount\\Desktop\\h3-py"
+      }
+    ],
+    "ok": true,
+    "violations": []
+  },
+  "evaluation_attempted": false,
+  "host_identity": {
+    "computer": "DESKTOP-NN8TBG0",
+    "inside_sandbox": false,
+    "source": "GetUserNameW",
+    "user": "Foued"
+  },
+  "interpreter": {
+    "checks": {
+      "directory_exists": true,
+      "interpreter_present": true,
+      "no_venv_marker": true,
+      "runtime_dll_present": true,
+      "stdlib_zip_present": true
+    },
+    "files": [
+      "LICENSE.txt",
+      "_asyncio.pyd",
+      "_bz2.pyd",
+      "_ctypes.pyd",
+      "_decimal.pyd",
+      "_elementtree.pyd",
+      "_hashlib.pyd",
+      "_lzma.pyd",
+      "_multiprocessing.pyd",
+      "_overlapped.pyd",
+      "_queue.pyd",
+      "_remote_debugging.pyd",
+      "_socket.pyd",
+      "_sqlite3.pyd",
+      "_ssl.pyd",
+      "_uuid.pyd",
+      "_wmi.pyd",
+      "_zoneinfo.pyd",
+      "_zstd.pyd",
+      "libcrypto-3.dll",
+      "libffi-8.dll",
+      "libssl-3.dll",
+      "libtommath.dll",
+      "pyexpat.pyd",
+      "python.cat",
+      "python.exe",
+      "python3.dll",
+      "python314._pth",
+      "python314.dll",
+      "python314.zip",
+      "pythonw.exe",
+      "select.pyd",
+      "sqlite3.dll",
+      "unicodedata.pyd",
+      "vcruntime140.dll",
+      "vcruntime140_1.dll",
+      "winsound.pyd"
+    ],
+    "ok": true,
+    "python_exe": "C:\\v9-stage\\py-embed\\python.exe",
+    "python_root": "C:\\v9-stage\\py-embed",
+    "violations": []
+  },
+  "ok": true,
+  "preflight": {
+    "attestation": {
+      "agent": {
+        "computer": "0E3D64FC-DC7E-4",
+        "nonce": "27ee27cbbedf4cd9a51856d613df553a",
+        "pid": 3228,
+        "user": "WDAGUtilityAccount"
+      },
+      "checks": {
+        "account": true,
+        "inside_sandbox": true,
+        "nonce": true
+      },
+      "handshake": "nonce+account",
+      "transport": "windows-sandbox",
+      "verified": true
+    },
+    "evaluation_attempted": false,
+    "jobs_published": 0,
+    "launched": {
+      "config": "evidence\\v9-preflight-2026-10-28.wsb",
+      "exe": "C:\\Windows\\System32\\WindowsSandbox.exe",
+      "launched": true,
+      "pid": 7220
+    },
+    "nonce": "27ee27cbbedf4cd9a51856d613df553a",
+    "response_files": [],
+    "session_written_before_launch": true,
+    "started": 1793184451.798363,
+    "transport": "windows-sandbox"
+  },
+  "stage": "sandbox-preflight",
+  "staged_runtime": [
+    "supervisor.py",
+    "child_runner.py",
+    "protocol.py",
+    "winjob.py",
+    "sandbox_agent.py"
+  ],
+  "wsb": "evidence\\v9-preflight-2026-10-28.wsb"
+}
