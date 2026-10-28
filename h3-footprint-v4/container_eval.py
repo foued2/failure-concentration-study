@@ -19,6 +19,7 @@ DEFAULT_TIMEOUT_SECONDS = 5.0
 
 _image_lock = threading.Lock()
 _image_ready = False
+_image_info_cache: dict[str, Any] | None = None
 
 
 class ContainerInfrastructureError(RuntimeError):
@@ -27,10 +28,10 @@ class ContainerInfrastructureError(RuntimeError):
 
 def ensure_image() -> dict[str, Any]:
     """Build from the minimal context, which deliberately excludes the repo and oracle."""
-    global _image_ready
+    global _image_ready, _image_info_cache
     with _image_lock:
-        if _image_ready:
-            return _inspect_image()
+        if _image_ready and _image_info_cache is not None:
+            return dict(_image_info_cache)
         if not IMAGE_CONTEXT.is_dir() or not (IMAGE_CONTEXT / "Dockerfile").is_file():
             raise ContainerInfrastructureError(f"container build context missing: {IMAGE_CONTEXT}")
         expected = {"Dockerfile", "sandbox_worker.py"}
@@ -60,8 +61,9 @@ def ensure_image() -> dict[str, Any]:
             raise ContainerInfrastructureError(
                 "Docker image build failed: " + (proc.stderr or proc.stdout)[-3000:]
             )
+        _image_info_cache = _inspect_image()
         _image_ready = True
-        return _inspect_image()
+        return dict(_image_info_cache)
 
 
 def _inspect_image() -> dict[str, Any]:
@@ -93,7 +95,13 @@ def _inspect_image() -> dict[str, Any]:
     }
 
 
-def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, Any]:
+def _run(
+    source_path: str | Path,
+    request: dict,
+    timeout: float,
+    *,
+    inspect_container: bool = False,
+) -> dict[str, Any]:
     image = ensure_image()
     source = Path(source_path).resolve(strict=True)
     if not source.is_file():
@@ -167,16 +175,18 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
 
     elapsed = round(time.monotonic() - started, 4)
     inspect: dict[str, Any] | None = None
-    inspect_proc = subprocess.run(
-        ["docker", "inspect", name],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=15,
-        check=False,
-    )
-    if inspect_proc.returncode == 0:
+    inspect_proc = None
+    if inspect_container:
+        inspect_proc = subprocess.run(
+            ["docker", "inspect", name],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=15,
+            check=False,
+        )
+    if inspect_proc is not None and inspect_proc.returncode == 0:
         try:
             item = json.loads(inspect_proc.stdout)[0]
             host = item.get("HostConfig") or {}
@@ -210,7 +220,7 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
             inspect = None
 
     # Remove this exact, randomly named container even when the run timed out.
-    subprocess.run(
+    cleanup = subprocess.run(
         ["docker", "rm", "--force", name],
         capture_output=True,
         text=True,
@@ -219,12 +229,10 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
         timeout=15,
         check=False,
     )
-    removed_check = subprocess.run(
-        ["docker", "inspect", name],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-        timeout=10, check=False,
-    )
-    container_removed = removed_check.returncode != 0
+    # A successful Docker rm response is the daemon's acknowledgment that the
+    # named container was removed; avoid launching a second inspect process
+    # after every one of the 30 independently isolated candidate probes.
+    container_removed = cleanup.returncode == 0
 
     stdout = stdout_bytes.decode("utf-8", "replace")
     stderr = stderr_bytes.decode("utf-8", "replace")
@@ -280,7 +288,7 @@ def _run(source_path: str | Path, request: dict, timeout: float) -> dict[str, An
 
 
 def preflight(candidate_path: str | Path, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[str, Any]:
-    return _run(candidate_path, {"mode": "preflight"}, timeout)
+    return _run(candidate_path, {"mode": "preflight"}, timeout, inspect_container=False)
 
 
 def run_probe(
@@ -289,7 +297,7 @@ def run_probe(
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
 ) -> dict[str, Any]:
     request_probe = {key: probe[key] for key in ("n", "edges", "s", "t")}
-    return _run(candidate_path, {"mode": "probe", "probe": request_probe}, timeout)
+    return _run(candidate_path, {"mode": "probe", "probe": request_probe}, timeout, inspect_container=False)
 
 
 def run_fixture(
@@ -299,7 +307,7 @@ def run_fixture(
 ) -> dict[str, Any]:
     """Run a fixed, audited isolation fixture; never use this path for generated candidates."""
     request_probe = probe or {"n": 0, "edges": [], "s": 0, "t": 0}
-    return _run(fixture_path, {"mode": "fixture", "probe": request_probe}, timeout)
+    return _run(fixture_path, {"mode": "fixture", "probe": request_probe}, timeout, inspect_container=True)
 
 
 def effective_limits(result: dict[str, Any]) -> dict[str, Any]:
