@@ -23,19 +23,26 @@ def _write_fixture(root: Path, name: str, source: str) -> Path:
     return path
 
 
-def _run_memory_limit_probe() -> dict[str, Any]:
-    """Use a bounded 64 MiB container to test an allocation larger than its cap."""
+def _run_memory_case(label: str, memory_bytes: int, allocation_bytes: int) -> dict[str, Any]:
+    """Run an allocation probe with explicit memory and swap limits, then inspect it."""
     image = container_eval.ensure_image()
-    name = "h3v4-memory-" + uuid.uuid4().hex[:20]
+    name = "h3v4-memory-" + label + "-" + uuid.uuid4().hex[:16]
+    allocation_mib = allocation_bytes // (1024 * 1024)
+    code = (
+        "from pathlib import Path; "
+        "print('CGROUP_MEMORY_MAX=' + Path('/sys/fs/cgroup/memory.max').read_text().strip(), flush=True); "
+        f"x = bytearray({allocation_bytes}); "
+        "print('ALLOCATION_SURVIVED', flush=True)"
+    )
     command = [
         "docker", "run", "--name", name,
         "--network=none", "--read-only", "--user=65534:65534",
         "--cap-drop=ALL", "--security-opt=no-new-privileges:true",
-        "--pids-limit=16", "--memory=67108864", "--memory-swap=67108864",
+        "--pids-limit=16", f"--memory={memory_bytes}", f"--memory-swap={memory_bytes}",
         "--cpus=1.0", "--ulimit=nofile=64:64", "--ulimit=core=0:0",
         "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m,uid=65534,gid=65534,mode=1777",
         "--entrypoint", "python", container_eval.IMAGE_TAG,
-        "-c", "x = bytearray(256 * 1024 * 1024); print('ALLOCATION_SURVIVED')",
+        "-I", "-B", "-c", code,
     ]
     started = time.monotonic()
     try:
@@ -45,7 +52,7 @@ def _run_memory_limit_probe() -> dict[str, Any]:
         )
     except Exception as exc:
         raise container_eval.ContainerInfrastructureError(
-            f"bounded memory probe could not run: {type(exc).__name__}: {exc}"
+            f"{label} memory probe could not run: {type(exc).__name__}: {exc}"
         ) from exc
     inspect_proc = subprocess.run(
         ["docker", "inspect", name], capture_output=True, text=True,
@@ -60,27 +67,75 @@ def _run_memory_limit_probe() -> dict[str, Any]:
             container = {
                 "running": state.get("Running"),
                 "exit_code": state.get("ExitCode"),
-                "oom_killed": state.get("OOMKilled"),
+                "oom_killed_flag": state.get("OOMKilled"),
                 "memory_bytes": host.get("Memory"),
                 "memory_swap_bytes": host.get("MemorySwap"),
             }
         except Exception:
             container = None
-    subprocess.run(
+    cleanup = subprocess.run(
         ["docker", "rm", "--force", name], capture_output=True,
         text=True, encoding="utf-8", errors="replace", timeout=10, check=False,
     )
     return {
+        "label": label,
+        "allocation_bytes": allocation_bytes,
+        "allocation_mib": allocation_mib,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "exit_code": run.returncode,
         "stdout_tail": run.stdout[-500:],
         "stderr_tail": run.stderr[-1000:],
         "container": container,
-        "passed": bool(container and container.get("oom_killed") is True
-                       and container.get("memory_bytes") == 67108864
-                       and container.get("memory_swap_bytes") == 67108864),
+        "container_removed": cleanup.returncode == 0,
+        "allocation_survived": "ALLOCATION_SURVIVED" in run.stdout,
+        "cgroup_memory_max": next(
+            (line.partition("=")[2] for line in run.stdout.splitlines()
+             if line.startswith("CGROUP_MEMORY_MAX=")),
+            None,
+        ),
     }
 
+
+def _run_memory_limit_probe() -> dict[str, Any]:
+    """Pair a constrained allocation with a larger-cap positive control.
+
+    Some Docker/runner combinations report exit 137 but leave State.OOMKilled
+    false. The battery therefore does not silently equate that metadata flag
+    with a proved limit. It requires the same oversized allocation to survive
+    under a larger limit and fail under the 64 MiB limit, and records the flag.
+    """
+    low_cap = _run_memory_case("low", 64 * 1024 * 1024, 256 * 1024 * 1024)
+    positive_control = _run_memory_case(
+        "positive", 512 * 1024 * 1024, 128 * 1024 * 1024
+    )
+    low_container = low_cap.get("container") or {}
+    high_container = positive_control.get("container") or {}
+    low_cgroup_limit = low_cap.get("cgroup_memory_max") in ("67108864",)
+    high_cgroup_limit = positive_control.get("cgroup_memory_max") in ("536870912",)
+    passed = bool(
+        low_cap.get("container_removed")
+        and low_container.get("memory_bytes") == 64 * 1024 * 1024
+        and low_container.get("memory_swap_bytes") == 64 * 1024 * 1024
+        and low_cap.get("exit_code") == 137
+        and not low_cap.get("allocation_survived")
+        and low_cgroup_limit
+        and positive_control.get("container_removed")
+        and high_container.get("memory_bytes") == 512 * 1024 * 1024
+        and high_container.get("memory_swap_bytes") == 512 * 1024 * 1024
+        and positive_control.get("exit_code") == 0
+        and positive_control.get("allocation_survived")
+        and high_cgroup_limit
+    )
+    return {
+        "low_cap": low_cap,
+        "positive_control": positive_control,
+        "passed": passed,
+        "interpretation": (
+            "The 256 MiB allocation did not survive a 64 MiB cgroup limit and did survive "
+            "a 512 MiB limit; the reported Docker OOMKilled flag is retained separately "
+            "and is not treated as the sole source of truth."
+        ),
+    }
 
 def run_battery(report_path: Path) -> dict[str, Any]:
     image = container_eval.ensure_image()
