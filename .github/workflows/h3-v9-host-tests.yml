@@ -1,0 +1,47 @@
+name: H3 V9 host-only verification
+
+on:
+  push:
+    branches:
+      - work/h3-v9-battery-hosted-agent-path-2026-10-28
+  pull_request:
+    paths:
+      - "h3-footprint-v9/**"
+      - ".github/workflows/h3-v9-host-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-verification:
+    name: Host tests and fail-closed gate
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: h3-footprint-v9
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Run host regression suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Verify manifest
+        run: python make_manifest.py --check
+
+      - name: Confirm candidate evaluation remains blocked
+        shell: pwsh
+        run: |
+          python controller.py --check-execution-gate
+          $gateExitCode = $LASTEXITCODE
+          if ($gateExitCode -ne 2) {
+            throw "Expected fail-closed gate exit code 2, got $gateExitCode"
+          }
