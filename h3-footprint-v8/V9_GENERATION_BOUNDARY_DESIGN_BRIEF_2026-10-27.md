@@ -30,13 +30,19 @@ Keep these scientific/sampling constants unchanged:
 For each batch:
 
 1. Create a unique, otherwise empty work directory for that batch. Do not let concurrent model calls share writable files.
-2. Apply a versioned per-call OpenCode configuration that explicitly denies built-in file read/list/glob/search tools, file modification tools, shell execution, subagent/task calls, skill loading, web search/fetch, and external-directory access. The --pure flag remains useful for disabling external plugins but is not a substitute for the permission profile.
-3. Disable automatic approval of permissions. The deny rules must take precedence over any user, project, or global config in the environment actually used by the job.
-4. Verify the installed CLI's effective configuration and event schema without launching an out-of-schedule test generation. The no-tools profile, its hash, CLI version, and exact invocation must be recorded before the first batch.
-5. Preserve the complete JSON event stream. A batch with an executed tool operation, shell operation, write, external read, web operation, or subagent call must not yield accepted candidates. Treat attempted but denied tool use as a policy event too: record the batch, reject its body outputs, and do not re-prompt in the same batch.
+2. Use the documented OpenCode agent permission interface rather than relying on the prompt. The current CLI supports `opencode agent create --path ... --description ... --mode ... --permissions ...` (alias `--tools`); the permissions option is a comma-separated allowlist, and tools omitted from the list are denied. A checked-in agent Markdown file with explicit `permission` frontmatter is another auditable representation. Use a dedicated primary generation agent with no file, shell, web, task/subagent, skill, LSP, or external-directory capability. Include the actual agent/config file in the frozen hash manifest. See the [agent-create CLI docs](https://dev.opencode.ai/docs/cli/) and [permissions reference](https://dev.opencode.ai/docs/permissions/).
+3. Never pass `--auto`. It auto-approves permission requests that are not explicitly denied. Do not allow user/project/global config to restore tools. Launch from a controlled environment with unintended `OPENCODE_PERMISSION`, `OPENCODE_CONFIG_CONTENT`, `OPENCODE_CONFIG`, and inherited config paths removed or explicitly pinned; record sanitized environment settings, effective loaded agent, CLI version, and config hashes.
+4. Verify the installed CLI's effective configuration and event schema without launching an out-of-schedule model call. The profile must be inspected as actually loaded, not only read as a file. Preserve the exact invocation and event schema in the freeze record.
+5. Preserve the complete JSON event stream. A batch with an executed tool operation, shell operation, write, external read, web operation, task/subagent call, or permission escalation must not yield accepted candidates. Treat attempted but denied tool use as a policy event too: record the batch, reject its body outputs, and do not re-prompt in the same batch.
 6. Do not share session IDs or continue a previous agent conversation between batches. Every model call must be a new independent top-level request with its assigned model and prompt variant.
 
-OpenCode CLI documentation describes --pure as “without external plugins”; the no-tools profile must be checked against the actual installed CLI because this setting does not establish a no-tools runtime by itself.
+### OpenCode free-tier compatibility is an unresolved constraint
+
+Do not assume that a fully denied toolset will be accepted by all three OpenCode free models. Upstream reports describe free-tier requests returning a 403 “free tier can only be used from within OpenCode” when `bash` or all tools are denied, while some configurations with permissions set to `ask` succeed. See [upstream issue #50627](https://github.com/anomalyco/opencode/issues/50627) and [upstream issue #49433](https://github.com/anomalyco/opencode/issues/49433). These issues are reports, not a guarantee about the installed version or every model.
+
+This creates a real compatibility test, not permission to weaken isolation. First inspect configuration locally without model calls. Do not use `OPENCODE_PERMISSION={"*":"deny"}` as an assumed universal fix. If the fixed models reject the required no-tools profile, or require executable tools to remain allowed, record the frame as operationally incompatible and stop. Do not switch to `ask`/allow as an unrecorded workaround if that would expose tools to the model, and do not substitute another model or generation interface without a new protocol version.
+
+OpenCode CLI documentation describes `--pure` as “without external plugins”; the flag does not establish a no-tools runtime by itself.
 
 ## 4. Response acceptance and hard caps
 
@@ -76,7 +82,7 @@ If the frozen model frame is not usable, stop the generation run. Do not replace
 The V9 generator is not ready to freeze until:
 
 - deterministic unit tests cover event parsing, no-tools policy, complete and failed response handling, extraction, exact eight-body cap, overflow, duplicate handling, batch IDs, and work-directory isolation;
-- the effective no-tools configuration can be inspected by a local metadata/config command without a model call;
+- the effective no-tools configuration can be inspected by a local metadata/config command without a model call, and compatibility with the frozen free-tier models is treated as a gate rather than an excuse to relax permissions;
 - the CLI version and supported JSON event schema are recorded;
 - FREEZE.json hashes all code/config artifacts affecting the sampling mechanism;
 - the unchanged model/prompt schedule and budget are clearly stated;
