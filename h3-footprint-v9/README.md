@@ -148,11 +148,22 @@ blocked.
 
 The raw set also exposed a telemetry defect. The heartbeat thread had been given
 a detached state object, so 132 of the 199 events are heartbeat snapshots with
-`poll_count: 0` and no poll time; the host rejects them. The 67 loop and job
-events are valid and the A/B handoff is unaffected, but the run is not
-anomaly-free. The defect is fixed after the run by sharing one state object and
-by validating a pre-first-poll heartbeat separately; the run was not repeated, so
-the archived raw set keeps its anomalies.
+`poll_count: 0` and no poll time; the host rejects them. The defect is fixed by
+sharing one state object and by validating a pre-first-poll heartbeat separately,
+and a host regression test now proves the heartbeat snapshot carries the loop's
+poll count and last job id.
+
+Revision 9 also made the immutable decision fail closed: any scan error or a
+truncated scan blocks all execution for that poll, even beside a valid expected
+job. After those two fixes were tested and committed, one further diagnostic ran
+in a fresh Sandbox with clean folders. It again answered A with 111 and B with
+222, distinct ids, A before B, both `tree_empty: true`. The complete archived
+set is 12 events with one pid and zero anomalies
+(`evidence/rendezvous-immutable-rerun-2026-10-28.json`). That run was shorter
+than one heartbeat interval, so it contains no heartbeat event; the heartbeat
+fix is covered by the host test, not by this run. The earlier 199-event set is
+preserved unchanged. Neither run is a production ordering pass:
+`sandbox_rendezvous_ordering` stays **FAIL** and evaluation stays blocked.
 
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
@@ -193,8 +204,10 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
   heartbeat-only telemetry cannot prove the loop kept scanning; under revision 8
   rules that observation is `job_loop_progress_unknown`, not proof of a stale
   mapping. One opt-in immutable-protocol diagnostic then answered both A and B
-  correctly (111, 222; `tree_empty: true`), which shows the experimental handoff
-  works for `echo_input.py` but does not change the production verdict. Until the
+  correctly (111, 222; `tree_empty: true`), and a clean rerun after the
+  fail-closed and heartbeat fixes repeated that result with 12 archived events,
+  one pid and zero anomalies. That shows the experimental handoff works for
+  `echo_input.py` but does not change the production verdict. Until the
   production path is shown to work, no isolation report, no live ordering result
   and no authorized evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
 - **A live mapping constrains the host.** The host cannot `os.replace` inside a

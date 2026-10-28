@@ -1,0 +1,18 @@
+{
+  "files": {
+    "evidence/rendezvous-immutable-rerun-2026-10-28.json": "5fd88e16e1cef17fe551cec6539e4670274f244e5716e28ecd6b8c930b85b806",
+    "evidence/rendezvous-immutable-rerun-body-2026-10-28.py": "cd618a3ecd497139abf15a1848801de18ad192481657223db7e1708f33a6e465",
+    "evidence/rendezvous-immutable-rerun-controller-2026-10-28.stderr.txt": "fc5ec96d95556da08efc821f6066313a97cfb711cbf4e0840c33adad4d627502",
+    "evidence/rendezvous-immutable-rerun-controller-2026-10-28.stdout.txt": "490ea07670357e8da83ce5fbad9559ea3b93c7d724b5bb1d178eba8679817017",
+    "evidence/rendezvous-immutable-rerun-events-2026-10-28.sha256": "c38f84b134cf353ff00fa7fb7a9658a1fae34e80ec525a531ac3cfce92e7b8a1",
+    "evidence/rendezvous-immutable-rerun-hello-2026-10-28.json": "0e6a84b21377cc776e75be53f388397c29483841626996e3821e677051cb05e5",
+    "evidence/rendezvous-immutable-rerun-job-A-2026-10-28.json": "918d022a87a296277cf65e45fe83e4fc462ffed434285acd0cf8b9a0b5eb186d",
+    "evidence/rendezvous-immutable-rerun-job-B-2026-10-28.json": "73b4c479949068ff050c4b6f40e199f05f520a5508bde2d10c18e5c7b0a65503",
+    "evidence/rendezvous-immutable-rerun-response-A-2026-10-28.json": "4db1f091ae397e0a8345ee8ad41d89cdf5b1010306dcfd016afe37136ece73d6",
+    "evidence/rendezvous-immutable-rerun-response-B-2026-10-28.json": "10f6b51605d2a30ec391cec5db482edd49724f7de39d760548ab11fd3e39569e",
+    "evidence/rendezvous-immutable-rerun-session-2026-10-28.json": "e26b05c1b59ddca14c2eab9e7b0560591c6073541a49f81143b184c46be3f172",
+    "evidence/v9-rendezvous-immutable-rerun-2026-10-28.wsb": "91534ac438b4c5400255e4907ba781388c4d6bdb930a62b937a8b2be5c789d34"
+  },
+  "note": "raw byte hashes; pins in EXECUTION_PREREQUISITES.json use canonical LF hashes",
+  "run": "one diagnostic rerun on 2026-10-28 after the fail-closed scan fix and heartbeat state-sharing fix, echo_input.py, immutable opt-in protocol, fresh sandbox"
+}

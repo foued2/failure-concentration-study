@@ -15,8 +15,10 @@ so the failure can be explained; the failure itself is still unresolved and
 evaluation stays blocked. Revision 8 records what the job loop sees on each poll
 and makes an immutable per-job request protocol available as an opt-in diagnostic;
 the default transport and the FAIL verdict are unchanged. Revision 9 makes that
-protocol fail closed on any ambiguous or truncated scan and exercises the
-heartbeat state-sharing fix in a second diagnostic run.
+protocol fail closed on any ambiguous or truncated scan, tests the heartbeat
+state-sharing fix on the host, and repeats the diagnostic run in a fresh
+Sandbox; that rerun archived 12 events with one pid, zero anomalies and the same
+111/222 handoff.
 
 ## Revision 4: capability, not assumption
 
@@ -295,6 +297,26 @@ count, asserting no runner call and no response while blocked. A `max_polls`
 bound keeps the blocked-loop tests from hanging. The ordinary A/B sequence,
 filename/payload agreement, content-addressed bodies, one-response-per-job and
 tree-empty checks are unchanged.
+
+### Revision 9 diagnostic rerun
+
+After both fixes were tested and committed, exactly one further rendezvous ran
+on `echo_input.py` in a fresh Sandbox with clean `in`, `out` and `work` folders.
+The result repeated: A=111, B=222, distinct ids, A answered before B was
+published, both `tree_empty: true`, `protocol: immutable-v1`, and zero anomalies
+in the report. The guest was stopped before collection. The complete archived
+set is 12 events with one pid (3688) and zero anomalies; the outcomes are
+`no_jobs`, `new_job`, `only_handled`, `new_job`, `only_handled`, and the report
+snapshot holds 10 events because it was written before the final two.
+
+The run was shorter than one heartbeat interval, so it produced no heartbeat
+event; the heartbeat state-sharing fix is covered by a host regression test that
+asserts the emitted snapshot carries the loop's poll count and last job id. The
+earlier 199-event run is preserved unchanged with its anomalies. The
+`immutable_protocol_diagnostic` gate is therefore `PASS` for this limited scope
+only: one fixture, two sequential jobs, this host, this opt-in variant. It says
+nothing about the production `job.json` transport, isolation, resource caps or
+evaluation readiness.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 

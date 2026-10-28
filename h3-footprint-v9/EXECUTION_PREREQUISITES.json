@@ -59,7 +59,17 @@
     "evidence/rendezvous-immutable-response-A-2026-10-28.json": "416edc45bff425696db81f39f4d7c53d48a64ae3e9fbded7655973508fc2dc59",
     "evidence/rendezvous-immutable-response-B-2026-10-28.json": "d940d194614e35d0da371bbb430307900d9945a7173e6347a4cce314e0694b34",
     "evidence/rendezvous-immutable-events-2026-10-28.sha256": "c03427b5d7c6252a60d3f33c35c1192a6c37868b7bb0a721ec83f3b0d2445be1",
-    "evidence/v9-rendezvous-immutable-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf"
+    "evidence/v9-rendezvous-immutable-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf",
+    "evidence/rendezvous-immutable-rerun-2026-10-28.json": "091ed2168e99909126276f1a3896a84460dda9c44c6d717a9b6ac92816a55396",
+    "evidence/rendezvous-immutable-rerun-hello-2026-10-28.json": "0e6a84b21377cc776e75be53f388397c29483841626996e3821e677051cb05e5",
+    "evidence/rendezvous-immutable-rerun-job-A-2026-10-28.json": "918d022a87a296277cf65e45fe83e4fc462ffed434285acd0cf8b9a0b5eb186d",
+    "evidence/rendezvous-immutable-rerun-job-B-2026-10-28.json": "73b4c479949068ff050c4b6f40e199f05f520a5508bde2d10c18e5c7b0a65503",
+    "evidence/rendezvous-immutable-rerun-body-2026-10-28.py": "cd618a3ecd497139abf15a1848801de18ad192481657223db7e1708f33a6e465",
+    "evidence/rendezvous-immutable-rerun-session-2026-10-28.json": "e26b05c1b59ddca14c2eab9e7b0560591c6073541a49f81143b184c46be3f172",
+    "evidence/rendezvous-immutable-rerun-response-A-2026-10-28.json": "4db1f091ae397e0a8345ee8ad41d89cdf5b1010306dcfd016afe37136ece73d6",
+    "evidence/rendezvous-immutable-rerun-response-B-2026-10-28.json": "10f6b51605d2a30ec391cec5db482edd49724f7de39d760548ab11fd3e39569e",
+    "evidence/rendezvous-immutable-rerun-events-2026-10-28.sha256": "c98756a8187944b4e9df8e7bf0a7bf40a1273188d0ba148a49427a59b1741fd5",
+    "evidence/v9-rendezvous-immutable-rerun-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf"
   },
   "verdict_rules": {
     "path": "verdict_rules.py",

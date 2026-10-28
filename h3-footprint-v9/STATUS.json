@@ -80,7 +80,7 @@
   },
   "evidence_scopes": {
     "host": "tests/unit-test-log.txt, evidence/preflight-attempt-2026-10-28.json, evidence/preflight-staged-runtime-2026-10-28.json, evidence/python-runtime-2026-10-28.json, evidence/sandbox-capability-2026-10-28.json, evidence/sandbox-enable-elevated-2026-10-28.json, evidence/sandbox-capability-post-enable-2026-10-28.json, evidence/sandbox-capability-post-restart-2026-10-28.json",
-    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); one opt-in immutable-protocol diagnostic under evidence/rendezvous-immutable-2026-10-28.json and evidence/rendezvous-immutable-* with 199 raw events (A and B both discovered and answered); no isolation probes were run"
+    "sandbox": "evidence/preflight-sandbox-2026-10-28.json (verified WDAGUtilityAccount handshake, no job published); evidence/rendezvous-sandbox-2026-10-28.json with the raw job and response files (job A answered, job B never answered); evidence/rendezvous-instrumented-2026-10-28.json with the instrumented raw set under evidence/rendezvous-instrumented-*-2026-10-28.* and evidence/rendezvous-instrumented-events-2026-10-28/ (job B never discovered while the agent kept heartbeating); one opt-in immutable-protocol diagnostic under evidence/rendezvous-immutable-2026-10-28.json and evidence/rendezvous-immutable-* with 199 raw events (A and B both discovered and answered, 132 heartbeat events invalid); one clean immutable rerun after the fail-closed and heartbeat fixes under evidence/rendezvous-immutable-rerun-2026-10-28.json and evidence/rendezvous-immutable-rerun-* with 12 raw events, one pid and zero anomalies (A=111, B=222, both tree_empty true); no isolation probes were run"
   },
   "revision_3_repairs": [
     "the .wsb maps the interpreter read-only and the config is re-parsed to prove it; python_root is mandatory",
@@ -142,7 +142,12 @@
     "a truncated scan never yields an executable job; the decision reports scan_truncated and the loop retries on the next poll",
     "a transient read failure remains retryable on the next poll; permanent conditions keep blocking and must be repaired before any request is trusted",
     "the heartbeat now shares the JobLoopState updated by the immutable loop, and a regression test proves the emitted heartbeat snapshot carries the loop's poll count and last job id",
-    "new tests bound the serve loop with max_polls for blocked-scan cases, so a fail-closed decision cannot be mistaken for a hang"
+    "new tests bound the serve loop with max_polls for blocked-scan cases, so a fail-closed decision cannot be mistaken for a hang",
+    "after the fail-closed fix and the heartbeat fix were tested and committed, exactly one new immutable diagnostic ran in a fresh Sandbox with clean in/out/work folders on echo_input.py only: A=111, B=222, distinct ids, A before B, both tree_empty true, protocol immutable-v1, zero telemetry anomalies",
+    "the complete archived event set (12 events, collected after the guest was stopped) validates with one pid (3688), zero anomalies, and the expected poll outcomes no_jobs, new_job, only_handled, new_job, only_handled; the report snapshot holds 10 events because it was written before the final two, so validation used the archive, not the snapshot",
+    "the run was shorter than one heartbeat interval, so it contains no heartbeat event; the heartbeat state-sharing fix is therefore covered by a host regression test, not by this guest run",
+    "the earlier 199-event revision-8 run is preserved unchanged and still carries its 132 heartbeat anomalies; the new run is separate evidence under rendezvous-immutable-rerun-2026-10-28.*",
+    "the rerun is still diagnostic only: echo_input.py, two sequential jobs, this host, this opt-in protocol; the production default remains legacy, sandbox_rendezvous_ordering remains FAIL and evaluation remains blocked"
   ],
   "gates": [
     {
@@ -329,10 +334,10 @@
     },
     {
       "id": "immutable_protocol_diagnostic",
-      "status": "PARTIAL",
+      "status": "PASS",
       "scope": "sandbox",
-      "evidence": "evidence/rendezvous-immutable-2026-10-28.json, evidence/rendezvous-immutable-events-2026-10-28.sha256",
-      "detail": "one rendezvous with the opt-in immutable request protocol on echo_input.py only. The guest scan listed job-000001 at poll 2 and job-000002 at poll 4; A and B were discovered, started and answered in sequence (111 then 222), both with tree_empty true, and the diagnostic report records ordering_ok true. The handoff is established for this fixture, but the raw set is not anomaly-free: 132 of 199 events are heartbeat snapshots written from a detached JobLoopState (poll_count 0, no poll time) and fail host validation, while the 67 poll_state/job events are valid. The sharing defect is fixed after the run and the run was not repeated. Diagnostic only: it does not prove mapped-folder ordering for the production job.json transport, does not establish isolation and does not authorize evaluation."
+      "evidence": "evidence/rendezvous-immutable-rerun-2026-10-28.json, evidence/rendezvous-immutable-rerun-events-2026-10-28.sha256, evidence/rendezvous-immutable-2026-10-28.json, evidence/rendezvous-immutable-events-2026-10-28.sha256",
+      "detail": "limited scope: one harmless fixture (echo_input.py), two sequential jobs, this host, this opt-in protocol variant. After the fail-closed scan fix and the heartbeat state-sharing fix were committed, one fresh rendezvous produced A=111 and B=222 with distinct ids, A answered before B was published, and tree_empty true after each. The complete archived set of 12 events, collected after the guest was stopped, has one agent pid (3688), zero anomalies and poll outcomes no_jobs, new_job, only_handled, new_job, only_handled. The run was shorter than one heartbeat interval, so no heartbeat event exists and the heartbeat fix rests on its host regression test. The earlier 199-event run is preserved unchanged with its 132 heartbeat anomalies. This status says nothing about the production job.json transport, proof of isolation, resource caps or evaluation readiness."
     },
     {
       "id": "sandbox_agent_acceptance",

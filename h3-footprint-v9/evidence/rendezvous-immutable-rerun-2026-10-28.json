@@ -1,0 +1,257 @@
+{
+  "attested": true,
+  "checks": {
+    "A_answered_with_A": true,
+    "A_tree_empty": true,
+    "B_answered_with_B": true,
+    "B_not_visible_before_A_completed": true,
+    "B_tree_empty": true,
+    "distinct_tokens": true,
+    "transport_attested": true
+  },
+  "diagnostic": null,
+  "events": [
+    {
+      "at": 0.0262,
+      "event": "publish_A",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "next_request_visible": false,
+      "token": 111
+    },
+    {
+      "at": 0.531,
+      "event": "response_A",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "status": "ok",
+      "token_seen": 111,
+      "tree_empty": true
+    },
+    {
+      "at": 0.5356,
+      "event": "telemetry_after_A",
+      "event_count": 7,
+      "max_seq": 7
+    },
+    {
+      "at": 0.5359,
+      "event": "tree_empty_confirmed",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "token_b_visible": false
+    },
+    {
+      "at": 0.5469,
+      "event": "publish_B",
+      "job_id": "2806c43469d14dbaa3b65703d6bd5688",
+      "token": 222
+    },
+    {
+      "at": 1.1578,
+      "event": "response_B",
+      "job_id": "2806c43469d14dbaa3b65703d6bd5688",
+      "status": "ok",
+      "token_seen": 222,
+      "tree_empty": true
+    }
+  ],
+  "guest_events": [
+    {
+      "detail": "mode=serve pid=3688 protocol=immutable",
+      "event": "agent_start",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "startup",
+      "pid": 3688,
+      "seq": 1,
+      "timestamp": 1793194406.4373956,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 2,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": null,
+        "last_job_sequence": null,
+        "last_poll_at": 1793194406.4843402,
+        "outcome": "no_jobs",
+        "poll_count": 1,
+        "scanned": true,
+        "visible": [],
+        "visible_count": 0
+      },
+      "timestamp": 1793194406.4844184,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 3,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": null,
+        "last_job_sequence": null,
+        "last_poll_at": 1793194406.614609,
+        "outcome": "new_job",
+        "poll_count": 2,
+        "scanned": true,
+        "visible": [
+          "job-000001-0d5740ab8d8e4012b4c7ce9938785e9e.json"
+        ],
+        "visible_count": 1
+      },
+      "timestamp": 1793194406.614621,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_discovered",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "job_sequence": 1,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 4,
+      "timestamp": 1793194406.622881,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_started",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "job_sequence": 1,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 5,
+      "timestamp": 1793194406.6426532,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "response_written",
+      "job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+      "job_sequence": 1,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 6,
+      "timestamp": 1793194406.9921956,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 7,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+        "last_job_sequence": 1,
+        "last_poll_at": 1793194407.0093012,
+        "outcome": "only_handled",
+        "poll_count": 3,
+        "scanned": true,
+        "visible": [
+          "job-000001-0d5740ab8d8e4012b4c7ce9938785e9e.json"
+        ],
+        "visible_count": 1
+      },
+      "timestamp": 1793194407.0093153,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "poll_state",
+      "job_id": null,
+      "job_sequence": null,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 8,
+      "state": {
+        "error": null,
+        "error_file": null,
+        "last_job_id": "0d5740ab8d8e4012b4c7ce9938785e9e",
+        "last_job_sequence": 1,
+        "last_poll_at": 1793194407.1359975,
+        "outcome": "new_job",
+        "poll_count": 4,
+        "scanned": true,
+        "visible": [
+          "job-000001-0d5740ab8d8e4012b4c7ce9938785e9e.json",
+          "job-000002-2806c43469d14dbaa3b65703d6bd5688.json"
+        ],
+        "visible_count": 2
+      },
+      "timestamp": 1793194407.1360118,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_discovered",
+      "job_id": "2806c43469d14dbaa3b65703d6bd5688",
+      "job_sequence": 2,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 9,
+      "timestamp": 1793194407.1474035,
+      "v9": 1
+    },
+    {
+      "detail": null,
+      "event": "job_started",
+      "job_id": "2806c43469d14dbaa3b65703d6bd5688",
+      "job_sequence": 2,
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "phase": "serve",
+      "pid": 3688,
+      "seq": 10,
+      "timestamp": 1793194407.1581643,
+      "v9": 1
+    }
+  ],
+  "ordering_ok": true,
+  "preflight_attestation": {
+    "agent": {
+      "computer": "0E3D64FC-DC7E-4",
+      "nonce": "f8b6b01112b44068b930a75ae996c054",
+      "pid": 3688,
+      "user": "WDAGUtilityAccount"
+    },
+    "checks": {
+      "account": true,
+      "inside_sandbox": true,
+      "nonce": true
+    },
+    "handshake": "nonce+account",
+    "transport": "windows-sandbox",
+    "verified": true
+  },
+  "protocol": "immutable-v1",
+  "telemetry_anomalies": [],
+  "tokens": {
+    "A": 111,
+    "B": 222
+  },
+  "transport": "windows-sandbox"
+}

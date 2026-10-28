@@ -203,11 +203,27 @@ report's `ordering_ok` is true for this variant. Raw set:
 The raw set also caught a defect: the heartbeat was built with a detached state
 object, so 132 of the 199 events are heartbeat snapshots with `poll_count: 0` and
 no poll time, which the host rejects. The 67 loop and job events are valid and
-the handoff result stands, but the run is not anomaly-free. The code now shares
-one `JobLoopState` and accepts a pre-first-poll heartbeat; the run was not
-repeated, so the archived anomalies remain. This does not establish ordering for
-the legacy `job.json` path, does not prove isolation and does not authorize
-evaluation.
+the handoff result stands, but that run is not anomaly-free. The code now shares
+one `JobLoopState` and accepts a pre-first-poll heartbeat; a host test proves the
+heartbeat snapshot carries the loop's poll count and last job id.
+
+**The revision-9 rerun.** After the fail-closed scan fix and the heartbeat fix
+were tested and committed, one further rendezvous ran on `echo_input.py` in a
+fresh Sandbox with clean `in`, `out` and `work` folders and a fresh `.wsb`. It
+repeated the result: A=111, B=222, distinct ids, A answered before B was
+published, both `tree_empty: true`, `protocol: immutable-v1`. The guest was
+stopped before collection. The complete archive is 12 events
+(`no_jobs`, `new_job`, `only_handled`, `new_job`, `only_handled`) with one pid
+(3688) and zero anomalies; the report snapshot holds 10 events because it was
+written before the last two. The run was shorter than one heartbeat interval, so
+it contains no heartbeat event and the heartbeat fix rests on the host test.
+
+Raw sets: `evidence/rendezvous-immutable-2026-10-28.json` with 199 events (the
+earlier, anomalous set, preserved unchanged) and
+`evidence/rendezvous-immutable-rerun-2026-10-28.json` with 12 events, each under
+its own `*-events-2026-10-28/` directory and hash index. Neither establishes
+ordering for the legacy `job.json` path, proves isolation or authorizes
+evaluation. The gate is `PASS` only for the limited rerun scope.
 
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It
