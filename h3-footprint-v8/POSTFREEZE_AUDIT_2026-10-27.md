@@ -1,6 +1,7 @@
 # Post-freeze audit: V8 worker trust boundary and generation access
 
 **Review date:** 2026-10-27  
+**Amended:** 2026-10-28, incorporating independent source verification, the frozen GATE.md erratum, and the OpenCode permission-interface caveat.  
 **Reviewed freeze:** `h3-footprint-v8-freeze-2026-10-27`  
 **Frozen commit:** `d5b002cf0802b54b5a18b81e6bb99a9566cdd5ff`  
 **Review branch:** `review/h3-footprint-v8-postfreeze-audit-2026-10-27`
