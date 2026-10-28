@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -109,6 +112,55 @@ class GenerationControlTests(unittest.TestCase):
         self.assertIn("--agent", cmd)
         self.assertIn("--pure", cmd)
         self.assertEqual(cmd.count("--model"), 1)
+
+
+class CompletenessTests(unittest.TestCase):
+    def test_eight_bodies_is_complete(self):
+        out = gen.batch_outcome(0, text_event(fenced(8)))
+        self.assertIsNone(out["rejected"])
+        self.assertEqual(len(out["accepted"]), 8)
+
+    def test_one_body_is_an_incomplete_response(self):
+        out = gen.batch_outcome(0, text_event(fenced(1)))
+        self.assertEqual(out["rejected"], "incomplete_response:1/8")
+        self.assertEqual(out["accepted"], [])
+
+    def test_seven_bodies_is_an_incomplete_response(self):
+        out = gen.batch_outcome(0, text_event(fenced(7)))
+        self.assertEqual(out["rejected"], "incomplete_response:7/8")
+        self.assertEqual(out["accepted"], [])
+
+    def test_permission_event_rejects_the_whole_batch(self):
+        payload = "\n".join([
+            text_event(fenced(8)),
+            json.dumps({"type": "permission",
+                        "part": {"type": "permission", "permission": "bash",
+                                 "response": "allow"}}),
+        ])
+        out = gen.batch_outcome(0, payload)
+        self.assertEqual(out["rejected"], "permission_event_detected")
+        self.assertEqual(out["permission_events"], 1)
+        self.assertEqual(out["accepted"], [])
+
+    def test_malformed_line_mixed_with_valid_text_is_rejected(self):
+        payload = "\n".join([text_event(fenced(8)), "this is not json"])
+        out = gen.batch_outcome(0, payload)
+        self.assertEqual(out["rejected"], "malformed_event_stream")
+        self.assertEqual(out["accepted"], [])
+
+
+class GenerationDisabledTests(unittest.TestCase):
+    def test_authorization_variable_does_not_enable_an_unimplemented_generator(self):
+        with tempfile.TemporaryDirectory() as td:
+            env = dict(os.environ, V9_AUTHORIZE_GENERATION="1")
+            proc = subprocess.run(
+                [sys.executable, "-I", str(HERE.parent / "generation" / "generate_v9.py"),
+                 "--batches", "1", "--work-root", str(Path(td) / "work")],
+                capture_output=True, text=True, env=env, timeout=120,
+                encoding="utf-8", errors="replace",
+            )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("NOT IMPLEMENTED", proc.stderr)
 
 
 if __name__ == "__main__":

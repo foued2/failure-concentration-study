@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import uuid
 from pathlib import Path
@@ -17,6 +18,15 @@ FIXTURES = HERE / "fixtures"
 
 def fixture(name: str) -> Path:
     return FIXTURES / name
+
+
+def seed_targets(workdir: Path, **targets: str) -> Path:
+    """Hand the candidate explicit absolute paths to what it is trying to steal."""
+    scratch = Path(workdir) / "scratch"
+    scratch.mkdir(parents=True, exist_ok=True)
+    path = scratch / "targets.json"
+    path.write_text(json.dumps(targets, indent=1, sort_keys=True), encoding="utf-8")
+    return path
 
 
 def direct_job(body_path: Path, workdir: Path, *, timeout: float = 1.0,
@@ -43,7 +53,10 @@ def direct_job(body_path: Path, workdir: Path, *, timeout: float = 1.0,
 
 
 def run_direct(body_path: Path, workdir: Path, *, timeout: float = 1.0,
-               index: int = 0, max_processes: int = 8) -> dict:
+               index: int = 0, max_processes: int = 8,
+               targets: dict[str, str] | None = None) -> dict:
+    if targets:
+        seed_targets(workdir, **targets)
     job, staging, response, scratch = direct_job(
         body_path, workdir, timeout=timeout, index=index, max_processes=max_processes
     )

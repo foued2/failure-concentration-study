@@ -111,9 +111,11 @@ def _parse(text: str) -> dict | None:
 
 
 def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
-            memory_bytes: int, max_processes: int) -> dict:
+            memory_bytes: int, max_processes: int,
+            lock_staging: bool = True, lock_response: bool = True) -> dict:
     staging, response_dir, scratch = Path(staging), Path(response_dir), Path(scratch)
     job = protocol.read_job(staging)
+    ident = winjob.identity()
     base = {
         "v9": protocol.JOB_SCHEMA,
         "job_id": job["job_id"],
@@ -122,6 +124,8 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         "probe_index": job.get("probe_index"),
         "body_sha256": job["body_sha256"],
         "supervisor_pid": os.getpid(),
+        "inside_sandbox": ident["inside_sandbox"],
+        "identity_user": ident["user"],
     }
 
     body = staging / protocol.BODY_FILENAME
@@ -138,10 +142,21 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         stale.unlink()
 
     scratch_low = _set_low_integrity(scratch)
-    locks = [protocol.lock_dir(staging), protocol.lock_dir(response_dir)]
+    # Inside the Sandbox, staging is a read-only host mapping and ACL edits on
+    # mapped folders are rejected by design, so locking is optional there: the
+    # mapping is the barrier. Writes into the writable mapping are blocked by
+    # integrity level (low cannot write up to medium), which the isolation
+    # preflight measures rather than assumes.
+    locks = []
+    if lock_staging:
+        locks.append({"target": "staging", **protocol.lock_dir(staging)})
+    if lock_response:
+        locks.append({"target": "response", **protocol.lock_dir(response_dir)})
     if not (scratch_low and all(lock["ok"] for lock in locks)):
-        protocol.unlock_dir(staging)
-        protocol.unlock_dir(response_dir)
+        if lock_staging:
+            protocol.unlock_dir(staging)
+        if lock_response:
+            protocol.unlock_dir(response_dir)
         record = {**base, "status": "boundary_error", "answer": None,
                   "timed_out": False, "tree_empty": True, "exit_code": None,
                   "raw_stdout": "", "stdout_bytes": 0, "stdout_overflow": False,
@@ -210,8 +225,10 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
                 winjob.close(handle)
         else:
             tree_empty = True
-        protocol.unlock_dir(staging)
-        protocol.unlock_dir(response_dir)
+        if lock_staging:
+            protocol.unlock_dir(staging)
+        if lock_response:
+            protocol.unlock_dir(response_dir)
         if proc is not None and proc.poll() is None:
             proc.kill()
         if proc is not None and proc.stdout is not None:
@@ -256,7 +273,17 @@ def main() -> None:
     parser.add_argument("--timeout", type=float, required=True)
     parser.add_argument("--memory-bytes", type=int, required=True)
     parser.add_argument("--max-processes", type=int, required=True)
+    parser.add_argument("--require-sandbox", action="store_true",
+                        help="refuse to run unless this process is inside Windows Sandbox")
     args = parser.parse_args()
+
+    ident = winjob.identity()
+    if args.require_sandbox and not ident["inside_sandbox"]:
+        print(json.dumps({"status": "boundary_error",
+                          "error": "not_inside_windows_sandbox",
+                          "identity_user": ident["user"]}, sort_keys=True))
+        raise SystemExit(2)
+
     record = run_job(
         Path(args.staging), Path(args.response_dir), Path(args.scratch),
         timeout=args.timeout, memory_bytes=args.memory_bytes,

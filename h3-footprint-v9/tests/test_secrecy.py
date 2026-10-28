@@ -8,6 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
+import backend  # noqa: E402
 import controller  # noqa: E402
 import protocol  # noqa: E402
 
@@ -17,26 +18,36 @@ FORBIDDEN_IN_SANDBOX = {"oracle.py", "constants.py", "controller.py",
 
 
 class SandboxImageTests(unittest.TestCase):
+    def _controller(self, td) -> controller.Controller:
+        root = Path(td)
+        return controller.Controller(root / "work",
+                                     transport=backend.HostLocalTransport(root / "rt"))
+
     def test_runtime_contains_only_supervisor_and_child(self):
         with tempfile.TemporaryDirectory() as td:
-            ctl = controller.Controller(Path(td) / "work")
+            ctl = self._controller(td)
             present = {p.name for p in ctl.runtime.iterdir()}
             self.assertEqual(present, set(controller.SANDBOX_RUNTIME_FILES))
             self.assertEqual(present & FORBIDDEN_IN_SANDBOX, set())
 
     def test_no_reference_data_anywhere_in_runtime(self):
         with tempfile.TemporaryDirectory() as td:
-            ctl = controller.Controller(Path(td) / "work")
+            ctl = self._controller(td)
             blob = "\n".join(p.read_text(encoding="utf-8") for p in ctl.runtime.glob("*.py"))
             self.assertNotIn("EXPECTED", blob)
             self.assertNotIn("probe_id", blob)
             self.assertNotIn("family_counts", blob)
 
     def test_supervisor_does_not_import_oracle(self):
-        for name in ("supervisor.py", "child_runner.py"):
+        for name in ("supervisor.py", "child_runner.py", "sandbox_agent.py", "backend.py"):
             source = (V9 / name).read_text(encoding="utf-8")
             self.assertNotIn("import oracle", source, f"{name} must stay secret-free")
             self.assertNotIn("from oracle", source)
+
+    def test_backend_stays_on_the_host(self):
+        self.assertNotIn("backend.py", controller.SANDBOX_RUNTIME_FILES)
+        self.assertNotIn("oracle.py", controller.SANDBOX_RUNTIME_FILES)
+        self.assertNotIn("constants.py", controller.SANDBOX_RUNTIME_FILES)
 
     def test_controller_never_imports_candidate(self):
         source = (V9 / "controller.py").read_text(encoding="utf-8")

@@ -7,10 +7,11 @@ returned. Neither is a control. This module makes both enforceable:
     `--auto` is ever passed;
   * each batch gets its own workspace, so concurrent batches cannot see each
     other;
-  * at most the first eight valid modules in response order are accepted, and
-    overflow is recorded but never counted;
-  * any tool event, permission event, nonzero exit or missing response rejects
-    the whole batch.
+  * a response must contain at least the requested number of valid modules;
+    fewer is an incomplete response and rejects the batch, while surplus bodies
+    are capped at eight in response order and recorded as overflow;
+  * any tool event, permission-policy event, malformed event stream, nonzero
+    exit or missing response rejects the whole batch.
 
 Generation is additionally gated in code on V9_AUTHORIZE_GENERATION=1, which
 this implementation never sets.
@@ -124,9 +125,25 @@ def _event_uses_tools(event: dict) -> bool:
     return False
 
 
+def _event_is_permission(event: dict) -> bool:
+    """A permission request or decision is a policy event, not model text."""
+    kind = event.get("type")
+    if isinstance(kind, str) and "permission" in kind.lower():
+        return True
+    part = event.get("part")
+    if isinstance(part, dict):
+        ptype = part.get("type")
+        if isinstance(ptype, str) and "permission" in ptype.lower():
+            return True
+        if "permission" in part:
+            return True
+    return False
+
+
 def classify_events(stdout: str) -> dict:
     texts: list[str] = []
     tool_events = 0
+    permission_events = 0
     parse_errors = 0
     for line in stdout.splitlines():
         line = line.strip()
@@ -140,29 +157,43 @@ def classify_events(stdout: str) -> dict:
         if not isinstance(event, dict):
             parse_errors += 1
             continue
+        if _event_is_permission(event):
+            permission_events += 1
+            continue
         if _event_uses_tools(event):
             tool_events += 1
             continue
         if event.get("type") == "text":
             texts.append(event.get("part", {}).get("text", ""))
-    return {"texts": texts, "tool_events": tool_events, "parse_errors": parse_errors}
+    return {"texts": texts, "tool_events": tool_events,
+            "permission_events": permission_events, "parse_errors": parse_errors}
 
 
-def batch_outcome(returncode: int, stdout: str) -> dict:
-    """Decide what one batch contributes. Nothing partial is ever accepted."""
+def batch_outcome(returncode: int, stdout: str,
+                  expected: int = constants.BODIES_PER_BATCH) -> dict:
+    """Decide what one batch contributes. Nothing partial is ever accepted.
+
+    A response with fewer than `expected` valid modules is incomplete and is
+    rejected: the prompt asks for that many. Surplus modules are a separate
+    concern (the eight-body cap) and are counted, hashed and ignored.
+    """
     events = classify_events(stdout)
     text = "\n".join(events["texts"])
     bodies = extract_bodies(text)
-    accepted, overflow = select_accepted(bodies)
+    accepted, overflow = select_accepted(bodies, expected)
     rejected = None
     if events["tool_events"]:
         rejected = "tool_use_detected"
+    elif events["permission_events"]:
+        rejected = "permission_event_detected"
+    elif events["parse_errors"]:
+        rejected = "malformed_event_stream"
     elif returncode != 0:
         rejected = "nonzero_exit"
     elif not events["texts"]:
         rejected = "no_complete_response"
-    elif not accepted:
-        rejected = "no_valid_bodies"
+    elif len(bodies) < expected:
+        rejected = f"incomplete_response:{len(bodies)}/{expected}"
     return {
         "rejected": rejected,
         "accepted": [] if rejected else accepted,
@@ -170,7 +201,9 @@ def batch_outcome(returncode: int, stdout: str) -> dict:
         "overflow_count": len(overflow),
         "overflow_hashes": [digest(b) for b in overflow],
         "found": len(bodies),
+        "expected": expected,
         "tool_events": events["tool_events"],
+        "permission_events": events["permission_events"],
         "parse_errors": events["parse_errors"],
     }
 
@@ -322,8 +355,11 @@ def main() -> None:
             "No generation is authorized during V9 implementation."
         )
 
-    print("generation path is not enabled in this increment", file=sys.stderr)
-    raise SystemExit(3)
+    raise SystemExit(
+        "Generation is NOT IMPLEMENTED in V9. V9_AUTHORIZE_GENERATION=1 unlocks "
+        "nothing: the batch runner has not been written, and it must not be written "
+        "until the Sandbox preflight passes. Use --dry-run or --verify-config."
+    )
 
 
 if __name__ == "__main__":

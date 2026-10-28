@@ -1,5 +1,6 @@
 {
   "version": 9,
+  "revision": 2,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -8,15 +9,24 @@
   "authorization": {
     "generation": false,
     "evaluation": false,
-    "note": "No candidate generation or evaluation is authorized. generate_v9 refuses unless V9_AUTHORIZE_GENERATION=1."
+    "note": "evaluate_authorized raises unless the transport has a verified Windows Sandbox attestation. No Sandbox has been run, so evaluation is blocked in code. Generation is not implemented."
   },
+  "revision_2_repairs": [
+    "controller requires an explicit transport; the local path can no longer stand in for Sandbox execution",
+    "evaluate_authorized refuses any transport without a verified attestation",
+    "Sandbox broker implemented: read-only inbox, writable outbox, nonce handshake, token-derived identity",
+    "new fixtures assert the host exposure instead of hiding it",
+    "generation rejects incomplete batches, permission events and malformed event streams",
+    "controller CLI exists and matches the runbook; generation is declared unimplemented",
+    "ACL fixture resolves the account SID and asserts exit codes and resulting ACL state"
+  ],
   "gates": [
     {
       "id": "unit_tests",
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "32 tests, 0 failures"
+      "detail": "57 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -30,14 +40,35 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_secrecy.py",
-      "detail": "Sandbox image is four files; no answers, probe bank or scoring"
+      "detail": "Sandbox image is five runtime files; no answers, probe bank, scoring, or backend"
+    },
+    {
+      "id": "host_local_exposure_measured",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_boundary.py::HostBoundaryExposure",
+      "detail": "oracle.py and expected_values.json read successfully from a low-integrity child; a key-reading fixture scores k=0. This is a finding, not a barrier."
+    },
+    {
+      "id": "evaluation_requires_sandbox",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::TransportTests, tests/test_boundary.py::HostBoundaryExposure",
+      "detail": "evaluate_authorized raises BoundaryNotEstablished for any unverified transport"
+    },
+    {
+      "id": "sandbox_handshake_rejections",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py",
+      "detail": "rejects missing agent, stale nonce, host-running agent, and each failed predicate; acceptance path untested without a Sandbox"
     },
     {
       "id": "compound_disclosure_and_forgery",
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_boundary.py",
-      "detail": "attack finds no reference data; forged answer cannot score perfect"
+      "detail": "the compound attack is demonstrated on the host transport and is the reason evaluation is gated"
     },
     {
       "id": "process_tree_kill_on_timeout",
@@ -51,14 +82,21 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_isolation.py",
-      "detail": "icacls/takeown escapes fail; writes raise PermissionError"
+      "detail": "SID resolved; all eight escape attempts rc=5/1 with recorded output; deny ACE survives; writes raise PermissionError"
+    },
+    {
+      "id": "generation_parser_completeness",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_generation.py::CompletenessTests",
+      "detail": "1 and 7 bodies rejected; permission events and malformed lines reject the whole batch"
     },
     {
       "id": "opencode_agent_fully_denied",
       "status": "PASS",
       "scope": "host",
       "evidence": "evidence/opencode-config.json",
-      "detail": "v2.2.0; no probed action resolves to allow or ask"
+      "detail": "v2.2.0; no probed action resolves to allow or ask under last-match-wins"
     },
     {
       "id": "opencode_frozen_models_visible",
@@ -72,14 +110,21 @@
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "no Windows Sandbox isolation report produced"
+      "detail": "no Windows Sandbox run has occurred; all results above are host evidence"
     },
     {
       "id": "sandbox_rendezvous_ordering",
       "status": "NOT_RUN",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "mapped-folder one-item delivery not tested in a live session"
+      "detail": "mapped-folder one-item delivery and ordering not tested in a live session"
+    },
+    {
+      "id": "sandbox_agent_acceptance",
+      "status": "NOT_RUN",
+      "scope": "sandbox",
+      "evidence": null,
+      "detail": "only rejection paths are tested; no WDAGUtilityAccount handshake has been observed"
     },
     {
       "id": "memory_and_process_caps",
@@ -93,21 +138,21 @@
       "status": "NOT_IMPLEMENTED",
       "scope": "host",
       "evidence": null,
-      "detail": "k/C/eligibility/saturation implemented; classification and verdict not ported"
+      "detail": "k/C/eligibility/saturation implemented; classification and PASS/WEAK/FAIL not ported"
     },
     {
       "id": "candidate_generation",
       "status": "BLOCKED",
       "scope": "host",
       "evidence": null,
-      "detail": "not authorized during implementation"
+      "detail": "batch runner not implemented; V9_AUTHORIZE_GENERATION=1 does not enable it"
     },
     {
       "id": "candidate_evaluation",
       "status": "BLOCKED",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "no generated bodies exist and evaluation is not authorized"
+      "detail": "requires a verified Sandbox attestation; none exists"
     }
   ]
 }

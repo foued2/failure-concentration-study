@@ -21,8 +21,10 @@ IS_WINDOWS = sys.platform == "win32"
 
 if IS_WINDOWS:
     _k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    _adv32 = ctypes.WinDLL("advapi32", use_last_error=True)
 else:  # pragma: no cover - tests skip on non-Windows
     _k32 = None
+    _adv32 = None
 
 JobObjectBasicAccountingInformation = 1
 JobObjectExtendedLimitInformation = 9
@@ -112,6 +114,10 @@ def _configure_signatures() -> None:
     _k32.CloseHandle.restype = wintypes.BOOL
     _k32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
     _k32.WaitForSingleObject.restype = wintypes.DWORD
+    _adv32.GetUserNameW.argtypes = [wintypes.LPWSTR, ctypes.POINTER(wintypes.DWORD)]
+    _adv32.GetUserNameW.restype = wintypes.BOOL
+    _k32.GetComputerNameW.argtypes = [wintypes.LPWSTR, ctypes.POINTER(wintypes.DWORD)]
+    _k32.GetComputerNameW.restype = wintypes.BOOL
 
 
 if IS_WINDOWS:
@@ -175,6 +181,35 @@ def terminate(handle: ctypes.c_void_p, exit_code: int = 1) -> None:
 def close(handle: ctypes.c_void_p) -> None:
     if IS_WINDOWS and handle:
         _k32.CloseHandle(handle)
+
+
+def _account_name(api) -> str:
+    buf = ctypes.create_unicode_buffer(256)
+    size = wintypes.DWORD(256)
+    if api(buf, ctypes.byref(size)):
+        return buf.value
+    return ""
+
+
+def identity() -> dict:
+    """Who is running this process, and is it inside Windows Sandbox?
+
+    Reads the account name from the token (`GetUserNameW`), not from the
+    environment, so a candidate cannot spoof it by setting USERNAME. Windows
+    Sandbox always runs as the built-in `WDAGUtilityAccount`; there is no other
+    supported local account with that name.
+    """
+    if not IS_WINDOWS:
+        return {"user": "", "computer": "", "inside_sandbox": False, "source": "non-windows"}
+    user = _account_name(_adv32.GetUserNameW)
+    computer = _account_name(_k32.GetComputerNameW)
+    account = user.split("\\")[-1].lower()
+    return {
+        "user": user,
+        "computer": computer,
+        "inside_sandbox": account == "wdagutilityaccount",
+        "source": "GetUserNameW",
+    }
 
 
 def is_process_alive(pid: int) -> bool:

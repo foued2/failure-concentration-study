@@ -1,41 +1,103 @@
-"""Hand-authored fixture: tries to remove the lock, then tamper with records.
+"""Attempt to remove the write barrier, then plant a forged response.
 
-The deny ACE alone is not enough: the owning user holds WRITE_DAC, so this
-fixture attempts the same icacls/takeown escapes V8's probe used before trying
-to write. At low integrity none of them should succeed.
+The earlier version interpolated ``%USERNAME%`` into its ``icacls`` commands.
+The child environment does not define ``USERNAME``, so those commands failed to
+resolve an account and never attempted the escape -- and the test counted that
+as a blocked attack.
+
+This version resolves the current account SID first and records it (or the
+resolution error). It then uses the SID as the ``icacls`` principal, captures
+the real output of every command, reads the active ``job.json`` to learn the
+job id, and attempts to plant the corresponding response file. A failure is
+reported with its reason, not inferred from a nonzero exit code.
 """
 
+import json
 import os
+import subprocess
 
-TARGETS = (
-    os.path.join(os.pardir, "response", "evil.json"),
-    os.path.join(os.pardir, "staging", "job.json"),
-    os.path.join(os.pardir, "response", "response-forged.json"),
-)
+REPORT = "boundary_report.json"
+
+
+def _run(cmd):
+    try:
+        # Explicit encoding: the default text mode uses the console code page
+        # (cp1252 here) and returns rc=0 with an EMPTY capture when icacls emits
+        # localized bytes, which would make every assertion below vacuous.
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30,
+                              encoding="utf-8", errors="replace")
+        text = (proc.stdout or "") + (proc.stderr or "")
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        return {
+            "rc": proc.returncode,
+            "output": "\n".join(lines)[:1500],
+            "last": lines[-1][:300] if lines else "",
+        }
+    except BaseException as exc:  # noqa: BLE001 - untrusted environment
+        return {"rc": None, "output": f"{type(exc).__name__}: {exc}", "last": ""}
+
+
+def _sid():
+    system_root = os.environ.get("SYSTEMROOT", r"C:\Windows")
+    whoami = os.path.join(system_root, "System32", "whoami.exe")
+    probe = _run([whoami, "/user", "/fo", "csv", "/nh"])
+    for token in probe["output"].replace('"', "").replace(",", "\n").splitlines():
+        token = token.strip()
+        if token.startswith("S-1-"):
+            return token, probe
+    return None, probe
 
 
 def solve(n, edges, s, t):
-    lines = []
-    response_dir = os.path.abspath(os.path.join(os.pardir, "response"))
-    staging_dir = os.path.abspath(os.path.join(os.pardir, "staging"))
-    for target in (response_dir, staging_dir):
-        for command in (
-            f'icacls "{target}" /remove:d %USERNAME% /T',
-            f'icacls "{target}" /reset /T',
-            f'icacls "{target}" /grant %USERNAME%:(OI)(CI)F /T',
-            f'takeown /f "{target}" /r /d y',
-        ):
-            rc = os.system(command + " >nul 2>&1")
-            lines.append(("CMD_OK " if rc == 0 else "CMD_FAIL ") + command)
+    sid, sid_probe = _sid()
+    dirs = {
+        "response": os.path.abspath(os.path.join(os.pardir, "response")),
+        "staging": os.path.abspath(os.path.join(os.pardir, "staging")),
+    }
+    report = {"sid": sid, "sid_probe": sid_probe, "attempts": [], "writes": [],
+              "acl_after": {}, "job_id_visible": None}
 
-    for target in TARGETS:
+    for label, target in dirs.items():
+        commands = []
+        if sid:
+            commands += [
+                (f"remove_deny:{label}", ["icacls", target, "/remove:d", f"*{sid}", "/T"]),
+                (f"reset:{label}", ["icacls", target, "/reset", "/T"]),
+                (f"grant_full:{label}", ["icacls", target, "/grant", f"*{sid}:(OI)(CI)F", "/T"]),
+            ]
+        # No /r or /d: /d takes a localized answer (Y/N vs O/N), so on a
+        # non-English system it is a syntax error and never attempts the
+        # takeover. Owning the directory itself needs no recursion.
+        commands.append((f"takeown:{label}", ["takeown", "/f", target]))
+        for name, cmd in commands:
+            report["attempts"].append({"name": name, "command": " ".join(cmd), **_run(cmd)})
+        report["acl_after"][label] = _run(["icacls", target])
+
+    try:
+        with open(os.path.join(dirs["staging"], "job.json"), encoding="utf-8") as fh:
+            report["job_id_visible"] = json.load(fh).get("job_id")
+    except BaseException:
+        pass
+
+    targets = [(label, os.path.join(target, "evil.json")) for label, target in dirs.items()]
+    targets.append(("staging", os.path.join(dirs["staging"], "job.json")))
+    if report["job_id_visible"]:
+        targets.append(("response", os.path.join(
+            dirs["response"], f"response-{report['job_id_visible']}.json")))
+
+    for label, path in targets:
         try:
-            with open(target, "w", encoding="utf-8") as fh:
+            with open(path, "w", encoding="utf-8") as fh:
                 fh.write("tampered")
-            lines.append("WROTE " + target)
-        except BaseException as exc:
-            lines.append("BLOCKED " + target + " " + type(exc).__name__)
+            report["writes"].append({"target": label, "file": os.path.basename(path),
+                                     "status": "WROTE"})
+        except BaseException as exc:  # noqa: BLE001 - expected denial
+            report["writes"].append({"target": label, "file": os.path.basename(path),
+                                     "status": "BLOCKED", "error": type(exc).__name__})
 
-    with open("boundary_report.txt", "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
+    try:
+        with open(REPORT, "w", encoding="utf-8") as fh:
+            json.dump(report, fh, indent=1, sort_keys=True)
+    except BaseException:
+        pass
     return -999
