@@ -2,7 +2,8 @@
 
 **Date:** 2026-10-27  
 **Base:** immutable V8 tag `h3-footprint-v8-freeze-2026-10-27` (`d5b002cf0802b54b5a18b81e6bb99a9566cdd5ff`)  
-**Status:** design specification only; V8 remains frozen and unchanged. No tests run and no candidate execution authorized.
+**Status:** design specification only; V8 remains frozen and unchanged. No tests run and no candidate execution authorized.  
+**Amended:** 2026-10-28, to combine the answer-key disclosure and response-forgery threat.
 
 ## 1. Objective
 
