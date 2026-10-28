@@ -45,7 +45,7 @@ def validate_oracles() -> dict:
     }
 
 
-def validate_v3_rules() -> dict:
+def validate_v4_rules() -> dict:
     sys.path.insert(0, str(ROOT))
     import run_gate
 
@@ -95,17 +95,18 @@ def run_tests() -> tuple[int, str]:
 
 def main() -> None:
     oracle = validate_oracles()
-    v3_rules = validate_v3_rules()
+    v4_rules = validate_v4_rules()
     test_count, test_output = run_tests()
     report = {
-        "status": "PASS",
-        "version": 3,
+        "status": "PASS_HOST_CONTROLS_ONLY",
+        "version": 4,
         "validated_at_utc": datetime.now(timezone.utc).isoformat(),
         "candidate_generation_performed": False,
-        "model_calls_performed": 0,
+        "study_model_calls_performed": 0,
+        "operational_connectivity_smoke_calls": 2,
         "candidate_bodies_generated": 0,
         "oracle_validation": oracle,
-        "v3_rule_validation": v3_rules,
+        "v4_rule_validation": v4_rules,
         "unit_test_count": test_count,
         "unit_tests_passed": True,
         "control_expectations": {
@@ -126,7 +127,8 @@ def main() -> None:
         "limitations": [
             "Static undefined-name checking is a conservative warning; preflight loading remains mandatory.",
             "The saturation metric and futility rule are validated against synthetic fixtures, not generated candidates.",
-            "These are deterministic harness controls, not generated candidate results.",
+            "These are deterministic host controls, not generated candidate results.",
+            "V4 remains a proposal until the separate Docker isolation report passes and the V4 protocol is reviewed and frozen.",
             "No generation, model calls, held-out scoring, power estimate, or H3 inference was performed.",
         ],
         "test_output_tail": test_output[-3000:],
