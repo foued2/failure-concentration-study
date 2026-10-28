@@ -291,7 +291,10 @@ def _completed_batches() -> int:
         except json.JSONDecodeError:
             continue
         batch_id = record.get("batch_id")
-        if isinstance(batch_id, int):
+        # A deferred, failed or rate-limited request is not a completed batch.
+        # The V4 generator records one line per attempt, so count only a
+        # complete HTTP response in the fixed schedule/futility denominator.
+        if isinstance(batch_id, int) and record.get("completed") is True:
             ids.add(batch_id)
     return len(ids)
 
