@@ -12,6 +12,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import instrument
+import container_eval
 
 ROOT = Path(__file__).resolve().parent
 GEN = ROOT / "generated"
@@ -164,6 +165,7 @@ def _invalid_candidate(row: dict, reason: str) -> dict:
 
 
 def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
+    """Score one candidate while keeping its source and each probe inside Docker."""
     source = path.read_text(encoding="utf-8")
     h = path.stem
     info = meta.get(h) or {}
@@ -173,6 +175,7 @@ def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
         "fails": None, "k": None, "C": None,
         "group_id": info.get("group_id"), "generator": info.get("model"),
         "prompt_variant": info.get("prompt_variant"), "batch_id": info.get("batch_id"),
+        "execution_backend": "docker-fresh-container-per-probe",
     }
     reason = unsafe_reason(source)
     if reason:
@@ -184,55 +187,72 @@ def evaluate_body(path: Path, meta: dict[str, dict]) -> dict:
         return _invalid_candidate(row, "missing_provenance")
 
     try:
-        proc = subprocess.run(
-            [sys.executable, "-I", str(WORKER), str(path), "--preflight"],
-            cwd=str(ROOT), capture_output=True, text=True, timeout=5,
-            encoding="utf-8", errors="replace",
-        )
-    except subprocess.TimeoutExpired:
-        return _invalid_candidate(row, "preflight_timeout")
-    except Exception as exc:
-        return _invalid_candidate(row, "preflight_runner_error:" + type(exc).__name__)
-    pre = _json_object_from_stdout(proc.stdout)
-    if proc.returncode != 0 or pre is None:
-        return _invalid_candidate(row, "preflight_invalid_output")
-    if pre.get("phase") != "preflight" or pre.get("valid") is not True or pre.get("load_error"):
-        detail = pre.get("load_error") or pre.get("error") or "candidate did not load"
-        return _invalid_candidate(row, "load_error:" + str(detail))
+        pre = container_eval.preflight(path, timeout=5.0)
+    except container_eval.ContainerInfrastructureError:
+        # An unavailable Docker engine is an operational blocker, not evidence
+        # that a candidate is invalid. Abort rather than turn an infra failure
+        # into a scientific observation.
+        raise
+    if pre.get("status") != "preflight_ok":
+        detail = pre.get("error") or pre.get("error_type") or pre.get("status") or "candidate did not load"
+        return _invalid_candidate(row, "container_preflight:" + str(detail))
 
+    expected_values = instrument.expected_values()
     fails: list[bool] = []
     had_probe_timeout = False
-    for probe_index in range(len(instrument.PROBES)):
+    probe_summaries: list[dict] = []
+    for probe_index, probe in enumerate(instrument.PROBES):
         try:
-            proc = subprocess.run(
-                [sys.executable, "-I", str(WORKER), str(path), "--probe", str(probe_index)],
-                cwd=str(ROOT), capture_output=True, text=True, timeout=5,
-                encoding="utf-8", errors="replace",
-            )
-        except subprocess.TimeoutExpired:
+            result = container_eval.run_probe(path, probe, timeout=5.0)
+        except container_eval.ContainerInfrastructureError:
+            raise
+        status = result.get("status")
+        probe_summaries.append({
+            "probe_index": probe_index,
+            "probe_id": probe["probe_id"],
+            "status": status,
+            "timed_out": result.get("timed_out") is True,
+            "elapsed_seconds": result.get("elapsed_seconds"),
+            "exit_code": result.get("exit_code"),
+            "image_id": (result.get("image") or {}).get("image_id"),
+        })
+
+        if status == "timed_out":
+            # The prespecified rule treats a timeout during an individual probe
+            # as that probe failing, but never lets the container persist.
             had_probe_timeout = True
             fails.append(True)
             continue
-        except Exception as exc:
-            return _invalid_candidate(row, "probe_runner_error:" + type(exc).__name__)
-        data = _json_object_from_stdout(proc.stdout)
-        if proc.returncode != 0 or data is None:
-            return _invalid_candidate(row, "probe_invalid_output")
-        if data.get("phase") == "load" or data.get("load_error"):
-            return _invalid_candidate(row, "load_error_during_probe")
-        if data.get("phase") != "probe" or data.get("probe_index") != probe_index or not isinstance(data.get("fail"), bool):
-            return _invalid_candidate(row, "probe_invalid_output")
-        fails.append(data["fail"])
+        if status == "runtime_error":
+            fails.append(True)
+            continue
+        if status == "load_error":
+            row["container_probe_summaries"] = probe_summaries
+            return _invalid_candidate(
+                row, "load_error_during_probe:" + str(result.get("error_type", "unknown"))
+            )
+        if status != "ok":
+            row["container_probe_summaries"] = probe_summaries
+            return _invalid_candidate(
+                row, "container_probe_invalid_output:" + str(status)
+            )
+
+        answer_type = result.get("answer_type")
+        answer = result.get("answer")
+        expected = expected_values[probe["probe_id"]]
+        fails.append(answer_type != "int" or type(answer) is not int or answer != expected)
 
     counts = instrument.family_counts(fails)
     k, c = instrument.concentration(fails)
     row.update({
-        "excluded": None, "load_error": None, "fails": fails, "family_counts": counts, "timeout": had_probe_timeout,
+        "excluded": None, "load_error": None, "fails": fails,
+        "family_counts": counts, "timeout": had_probe_timeout,
         "k": k, "C": c, "max_f": max(counts.values()),
         "eligible": 2 <= k <= 24, "probes_completed": len(fails),
+        "container_probe_summaries": probe_summaries,
+        "container_image": container_eval.ensure_image(),
     })
     return row
-
 
 def _all_or_none_fraction(rows: list[dict]) -> float | None:
     """Secondary metric retained from V1/V2: per-family-count all-or-none rate."""
