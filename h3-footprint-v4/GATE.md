@@ -1,6 +1,6 @@
 # H3 Footprint Gate V4: anonymous hosted-model proposal
 
-**Status: PROPOSAL ONLY. NOT FROZEN. NO candidate-generation batch or candidate evaluation has been run.** V3 remains unchanged and retains its original three-model frame. V4 is a separate, explicitly different study population.
+**Status: PROPOSAL ONLY. NOT FROZEN. NO study candidate-generation batch or generated-candidate scoring has been run.** V3 remains unchanged and retains its original three-model frame. V4 is a separate, explicitly different study population. The hosted controls are now verified: 36 host tests pass, all 30 probe answers match, the fixed-fixture Docker isolation battery passes eight checks, and a one-request anonymous endpoint smoke succeeds. These establish an execution route, not approval of the changed scientific protocol.
 
 ## Why V4 exists
 
@@ -27,7 +27,7 @@ The proposed generator is serial and schedules request starts at least 35 second
 
 Task: directed single-source/single-target shortest path with non-negative integer edge weights. Candidate interface: `solve(n, edges, s, t)`, returning the minimum path distance as an integer, or `-1` if unreachable.
 
-The 30 probes, six families R, Z, A, I, S and U, and five probes per family are carried forward provisionally from V3. The expected values remain in `instrument.py` and `expected_values.json`. Before the V4 freeze, the unchanged instrument must pass `validate_controls.py` and all controls must agree.
+The 30 probes, six families R, Z, A, I, S and U, and five probes per family are carried forward provisionally from V3. The expected values remain in `instrument.py` and `expected_values.json`. Before the V4 freeze, the unchanged instrument must pass `validate_controls.py` and all controls must agree. This was observed on hosted run `40772395598` (36 tests, 30/30 expected-answer agreement). Its Docker isolation report is in artifact `12853097204`, with report SHA-256 `86e103219c2db9238825fdc2b0e2098423d702b55290f9a81e63c77ee910e6d2`.
 
 ## Generator schedule and cap
 

@@ -3,24 +3,74 @@
   "status": "PROPOSAL_NOT_FROZEN",
   "scientific_status": "No V4 candidate data generated; no H3 conclusion.",
   "candidate_generation_performed": false,
+  "candidate_evaluation_performed": false,
   "study_model_calls_performed": 0,
   "operational_connectivity_smoke_calls": 2,
+  "successful_operational_connectivity_smoke_calls": 1,
   "model_population": {
     "provider": "OVHcloud AI Endpoints anonymous lane",
     "model": "gpt-oss-120b",
     "endpoint": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
-    "auth": "no API key used in observed smoke"
+    "auth": "No API key or Authorization header used in the successful operational smoke"
   },
   "protocol_changes_from_v3": [
-    "replace the three-model OpenCode frame with one named gpt-oss-120b model",
-    "replace the Windows Sandbox execution path with a separately validated Docker-container boundary on a GitHub-hosted Linux runner"
+    "replace V3's three-model OpenCode frame with one named gpt-oss-120b model",
+    "replace the Windows Sandbox execution path with a separately tested Docker boundary on a GitHub-hosted Linux runner"
   ],
+  "remote_verification": {
+    "source_commit": "9930aac417056471aba719a66d086813aedeac4e",
+    "workflow_run_id": 40772395598,
+    "workflow_run_url": "https://github.com/foued2/failure-concentration-study/actions/runs/40772395598",
+    "workflow_artifact_id": 12853097204,
+    "workflow_artifact_name": "h3-v4-docker-boundary-40772395598-1",
+    "isolation_report_sha256": "86e103219c2db9238825fdc2b0e2098423d702b55290f9a81e63c77ee910e6d2",
+    "validation_report_sha256": "0cd594f8fc7492d08f276095cb730606a48f033eaa546e615dcc3b370220e888",
+    "unit_tests": {
+      "status": "PASS",
+      "count": 36
+    },
+    "instrument": {
+      "expected_probe_count": 30,
+      "oracle_agreement_count": 30,
+      "status": "PASS"
+    },
+    "docker_isolation_battery": {
+      "status": "PASS",
+      "checks": {
+        "minimal_image_context_only": true,
+        "host_file_denied_with_positive_control": true,
+        "network_denied_with_loopback_control": true,
+        "process_limit_enforced": true,
+        "process_tree_killed_on_timeout": true,
+        "normal_exit_cleanup": true,
+        "memory_limit_enforced": true,
+        "docker_resource_controls_observed": true
+      },
+      "memory_cap_positive_control": {
+        "low_cap_bytes": 67108864,
+        "low_cap_cgroup_memory_max": "67108864",
+        "low_cap_256_mib_allocation_survived": false,
+        "high_cap_bytes": 536870912,
+        "high_cap_cgroup_memory_max": "536870912",
+        "high_cap_128_mib_allocation_survived": true
+      }
+    },
+    "candidate_generation_performed": false,
+    "study_model_calls_performed": 0,
+    "note": "Infrastructure/control verification only; no generated solver candidate was requested or scored."
+  },
+  "anonymous_endpoint_smoke": {
+    "workflow_run_id": 40768310654,
+    "workflow_run_url": "https://github.com/foued2/failure-concentration-study/actions/runs/40768310654",
+    "result": "One no-key health completion returned HTTP 200 and the exact expected response; a prior short-output smoke was not accepted as a successful reply.",
+    "study_data": false
+  },
   "freeze_blockers": [
-    "V4 design review has not approved the changed model population",
-    "Docker isolation battery is not yet implemented or passed",
-    "containerized candidate evaluation is not yet implemented or tested",
-    "the V4 freeze hashes have not been produced",
-    "separate generation authorization has not been committed"
+    "The V4 scientific coherence review is NOT_REVIEWED; replacing three generators with one model narrows the population and invalidates V3 generator comparisons.",
+    "A valid V4 freeze with the required source and workflow hashes has not been produced.",
+    "EVALUATION_AUTHORIZATION.json has not been created; generation remains fail-closed.",
+    "The anonymous endpoint has only passed an operational smoke, not a sustained 400-request availability test.",
+    "The four-stage 100-batch pipeline is implemented but has not been exercised end-to-end because the freeze and authorization gates are intentionally closed."
   ],
-  "note": "This is intentionally not a valid freeze. Do not run generation or candidate evaluation based on this file."
+  "note": "This JSON records pre-candidate verification but is intentionally not a valid freeze. Do not run generation or candidate evaluation until V4 review, hashes, and explicit authorization are complete."
 }
