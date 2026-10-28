@@ -15,9 +15,13 @@ concurrency:
 
 jobs:
   h3-v9-hosted-verification:
-    name: Host regression tests and fail-closed gate
+    name: Host regression tests (Python ${{ matrix.python-version }})
     runs-on: windows-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
     defaults:
       run:
         shell: pwsh
@@ -26,6 +30,11 @@ jobs:
     steps:
       - name: Check out the committed work branch
         uses: actions/checkout@v4
+
+      - name: Set up the target Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Record the actual hosted environment
         run: |
@@ -59,20 +68,29 @@ jobs:
 
       - name: Verify the real execution gate still refuses candidate evaluation
         run: |
-          python controller.py --check-execution-gate 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\h3-v9-gate-check.txt"
-          $gateExitCode = $LASTEXITCODE
-          if ($gateExitCode -ne 2) {
-            throw "Expected fail-closed gate exit code 2; received $gateExitCode."
+          $pythonExe = (Get-Command python -ErrorAction Stop).Source
+          $stdout = Join-Path $env:RUNNER_TEMP "h3-v9-gate-check.txt"
+          $stderr = Join-Path $env:RUNNER_TEMP "h3-v9-gate-check-stderr.txt"
+          $process = Start-Process -FilePath $pythonExe -ArgumentList @("controller.py", "--check-execution-gate") -NoNewWindow -Wait -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          if (Test-Path -LiteralPath $stdout) {
+            Get-Content -LiteralPath $stdout | ForEach-Object { Write-Host $_ }
+          }
+          if (Test-Path -LiteralPath $stderr) {
+            Get-Content -LiteralPath $stderr | ForEach-Object { Write-Host $_ }
+          }
+          if ($process.ExitCode -ne 2) {
+            throw "Expected fail-closed gate exit code 2; received $($process.ExitCode)."
           }
 
       - name: Publish host verification logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: h3-v9-hosted-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          name: h3-v9-hosted-verification-py${{ matrix.python-version }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ runner.temp }}\h3-v9-environment.json
             ${{ runner.temp }}\h3-v9-unit-tests.txt
             ${{ runner.temp }}\h3-v9-gate-check.txt
+            ${{ runner.temp }}\h3-v9-gate-check-stderr.txt
           if-no-files-found: warn
           retention-days: 14
