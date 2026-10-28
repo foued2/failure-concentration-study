@@ -2,7 +2,8 @@
 
 **Date:** 2026-10-27  
 **Purpose:** Determine whether the frozen model IDs are absent from the local catalog, hidden by configuration, or visible but blocked at request time.  
-**Safety:** These commands query local metadata and the model catalog only. They do not run `opencode run`, call a model for generation, or create study candidates.
+**Safety:** These commands query local metadata and the model catalog only. They do not run `opencode run`, call a model for generation, or create study candidates.  
+**Amended:** 2026-10-28, to add permission-profile and free-tier compatibility checks.
 
 ## Why this check is warranted
 
