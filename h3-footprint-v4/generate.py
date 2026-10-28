@@ -4,6 +4,7 @@ import argparse
 import ast
 import hashlib
 import json
+import re
 import threading
 import time
 import urllib.error
