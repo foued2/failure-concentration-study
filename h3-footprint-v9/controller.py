@@ -136,8 +136,20 @@ def _snapshot(ctl: "Controller") -> dict[str, Any]:
 
 DIAGNOSTIC_MEANING = {
     "inbox_not_refreshed": (
-        "the agent stayed alive and never recorded seeing job B; investigate how "
-        "updates to the mapped inbox become visible before changing the protocol"
+        "the job loop kept scanning and never listed a request file for job B; the "
+        "request did not become visible to the guest scan"
+    ),
+    "job_loop_progress_unknown": (
+        "the process stayed alive but no poll-state telemetry proves the job loop kept "
+        "scanning; the cause remains unresolved and stale mapping contents is not claimed"
+    ),
+    "job_request_unusable": (
+        "a request file for job B was visible to the guest scan but could not be "
+        "validated or parsed; inspect the recorded scan error"
+    ),
+    "job_request_out_of_order": (
+        "a request file for job B was visible but the expected sequence had not arrived; "
+        "inspect the request sequence before changing anything"
     ),
     "agent_stopped": (
         "the heartbeat stopped before job B was discovered; investigate agent exit, "
@@ -170,6 +182,11 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
                          after_b: dict[str, Any]) -> dict[str, Any]:
     """Decide, from guest events only, which of the known causes fits.
 
+    A heartbeat proves the process lived. Only ``poll_state`` events are written
+    by the job loop itself, so *they* are what can show the loop was still
+    scanning. A missing ``job_discovered`` alone is never read as proof that the
+    mapping served stale contents.
+
     The classification never turns a failed ordering run into a pass: it only
     names what to investigate next. A missing or ambiguous diagnostic stays
     ``unresolved``.
@@ -192,6 +209,26 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
         event for event in events
         if event["event"] == "heartbeat" and event["seq"] > before_b["max_seq"]
     ]
+    poll_after_b = [
+        event for event in events
+        if event["event"] == "poll_state" and event["seq"] > before_b["max_seq"]
+    ]
+    scan_after_b = [event["state"] for event in poll_after_b]
+    progressing = bool(
+        len(scan_after_b) >= 2
+        and all(state["scanned"] for state in scan_after_b)
+        and scan_after_b[-1]["poll_count"] > scan_after_b[0]["poll_count"]
+    )
+    b_seen_in_scan = any(
+        job_b["job_id"] in " ".join(state["visible"])
+        or state.get("last_job_id") == job_b["job_id"]
+        for state in scan_after_b
+    )
+    b_in_error = any(
+        (state.get("error_file") or "").find(job_b["job_id"]) >= 0
+        for state in scan_after_b
+    )
+    b_out_of_order = any(state["outcome"] == "out_of_order" for state in scan_after_b)
 
     if anomalies:
         classification = "ambiguous_telemetry"
@@ -203,8 +240,13 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
         classification = "supervisor_or_response_path"
     elif b_discovered:
         classification = "stalled_after_discovery"
-    elif heartbeats_after_b:
+    elif b_in_error or (b_seen_in_scan and not b_discovered):
+        classification = ("job_request_out_of_order" if b_out_of_order
+                          else "job_request_unusable")
+    elif heartbeats_after_b and progressing:
         classification = "inbox_not_refreshed"
+    elif heartbeats_after_b:
+        classification = "job_loop_progress_unknown"
     elif events:
         classification = "agent_stopped"
     else:
@@ -216,6 +258,11 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
                                           DIAGNOSTIC_MEANING["unresolved"]),
         "agent_alive_after_b": bool(heartbeats_after_b),
         "heartbeats_after_b": len(heartbeats_after_b),
+        "poll_states_after_b": len(poll_after_b),
+        "job_loop_progressing": progressing,
+        "job_b_seen_in_scan": b_seen_in_scan,
+        "last_scan_outcome": scan_after_b[-1]["outcome"] if scan_after_b else None,
+        "last_poll_count": scan_after_b[-1]["poll_count"] if scan_after_b else None,
         "job_a_instrumented": a_seen,
         "job_b_discovered": b_discovered,
         "job_b_started": b_started,
@@ -231,13 +278,18 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
 
 
 def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
-                   token_a: int = 111, token_b: int = 222) -> dict[str, Any]:
+                   token_a: int = 111, token_b: int = 222,
+                   immutable: bool = False) -> dict[str, Any]:
     """Publish token A, confirm its tree is gone, then publish token B.
 
     The answer the host receives proves which token the candidate saw, so a
     mapping that exposed B early would surface as ``token`` = B in A's response.
     ``Controller._verify`` refuses to continue unless the previous process tree
     is confirmed dead, which is what makes this ordering testable at all.
+
+    ``immutable`` selects the opt-in diagnostic protocol: each request gets a new
+    filename and an immutable content-addressed body. The default remains the
+    legacy ``job.json`` path.
 
     On a transport that carries guest telemetry, the failure path is not
     re-raised: the run is still a FAIL, but the report also names which
@@ -247,24 +299,30 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
     staging, response_dir, scratch = _case_dirs(ctl, "rendezvous")
     started = time.time()
     events: list[dict[str, Any]] = []
+    protocol_name = "immutable-v1" if immutable else "legacy-job.json"
 
     def stamp(event: str, **fields: Any) -> None:
         events.append({"at": round(time.time() - started, 4), "event": event, **fields})
 
     def publish(token: int) -> dict[str, Any]:
-        job = ctl._publish(staging, body, "system", None,
-                           {"n": token, "edges": [], "s": 0, "t": 0})
-        return job
+        payload = {"n": token, "edges": [], "s": 0, "t": 0}
+        if immutable:
+            return ctl._publish_immutable(staging, body, "system", None, payload)
+        return ctl._publish(staging, body, "system", None, payload)
 
-    def visible_token() -> str:
+    def next_request_visible() -> bool:
+        """Is a request for the next sequence already visible before it is published?"""
+        if immutable:
+            pattern = f"{protocol.IMMUTABLE_JOB_PREFIX}{(ctl._sequence + 1):06d}-*.json"
+            return any(staging.glob(pattern))
         try:
-            return (staging / protocol.JOB_FILENAME).read_text(encoding="utf-8")
+            return str(token_b) in (staging / protocol.JOB_FILENAME).read_text(encoding="utf-8")
         except OSError:
-            return ""
+            return False
 
     job_a = publish(token_a)
     stamp("publish_A", job_id=job_a["job_id"], token=token_a,
-          token_b_visible=str(token_b) in visible_token())
+          next_request_visible=next_request_visible())
 
     record_a = ctl.transport.execute(
         staging, response_dir, scratch,
@@ -279,7 +337,7 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
     stamp("telemetry_after_A", event_count=len(after_a["events"]),
           max_seq=after_a["max_seq"])
 
-    token_b_visible_before_publish = str(token_b) in visible_token()
+    token_b_visible_before_publish = next_request_visible()
     stamp("tree_empty_confirmed", job_id=job_a["job_id"],
           token_b_visible=token_b_visible_before_publish)
 
@@ -312,6 +370,7 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
             "ordering_ok": False,
             "attested": checks["transport_attested"],
             "transport": ctl.transport.name,
+            "protocol": protocol_name,
             "tokens": {"A": token_a, "B": token_b},
             "events": events,
             "failure": {"error": type(exc).__name__, "detail": str(exc)},
@@ -340,6 +399,7 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
                            if key != "transport_attested"),
         "attested": checks["transport_attested"],
         "transport": ctl.transport.name,
+        "protocol": protocol_name,
         "tokens": {"A": token_a, "B": token_b},
         "events": events,
         "diagnostic": None,
@@ -439,6 +499,32 @@ class Controller:
             staging, job, body=body,
             atomic=not getattr(self.transport, "requires_sandbox", False),
         )
+        return job
+
+    def _publish_immutable(self, staging: Path, body: bytes, kind: str,
+                           probe_index: int | None,
+                           job_input: dict | None) -> dict[str, Any]:
+        """Publish one request under a new filename that can never be reused.
+
+        Diagnostic variant only: the default transport keeps using ``job.json``.
+        """
+        self._require_previous_tree_dead()
+        self._sequence += 1
+        job = {
+            "v9": protocol.JOB_SCHEMA,
+            "job_id": uuid.uuid4().hex,
+            "sequence": self._sequence,
+            "kind": kind,
+            "body_sha256": protocol.sha256_bytes(body),
+            "probe_index": probe_index,
+            "input": job_input,
+            "limits": {
+                "max_stdout_bytes": constants.MAX_CHILD_STDOUT_BYTES,
+                "memory_bytes": self.memory_bytes,
+                "max_processes": self.max_processes,
+            },
+        }
+        protocol.publish_immutable_job(staging, job, body)
         return job
 
     def _verify(self, job: dict[str, Any], record: dict[str, Any]) -> None:
@@ -588,6 +674,9 @@ def _cli(argv: list[str] | None = None) -> int:
                         help="write a .wsb config for the one-item broker")
     parser.add_argument("--mode", choices=("preflight", "serve"), default="preflight",
                         help="config mode for --write-sandbox-config (default: preflight)")
+    parser.add_argument("--job-protocol", choices=("legacy", "immutable"),
+                        default="legacy",
+                        help="opt-in diagnostic request protocol; legacy remains the default")
     parser.add_argument("--inbox", help="host path mapped read-only into the Sandbox")
     parser.add_argument("--outbox", help="host path mapped writable into the Sandbox")
     parser.add_argument("--python-root",
@@ -629,11 +718,16 @@ def _cli(argv: list[str] | None = None) -> int:
         if not args.python_root:
             parser.error("--write-sandbox-config requires --python-root: an unmapped "
                          "interpreter cannot start inside the Sandbox")
+        if args.mode == "preflight" and args.job_protocol != "legacy":
+            parser.error("a handshake-only config cannot select --job-protocol immutable")
         xml = backend.sandbox_config_xml(
             Path(args.inbox), Path(args.outbox),
             python_root=Path(args.python_root), mode=args.mode,
+            job_protocol=args.job_protocol,
         )
-        config = backend.verify_sandbox_config(xml, mode=args.mode)
+        config = backend.verify_sandbox_config(
+            xml, mode=args.mode, job_protocol=args.job_protocol
+        )
         if not config["ok"]:
             print(json.dumps({"ok": False, "config": config}, indent=2, sort_keys=True))
             return 3
@@ -739,10 +833,13 @@ def _rendezvous_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -
         ctl = Controller(work_root, transport=transport)
 
     try:
-        result = run_rendezvous(ctl, body)
+        result = run_rendezvous(ctl, body,
+                                immutable=(args.job_protocol == "immutable"))
     except backend.FatalBoundaryError as exc:
         result = {"ordering_ok": False, "error": type(exc).__name__,
                   "detail": str(exc), "transport": transport.name,
+                  "protocol": ("immutable-v1" if args.job_protocol == "immutable"
+                               else "legacy-job.json"),
                   "attested": transport.isolation_verified}
         snapshot = _snapshot(ctl)
         result["guest_events"] = snapshot["events"]

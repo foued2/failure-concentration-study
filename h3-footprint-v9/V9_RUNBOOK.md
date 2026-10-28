@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 7. Every command below exists and is exercised by the test suite.
+Revision 8. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -166,26 +166,43 @@ Result on 2026-10-28: **FAIL**, cause unresolved. Job A was answered correctly
 never answered, and no response for B appeared four minutes later. `ordering_ok`
 is false. Do not proceed to step 3 or 4 on this result.
 
-One instrumented rerun was then made, on `echo_input.py` only, and it classified
-the failure as `inbox_not_refreshed`: the agent stayed alive (heartbeats
-throughout), job B was never discovered, and there were no exceptions or
-telemetry anomalies. Job A was fully instrumented. That excludes an agent crash
-and a response-path failure for this run and points at the guest's view of the
-rewritten `job.json`; it does not prove the mechanism, so no protocol change was
-made. Raw set: `evidence/rendezvous-instrumented-2026-10-28.json` and
+One instrumented rerun was then made, on `echo_input.py` only. The agent stayed
+alive and job A was fully instrumented, but job B was never discovered. That run
+had heartbeats only, so it proves the process lived, not that the job loop kept
+scanning; under revision 8 rules it is `job_loop_progress_unknown`, and it is
+not evidence of a stale mapped folder. Raw set:
+`evidence/rendezvous-instrumented-2026-10-28.json` and
 `evidence/rendezvous-instrumented-*`.
+
+Revision 8 records each poll and adds an opt-in immutable request protocol for
+one diagnostic run:
+
+```
+python controller.py --rendezvous --transport sandbox --job-protocol immutable ^
+  --inbox C:\v9-stage\in --outbox C:\v9-stage\out ^
+  --report C:\v9-stage\rendezvous-immutable.json
+```
+
+Generate the serve `.wsb` with the same `--mode serve --job-protocol immutable`
+so the guest agent uses the matching loop. The immutable variant publishes
+`job-<sequence>-<job_id>.json` and `bodies/<sha256>.py`, never renames or
+overwrites a request, rejects duplicate/conflicting/malformed/out-of-order
+requests, and processes each job at most once. It is a diagnostic variant only;
+the default remains `job.json`, and a successful diagnostic does not change
+`sandbox_rendezvous_ordering` from FAIL.
 
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It
-records whether B was visible in the inbox before A completed.
+records whether the next request was visible before A completed.
 
-Revision 7 adds guest instrumentation to the same harness, so a failing run now
-carries `guest_events`, `telemetry_anomalies` and a named `diagnostic` in its
-report. Read the tree before changing anything:
+Read the tree before changing anything:
 
 | observation | classification | next question |
 | --- | --- | --- |
-| heartbeat continues, B never discovered | `inbox_not_refreshed` | how do inbox updates become visible? |
+| loop polls, B never listed | `inbox_not_refreshed` | how do inbox updates become visible? |
+| process alive, no poll progress | `job_loop_progress_unknown` | is the loop still scanning? |
+| B listed but unreadable/malformed | `job_request_unusable` | which validation failed? |
+| B listed before its sequence | `job_request_out_of_order` | why is the sequence wrong? |
 | heartbeats stop before B | `agent_stopped` | did the agent exit, crash or stall? |
 | B discovered and started, no response | `supervisor_or_response_path` | supervisor execution or response publication |
 | B response recorded, host saw none | `response_written_but_not_visible` | outbox visibility |

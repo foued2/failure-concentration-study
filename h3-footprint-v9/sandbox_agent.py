@@ -21,6 +21,7 @@ import tempfile
 import threading
 import time
 from pathlib import Path
+from typing import Callable
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -63,7 +64,7 @@ class EventLog:
         self._lock = threading.Lock()
 
     def emit(self, event: str, *, phase: str, job: dict | None = None,
-             detail: str | None = None) -> dict:
+             detail: str | None = None, state: dict | None = None) -> dict:
         with self._lock:
             self.seq += 1
             record = {
@@ -78,23 +79,80 @@ class EventLog:
                 "job_sequence": job.get("sequence") if job else None,
                 "detail": detail[:protocol.EVENT_DETAIL_LIMIT] if detail else None,
             }
+            if state is not None:
+                record["state"] = state
             protocol.write_event(self.outbox, record)
             return record
+
+
+class JobLoopState:
+    """The last thing the job loop observed, in a bounded shape.
+
+    The heartbeat copies this snapshot so a reader can see the loop's last known
+    position, but only a ``poll_state`` event is written by the loop itself and
+    therefore counts as evidence that the loop ran.
+    """
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._state: dict = {
+            "poll_count": 0,
+            "last_poll_at": None,
+            "scanned": False,
+            "visible": [],
+            "visible_count": 0,
+            "outcome": "no_jobs",
+            "last_job_id": None,
+            "last_job_sequence": None,
+            "error": None,
+            "error_file": None,
+        }
+
+    def observe(self, *, scanned: bool, visible: list[str], visible_count: int,
+                outcome: str, error: str | None = None,
+                error_file: str | None = None) -> dict:
+        with self._lock:
+            self._state["poll_count"] += 1
+            self._state["last_poll_at"] = time.time()
+            self._state["scanned"] = bool(scanned)
+            self._state["visible"] = [
+                name[:protocol.EVENT_VISIBLE_NAME_LIMIT]
+                for name in visible[:protocol.EVENT_VISIBLE_LIMIT]
+            ]
+            self._state["visible_count"] = int(visible_count)
+            self._state["outcome"] = outcome
+            self._state["error"] = error[:protocol.EVENT_STATE_ERROR_LIMIT] if error else None
+            self._state["error_file"] = (
+                error_file[:protocol.EVENT_VISIBLE_NAME_LIMIT] if error_file else None
+            )
+            return dict(self._state)
+
+    def mark_job(self, job: dict) -> None:
+        with self._lock:
+            self._state["last_job_id"] = job["job_id"]
+            self._state["last_job_sequence"] = job["sequence"]
+
+    def snapshot(self) -> dict:
+        with self._lock:
+            return dict(self._state)
 
 
 class Heartbeat(threading.Thread):
     """Prove the agent is alive between jobs, without touching the job protocol."""
 
-    def __init__(self, log: EventLog, interval: float) -> None:
+    def __init__(self, log: EventLog, interval: float,
+                 state: Callable[[], dict] | None = None) -> None:
         super().__init__(name="v9-heartbeat", daemon=True)
         self.log = log
         self.interval = max(0.2, float(interval))
+        self.state = state
         self._stop = threading.Event()
 
     def run(self) -> None:
         while not self._stop.wait(self.interval):
             try:
-                self.log.emit("heartbeat", phase="serve", detail="alive")
+                snapshot = self.state() if self.state is not None else None
+                self.log.emit("heartbeat", phase="serve", detail="alive", state=snapshot)
             except OSError:
                 return
 
@@ -190,6 +248,96 @@ def serve(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
             return done
 
 
+def _decide_immutable(scan: dict, expected_sequence: int,
+                      handled_ids: set[str]) -> tuple[str, dict | None, str | None, str | None]:
+    """Return (outcome, processable job, error, error file) for one scan."""
+    if not scan["scanned"]:
+        return "error", None, scan["scan_error"], None
+    errors = scan["errors"]
+    for job in scan["requests"]:
+        if job["sequence"] == expected_sequence:
+            if job["job_id"] in handled_ids:
+                return "only_handled", None, None, None
+            first = errors[0] if errors else None
+            return "new_job", job, first["detail"] if first else None, first["file"] if first else None
+    if errors:
+        return "error", None, errors[0]["detail"], errors[0]["file"]
+    requests = scan["requests"]
+    if not requests:
+        return "no_jobs", None, None, None
+    if any(job["sequence"] > expected_sequence for job in requests):
+        return "out_of_order", None, None, None
+    return "only_handled", None, None, None
+
+
+def serve_immutable(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
+                    memory_bytes: int, max_processes: int, max_jobs: int = 0,
+                    poll: float = 0.1, events: EventLog | None = None,
+                    state_interval: float = 2.0, state_max: int = 60,
+                    runner: Callable | None = None) -> int:
+    """Serve the opt-in immutable request protocol.
+
+    Every poll is decided from a fresh directory scan. The loop records what it
+    saw even when it saw nothing new, so a later failure can distinguish an empty
+    directory, a visible-but-already-handled request, a malformed request and a
+    valid new one. Requests are processed in sequence, at most once, and a body
+    is addressed by its content hash.
+    """
+    inbox, outbox, scratch = Path(inbox), Path(outbox), Path(scratch)
+    scratch.mkdir(parents=True, exist_ok=True)
+    run = runner or supervisor.run_immutable_job
+    state = JobLoopState()
+    handled: set[str] = set()
+    last_sequence = 0
+    done = 0
+    emitted = 0
+    last_outcome: str | None = None
+    next_state = 0.0
+
+    while True:
+        scan = protocol.scan_immutable_jobs(inbox)
+        outcome, job, error, error_file = _decide_immutable(
+            scan, last_sequence + 1, handled
+        )
+        snapshot = state.observe(
+            scanned=scan["scanned"], visible=scan["visible"],
+            visible_count=scan["visible_count"], outcome=outcome,
+            error=error, error_file=error_file,
+        )
+        now = time.monotonic()
+        if (events is not None and emitted < state_max
+                and (emitted == 0 or outcome != last_outcome or now >= next_state)):
+            events.emit("poll_state", phase="serve", state=snapshot)
+            emitted += 1
+            last_outcome = outcome
+            next_state = now + state_interval
+
+        if job is None:
+            time.sleep(poll)
+            continue
+
+        if events is not None:
+            events.emit("job_discovered", phase="serve", job=job)
+            events.emit("job_started", phase="serve", job=job)
+        body = protocol.immutable_body_path(inbox, job["body_sha256"])
+        try:
+            run(job, body, outbox, scratch, timeout=timeout,
+                memory_bytes=memory_bytes, max_processes=max_processes)
+        except Exception as exc:  # noqa: BLE001 - the agent must record, not die
+            if events is not None:
+                events.emit("exception", phase="serve", job=job,
+                            detail=f"{type(exc).__name__}: {exc}")
+        else:
+            if events is not None:
+                events.emit("response_written", phase="serve", job=job)
+        handled.add(job["job_id"])
+        last_sequence = job["sequence"]
+        state.mark_job(job)
+        done += 1
+        if max_jobs and done >= max_jobs:
+            return done
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inbox", required=True)
@@ -205,6 +353,9 @@ def main() -> None:
                         help="prove identity and echo the nonce, then exit; serves no job")
     parser.add_argument("--heartbeat-interval", type=float, default=2.0,
                         help="seconds between liveness events in serve mode (default: 2)")
+    parser.add_argument("--job-protocol", choices=("legacy", "immutable"),
+                        default="legacy",
+                        help="opt-in diagnostic request protocol (default: legacy job.json)")
     parser.add_argument("--allow-host", action="store_true",
                         help="local testing only; the host handshake will reject it")
     args = parser.parse_args()
@@ -229,7 +380,8 @@ def main() -> None:
         events = EventLog(outbox, session["nonce"])
         try:
             events.emit("agent_start", phase="startup",
-                        detail=f"mode=serve pid={os.getpid()}")
+                        detail=(f"mode=serve pid={os.getpid()} "
+                                f"protocol={args.job_protocol}"))
         except OSError:
             events = None
 
@@ -243,6 +395,22 @@ def main() -> None:
     # refuses to run the child (status boundary_error).
     scratch = (Path(args.scratch) if args.scratch
                else Path(tempfile.gettempdir()) / "h3-scratch")
+
+    if args.job_protocol == "immutable":
+        state = JobLoopState()
+        heartbeat = (Heartbeat(events, args.heartbeat_interval, state=state.snapshot)
+                     if events is not None else None)
+        if heartbeat is not None:
+            heartbeat.start()
+        try:
+            serve_immutable(inbox, outbox, scratch, timeout=args.timeout,
+                            memory_bytes=args.memory_bytes,
+                            max_processes=args.max_processes,
+                            max_jobs=args.max_jobs, events=events)
+        finally:
+            if heartbeat is not None:
+                heartbeat.stop()
+        return
 
     heartbeat = Heartbeat(events, args.heartbeat_interval) if events is not None else None
     if heartbeat is not None:

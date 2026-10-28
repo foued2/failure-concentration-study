@@ -1,6 +1,6 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 7)
+**Date:** 2026-10-28 (revision 8)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
@@ -12,7 +12,9 @@ consent prompt. Revision 6 is the first with the Sandbox actually running: the
 preflight handshake verifies, and the two-token rendezvous **fails**. Revision 7
 closes the authorization gap that the handshake exposed and instruments the guest
 so the failure can be explained; the failure itself is still unresolved and
-evaluation stays blocked.
+evaluation stays blocked. Revision 8 records what the job loop sees on each poll
+and makes an immutable per-job request protocol available as an opt-in diagnostic;
+the default transport and the FAIL verdict are unchanged.
 
 ## Revision 4: capability, not assumption
 
@@ -176,8 +178,7 @@ isolation evidence, and a missing or ambiguous diagnostic remains `unresolved`.
 The original rendezvous report and its raw files are unchanged.
 
 **One instrumented run.** Exactly one rerun was made, on `echo_input.py` only, with
-no candidate and no evaluation. It is decisive about *where* the failure sits and
-silent about the exact mechanism:
+no candidate and no evaluation:
 
 - job A was discovered, started and answered (111, `tree_empty: true`), and its
   three lifecycle events are present;
@@ -185,20 +186,61 @@ silent about the exact mechanism:
   event sequence 68 at report time and 100 in the raw outbox;
 - it never recorded `job_discovered` for B, never raised, and produced no
   telemetry anomaly;
-- the host therefore classified the failure as `inbox_not_refreshed`.
+- the report labelled the failure `inbox_not_refreshed` under the revision-7
+  rule, but that rule treated liveness as progress.
 
-That rules out, for this run, an agent that stopped after A and a
-supervisor/response-path failure. It points at the guest's view of the rewritten
-`job.json` staying stale. It does not prove the refresh mechanism, so the cause
-is still recorded as unresolved, ordering is still `FAIL`, and no protocol change
-was made before the run. The raw set — hello, response A, job B, session and all
-100 events — is preserved beside the report and pinned by hash; the report's own
-snapshot was taken at 130 s with 68 events, which is why the raw directory is
-longer.
+That run excludes an agent that stopped after A and a supervisor/response-path
+failure for this run. It does **not** show that the guest's view of `job.json`
+was stale: the heartbeat thread proves the process lived, not that the job loop
+kept scanning or that it saw old contents. Under revision 8's rules the same
+observation is `job_loop_progress_unknown`. The raw set — hello, response A, job
+B, session and all 100 events — is preserved unchanged and pinned by hash; the
+report's own snapshot was taken at 130 s with 68 events.
 
 **Still blocked.** Evaluation remains refused by the gate and by decision. The
 isolation probes have not run, the caps are only `PARTIAL`, the verdict layer does
 not exist and no authorization file is committed.
+
+## Revision 8: the loop reports what it saw, and an immutable variant is testable
+
+The revision-7 telemetry answered “is the process alive?” but not “is the loop
+still looking?”. Revision 8 closes that gap without turning diagnostics into
+isolation evidence:
+
+- the job loop records a bounded `poll_state` snapshot — poll count, last-poll
+  time, scan success, visible request filenames, outcome (`new_job`,
+  `only_handled`, `no_jobs`, `out_of_order`, `error`), last parsed job
+  id/sequence, and an error category plus file;
+- `heartbeat` carries the last snapshot, but remains explicitly separate from
+  loop progress: only `poll_state` is written by the loop itself;
+- the host validates snapshots strictly (exact keys, bounded lists, allowed
+  outcomes, nonce/pid correlation, size cap) and never accepts them as proof of
+  isolation;
+- a missing `job_discovered` alone is no longer labelled stale mapping contents.
+  `inbox_not_refreshed` now requires observed scanning with no B request listed;
+  otherwise the result is `job_loop_progress_unknown`.
+
+Two new classifications make the next failure more specific:
+`job_request_unusable` (a B file was listed but failed validation or parsing)
+and `job_request_out_of_order` (a future sequence was listed first).
+
+**Opt-in immutable request protocol.** As a diagnostic variant only, each request
+is published under a new name, `job-<sequence>-<job_id>.json`, and a body is
+stored once under `bodies/<sha256>.py`. Publishing writes the body first, flushes
+and closes it, then creates the job file exclusively; nothing is renamed and
+nothing is overwritten. The guest rescans, matches the filename against the
+payload, enforces the expected sequence, processes each job at most once, and
+keeps unique per-job response files. Duplicate ids, conflicting sequences,
+malformed requests, filename/payload mismatches and out-of-order requests are
+rejected. The legacy `job.json` path remains the default and the production
+transport; `--job-protocol immutable` selects the variant on both the controller
+and the generated `.wsb`.
+
+Host tests cover two immutable jobs in sequence, no overwrite or rename, the
+rejection cases, content-addressed bodies, repeated polling, an empty/old/new/
+broken scan, tree-empty enforcement and one response per job. This is a
+diagnostic protocol, not a change to the production path, and it cannot turn
+`sandbox_rendezvous_ordering` into a pass.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 
@@ -391,7 +433,7 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 
 ```
 python -m unittest discover -s tests -v
-Ran 133 tests in 145.386s
+Ran 158 tests in 142.989s
 OK
 ```
 

@@ -124,6 +124,33 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
             lock_staging: bool = True, lock_response: bool = True) -> dict:
     staging, response_dir, scratch = Path(staging), Path(response_dir), Path(scratch)
     job = protocol.read_job(staging)
+    return execute_job(
+        job, staging / protocol.BODY_FILENAME, response_dir, scratch,
+        timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
+        lock_staging=lock_staging, lock_response=lock_response, clear_stale=True,
+    )
+
+
+def run_immutable_job(job: dict, body_path: Path, response_dir: Path, scratch: Path, *,
+                      timeout: float, memory_bytes: int, max_processes: int) -> dict:
+    """Execute one request from the immutable protocol.
+
+    The body path is content-addressed by the host, so there is no staging file to
+    rewrite and no stale response to clear: the response name is unique to the
+    job id and the write is exclusive.
+    """
+    return execute_job(
+        job, Path(body_path), Path(response_dir), Path(scratch),
+        timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
+        lock_staging=False, lock_response=False, clear_stale=False,
+    )
+
+
+def execute_job(job: dict, body: Path, response_dir: Path, scratch: Path, *,
+                timeout: float, memory_bytes: int, max_processes: int,
+                lock_staging: bool = True, lock_response: bool = True,
+                clear_stale: bool = True) -> dict:
+    response_dir, scratch = Path(response_dir), Path(scratch)
     ident = winjob.identity()
     base = {
         "v9": protocol.JOB_SCHEMA,
@@ -137,7 +164,6 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         "identity_user": ident["user"],
     }
 
-    body = staging / protocol.BODY_FILENAME
     if protocol.sha256_file(body) != job["body_sha256"]:
         record = {**base, "status": "staging_mismatch", "answer": None,
                   "timed_out": False, "tree_empty": True, "exit_code": None,
@@ -147,8 +173,9 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
 
     scratch.mkdir(parents=True, exist_ok=True)
     response_dir.mkdir(parents=True, exist_ok=True)
-    for stale in response_dir.glob(f"response-{job['job_id']}.json"):
-        stale.unlink()
+    if clear_stale:
+        for stale in response_dir.glob(f"response-{job['job_id']}.json"):
+            stale.unlink()
 
     scratch_low = _set_low_integrity(scratch)
     # Inside the Sandbox, staging is a read-only host mapping and ACL edits on
@@ -158,12 +185,12 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
     # preflight measures rather than assumes.
     locks = []
     if lock_staging:
-        locks.append({"target": "staging", **protocol.lock_dir(staging)})
+        locks.append({"target": "staging", **protocol.lock_dir(body.parent)})
     if lock_response:
         locks.append({"target": "response", **protocol.lock_dir(response_dir)})
     if not (scratch_low["ok"] and all(lock["ok"] for lock in locks)):
         if lock_staging:
-            protocol.unlock_dir(staging)
+            protocol.unlock_dir(body.parent)
         if lock_response:
             protocol.unlock_dir(response_dir)
         record = {**base, "status": "boundary_error", "answer": None,
@@ -238,7 +265,7 @@ def run_job(staging: Path, response_dir: Path, scratch: Path, *, timeout: float,
         else:
             tree_empty = True
         if lock_staging:
-            protocol.unlock_dir(staging)
+            protocol.unlock_dir(body.parent)
         if lock_response:
             protocol.unlock_dir(response_dir)
         if proc is not None and proc.poll() is None:

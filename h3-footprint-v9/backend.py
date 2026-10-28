@@ -372,14 +372,71 @@ def read_trusted_response(path: Path, job_id: str | None = None) -> dict[str, An
 EVENT_LIMIT_BYTES = protocol.EVENT_LIMIT_BYTES
 EVENT_NAME_RE = re.compile(r"^event-([0-9a-f]{32})-(\d{1,10})-(\d{6})-([a-z_]+)\.json$")
 _EVENT_HEX32 = re.compile(r"[0-9a-f]{32}")
-_EVENT_KEYS = frozenset({
+_EVENT_REQUIRED_KEYS = frozenset({
     "v9", "nonce", "pid", "seq", "event", "phase",
     "timestamp", "job_id", "job_sequence", "detail",
 })
+_EVENT_OPTIONAL_KEYS = frozenset({"state"})
+_EVENT_STATE_KEYS = frozenset(protocol.EVENT_STATE_KEYS)
 
 
 def _is_int(value: Any) -> bool:
     return isinstance(value, int) and not isinstance(value, bool)
+
+
+def validate_event_state(state: Any) -> dict[str, Any]:
+    """Strict, bounded shape for a job-loop snapshot."""
+    if not isinstance(state, dict):
+        raise FatalBoundaryError("event state is not a JSON object")
+    keys = set(state)
+    if keys != _EVENT_STATE_KEYS:
+        missing = sorted(_EVENT_STATE_KEYS - keys)
+        extra = sorted(keys - _EVENT_STATE_KEYS)
+        raise FatalBoundaryError(
+            f"event state keys differ (missing={missing}, unexpected={extra})"
+        )
+    poll_count = state["poll_count"]
+    if not _is_int(poll_count) or poll_count < 1:
+        raise FatalBoundaryError("event state poll_count is not a positive integer")
+    last_poll_at = state["last_poll_at"]
+    if (isinstance(last_poll_at, bool) or not isinstance(last_poll_at, (int, float))
+            or last_poll_at <= 0):
+        raise FatalBoundaryError("event state last_poll_at is not a positive number")
+    if not isinstance(state["scanned"], bool):
+        raise FatalBoundaryError("event state scanned is not a boolean")
+    visible = state["visible"]
+    if not isinstance(visible, list) or len(visible) > protocol.EVENT_VISIBLE_LIMIT:
+        raise FatalBoundaryError("event state visible is not a bounded list")
+    for name in visible:
+        if not isinstance(name, str) or len(name) > protocol.EVENT_VISIBLE_NAME_LIMIT:
+            raise FatalBoundaryError("event state visible entry is not bounded text")
+    visible_count = state["visible_count"]
+    if not _is_int(visible_count) or visible_count < len(visible):
+        raise FatalBoundaryError("event state visible_count is inconsistent")
+    if state["outcome"] not in protocol.EVENT_STATE_OUTCOMES:
+        raise FatalBoundaryError(f"event state outcome {state['outcome']!r} is not allowed")
+    last_job_id = state["last_job_id"]
+    if last_job_id is not None and (
+        not isinstance(last_job_id, str) or not _EVENT_HEX32.fullmatch(last_job_id)
+    ):
+        raise FatalBoundaryError("event state last_job_id is neither null nor 32-hex")
+    last_job_sequence = state["last_job_sequence"]
+    if last_job_sequence is not None and (
+        not _is_int(last_job_sequence) or last_job_sequence < 1
+    ):
+        raise FatalBoundaryError("event state last_job_sequence is neither null nor positive")
+    error = state["error"]
+    if error is not None and (
+        not isinstance(error, str) or len(error) > protocol.EVENT_STATE_ERROR_LIMIT
+    ):
+        raise FatalBoundaryError("event state error is neither null nor bounded text")
+    error_file = state["error_file"]
+    if error_file is not None and (
+        not isinstance(error_file, str)
+        or len(error_file) > protocol.EVENT_VISIBLE_NAME_LIMIT
+    ):
+        raise FatalBoundaryError("event state error_file is neither null nor bounded text")
+    return state
 
 
 def validate_event(record: Any, *, nonce: str,
@@ -388,9 +445,9 @@ def validate_event(record: Any, *, nonce: str,
     if not isinstance(record, dict):
         raise FatalBoundaryError("event is not a JSON object")
     keys = set(record)
-    if keys != _EVENT_KEYS:
-        missing = sorted(_EVENT_KEYS - keys)
-        extra = sorted(keys - _EVENT_KEYS)
+    missing = sorted(_EVENT_REQUIRED_KEYS - keys)
+    extra = sorted(keys - _EVENT_REQUIRED_KEYS - _EVENT_OPTIONAL_KEYS)
+    if missing or extra:
         raise FatalBoundaryError(
             f"event keys differ (missing={missing}, unexpected={extra})"
         )
@@ -430,6 +487,14 @@ def validate_event(record: Any, *, nonce: str,
         not isinstance(detail, str) or len(detail) > protocol.EVENT_DETAIL_LIMIT
     ):
         raise FatalBoundaryError("event detail is neither null nor bounded text")
+    if record["event"] == "poll_state" and "state" not in record:
+        raise FatalBoundaryError("poll_state event has no state")
+    if "state" in record:
+        if record["event"] not in ("heartbeat", "poll_state"):
+            raise FatalBoundaryError(
+                "event state is only allowed on heartbeat or poll_state"
+            )
+        validate_event_state(record["state"])
     return record
 
 
@@ -574,7 +639,7 @@ MAPPING_TEMPLATE = """    <MappedFolder>
 
 
 def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
-                       mode: str = "preflight",
+                       mode: str = "preflight", job_protocol: str = "legacy",
                        sandbox_root: str = SANDBOX_DESKTOP,
                        python_exe_name: str = "python.exe",
                        memory_mb: int = 4096) -> str:
@@ -584,9 +649,16 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
     base image ships no interpreter and an unmapped interpreter path is a config
     that cannot start. The previous revision emitted ``C:\\h3-py\\python.exe``
     while mapping only the inbox and outbox, so the agent could never launch.
+
+    ``job_protocol`` selects the opt-in diagnostic request protocol. Legacy stays
+    the default so an ordinary config is unchanged.
     """
     if mode not in ("preflight", "serve"):
         raise SandboxConfigError(f"unknown mode {mode!r}")
+    if job_protocol not in ("legacy", "immutable"):
+        raise SandboxConfigError(f"unknown job protocol {job_protocol!r}")
+    if mode == "preflight" and job_protocol != "legacy":
+        raise SandboxConfigError("a handshake-only config cannot select a job protocol")
     python_root = Path(python_root)
 
     sandbox_inbox = ntpath.join(sandbox_root, SANDBOX_INBOX_NAME)
@@ -604,7 +676,11 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
                                 readonly="true"),
     ])
 
-    tail = " --handshake-only" if mode == "preflight" else ""
+    tail = ""
+    if mode == "preflight":
+        tail = " --handshake-only"
+    elif job_protocol == "immutable":
+        tail = " --job-protocol immutable"
     command = (
         f'"{python_exe}" "{agent}" --inbox "{sandbox_inbox}" '
         f'--outbox "{sandbox_outbox}"{tail}'
@@ -615,7 +691,8 @@ def sandbox_config_xml(inbox: Path, outbox: Path, *, python_root: Path,
     )
 
 
-def verify_sandbox_config(xml: str, *, mode: str | None = None) -> dict[str, Any]:
+def verify_sandbox_config(xml: str, *, mode: str | None = None,
+                          job_protocol: str = "legacy") -> dict[str, Any]:
     """Parse the emitted config and prove it is launchable *and* bounded.
 
     This is deliberately independent of how the XML was built: it reads what
@@ -669,6 +746,9 @@ def verify_sandbox_config(xml: str, *, mode: str | None = None) -> dict[str, Any
         "handshake_only_matches_mode": (
             mode is None
             or ("--handshake-only" in command) == (mode == "preflight")
+        ),
+        "job_protocol_matches": (
+            ("--job-protocol immutable" in command) == (job_protocol == "immutable")
         ),
     }
     violations = [name for name, ok in checks.items() if not ok]

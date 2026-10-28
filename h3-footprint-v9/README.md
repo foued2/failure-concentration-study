@@ -98,28 +98,43 @@ Windows Sandbox has now run here. The preflight handshake is verified
 job B was never answered, and the cause is unresolved. The measured mapping
 behaviour is in `STATUS.json` under `sandbox_mapping_write_constraints`.
 
-Revision 7 instruments the guest so that a rendezvous can say *where* it stopped.
-The agent writes bounded diagnostic events (`agent_start`, `heartbeat`,
-`job_discovered`, `job_started`, `response_written`, `exception`) as uniquely
-named files in the outbox, written directly and closed. The host validates them
-as untrusted input and attaches the classification to the failing report. One
-instrumented run was then made, on `echo_input.py` only: the agent stayed alive,
-job A was fully instrumented, job B was never discovered, and the result is
-`inbox_not_refreshed` (`evidence/rendezvous-instrumented-2026-10-28.json`).
+Revision 8 keeps revision 7's guest telemetry and fixes its main diagnostic
+weakness: the job loop now records what each poll actually saw. `poll_state`
+events carry a bounded snapshot (poll count, last-poll time, scan success,
+visible request filenames, outcome, last parsed job id/sequence, error category
+and file). A heartbeat copies the last snapshot but still proves only that the
+process is alive, not that the loop advanced. The host validates every snapshot
+as untrusted input.
+
+The same revision adds an opt-in diagnostic request protocol. Instead of
+rewriting `job.json`, each request is a new immutable
+`job-<sequence>-<job_id>.json`, with bodies stored by content hash under
+`bodies/<sha256>.py`. The guest rescans, checks the filename against the payload,
+enforces sequence, and processes each job at most once. Duplicate ids,
+conflicting sequences, malformed requests, filename/payload mismatches and
+out-of-order requests are rejected. This variant is selected with
+`--job-protocol immutable` on the agent and the `.wsb`; the default transport is
+still the legacy `job.json` path, and ordering remains **FAIL** until a run on
+the production path succeeds.
 
 The host reports one of these classifications:
 
 | observation | classification |
 | --- | --- |
-| heartbeat continues, B never discovered | `inbox_not_refreshed` |
-| heartbeat stops before B | `agent_stopped` |
+| loop kept scanning, B never listed | `inbox_not_refreshed` |
+| process alive, no poll-state progress | `job_loop_progress_unknown` |
+| B listed but malformed or unreadable | `job_request_unusable` |
+| B listed before its sequence | `job_request_out_of_order` |
+| heartbeats stop before B | `agent_stopped` |
 | B discovered and started, no response | `supervisor_or_response_path` |
 | B response recorded, host saw none | `response_written_but_not_visible` |
 | no instrumentation even for A | `agent_not_instrumented` |
 | telemetry fails validation | `ambiguous_telemetry` |
 
-Telemetry explains a failure; it never establishes isolation, and a missing or
-ambiguous diagnostic stays `unresolved`.
+A heartbeat alone is never read as proof that the mapping served stale contents;
+that requires observed poll progress with no B request listed. Telemetry
+explains a failure; it never establishes isolation, and a missing or ambiguous
+diagnostic stays `unresolved`.
 
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
@@ -155,12 +170,13 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 - **The one-item broker is not proven.** A Sandbox handshake verifies
   (`evidence/preflight-sandbox-2026-10-28.json`), but the two-token rendezvous
-  failed: job A was answered, job B was published and never answered. The
-  instrumented rerun classifies it as `inbox_not_refreshed` — the agent was alive
-  throughout and never saw B — so the leading question is how updates to the
-  mapped inbox become visible. The cause is not proven, and until it is, no
-  isolation report, no live ordering result and no authorized evaluation exist
-  (`sandbox_rendezvous_ordering: FAIL`).
+  failed: job A was answered, job B was published and never answered. The earlier
+  instrumented rerun shows the agent was alive and never discovered B, but its
+  heartbeat-only telemetry cannot prove the loop kept scanning; under revision 8
+  rules that observation is `job_loop_progress_unknown`, not proof of a stale
+  mapping. A single opt-in immutable-protocol diagnostic run follows. Until the
+  production path is shown to work, no isolation report, no live ordering result
+  and no authorized evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
 - **A live mapping constrains the host.** The host cannot `os.replace` inside a
   folder a running Sandbox maps (`WinError 32`), and the guest cannot label a
   mapped folder with an integrity level. Staging is now idempotent and job

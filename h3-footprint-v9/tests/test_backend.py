@@ -833,6 +833,68 @@ class TelemetryValidationTests(unittest.TestCase):
         self.assertEqual([event["seq"] for event in collected["events"]], [1, 2])
         self.assertEqual(collected["anomalies"], [])
 
+    @staticmethod
+    def _state(**overrides) -> dict:
+        state = {
+            "poll_count": 3,
+            "last_poll_at": time.time(),
+            "scanned": True,
+            "visible": ["job-000001-" + "a" * 32 + ".json"],
+            "visible_count": 1,
+            "outcome": "only_handled",
+            "last_job_id": "a" * 32,
+            "last_job_sequence": 1,
+            "error": None,
+            "error_file": None,
+        }
+        state.update(overrides)
+        return state
+
+    def test_poll_state_and_snapshotted_heartbeat_are_valid(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(1, "poll_state", state=self._state()))
+        self._write(outbox, self._record(2, "heartbeat", state=self._state()))
+        collected = backend.collect_events(outbox, NONCE, expected_pid=4242)
+        self.assertEqual(collected["anomalies"], [])
+        self.assertEqual(collected["events"][0]["state"]["outcome"], "only_handled")
+
+    def test_poll_state_without_a_state_is_an_anomaly(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(1, "poll_state"))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("has no state", collected["anomalies"][0]["error"])
+
+    def test_state_is_refused_on_other_events(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(1, "job_discovered", state=self._state()))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("only allowed on heartbeat or poll_state",
+                      collected["anomalies"][0]["error"])
+
+    def test_an_invented_scan_outcome_is_an_anomaly(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(
+            1, "poll_state", state=self._state(outcome="definitely_fresh")))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("is not allowed", collected["anomalies"][0]["error"])
+
+    def test_an_unbounded_visible_list_is_an_anomaly(self):
+        outbox = self._outbox()
+        visible = [f"job-{index:06d}-{'a' * 32}.json"
+                   for index in range(protocol.EVENT_VISIBLE_LIMIT + 1)]
+        self._write(outbox, self._record(
+            1, "poll_state", state=self._state(visible=visible, visible_count=len(visible))))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("bounded list", collected["anomalies"][0]["error"])
+
+    def test_state_keys_must_match_exactly(self):
+        outbox = self._outbox()
+        state = self._state()
+        state["extra"] = "field"
+        self._write(outbox, self._record(1, "poll_state", state=state))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("event state keys differ", collected["anomalies"][0]["error"])
+
 
 class ScriptedGuestTransport:
     """A Sandbox-shaped transport that emits guest telemetry from a script."""
@@ -841,7 +903,9 @@ class ScriptedGuestTransport:
 
     def __init__(self, outbox: Path, *, alive_after_b: bool = True,
                  discover_b: bool = True, start_b: bool = True,
-                 respond_b: bool = True) -> None:
+                 respond_b: bool = True, poll_after_b: bool = True,
+                 polls: int = 2, b_in_scan: bool = False,
+                 b_out_of_order: bool = False, scanned: bool = True) -> None:
         self.outbox = Path(outbox)
         self.nonce = NONCE
         self.requires_sandbox = True
@@ -850,15 +914,21 @@ class ScriptedGuestTransport:
         self.discover_b = discover_b
         self.start_b = start_b
         self.respond_b = respond_b
+        self.poll_after_b = poll_after_b
+        self.polls = polls
+        self.b_in_scan = b_in_scan
+        self.b_out_of_order = b_out_of_order
+        self.scanned = scanned
         self._pid = 5150
         self._seq = 0
 
     def attestation(self) -> dict:
         return {"verified": True, "transport": self.name, "agent": {"pid": self._pid}}
 
-    def emit(self, name: str, job: dict | None = None, detail: str | None = None) -> None:
+    def emit(self, name: str, job: dict | None = None, detail: str | None = None,
+             state: dict | None = None) -> None:
         self._seq += 1
-        protocol.write_event(self.outbox, {
+        record = {
             "v9": protocol.JOB_SCHEMA,
             "nonce": self.nonce,
             "pid": self._pid,
@@ -869,7 +939,39 @@ class ScriptedGuestTransport:
             "job_id": job.get("job_id") if job else None,
             "job_sequence": job.get("sequence") if job else None,
             "detail": detail,
-        })
+        }
+        if state is not None:
+            record["state"] = state
+        protocol.write_event(self.outbox, record)
+
+    def _poll_state(self, job: dict, poll_count: int) -> dict:
+        if self.b_out_of_order:
+            outcome, error, error_file = "out_of_order", None, None
+        elif self.b_in_scan:
+            outcome, error, error_file = (
+                "error", "filename_payload_mismatch",
+                f"job-000002-{job['job_id']}.json",
+            )
+        else:
+            outcome, error, error_file = "no_jobs", None, None
+        visible = ([f"job-000002-{job['job_id']}.json"]
+                   if (self.b_in_scan or self.b_out_of_order) else [])
+        return {
+            "poll_count": poll_count,
+            "last_poll_at": time.time(),
+            "scanned": self.scanned,
+            "visible": visible,
+            "visible_count": len(visible),
+            "outcome": outcome,
+            "last_job_id": None,
+            "last_job_sequence": None,
+            "error": error,
+            "error_file": error_file,
+        }
+
+    def _emit_polls(self, job: dict) -> None:
+        for offset in range(self.polls):
+            self.emit("poll_state", state=self._poll_state(job, 10 + offset))
 
     def _respond(self, job: dict, answer: int) -> dict:
         record = {
@@ -900,6 +1002,8 @@ class ScriptedGuestTransport:
         if self.alive_after_b:
             self.emit("heartbeat")
         if not self.discover_b:
+            if self.poll_after_b:
+                self._emit_polls(job)
             raise backend.FatalBoundaryError("no Sandbox response for job B within 125s")
         self.emit("job_discovered", job)
         if not self.start_b:
@@ -936,7 +1040,8 @@ class RendezvousDiagnosticTests(unittest.TestCase):
         self.assertTrue(result["ordering_ok"], result["checks"])
         self.assertIsNone(result["diagnostic"])
         self.assertEqual(
-            [event["event"] for event in result["guest_events"]],
+            [event["event"] for event in result["guest_events"]
+             if event["event"] != "poll_state"],
             ["job_discovered", "job_started", "response_written",
              "heartbeat", "job_discovered", "job_started", "response_written"],
         )
@@ -949,12 +1054,40 @@ class RendezvousDiagnosticTests(unittest.TestCase):
         self.assertFalse(result["diagnostic"]["agent_alive_after_b"])
         self.assertTrue(result["checks"]["A_answered_with_A"])
 
-    def test_agent_alive_but_never_observes_b(self):
+    def test_heartbeat_alone_does_not_prove_loop_progress(self):
+        result = self._run(discover_b=False, poll_after_b=False)
+        self.assertFalse(result["ordering_ok"])
+        diagnostic = result["diagnostic"]
+        self.assertEqual(diagnostic["classification"], "job_loop_progress_unknown")
+        self.assertTrue(diagnostic["agent_alive_after_b"])
+        self.assertFalse(diagnostic["job_loop_progressing"])
+        self.assertFalse(diagnostic["job_b_discovered"])
+
+    def test_agent_polls_but_never_lists_b(self):
         result = self._run(discover_b=False)
         self.assertFalse(result["ordering_ok"])
-        self.assertEqual(result["diagnostic"]["classification"], "inbox_not_refreshed")
-        self.assertTrue(result["diagnostic"]["agent_alive_after_b"])
-        self.assertFalse(result["diagnostic"]["job_b_discovered"])
+        diagnostic = result["diagnostic"]
+        self.assertEqual(diagnostic["classification"], "inbox_not_refreshed")
+        self.assertTrue(diagnostic["agent_alive_after_b"])
+        self.assertTrue(diagnostic["job_loop_progressing"])
+        self.assertFalse(diagnostic["job_b_seen_in_scan"])
+        self.assertFalse(diagnostic["job_b_discovered"])
+
+    def test_b_visible_but_not_usable(self):
+        result = self._run(discover_b=False, b_in_scan=True)
+        self.assertFalse(result["ordering_ok"])
+        diagnostic = result["diagnostic"]
+        self.assertEqual(diagnostic["classification"], "job_request_unusable")
+        self.assertTrue(diagnostic["job_b_seen_in_scan"])
+        self.assertFalse(diagnostic["job_b_discovered"])
+
+    def test_b_visible_out_of_order(self):
+        result = self._run(discover_b=False, b_out_of_order=True)
+        self.assertFalse(result["ordering_ok"])
+        diagnostic = result["diagnostic"]
+        self.assertEqual(diagnostic["classification"], "job_request_out_of_order")
+        self.assertEqual(diagnostic["last_scan_outcome"], "out_of_order")
+        self.assertFalse(diagnostic["job_b_discovered"])
 
     def test_b_observed_but_no_response_published(self):
         result = self._run(respond_b=False)

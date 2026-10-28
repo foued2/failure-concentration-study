@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 7,
+  "revision": 8,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -121,13 +121,24 @@
     "the raw run is preserved beside the report: hello, response A, job B, session and all 100 validated guest events (single agent pid 3612), whose filenames and hashes are pinned",
     "the cause is narrowed, not closed: the guest's view of the rewritten job.json stayed stale while the agent was demonstrably alive, so mapped-inbox refresh is now the leading question and no protocol change was made before this run"
   ],
+  "revision_8_additions": [
+    "the job loop now emits bounded poll_state events: poll count, last-poll time, scan success, visible request filenames, outcome (new_job, only_handled, no_jobs, out_of_order, error), last parsed job id/sequence, error category and file",
+    "heartbeat copies the last poll snapshot but is explicitly not proof of loop progress; only poll_state is written by the loop itself",
+    "the host validates the snapshot strictly (exact keys, bounded lists, allowed outcomes, nonce/pid correlation, size cap) and still never treats telemetry as isolation evidence",
+    "inbox_not_refreshed now requires observed scan progress with no job-B request listed; heartbeat-only evidence is job_loop_progress_unknown, so the revision-7 label was too strong",
+    "new classifications job_request_unusable and job_request_out_of_order distinguish a visible-but-broken request from a missing one",
+    "an opt-in immutable request protocol publishes job-<sequence>-<job_id>.json and bodies/<sha256>.py, writes and closes the body before the final job name, never renames or overwrites a request, rescans, checks filename against payload, enforces sequence and processes each job at most once",
+    "duplicate ids, conflicting sequences, malformed requests, filename/payload mismatches and out-of-order requests are rejected; response files stay unique per job and tree-empty checks are unchanged",
+    "--job-protocol immutable selects the variant on both the agent and the generated .wsb; the default remains the legacy job.json transport and sandbox_rendezvous_ordering stays FAIL",
+    "the earlier report and raw event set are preserved unchanged; this revision adds diagnostic capability only and makes no model calls"
+  ],
   "gates": [
     {
       "id": "unit_tests",
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "133 tests, 0 failures"
+      "detail": "158 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -274,7 +285,14 @@
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/test_backend.py::TelemetryValidationTests, tests/test_backend.py::RendezvousDiagnosticTests",
-      "detail": "host tests cover normal A+B completion, agent termination after A, agent alive but B unseen, and B seen but no response published; guest events are validated as untrusted input and never treated as isolation evidence. Host-only: no instrumented Sandbox run has happened yet."
+      "detail": "host tests cover normal A+B completion, agent termination after A, heartbeat-only liveness (job_loop_progress_unknown), observed poll progress with B never listed (inbox_not_refreshed), B visible but unusable, and B visible out of order; poll_state snapshots are validated as untrusted input and never treated as isolation evidence. Host-only: no instrumented Sandbox run with poll telemetry has happened yet."
+    },
+    {
+      "id": "immutable_request_protocol",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_immutable_protocol.py",
+      "detail": "opt-in diagnostic variant: two immutable jobs in sequence, content-addressed bodies, no overwrite or rename, duplicate/missing/corrupt/out-of-order rejection, filename/payload and body-hash mismatch rejection, repeated polling, empty/old/new/broken poll telemetry, tree-empty enforcement and one response per job. The legacy job.json path remains the default; this gate says nothing about the Sandbox."
     },
     {
       "id": "sandbox_isolation_report",
@@ -288,14 +306,14 @@
       "status": "FAIL",
       "scope": "sandbox",
       "evidence": "evidence/rendezvous-sandbox-2026-10-28.json, evidence/rendezvous-response-A-2026-10-28.json, evidence/rendezvous-job-B-2026-10-28.json, evidence/rendezvous-instrumented-2026-10-28.json",
-      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s). The instrumented rerun narrows where to look but does not close the cause: the agent stayed alive (62 heartbeats after B was published, event seq 68 at report time and 100 in the raw outbox), never recorded job_discovered for B, and produced no exceptions or telemetry anomalies. Classification inbox_not_refreshed points at the guest's view of the rewritten job.json staying stale; it rules out an agent crash and a supervisor/response-path failure for this run, but it does not prove the refresh mechanism. Cause remains unresolved and ordering is still not established, so the gate stays FAIL."
+      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s). The revision-7 instrumented rerun recorded 62 heartbeats after B was published and no job_discovered for B, with no exceptions or telemetry anomalies. Heartbeat-only telemetry proves the process lived, not that the loop kept scanning; under revision 8 rules the appropriate label is job_loop_progress_unknown, so stale mapped-folder contents is not established. Cause remains unresolved and ordering is still not established, so the gate stays FAIL."
     },
     {
       "id": "rendezvous_diagnostic",
       "status": "PASS",
       "scope": "sandbox",
       "evidence": "evidence/rendezvous-instrumented-2026-10-28.json, evidence/rendezvous-instrumented-events-2026-10-28.sha256",
-      "detail": "one instrumented run of echo_input.py only; job A fully instrumented, job B never discovered while heartbeats continued; 100 raw guest events validated with one pid (3612) and zero anomalies; classification inbox_not_refreshed. This is diagnostic telemetry, not isolation evidence."
+      "detail": "one instrumented run of echo_input.py only; job A fully instrumented, job B never discovered while heartbeats continued; 100 raw guest events validated with one pid (3612) and zero anomalies. The report's label inbox_not_refreshed was computed under the revision-7 heartbeat rule; revision 8 would classify the same evidence as job_loop_progress_unknown because that build emitted no poll_state. This is diagnostic telemetry, not isolation evidence."
     },
     {
       "id": "sandbox_agent_acceptance",

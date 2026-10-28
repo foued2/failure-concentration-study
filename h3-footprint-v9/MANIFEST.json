@@ -1,16 +1,16 @@
 {
   "artifact_hashes_sha256": {
-    "backend.py": "0c3ebd751cd1b1da93c4bde90817d349684bdb3140c8bd42ad0704dfb4e1e771",
+    "backend.py": "22d6f305fd3cea0360cec3904a1786fac011164dd90de944b5c171fc630cd8b3",
     "child_runner.py": "82122516355a65b01bfebae565c597e23335832976c70f482fa475ad065b9bf5",
     "constants.py": "aa47f54889bd4411a766eeafa5ece5c8a0217753d54c20414c255b8da294c835",
-    "controller.py": "20ef830d624def9aad83230b6dce8f6a4447aea4aa56109578c347bd6a2c5e28",
+    "controller.py": "55fb94d6fdaf9f032ffbd39aa84758c19953e708a32970bb2fc49b1544bbd675",
     "gates.py": "bae544b1ed96b737746bfbdd058ad7ea5b7cf5d53d77e8307a6ad63a2d0308a7",
     "generation/agent/h3-generator.md": "26362c11e09283e7d4d88c45f0a3dd8dca6eb0e1b9895c9c75c8c9fa804bc49c",
     "generation/generate_v9.py": "ef1b3dd2f8b85817b4deaef5db5f9a08cf4186e0ab87e64abec4bd639b035bba",
     "oracle.py": "27b78414180e3808a127bfd5cab177e369a72e76f7f815585b10f3ffd270d3fb",
-    "protocol.py": "506a533404be04d7e28fbfae1324ecdbd9313328e06aba77be8eed44374a9380",
-    "sandbox_agent.py": "06668f644fd073dd8ad5860e9322f9262097eb6d90e135dad07cf85c7c144a91",
-    "supervisor.py": "483d9a495d6a995214d7aeb46812469c1e8fbc60765ba966726e4509aeea1db3",
+    "protocol.py": "ae5c6bdb7d1d64dd54527687daa5cc8343b693910c5d61f7bd815344243ef266",
+    "sandbox_agent.py": "5d150b6661d2a0ba14bcb30c4e379e211688be465aa0a55d2491c316403cb0a6",
+    "supervisor.py": "28ec6e7d1ba8a769af8fa02a35dd74f03e6211a8401792d5119ce6db6a859830",
     "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3"
   },
   "note": "Executable surface only. Regenerate at freeze time.",
