@@ -23,6 +23,9 @@ ATTEMPTS = GEN / "attempts.jsonl"
 ENDPOINT = "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions"
 MODEL = "gpt-oss-120b"
 VARIANTS = ["direct", "menu", "simple"]
+# V3 grouped three model requests under each prompt variant. V4 keeps that
+# predeclared three-batch prompt block while using one fixed model.
+PROMPT_BLOCK_SIZE = 3
 BODIES_PER_BATCH = 8
 MAX_BATCHES = 400
 MIN_REQUEST_START_INTERVAL_SECONDS = 35.0
@@ -150,8 +153,14 @@ def _request_completion(prompt: str) -> tuple[int, dict, dict]:
     return status, data, meta
 
 
+def prompt_variant_for_batch(batch_id: int) -> str:
+    if not isinstance(batch_id, int) or batch_id < 0:
+        raise ValueError("batch_id must be a non-negative integer")
+    return VARIANTS[(batch_id // PROMPT_BLOCK_SIZE) % len(VARIANTS)]
+
+
 def call_batch(batch_id: int) -> dict:
-    variant = VARIANTS[batch_id % len(VARIANTS)]
+    variant = prompt_variant_for_batch(batch_id)
     prompt = PROMPTS[variant].format(n=BODIES_PER_BATCH)
     prompt_sha256 = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
     raw_path = RAW / f"batch-{batch_id:03d}.txt"

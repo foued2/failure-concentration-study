@@ -83,6 +83,9 @@ jobs:
           result = {
               "status": status,
               "model_requested": payload["model"],
+              "model_returned": data.get("model"),
+              "response_id": data.get("id"),
+              "finish_reason": data.get("choices", [{}])[0].get("finish_reason"),
               "reply_matches": text == "H3_ENDPOINT_HEALTHY",
               "elapsed_seconds": round(time.time() - started, 2),
               "usage": data.get("usage"),
