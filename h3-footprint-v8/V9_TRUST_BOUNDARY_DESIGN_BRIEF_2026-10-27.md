@@ -8,7 +8,7 @@
 
 Repair the trust boundary before the next candidate run. The current V8 design executes generated Python inside the same interpreter as the trusted probe worker, and the whole read-only harness tree is mounted into the same Sandbox. This leaves both mutable in-process protocol state and candidate-readable reference data.
 
-The next revision must provide two separate guarantees:
+The next revision must correct the false frozen-V8 statement in GATE.md item 5 (“the worker cannot read expected values”) by recording it as an erratum without editing V8. It must treat the reference disclosure and response-forgery mechanisms as one combined threat: a candidate that can read the expected values and control the worker's in-process response channel can make an incorrect solver appear correct. The next revision must provide two separate guarantees:
 
 1. **Containment:** executing a solver cannot change the host, repository, credentials, trusted result store, or other candidate files.
 2. **Measurement integrity:** candidate-visible files and processes do not contain the reference answers or the full diagnostic-probe bank used to score the candidate. The trusted side computes failure flags and concentration only after it receives candidate outputs.
@@ -23,7 +23,7 @@ The next protocol must therefore define an externally observable contract. Recom
 
 - A single invocation receives one probe input.
 - The candidate process's response to that input is the measured solver answer.
-- The candidate does not receive the expected answer, all other diagnostic inputs, the family labels, the score state, or the reference oracle.
+- The candidate does not receive the expected answer, all other diagnostic inputs, the family labels, the score state, or the reference oracle. This must be true in both the candidate's filesystem view and its process/trust domain, not merely enforced by read-only filesystem permissions.
 - The trusted controller parses that response, compares it against the expected value kept in its own trust domain, and derives the failure flag. Candidate-side code must never construct the trusted `fails` vector, family counts, `k`, `C`, or verdict.
 - Exceptions, timeouts, malformed responses, and non-integer/bool answers follow frozen and explicit outcome rules; they must not be silently conflated with loader/import failures.
 
@@ -33,7 +33,7 @@ If the study specifically needs to measure the Python callable's return value an
 
 ### Trusted controller
 
-The trusted controller owns:
+The trusted controller, in a process and filesystem view inaccessible to candidate code, owns:
 
 - the expected-output table;
 - the authoritative six-family mapping and probe schedule;
@@ -63,8 +63,8 @@ If this is implemented with a trusted wrapper running inside the Sandbox, ensure
 
 The next version must include negative controls for:
 
-1. **Emitter replacement:** candidate accesses `sys.modules["__main__"]`, replaces the trusted response path, suppresses the normal response, and attempts to emit exactly one forged response. The run must not obtain access to reference values or mutate trusted scoring state. Expected behavior is defined by the measured external-response contract, not by trusting a nonce in candidate-controlled memory.
-2. **Reference-output read:** candidate searches common paths and uses permitted introspection/file APIs to read the expected-output table. The reference must be absent from the candidate-visible environment and the check must fail to recover it.
+1. **Combined reference-disclosure plus response-forgery attack:** candidate uses `sys.modules["__main__"]`, `sys.modules["pathlib"]`, `sys.modules["io"]`, or equivalent introspection to locate and read the reference outputs, then replaces the worker emitter and attempts to produce exactly one forged nonce-prefixed response. The candidate must be unable to recover the reference values in the first place; the trusted result must be computed outside the candidate-visible process. Test this as one end-to-end exploit, not just as independent read and emitter controls.
+2. **Reference-output and probe-bank reads:** candidate searches common paths and uses permitted introspection/file APIs to read the expected-output table, instrument, all probe inputs, family labels, or oracle mappings. These must be absent from the candidate-visible filesystem and process; a read-only mount is insufficient.
 3. **Probe-bank read:** candidate attempts to enumerate all probe inputs, family labels, and oracle mappings. Only the one current input may be made available to the candidate invocation.
 4. **Other-candidate read:** candidate attempts to inspect a different candidate body or the complete generated-body directory. It must not be exposed through candidate-visible staging.
 5. **Trusted-state tampering:** candidate attempts to alter trusted failure flags, family counts, result handles, and the authoritative record through `sys.modules`, frame inspection, or stream monkeypatching. The trusted controller must be in a separate process/trust domain and must compute these independently.
