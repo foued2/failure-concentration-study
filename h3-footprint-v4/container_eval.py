@@ -305,6 +305,9 @@ def run_fixture(
 def effective_limits(result: dict[str, Any]) -> dict[str, Any]:
     """Extract observed Docker host configuration for an execution result."""
     container = result.get("container") or {}
+    mounts = container.get("mounts") or []
+    bind_mounts = [mount for mount in mounts if mount.get("type") == "bind"]
+    other_mounts = [mount for mount in mounts if mount.get("type") != "bind"]
     return {
         "network_none": container.get("network_mode") == "none",
         "readonly_rootfs": container.get("readonly_rootfs") is True,
@@ -314,9 +317,12 @@ def effective_limits(result: dict[str, Any]) -> dict[str, Any]:
         "pids_limit_16": container.get("pids_limit") == PID_LIMIT,
         "all_capabilities_dropped": "ALL" in (container.get("cap_drop") or []),
         "no_new_privileges": any("no-new-privileges" in str(x) for x in (container.get("security_opt") or [])),
-        "exactly_one_readonly_candidate_mount": (
-            len(container.get("mounts") or []) == 1
-            and (container.get("mounts") or [{}])[0].get("destination") == "/candidate/solve.py"
-            and (container.get("mounts") or [{}])[0].get("read_only") is True
+        "unprivileged_user": container.get("user") == "65534:65534",
+        "exactly_one_readonly_candidate_bind": (
+            len(bind_mounts) == 1
+            and bind_mounts[0].get("destination") == "/candidate/solve.py"
+            and bind_mounts[0].get("read_only") is True
+            and all(mount.get("type") == "tmpfs" and mount.get("destination") == "/tmp"
+                    for mount in other_mounts)
         ),
     }
