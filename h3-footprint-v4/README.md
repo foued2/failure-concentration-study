@@ -1,25 +1,11 @@
-# H3 Footprint Gate V3 Harness
+# H3 Footprint Gate V4 proposal
 
-This folder is an isolated engineering revision of the invalid version-1 footprint gate. It is not the version-1 frozen artifact set and must never be copied over h3-footprint/.
+This directory is a separate proposal cloned from the V3 feasibility harness. It does not replace or modify V3. V3 keeps its original three OpenCode model population and remains unrun.
 
-Version 1 remains preserved on its original tag and audit branch. The version-1 run is INVALID_RUN because its extractor discarded module-level imports and its worker converted module-load errors into 30 failed probes.
+V4 proposes a no-key hosted-model route using `gpt-oss-120b` at OVHcloud AI Endpoints and standard GitHub-hosted runners. A one-request operational smoke completed on 2026-10-28 with no API key. The endpoint is rate limited, and shared capacity may return 429 responses. The published anonymous rate is two requests per minute per IP/model; the generator design therefore serializes requests with a 35-second minimum start interval. See `GATE.md`.
 
-Version 2 is frozen but unrun. It repaired extraction, separated module-load validity from probe outcomes, checked unresolved global names, grouped candidate bodies by generation batch, and added planted-bug controls. Version 3 keeps those repairs and replaces the confounded V1/V2 degeneracy statistic with a saturation rate, and adds a predeclared futility rule at batches 100/200/300.
+V4 also proposes Docker-based isolation on an ephemeral Linux runner in place of Windows Sandbox. This is a different execution boundary and must be independently tested. The host scoring process must keep expected values; each candidate container receives only its own source and the current probe input. No solver body may run on the host.
 
-## Local no-model-call validation
+**Status: not frozen, no batch generation, no candidate scoring.** The smoke completion is not a solver candidate and is not in the study dataset. Before V4 can run, the container isolation battery and all V4 tests must pass, the new model population and isolation method must be re-reviewed, and a new version-specific freeze plus explicit generation authorization must be committed.
 
-From this folder, run:
-
-    python -m unittest discover -s tests -v
-    python validate_controls.py
-    python freeze.py --verify
-
-These commands do not call any models or generate candidate bodies. They check oracle agreement, extraction, static validation, load-versus-probe classification, known-k planted bugs, unique provenance groups, saturation-based degeneracy, futility checkpoints, and report group counting.
-
-## Candidate generation is a separate step
-
-No candidate generation has been run for V3. Only after the pre-candidate FREEZE.json, the annotated tag, and isolation-report.json exist may generation be considered under the existing bounded footprint-only authorization. Use the approved isolated environment; do not run generated candidates on the development host. A static import/call denylist is not sufficient isolation. Set OPENCODE_EXE in the authorized generation environment if opencode is not on PATH.
-
-The fixed V3 cap is 400 batches by 8 requested bodies, run in 100-batch segments. After each segment, run run_gate.py and stop if futility triggered. The generator schedule and prompt variants are fixed; no outcome-guided prompt changes are allowed. The 150 rejected-body target is reported, not used to alter the budget or the thresholds.
-
-Held-out inputs, held-out scoring, model comparison, power estimation, and changes to the existing review branches remain outside scope.
+This route uses the remote GitHub-hosted Actions environment, not PyCharm, your local file paths, an installed local coding agent or an API key. A future job will run remotely and preserve its logs/artifacts in GitHub.
