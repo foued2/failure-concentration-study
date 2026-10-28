@@ -1,0 +1,68 @@
+name: H3 V4 hosted Docker boundary verification
+
+on:
+  push:
+    branches:
+      - research/h3-v4-anonymous-model-prototype-2026-10-28
+    paths:
+      - "h3-footprint-v4/**"
+      - ".github/workflows/h3-v4-container-isolation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: h3-v4-docker-boundary-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  host-controls-and-isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out the V4 proposal branch
+        uses: actions/checkout@v4
+
+      - name: Record remote executor and container runtime
+        run: |
+          python3 --version
+          docker version
+          docker info --format 'DockerRootDir={{.DockerRootDir}} OSType={{.OSType}} Architecture={{.Architecture}}'
+
+      - name: Run instrument controls and complete host regression suite
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/validate_controls.py 2>&1 | tee "$RUNNER_TEMP/h3-v4-validation.log"
+
+      - name: Run fixed-fixture Docker isolation battery only
+        run: |
+          set -o pipefail
+          python3 h3-footprint-v4/isolation_battery.py --report "$RUNNER_TEMP/h3-v4-docker-isolation.json" 2>&1 | tee "$RUNNER_TEMP/h3-v4-isolation-console.log"
+
+      - name: Record final no-generation guard
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("h3-footprint-v4")
+          freeze = json.loads((root / "FREEZE.json").read_text(encoding="utf-8"))
+          assert freeze.get("status") == "PROPOSAL_NOT_FROZEN", freeze.get("status")
+          assert freeze.get("candidate_generation_performed") is False
+          assert freeze.get("study_model_calls_performed") == 0
+          assert not (root / "generated" / "attempts.jsonl").exists(), "Unexpected study attempts file exists"
+          print("V4 remains unfrozen; no study generation or candidate evaluation was run.")
+          PY
+
+      - name: Upload verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v4-docker-boundary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/h3-v4-validation.log
+            ${{ runner.temp }}/h3-v4-docker-isolation.json
+            ${{ runner.temp }}/h3-v4-isolation-console.log
+            h3-footprint-v4/validation-report.json
+          if-no-files-found: warn
+          retention-days: 14
