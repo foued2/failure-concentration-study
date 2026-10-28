@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import ast
 import builtins
+import hashlib
 import json
 import math
+import os
 import re
 import subprocess
 import symtable
@@ -334,9 +336,113 @@ def _futility(eligible: list[dict]) -> dict:
     }
 
 
+EVALUATION_CACHE_NAME = "evaluated_rows.jsonl"
+EVALUATION_CACHE_VERSION = 1
+
+
+def evaluation_fingerprint() -> str:
+    """Pin every trusted artifact that can change candidate labels or measurements."""
+    base = Path(__file__).resolve().parent
+    paths = (
+        "run_gate.py",
+        "container_eval.py",
+        "container_eval.py",
+        "container-image/Dockerfile",
+        "container-image/sandbox_worker.py",
+        "instrument.py",
+        "expected_values.json",
+    )
+    digest = hashlib.sha256()
+    digest.update(("cache-version=" + str(EVALUATION_CACHE_VERSION) + "\n").encode("utf-8"))
+    digest.update(("python=" + str(sys.version_info.major) + "." + str(sys.version_info.minor) + "\n").encode("utf-8"))
+    for relative in paths:
+        path = base / relative
+        if not path.is_file():
+            raise RuntimeError("Cannot fingerprint evaluation dependency: " + relative)
+        payload = path.read_bytes().replace(b"\r\n", b"\n")
+        digest.update(relative.encode("utf-8") + b"\0")
+        digest.update(hashlib.sha256(payload).digest())
+    return digest.hexdigest()
+
+
+def load_evaluation_cache(path: Path, fingerprint: str) -> dict[str, dict]:
+    """Load only cache entries produced by the identical pinned evaluator."""
+    cache: dict[str, dict] = {}
+    if not path.is_file():
+        return cache
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            # Ignore a torn final append. It will be rewritten on the next run.
+            continue
+        if not isinstance(record, dict) or record.get("fingerprint") != fingerprint:
+            continue
+        body_hash = record.get("body_hash")
+        row = record.get("row")
+        source_sha256 = record.get("source_sha256")
+        if (
+            isinstance(body_hash, str)
+            and isinstance(row, dict)
+            and isinstance(source_sha256, str)
+            and row.get("body_hash") == body_hash
+        ):
+            cache[body_hash] = {
+                "source_sha256": source_sha256,
+                "row": row,
+            }
+    return cache
+
+
+def append_evaluation_cache(
+    path: Path,
+    fingerprint: str,
+    source_path: Path,
+    row: dict,
+) -> None:
+    """Durably append one measured row so an interrupted remote job can resume."""
+    payload = source_path.read_bytes()
+    record = {
+        "cache_version": EVALUATION_CACHE_VERSION,
+        "fingerprint": fingerprint,
+        "body_hash": row["body_hash"],
+        "source_sha256": hashlib.sha256(payload).hexdigest(),
+        "row": row,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
 def build() -> dict:
     meta = body_meta()
-    rows = [evaluate_body(p, meta) for p in sorted(BODIES.glob("*.py"))]
+    cache_path = ROOT / "results" / EVALUATION_CACHE_NAME
+    fingerprint = evaluation_fingerprint()
+    cached = load_evaluation_cache(cache_path, fingerprint)
+    rows = []
+    cache_hits = 0
+    evaluated_now = 0
+    for body_path in sorted(BODIES.glob("*.py")):
+        body_bytes = body_path.read_bytes()
+        source_sha256 = hashlib.sha256(body_bytes).hexdigest()
+        candidate_hash = body_path.stem
+        cached_row = cached.get(candidate_hash)
+        if cached_row is not None and cached_row.get("source_sha256") == source_sha256:
+            row = cached_row["row"]
+            cache_hits += 1
+        else:
+            row = evaluate_body(body_path, meta)
+            append_evaluation_cache(cache_path, fingerprint, body_path, row)
+            cached[candidate_hash] = {
+                "source_sha256": source_sha256,
+                "row": row,
+            }
+            evaluated_now += 1
+        rows.append(row)
     invalid_rows = [r for r in rows if r["excluded"] is not None]
     valid_rows = [r for r in rows if r["excluded"] is None and r.get("k") is not None]
     rejected = [r for r in valid_rows if r["k"] > 0]
@@ -408,6 +514,14 @@ def build() -> dict:
 
     return {
         "verdict": verdict, "reason": reason, "candidate_bodies": len(rows),
+        "evaluation_cache": {
+            "version": EVALUATION_CACHE_VERSION,
+            "fingerprint": fingerprint,
+            "cache_path": str(cache_path),
+            "cache_hits": cache_hits,
+            "evaluated_this_run": evaluated_now,
+            "rows_available": len(rows),
+        },
         "valid_bodies": len(valid_rows), "invalid_candidates": len(invalid_rows),
         "eligible_bodies": len(eligible),
         "eligible_groups": len({r["group_id"] for r in eligible if r.get("group_id")}),
