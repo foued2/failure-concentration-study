@@ -346,7 +346,6 @@ def evaluation_fingerprint() -> str:
     paths = (
         "run_gate.py",
         "container_eval.py",
-        "container_eval.py",
         "container-image/Dockerfile",
         "container-image/sandbox_worker.py",
         "instrument.py",
