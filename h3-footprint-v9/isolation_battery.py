@@ -151,14 +151,16 @@ def validate_probe(probe_id: str, record: dict, report: dict | None,
         want("external_target_recorded", report.get("external_target") == "1.1.1.1:443")
     elif probe_id == "inbox_write":
         want("inbox_write_denied", report.get("inbox_write_allowed") is False)
-        want("outbox_write_denied", report.get("outbox_write_allowed") is False)
-        want("scratch_write_allowed", report.get("scratch_write_allowed") is True)
         want("inbox_error_recorded",
              isinstance(report.get("inbox_write_error"), str)
              and bool(report.get("inbox_write_error")))
-        want("outbox_error_recorded",
-             isinstance(report.get("outbox_write_error"), str)
-             and bool(report.get("outbox_write_error")))
+        # The scratch folder is the safe positive control. The outbox is the
+        # writable mapping by design, so its write is expected to succeed and is
+        # recorded as an observation, not treated as a boundary failure. The host
+        # treats everything in the outbox as untrusted input.
+        want("scratch_write_allowed", report.get("scratch_write_allowed") is True)
+        want("outbox_write_observed",
+             isinstance(report.get("outbox_write_allowed"), bool))
     elif probe_id == "process_tree":
         want("child_spawned", report.get("child_spawned") is True)
         want("child_alive_at_return", report.get("child_alive_at_return") is True)

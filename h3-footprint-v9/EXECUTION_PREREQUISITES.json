@@ -26,7 +26,14 @@
     },
     {
       "id": "sandbox_isolation_report",
-      "evidence": []
+      "evidence": [
+        "evidence/isolation-battery-2026-10-28.json",
+        "evidence/isolation-battery-validation-2026-10-28.json",
+        "evidence/isolation-battery-2026-10-28.wsb",
+        "evidence/isolation-battery-console-2026-10-28.txt",
+        "evidence/isolation-battery-events-2026-10-28.sha256",
+        "evidence/isolation-battery-hashes-2026-10-28.json"
+      ]
     },
     {
       "id": "memory_and_process_caps",
@@ -69,7 +76,13 @@
     "evidence/rendezvous-immutable-rerun-response-A-2026-10-28.json": "4db1f091ae397e0a8345ee8ad41d89cdf5b1010306dcfd016afe37136ece73d6",
     "evidence/rendezvous-immutable-rerun-response-B-2026-10-28.json": "10f6b51605d2a30ec391cec5db482edd49724f7de39d760548ab11fd3e39569e",
     "evidence/rendezvous-immutable-rerun-events-2026-10-28.sha256": "c98756a8187944b4e9df8e7bf0a7bf40a1273188d0ba148a49427a59b1741fd5",
-    "evidence/v9-rendezvous-immutable-rerun-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf"
+    "evidence/v9-rendezvous-immutable-rerun-2026-10-28.wsb": "252d64563616005e9bd4ee5b116999aae1725aad1c204b8935aff3312bbcd0bf",
+    "evidence/isolation-battery-2026-10-28.json": "0fcde9b854e990037df815db141365c3f9098f9248ea19e7e2bcbdc1945f5f1b",
+    "evidence/isolation-battery-validation-2026-10-28.json": "2b5728940878faa8c687b3f0d3fa5286327ad204569910d053227ec12aaba17a",
+    "evidence/isolation-battery-2026-10-28.wsb": "e868d2e4bc01f51079060058631b1887adbc3ade5065f5a15f643955326daee6",
+    "evidence/isolation-battery-console-2026-10-28.txt": "a60aefc93082261a6ce9a250acaf90c007649c42edeb840708f069e9e8d49336",
+    "evidence/isolation-battery-events-2026-10-28.sha256": "cb168036c3e9cd5fff66353b5f798bc53b77dc5cedd7326e8ae0dc36d0072e7b",
+    "evidence/isolation-battery-hashes-2026-10-28.json": "80a2f792b04ccb74622076e7761f964601c656b0fb794ed2ae6b3f0d03233ad5"
   },
   "verdict_rules": {
     "path": "verdict_rules.py",

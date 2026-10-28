@@ -176,9 +176,23 @@ them from the emitted `.wsb` and rejects any report that does not match. The
 battery covers host-file denial, network blocking, read-only inbox writes,
 process-tree termination and response-channel reparse points, each with a safe
 positive control. It stops the guest before collecting the complete event set,
-and a permitted host-file open stops the run immediately. Status on 2026-10-28:
-the harness and its host tests are committed, but the Sandbox battery has not
-run, so `sandbox_isolation_report` remains **NOT_RUN**.
+and a permitted host-file open stops the run immediately.
+
+One battery ran on 2026-10-28 and stopped after `inbox_write`. The host-file
+probe was denied (`FileNotFoundError`) while the mapped body opened; external
+network was denied (`OSError`) while loopback connected; the inbox write was
+denied (`PermissionError`) while scratch accepted. The response channel accepted
+a normal response and rejected a junction. The guest was stopped before the
+complete 18-event set was collected: one pid (2880), zero anomalies, three jobs.
+The run stopped because the harness wrongly required the writable outbox to deny
+writes; the criterion was corrected, but no rerun was authorized. The
+process-tree and normal-exit probes therefore have no Sandbox evidence, so
+`sandbox_isolation_report` is **PARTIAL**, not `PASS`.
+
+The writable outbox is also a finding: a candidate can write response-shaped
+files there. The host validates schema, size, job id and reparse points, but it
+cannot authenticate that the supervisor wrote a response. Until that is
+addressed, the immutable transport is not ready for a production switch.
 
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script

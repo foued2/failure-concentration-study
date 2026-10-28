@@ -163,6 +163,7 @@ test_a_nonempty_inbox_is_refused_before_anything_runs (test_isolation_battery.Ba
 test_a_permitted_host_file_stops_the_battery_immediately (test_isolation_battery.BatteryRunTests.test_a_permitted_host_file_stops_the_battery_immediately) ... ok
 test_a_reparse_point_in_the_response_channel_fails_the_report (test_isolation_battery.BatteryRunTests.test_a_reparse_point_in_the_response_channel_fails_the_report) ... ok
 test_a_scripted_boundary_error_is_recorded_and_stops_the_battery (test_isolation_battery.BatteryRunTests.test_a_scripted_boundary_error_is_recorded_and_stops_the_battery) ... ok
+test_a_writable_outbox_does_not_fail_the_read_only_inbox_probe (test_isolation_battery.BatteryRunTests.test_a_writable_outbox_does_not_fail_the_read_only_inbox_probe) ... ok
 test_more_than_one_agent_pid_fails_the_run (test_isolation_battery.BatteryRunTests.test_more_than_one_agent_pid_fails_the_run) ... ok
 test_path_lookalikes_fail_the_first_probe (test_isolation_battery.BatteryRunTests.test_path_lookalikes_fail_the_first_probe) ... ok
 test_telemetry_anomalies_fail_an_otherwise_passing_run (test_isolation_battery.BatteryRunTests.test_telemetry_anomalies_fail_an_otherwise_passing_run) ... ok
@@ -190,6 +191,7 @@ test_a_missing_control_makes_the_report_fail (test_isolation_battery.PositiveCon
 test_all_controls_pass_together (test_isolation_battery.PositiveControlTests.test_all_controls_pass_together) ... ok
 test_a_missing_probe_report_fails (test_isolation_battery.ProbeValidationTests.test_a_missing_probe_report_fails) ... ok
 test_a_probe_naming_the_wrong_request_fails (test_isolation_battery.ProbeValidationTests.test_a_probe_naming_the_wrong_request_fails) ... ok
+test_a_writable_outbox_is_the_positive_control_not_a_failure (test_isolation_battery.ProbeValidationTests.test_a_writable_outbox_is_the_positive_control_not_a_failure) ... ok
 test_each_probe_accepts_its_expected_report (test_isolation_battery.ProbeValidationTests.test_each_probe_accepts_its_expected_report) ... ok
 test_external_connection_must_be_denied_and_explained (test_isolation_battery.ProbeValidationTests.test_external_connection_must_be_denied_and_explained) ... ok
 test_external_target_is_recorded_exactly (test_isolation_battery.ProbeValidationTests.test_external_target_is_recorded_exactly) ... ok
@@ -197,9 +199,8 @@ test_host_file_access_must_be_denied (test_isolation_battery.ProbeValidationTest
 test_host_file_probe_needs_a_recorded_error_class (test_isolation_battery.ProbeValidationTests.test_host_file_probe_needs_a_recorded_error_class) ... ok
 test_host_file_probe_needs_its_safe_positive_control (test_isolation_battery.ProbeValidationTests.test_host_file_probe_needs_its_safe_positive_control) ... ok
 test_host_repo_must_be_absent_from_the_guest (test_isolation_battery.ProbeValidationTests.test_host_repo_must_be_absent_from_the_guest) ... ok
-test_inbox_and_outbox_writes_must_be_denied (test_isolation_battery.ProbeValidationTests.test_inbox_and_outbox_writes_must_be_denied) ... ok
 test_inbox_write_errors_must_be_recorded (test_isolation_battery.ProbeValidationTests.test_inbox_write_errors_must_be_recorded) ... ok
-test_inbox_write_probe_needs_a_scratch_positive_control (test_isolation_battery.ProbeValidationTests.test_inbox_write_probe_needs_a_scratch_positive_control) ... ok
+test_inbox_write_must_be_denied_while_scratch_accepts (test_isolation_battery.ProbeValidationTests.test_inbox_write_must_be_denied_while_scratch_accepts) ... ok
 test_network_needs_loopback_as_a_positive_control (test_isolation_battery.ProbeValidationTests.test_network_needs_loopback_as_a_positive_control) ... ok
 test_normal_exit_control_is_required (test_isolation_battery.ProbeValidationTests.test_normal_exit_control_is_required) ... ok
 test_process_tree_probe_requires_a_live_child_at_return (test_isolation_battery.ProbeValidationTests.test_process_tree_probe_requires_a_live_child_at_return) ... ok
@@ -228,6 +229,6 @@ test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.
 test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
 
 ----------------------------------------------------------------------
-Ran 222 tests in 164.073s
+Ran 223 tests in 147.574s
 
 OK

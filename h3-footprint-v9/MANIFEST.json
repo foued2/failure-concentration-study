@@ -7,7 +7,7 @@
     "gates.py": "bae544b1ed96b737746bfbdd058ad7ea5b7cf5d53d77e8307a6ad63a2d0308a7",
     "generation/agent/h3-generator.md": "26362c11e09283e7d4d88c45f0a3dd8dca6eb0e1b9895c9c75c8c9fa804bc49c",
     "generation/generate_v9.py": "ef1b3dd2f8b85817b4deaef5db5f9a08cf4186e0ab87e64abec4bd639b035bba",
-    "isolation_battery.py": "49b4c091f5f9ffffe587ebd7be34f42cd2806fbc51589ffaa480a8b294572f86",
+    "isolation_battery.py": "7ced992f6aaa82a606ef14e0a67a57632793c4beb0320ecc8c3a05d9d679f318",
     "oracle.py": "27b78414180e3808a127bfd5cab177e369a72e76f7f815585b10f3ffd270d3fb",
     "protocol.py": "ae5c6bdb7d1d64dd54527687daa5cc8343b693910c5d61f7bd815344243ef266",
     "runtime_stage.py": "f248da2d836893ea51132164a9438a0d87679a625f7a7b214f896e301f8b7db8",

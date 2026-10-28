@@ -276,7 +276,7 @@ whose paths are look-alike siblings of scratch.
 |---|---|---|
 | open host `oracle.py` | denied, error class recorded; repo absent | the mapped probe body opens |
 | connect `1.1.1.1:443` | denied, exact error recorded | loopback connect to a local listener |
-| write mapped inbox and outbox | both denied | write into low-integrity scratch |
+| write mapped inbox | denied, error class recorded | write into low-integrity scratch; the writable outbox write is recorded as an observation, not required to fail |
 | child outlives parent | recorded `tree_empty: true` | normal-exit control is `ok` and empty |
 | response channel | junction rejected by the host | normal response accepted |
 
@@ -287,8 +287,21 @@ result or unexpected host-file access fails the report; a permitted host-file
 open stops the battery immediately. `sandbox_isolation_report` becomes `PASS`
 only when every probe and control passed with complete evidence.
 
-Status on 2026-10-28: harness, fixtures and host tests are committed; the Sandbox
-battery itself has **not** run, so the gate remains `NOT_RUN`.
+Status on 2026-10-28: one battery ran and stopped after `inbox_write`. The
+host-file probe was denied (`FileNotFoundError`) while the mapped body opened;
+external network was denied (`OSError`) while loopback connected; the inbox write
+was denied (`PermissionError`) while scratch accepted. The response channel
+accepted a normal response and rejected a junction. The guest was stopped before
+the complete 18-event set was collected: one pid (2880), zero anomalies, three
+jobs. The run stopped because the harness wrongly required the writable outbox to
+deny writes; that criterion was corrected, but no rerun was authorized. The
+process-tree and normal-exit probes therefore have no Sandbox evidence, and the
+gate is **PARTIAL**, not `PASS`. Evidence is under
+`evidence/isolation-battery-2026-10-28.*` and `evidence/isolation-battery-*`.
+
+A writable outbox is also a finding in its own right: a candidate can write
+response-shaped files there, and the host validates schema, size, job id and
+reparse points but cannot authenticate that the supervisor wrote the response.
 
 ## Step 3: generation — **NOT IMPLEMENTED / BLOCKED**
 

@@ -1,0 +1,94 @@
+{
+  "agent_pid": 2880,
+  "agent_pids": [
+    2880
+  ],
+  "checks": {
+    "all_bodies_match_job_hash": true,
+    "config_sha256_matches_report": true,
+    "control_exit_probe_absent": true,
+    "event_index_matches": true,
+    "event_set_complete": true,
+    "guest_stopped_before_collection": true,
+    "host_file_denied_with_control": true,
+    "inbox_has_no_probe_write": true,
+    "inbox_write_denied_scratch_allowed": true,
+    "max_seq_18": true,
+    "network_denied_with_loopback_control": true,
+    "one_agent_pid": true,
+    "outbox_is_writable": true,
+    "outbox_probe_write_is_7_bytes": true,
+    "outbox_probe_write_present": true,
+    "process_tree_probe_absent": true,
+    "report_is_not_a_pass": true,
+    "response_channel_ok": true,
+    "staged_runtime_matches_repository": true,
+    "stopped_after_inbox_write": true,
+    "three_jobs_archived": true,
+    "three_responses_archived_and_valid": true,
+    "zero_telemetry_anomalies": true
+  },
+  "event_count": 18,
+  "jobs": [
+    {
+      "body_present": true,
+      "body_sha256": "e5b94f5535dbe3016b5bebfe7ae9e622ac45ef1b81e3d1f13d0628149b6c42a6",
+      "file": "job-000001-cb2212e35d13467fb789dbd30485df70.json",
+      "job_id": "cb2212e35d13467fb789dbd30485df70",
+      "sequence": 1
+    },
+    {
+      "body_present": true,
+      "body_sha256": "b537a98187aa657a86a06bfd84fe5ab0091118974de7d3fd2b0563ab34889bce",
+      "file": "job-000002-791f018267b64b20b8806dea2ecd0c3e.json",
+      "job_id": "791f018267b64b20b8806dea2ecd0c3e",
+      "sequence": 2
+    },
+    {
+      "body_present": true,
+      "body_sha256": "0bd2e202591a5143095f8a643fe56c62dda641bda60fed8de97d579a193586f8",
+      "file": "job-000003-bf9ad58496474abd991e60606a0b76fd.json",
+      "job_id": "bf9ad58496474abd991e60606a0b76fd",
+      "sequence": 3
+    }
+  ],
+  "max_seq": 18,
+  "nonce": "3907ab5f021847648727a9beccdb1321",
+  "note": "The archived set is internally consistent. The battery is incomplete: it stopped after inbox_write because the harness wrongly required the writable outbox to deny writes. Process-tree and normal-exit probes never ran, so this evidence cannot support a PASS.",
+  "responses": [
+    {
+      "answer": 1,
+      "file": "response-791f018267b64b20b8806dea2ecd0c3e.json",
+      "inside_sandbox": true,
+      "job_id": "791f018267b64b20b8806dea2ecd0c3e",
+      "status": "ok",
+      "tree_empty": true
+    },
+    {
+      "answer": 1,
+      "file": "response-bf9ad58496474abd991e60606a0b76fd.json",
+      "inside_sandbox": true,
+      "job_id": "bf9ad58496474abd991e60606a0b76fd",
+      "status": "ok",
+      "tree_empty": true
+    },
+    {
+      "answer": 1,
+      "file": "response-cb2212e35d13467fb789dbd30485df70.json",
+      "inside_sandbox": true,
+      "job_id": "cb2212e35d13467fb789dbd30485df70",
+      "status": "ok",
+      "tree_empty": true
+    }
+  ],
+  "run": "isolation-battery-2026-10-28",
+  "staged_runtime_matches_repository": {
+    "child_runner.py": true,
+    "protocol.py": true,
+    "sandbox_agent.py": true,
+    "supervisor.py": true,
+    "winjob.py": true
+  },
+  "telemetry_anomalies": [],
+  "valid": true
+}

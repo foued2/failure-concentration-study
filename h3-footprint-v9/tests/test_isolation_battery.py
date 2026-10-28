@@ -94,8 +94,8 @@ def report_for(probe_id: str, **overrides):
         value.update(
             inbox_write_allowed=False,
             inbox_write_error="PermissionError",
-            outbox_write_allowed=False,
-            outbox_write_error="PermissionError",
+            outbox_write_allowed=True,
+            outbox_write_error=None,
             scratch_write_allowed=True,
             scratch_write_error=None,
         )
@@ -307,19 +307,25 @@ class ProbeValidationTests(unittest.TestCase):
         )
         self.assertIn("external_target_recorded", errors)
 
-    def test_inbox_and_outbox_writes_must_be_denied(self):
+    def test_inbox_write_must_be_denied_while_scratch_accepts(self):
         self.assertIn("inbox_write_denied", accepted(
             "inbox_write", report_for("inbox_write", inbox_write_allowed=True)
         ))
-        self.assertIn("outbox_write_denied", accepted(
-            "inbox_write", report_for("inbox_write", outbox_write_allowed=True)
+        self.assertIn("scratch_write_allowed", accepted(
+            "inbox_write", report_for("inbox_write", scratch_write_allowed=False)
         ))
 
-    def test_inbox_write_probe_needs_a_scratch_positive_control(self):
-        errors = accepted(
-            "inbox_write", report_for("inbox_write", scratch_write_allowed=False)
-        )
-        self.assertIn("scratch_write_allowed", errors)
+    def test_a_writable_outbox_is_the_positive_control_not_a_failure(self):
+        # The outbox is the writable mapping. The child writing there is the
+        # documented design; the host validates every response as hostile input.
+        self.assertEqual(accepted(
+            "inbox_write",
+            report_for("inbox_write", outbox_write_allowed=True,
+                       outbox_write_error=None),
+        ), [])
+        self.assertIn("outbox_write_observed", accepted(
+            "inbox_write", report_for("inbox_write", outbox_write_allowed=None)
+        ))
 
     def test_inbox_write_errors_must_be_recorded(self):
         errors = accepted(
@@ -656,6 +662,18 @@ class BatteryRunTests(unittest.TestCase):
         self.assertEqual(payload["stopped_after"], "host_file_access_permitted")
         self.assertEqual(len(payload["probes"]), 1)
         self.assertIn("host_oracle_denied", payload["probes"][0]["errors"])
+
+    def test_a_writable_outbox_does_not_fail_the_read_only_inbox_probe(self):
+        reports = dict(FakeSandboxTransport.reports)
+        reports["inbox_write"] = report_for(
+            "inbox_write", outbox_write_allowed=True, outbox_write_error=None
+        )
+        payload, fake, _, _ = self._run(reports=reports)
+        self.assertTrue(payload["isolation_ok"], payload["probes"][2])
+        self.assertEqual(fake.executed, PROBE_IDS)
+        self.assertTrue(
+            payload["probes"][2]["checks"]["outbox_write_observed"]
+        )
 
     def test_a_failed_probe_stops_before_the_remaining_probes(self):
         reports = dict(FakeSandboxTransport.reports)
