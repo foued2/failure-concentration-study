@@ -1,6 +1,6 @@
 {
   "version": 9,
-  "revision": 6,
+  "revision": 7,
   "date": "2026-10-28",
   "branch": "dev/h3-footprint-v9-implementation-2026-10-28",
   "base_tag": "h3-footprint-v8-freeze-2026-10-27",
@@ -9,7 +9,7 @@
   "authorization": {
     "generation": false,
     "evaluation": false,
-    "note": "evaluate_authorized raises unless the transport carries a verified Windows Sandbox attestation, and a real handshake now satisfies that check. Evaluation is still refused by decision: the ordering gate failed, the isolation probes have not run and the verdict layer does not exist. Generation is not implemented."
+    "note": "A verified handshake is no longer treated as authorization. evaluate_authorized and the --transport sandbox CLI path both call the committed fail-closed gate in gates.py, which requires every prerequisite gate to pass, hash-pinned evidence that still asserts the claimed result, committed verdict rules and a separate EVALUATION_AUTHORIZATION.json. No authorization file is committed, so the gate refuses. Generation is not implemented."
   },
   "environment": {
     "windows_sandbox_available": true,
@@ -109,13 +109,22 @@
     "the guest cannot set an integrity label on a mapped folder, so the scratch directory moved to the guest's local temp and the failure text is now recorded in the response",
     "the two-token rendezvous failed: job A was answered (111, tree_empty true) and job B was never answered, so ordering is not established and evaluation stays blocked"
   ],
+  "revision_7_additions": [
+    "the execution authorization gap is closed at both entry points: Controller.evaluate refuses any transport that requires the Sandbox, and evaluate_authorized plus the --transport sandbox CLI path require the committed fail-closed gate before staging or launching anything",
+    "gates.py is the single decision point; EXECUTION_PREREQUISITES.json pins each prerequisite gate, the evidence SHA-256 values (canonical LF hashing, like MANIFEST.json) and the verdict-rules hash, and binds the gate PASS to the evidence still asserting the claimed result",
+    "a separate EVALUATION_AUTHORIZATION.json, pinned to both the policy and the status ledger, is required and is deliberately not committed; the real repository gate therefore refuses",
+    "the guest agent now writes bounded diagnostic events (agent_start, heartbeat, job_discovered, job_started, response_written, exception) as uniquely named files, written directly and closed because a live mapping rejects renames",
+    "the host validates guest telemetry as untrusted input: size cap, allowed names, strict schema, nonce and pid correlation, reparse-point rejection, filename/content agreement; telemetry is never treated as proof of isolation",
+    "run_rendezvous keeps a job-B failure a FAIL but attaches the event snapshot and one of the named diagnostics (inbox_not_refreshed, agent_stopped, supervisor_or_response_path, response_written_but_not_visible, stalled_after_discovery, agent_not_instrumented, ambiguous_telemetry, unresolved)",
+    "the original rendezvous report and raw files are unchanged; the gate now also refuses because that pinned report still records ordering_ok false"
+  ],
   "gates": [
     {
       "id": "unit_tests",
       "status": "PASS",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "93 tests, 0 failures"
+      "detail": "133 tests, 0 failures"
     },
     {
       "id": "constants_match_v8",
@@ -142,8 +151,8 @@
       "id": "evaluation_requires_sandbox",
       "status": "PASS",
       "scope": "host",
-      "evidence": "tests/test_backend.py::TransportTests",
-      "detail": "evaluate_authorized raises BoundaryNotEstablished for any unverified transport"
+      "evidence": "tests/test_backend.py::TransportTests, ExecutionGateTests",
+      "detail": "evaluate_authorized raises BoundaryNotEstablished for any unverified transport; evaluate refuses every transport that requires the Sandbox, so the attested transport has exactly one entry point"
     },
     {
       "id": "sandbox_handshake_rejections",
@@ -251,6 +260,20 @@
       "detail": "measured on a live mapping: create, direct write and delete succeed, os.replace fails with WinError 32, and icacls cannot label a mapped folder. Staging is therefore idempotent/verify-only and job publication is an ordered direct write"
     },
     {
+      "id": "execution_gate_fail_closed",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_gates.py, tests/test_backend.py::ExecutionGateTests, EXECUTION_PREREQUISITES.json",
+      "detail": "a synthetic tree proves the gate can pass when every prerequisite really is satisfied; each failing gate, missing or tampered or unpinned evidence, forged status, missing verdict rules and absent or misbound authorization each block; the real repository refuses with seven blockers"
+    },
+    {
+      "id": "guest_diagnostic_telemetry",
+      "status": "PASS",
+      "scope": "host",
+      "evidence": "tests/test_backend.py::TelemetryValidationTests, tests/test_backend.py::RendezvousDiagnosticTests",
+      "detail": "host tests cover normal A+B completion, agent termination after A, agent alive but B unseen, and B seen but no response published; guest events are validated as untrusted input and never treated as isolation evidence. Host-only: no instrumented Sandbox run has happened yet."
+    },
+    {
       "id": "sandbox_isolation_report",
       "status": "NOT_RUN",
       "scope": "sandbox",
@@ -262,7 +285,7 @@
       "status": "FAIL",
       "scope": "sandbox",
       "evidence": "evidence/rendezvous-sandbox-2026-10-28.json, evidence/rendezvous-response-A-2026-10-28.json, evidence/rendezvous-job-B-2026-10-28.json",
-      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s and still none four minutes later). The guest never observed the rewritten job.json, so a late-visibility ordering hazard cannot be excluded"
+      "detail": "job A was answered correctly (answer 111, tree_empty true, inside_sandbox true) within five seconds of launch; job B was published and never answered (no response file after 125s and still none four minutes later). The cause is unresolved: the guest was not instrumented in that run, so a stale view of the rewritten job.json, an agent stop and a response-path failure are all still possible. The raw report and files are unchanged."
     },
     {
       "id": "sandbox_agent_acceptance",
@@ -297,7 +320,7 @@
       "status": "BLOCKED",
       "scope": "sandbox",
       "evidence": null,
-      "detail": "the handshake now verifies, so the code would authorise execution, but the ordering gate FAILED and the verdict layer is missing; evaluation stays blocked by decision, not by the code alone"
+      "detail": "blocked twice over: the fail-closed gate refuses because the ordering gate FAILED, the isolation probes have not run, the caps are only PARTIAL, the verdict layer is missing and no authorization file exists; and evaluation remains blocked by decision"
     }
   ]
 }

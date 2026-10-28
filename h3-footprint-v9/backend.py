@@ -155,6 +155,16 @@ class WindowsSandboxTransport:
     def isolation_verified(self) -> bool:
         return bool(self._attestation and self._attestation.get("verified"))
 
+    @property
+    def nonce(self) -> str | None:
+        """The nonce this session was opened with, if any."""
+        return getattr(self, "_nonce", None)
+
+    @property
+    def outbox(self) -> Path | None:
+        """The writable mapping, where responses and events appear."""
+        return getattr(self, "_outbox", None)
+
     def attestation(self) -> dict[str, Any]:
         return self._attestation or {
             "verified": False, "transport": self.name, "reason": "handshake not performed",
@@ -350,6 +360,170 @@ def read_trusted_response(path: Path, job_id: str | None = None) -> dict[str, An
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise FatalBoundaryError(f"response is not valid JSON: {type(exc).__name__}") from exc
     return validate_response(record, job_id)
+
+
+# -- guest telemetry -----------------------------------------------------------
+# The agent writes liveness and lifecycle records into the same outbox as the
+# responses, so they arrive through the same untrusted channel and get the same
+# treatment: bounded size, no reparse points, an exact schema, correlation with
+# the session, and no authority. Telemetry can explain a failure; it can never
+# establish isolation.
+
+EVENT_LIMIT_BYTES = protocol.EVENT_LIMIT_BYTES
+EVENT_NAME_RE = re.compile(r"^event-([0-9a-f]{32})-(\d{1,10})-(\d{6})-([a-z_]+)\.json$")
+_EVENT_HEX32 = re.compile(r"[0-9a-f]{32}")
+_EVENT_KEYS = frozenset({
+    "v9", "nonce", "pid", "seq", "event", "phase",
+    "timestamp", "job_id", "job_sequence", "detail",
+})
+
+
+def _is_int(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def validate_event(record: Any, *, nonce: str,
+                   expected_pid: int | None = None) -> dict[str, Any]:
+    """Strict schema for a guest diagnostic event."""
+    if not isinstance(record, dict):
+        raise FatalBoundaryError("event is not a JSON object")
+    keys = set(record)
+    if keys != _EVENT_KEYS:
+        missing = sorted(_EVENT_KEYS - keys)
+        extra = sorted(keys - _EVENT_KEYS)
+        raise FatalBoundaryError(
+            f"event keys differ (missing={missing}, unexpected={extra})"
+        )
+    if record["v9"] != protocol.JOB_SCHEMA or not _is_int(record["v9"]):
+        raise FatalBoundaryError("event schema version mismatch")
+    if not isinstance(record["nonce"], str) or not _EVENT_HEX32.fullmatch(record["nonce"]):
+        raise FatalBoundaryError("event nonce is not a 32-hex id")
+    if record["nonce"] != nonce:
+        raise FatalBoundaryError("event nonce does not match the session")
+    if not _is_int(record["pid"]) or record["pid"] <= 0:
+        raise FatalBoundaryError("event pid is not a positive integer")
+    if expected_pid is not None and record["pid"] != expected_pid:
+        raise FatalBoundaryError(
+            f"event pid {record['pid']} does not match the attested agent {expected_pid}"
+        )
+    if not _is_int(record["seq"]) or record["seq"] < 1:
+        raise FatalBoundaryError("event seq is not a positive integer")
+    if record["event"] not in protocol.EVENT_NAMES:
+        raise FatalBoundaryError(f"event name {record['event']!r} is not allowed")
+    if record["phase"] not in protocol.EVENT_PHASES:
+        raise FatalBoundaryError(f"event phase {record['phase']!r} is not allowed")
+    timestamp = record["timestamp"]
+    if isinstance(timestamp, bool) or not isinstance(timestamp, (int, float)) or timestamp <= 0:
+        raise FatalBoundaryError("event timestamp is not a positive number")
+    job_id = record["job_id"]
+    if job_id is not None and (
+        not isinstance(job_id, str) or not _EVENT_HEX32.fullmatch(job_id)
+    ):
+        raise FatalBoundaryError("event job_id is neither null nor a 32-hex id")
+    job_sequence = record["job_sequence"]
+    if job_sequence is not None and (
+        not _is_int(job_sequence) or job_sequence < 1
+    ):
+        raise FatalBoundaryError("event job_sequence is neither null nor a positive integer")
+    detail = record["detail"]
+    if detail is not None and (
+        not isinstance(detail, str) or len(detail) > protocol.EVENT_DETAIL_LIMIT
+    ):
+        raise FatalBoundaryError("event detail is neither null nor bounded text")
+    return record
+
+
+def read_trusted_event(path: Path, *, nonce: str,
+                       expected_pid: int | None = None) -> dict[str, Any]:
+    """Read one event and prove its name agrees with its content."""
+    path = Path(path)
+    match = EVENT_NAME_RE.fullmatch(path.name)
+    if match is None:
+        raise FatalBoundaryError(f"event filename {path.name!r} is malformed")
+    if _is_reparse_point(path):
+        raise FatalBoundaryError("event file is a reparse point (symlink or junction)")
+    try:
+        size = path.stat().st_size
+    except OSError as exc:
+        raise FatalBoundaryError(f"cannot stat event: {exc}") from exc
+    if size > EVENT_LIMIT_BYTES:
+        raise FatalBoundaryError(
+            f"event file is {size} bytes, over the {EVENT_LIMIT_BYTES}-byte limit"
+        )
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise FatalBoundaryError(f"event is not valid JSON: {type(exc).__name__}") from exc
+    validate_event(record, nonce=nonce, expected_pid=expected_pid)
+    name_nonce, name_pid, name_seq, name_event = match.groups()
+    if (name_nonce, int(name_pid), int(name_seq), name_event) != (
+        record["nonce"], record["pid"], record["seq"], record["event"]
+    ):
+        raise FatalBoundaryError(
+            "event filename disagrees with its content "
+            f"({path.name!r} vs nonce/pid/seq/event in the record)"
+        )
+    return record
+
+
+def collect_events(outbox: Path, nonce: str, expected_pid: int | None = None) -> dict[str, Any]:
+    """Validate every event for this session; report what cannot be trusted.
+
+    A file that is still being written is retried briefly. Anything that stays
+    unreadable, carries another nonce, or breaks the schema becomes an anomaly
+    rather than an exception: the caller is running a diagnostic and has to be
+    able to record *why* the telemetry is unusable.
+    """
+    outbox = Path(outbox)
+    events: list[dict[str, Any]] = []
+    anomalies: list[dict[str, str]] = []
+    foreign = 0
+    if not outbox.is_dir():
+        return {"events": [], "anomalies": [{"file": "", "error": "outbox_missing"}],
+                "foreign_events": 0, "max_seq": 0, "started_at": None}
+    for path in sorted(outbox.iterdir()):
+        if not (path.name.startswith(protocol.EVENT_PREFIX) and path.name.endswith(".json")):
+            continue
+        if EVENT_NAME_RE.fullmatch(path.name) is None:
+            anomalies.append({"file": path.name, "error": "malformed_event_name"})
+            continue
+        if EVENT_NAME_RE.fullmatch(path.name).group(1) != nonce:  # type: ignore[union-attr]
+            foreign += 1
+            continue
+        record = None
+        error = ""
+        for attempt in range(3):
+            try:
+                record = read_trusted_event(path, nonce=nonce, expected_pid=expected_pid)
+                break
+            except FatalBoundaryError as exc:
+                error = str(exc)
+                if "not valid JSON" in error and attempt < 2:
+                    time.sleep(0.05)
+                    continue
+                break
+        if record is None:
+            anomalies.append({"file": path.name, "error": error})
+        else:
+            events.append(record)
+    events.sort(key=lambda item: item["seq"])
+    for previous, current in zip(events, events[1:]):
+        if current["seq"] <= previous["seq"]:
+            anomalies.append({
+                "file": "",
+                "error": f"event sequence is not strictly increasing at seq {current['seq']}",
+            })
+    pids = sorted({event["pid"] for event in events})
+    if len(pids) > 1:
+        anomalies.append({"file": "", "error": f"multiple agent pids {pids}"})
+    return {
+        "events": events,
+        "anomalies": anomalies,
+        "foreign_events": foreign,
+        "max_seq": events[-1]["seq"] if events else 0,
+        "started_at": events[0]["timestamp"] if events else None,
+        "agent_pids": pids,
+    }
 
 
 # -- .wsb configuration --------------------------------------------------------

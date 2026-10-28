@@ -18,6 +18,7 @@ import json
 import os
 import sys
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -40,6 +41,65 @@ def check_environment(allow_host: bool = False) -> dict:
             f"(account={ident['user']!r}). The host repository would be readable."
         )
     return ident
+
+
+class EventLog:
+    """Write diagnostic events as uniquely named files in the outbox.
+
+    Each event is a new file written directly and closed: a mapped folder rejects
+    ``os.replace`` while the Sandbox runs, and the host must never see a
+    half-written record under the final name. Sequence numbers are monotone per
+    process, so the host can order events without trusting the guest clock.
+
+    This is telemetry, not evidence of isolation. A heartbeat proves the agent
+    is alive; it proves nothing about what the candidate could reach.
+    """
+
+    def __init__(self, outbox: Path, nonce: str, *, pid: int | None = None) -> None:
+        self.outbox = Path(outbox)
+        self.nonce = nonce
+        self.pid = int(pid or os.getpid())
+        self.seq = 0
+        self._lock = threading.Lock()
+
+    def emit(self, event: str, *, phase: str, job: dict | None = None,
+             detail: str | None = None) -> dict:
+        with self._lock:
+            self.seq += 1
+            record = {
+                "v9": protocol.JOB_SCHEMA,
+                "nonce": self.nonce,
+                "pid": self.pid,
+                "seq": self.seq,
+                "event": event,
+                "phase": phase,
+                "timestamp": time.time(),
+                "job_id": job.get("job_id") if job else None,
+                "job_sequence": job.get("sequence") if job else None,
+                "detail": detail[:protocol.EVENT_DETAIL_LIMIT] if detail else None,
+            }
+            protocol.write_event(self.outbox, record)
+            return record
+
+
+class Heartbeat(threading.Thread):
+    """Prove the agent is alive between jobs, without touching the job protocol."""
+
+    def __init__(self, log: EventLog, interval: float) -> None:
+        super().__init__(name="v9-heartbeat", daemon=True)
+        self.log = log
+        self.interval = max(0.2, float(interval))
+        self._stop = threading.Event()
+
+    def run(self) -> None:
+        while not self._stop.wait(self.interval):
+            try:
+                self.log.emit("heartbeat", phase="serve", detail="alive")
+            except OSError:
+                return
+
+    def stop(self) -> None:
+        self._stop.set()
 
 
 def wait_for_session(inbox: Path, timeout: float, poll: float = 0.1) -> dict | None:
@@ -87,8 +147,14 @@ def handshake(inbox: Path, outbox: Path, session: dict | None = None,
 
 def serve(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
           memory_bytes: int, max_processes: int, max_jobs: int = 0,
-          poll: float = 0.1) -> int:
-    """Execute each newly published job exactly once."""
+          poll: float = 0.1, events: EventLog | None = None) -> int:
+    """Execute each newly published job exactly once.
+
+    The loop records what it sees. If the host rewrites ``job.json`` and the
+    guest's view of the mapping stays stale, the agent keeps seeing the job it
+    already handled; the heartbeat continues but no ``job_discovered`` appears
+    for the new job. That distinction is the whole point of the instrumentation.
+    """
     inbox, outbox, scratch = Path(inbox), Path(outbox), Path(scratch)
     scratch.mkdir(parents=True, exist_ok=True)
     handled: str | None = None
@@ -102,11 +168,22 @@ def serve(inbox: Path, outbox: Path, scratch: Path, *, timeout: float,
         if job["job_id"] == handled:
             time.sleep(poll)
             continue
-        supervisor.run_job(
-            inbox, outbox, scratch,
-            timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
-            lock_staging=False, lock_response=False,
-        )
+        if events is not None:
+            events.emit("job_discovered", phase="serve", job=job)
+            events.emit("job_started", phase="serve", job=job)
+        try:
+            supervisor.run_job(
+                inbox, outbox, scratch,
+                timeout=timeout, memory_bytes=memory_bytes, max_processes=max_processes,
+                lock_staging=False, lock_response=False,
+            )
+        except Exception as exc:  # noqa: BLE001 - the agent must record, not die
+            if events is not None:
+                events.emit("exception", phase="serve", job=job,
+                            detail=f"{type(exc).__name__}: {exc}")
+        else:
+            if events is not None:
+                events.emit("response_written", phase="serve", job=job)
         handled = job["job_id"]
         done += 1
         if max_jobs and done >= max_jobs:
@@ -126,6 +203,8 @@ def main() -> None:
                         help="how long to wait for the host to publish session.json")
     parser.add_argument("--handshake-only", action="store_true",
                         help="prove identity and echo the nonce, then exit; serves no job")
+    parser.add_argument("--heartbeat-interval", type=float, default=2.0,
+                        help="seconds between liveness events in serve mode (default: 2)")
     parser.add_argument("--allow-host", action="store_true",
                         help="local testing only; the host handshake will reject it")
     args = parser.parse_args()
@@ -144,6 +223,16 @@ def main() -> None:
         }, sort_keys=True), file=sys.stderr)
         raise SystemExit(3)
 
+    events = None
+    if not args.handshake_only:
+        # Created before the handshake so a crash during startup is visible too.
+        events = EventLog(outbox, session["nonce"])
+        try:
+            events.emit("agent_start", phase="startup",
+                        detail=f"mode=serve pid={os.getpid()}")
+        except OSError:
+            events = None
+
     handshake(inbox, outbox, session,
               mode="preflight" if args.handshake_only else "serve")
     if args.handshake_only:
@@ -154,9 +243,17 @@ def main() -> None:
     # refuses to run the child (status boundary_error).
     scratch = (Path(args.scratch) if args.scratch
                else Path(tempfile.gettempdir()) / "h3-scratch")
-    serve(inbox, outbox, scratch, timeout=args.timeout,
-          memory_bytes=args.memory_bytes, max_processes=args.max_processes,
-          max_jobs=args.max_jobs)
+
+    heartbeat = Heartbeat(events, args.heartbeat_interval) if events is not None else None
+    if heartbeat is not None:
+        heartbeat.start()
+    try:
+        serve(inbox, outbox, scratch, timeout=args.timeout,
+              memory_bytes=args.memory_bytes, max_processes=args.max_processes,
+              max_jobs=args.max_jobs, events=events)
+    finally:
+        if heartbeat is not None:
+            heartbeat.stop()
 
 
 if __name__ == "__main__":

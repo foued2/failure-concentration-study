@@ -23,6 +23,7 @@ INCLUDE = (
     "sandbox_agent.py",
     "winjob.py",
     "protocol.py",
+    "gates.py",
     "generation/generate_v9.py",
     "generation/agent/h3-generator.md",
 )

@@ -1,6 +1,6 @@
 # V9 security and measurement report
 
-**Date:** 2026-10-28 (revision 6)
+**Date:** 2026-10-28 (revision 7)
 **Branch:** `dev/h3-footprint-v9-implementation-2026-10-28`
 **Status:** implementation; not frozen; **no candidate generation or evaluation authorized.**
 
@@ -9,9 +9,10 @@ Revision 4 answered the follow-up question — *can this machine run Sandbox at
 all?* — and staged the interpreter the preflight needs. Revision 5 applied the
 documented enable command in a session elevated through a single approved UAC
 consent prompt. Revision 6 is the first with the Sandbox actually running: the
-preflight handshake verifies, and the two-token rendezvous **fails**. The failure
-is the finding: the host-to-guest direction of the mapped folder did not deliver
-a second job, so no ordering claim can be made and evaluation stays blocked.
+preflight handshake verifies, and the two-token rendezvous **fails**. Revision 7
+closes the authorization gap that the handshake exposed and instruments the guest
+so the failure can be explained; the failure itself is still unresolved and
+evaluation stays blocked.
 
 ## Revision 4: capability, not assumption
 
@@ -122,12 +123,61 @@ Three transport defects surfaced on the way and are fixed, with tests:
    outbox. The scratch now lives on the guest's local disk and the failure text
    is recorded in the response instead of being inferred.
 
-What is *not* established: why job B was never observed. The two candidates are
-a stale guest-side view of the rewritten `job.json` and an agent that stopped
-after its first job; the current harness cannot distinguish them, because
-nothing on the guest side records that it is alive. Answering that needs a guest
-liveness record or a per-job filename, both of which are protocol changes for
-design review, not a quiet patch before an evidence run.
+What is *not* established: why job B was never observed. At that point the two
+candidates were a stale guest-side view of the rewritten `job.json` and an agent
+that stopped after its first job; the harness could not distinguish them, because
+nothing on the guest side recorded that it was alive.
+
+## Revision 7: authorization is gated, the guest is instrumented
+
+**The gap.** Revision 6 treated a verified handshake as sufficient for
+`evaluate_authorized`. That is too weak: the handshake proves an agent ran as
+`WDAGUtilityAccount` and echoed a nonce. It says nothing about job ordering,
+isolation probes, resource caps or the verdict layer. It also left a second
+door: `Controller.evaluate` would accept an attested Sandbox transport and run a
+job with no prerequisite check at all.
+
+**Closed at both entry points.** `gates.py` is now the single decision point and
+it fails closed. `evaluate_authorized` calls it after the attestation check;
+`Controller.evaluate` refuses every transport that declares `requires_sandbox`;
+and the `--transport sandbox` CLI path calls `gates.require_authorized()`
+*before* staging the runtime or launching anything. The tests assert that a
+refused call publishes zero jobs and creates no inbox, outbox or run directory.
+
+**What the gate requires.** `EXECUTION_PREREQUISITES.json` names five
+prerequisite gates and pins each evidence file by SHA-256 (canonicalised CRLF→LF
+exactly like `MANIFEST.json`). Four conditions must all hold:
+
+1. every named gate is `PASS` in `STATUS.json`;
+2. every evidence file exists and matches its pin;
+3. the pinned evidence still *asserts* what the gate claims — a gate flipped to
+   PASS cannot override a rendezvous report that records `ordering_ok: false`;
+4. the verdict rules exist and match their pin, and a separate
+   `EVALUATION_AUTHORIZATION.json` binds both the policy hash and the status
+   ledger hash.
+
+No authorization file is committed. The real repository gate therefore refuses
+with seven blockers, and `python controller.py --check-execution-gate` prints
+them.
+
+**Guest instrumentation.** The agent now writes diagnostic events as *new*,
+uniquely named files (`agent_start`, `heartbeat`, `job_discovered`,
+`job_started`, `response_written`, `exception`), written directly, flushed and
+closed — never renamed, because a live mapping rejects renames. Events are
+emitted only in serve mode, so the preflight cannot publish telemetry. The host
+treats them as untrusted: size cap, allowed names, exact schema, nonce and
+attested-pid correlation, reparse-point rejection, and filename/content
+agreement. Foreign sessions are ignored; anything else becomes an anomaly.
+
+`run_rendezvous` no longer re-raises a job-B failure. The run stays a FAIL, but
+the report carries `guest_events`, `telemetry_anomalies` and a `diagnostic` with
+one of the named classifications. Telemetry explains a failure; it is never
+isolation evidence, and a missing or ambiguous diagnostic remains `unresolved`.
+The original rendezvous report and its raw files are unchanged.
+
+**Still unresolved.** The cause of the missing job-B response is not known. It
+is recorded as *cause unresolved*, not as a stale inbox, until an instrumented
+run says otherwise. Evaluation remains blocked by the gate and by decision.
 
 ## Revision 4: the interpreter is now real, pinned and verified
 
@@ -280,6 +330,8 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 | 15 | **The hardware verdict flipped when the hypervisor started** | SLAT/VMX masking recorded as `virtualization_flags_masked_by_hypervisor`; not treated as a hardware failure | `evidence/windows_sandbox_capability.py`, `evidence/sandbox-capability-post-restart-2026-10-28.json` | host |
 | 16 | **A live mapping rejects renames, so no job could be published** | ordered direct write (body first, `job.json` last), idempotent verify-only staging | `tests/test_backend.py::PublishTests, StagingTests` | host |
 | 17 | **The guest scratch could not take an integrity label on a mapped folder** | scratch moved to the guest's local disk; the `icacls` error is recorded in the response | `supervisor.py`, `sandbox_agent.py` | host |
+| 18 | **A verified handshake silently authorized evaluation** | fail-closed gate at both entry points; hash-pinned evidence must still assert its claim; separate authorization bound to policy and status | `tests/test_gates.py`, `test_backend.ExecutionGateTests` | host |
+| 19 | **The job-B failure could not be explained** | guest writes bounded lifecycle events to uniquely named files; host validates them as untrusted input and classifies the failure | `test_backend.TelemetryValidationTests`, `RendezvousDiagnosticTests` | host |
 
 ## Residual risks
 
@@ -318,7 +370,7 @@ mapped-folder ACL behaviour. The acceptance path is exercised with a synthetic
 
 ```
 python -m unittest discover -s tests -v
-Ran 88 tests in 109.057s
+Ran 133 tests in 145.386s
 OK
 ```
 

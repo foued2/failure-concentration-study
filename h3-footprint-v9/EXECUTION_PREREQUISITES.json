@@ -1,0 +1,53 @@
+{
+  "v9": 1,
+  "note": "Fail-closed prerequisites for authorized candidate evaluation. A verified Sandbox handshake is necessary but never sufficient. Evidence hashes are canonicalised to LF line endings, like MANIFEST.json, so a Windows checkout does not change them.",
+  "required_gates": [
+    {
+      "id": "sandbox_agent_acceptance",
+      "evidence": [
+        "evidence/preflight-sandbox-2026-10-28.json"
+      ],
+      "require_json": {
+        "ok": true,
+        "evaluation_attempted": false,
+        "preflight.attestation.verified": true,
+        "preflight.jobs_published": 0
+      }
+    },
+    {
+      "id": "sandbox_rendezvous_ordering",
+      "evidence": [
+        "evidence/rendezvous-sandbox-2026-10-28.json"
+      ],
+      "require_json": {
+        "ordering_ok": true
+      }
+    },
+    {
+      "id": "sandbox_isolation_report",
+      "evidence": []
+    },
+    {
+      "id": "memory_and_process_caps",
+      "evidence": [
+        "winjob.py"
+      ]
+    },
+    {
+      "id": "verdict_and_support_cells",
+      "evidence": []
+    }
+  ],
+  "evidence_pins": {
+    "evidence/preflight-sandbox-2026-10-28.json": "f10b980acb3ea6d5dc15f77e09c336e56f4ead0a5df4b6ea31c3a6e32f5789a9",
+    "evidence/rendezvous-sandbox-2026-10-28.json": "c373cf967638ddb18388dfdbcd0436fdb93a980821fa1f2a3e7854e6c938c9cc",
+    "winjob.py": "0033e9a8e283c81f230c8a91203fad899b7e8a3901bdeb0959fadac5a2913ad3"
+  },
+  "verdict_rules": {
+    "path": "verdict_rules.py",
+    "sha256": null
+  },
+  "authorization": {
+    "path": "EVALUATION_AUTHORIZATION.json"
+  }
+}

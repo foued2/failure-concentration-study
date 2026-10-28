@@ -17,6 +17,7 @@ sys.path.insert(0, str(HERE))
 import backend  # noqa: E402
 import controller  # noqa: E402
 import protocol  # noqa: E402
+import sandbox_agent  # noqa: E402
 from _support import fixture  # noqa: E402
 
 V9 = HERE.parent
@@ -649,6 +650,330 @@ class PublishTests(unittest.TestCase):
                 protocol.publish_job(staging, job, body=body, atomic=False)
             self.assertEqual(protocol.read_job(staging)["job_id"], "2" * 32)
             self.assertEqual((staging / "body.py").read_bytes(), b"print(2)\n")
+
+
+NONCE = "c" * 32
+
+
+class _AttestedStub:
+    """A transport that claims a verified Sandbox attestation but must never run."""
+
+    name = "attested-stub"
+    requires_sandbox = True
+    isolation_verified = True
+
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def attestation(self) -> dict:
+        return {"verified": True, "transport": self.name}
+
+    def execute(self, *args, **kwargs):
+        self.calls += 1
+        raise AssertionError("the execution gate must refuse before any call to execute()")
+
+
+class ExecutionGateTests(unittest.TestCase):
+    """A verified handshake is necessary, never sufficient."""
+
+    def test_verified_handshake_cannot_bypass_the_prerequisite_gate(self):
+        with tempfile.TemporaryDirectory() as td:
+            stub = _AttestedStub()
+            ctl = controller.Controller(Path(td) / "work", transport=stub)
+            with self.assertRaises(controller.ExecutionNotAuthorized) as ctx:
+                ctl.evaluate_authorized(fixture("correct.py"))
+            message = str(ctx.exception)
+            self.assertIn("prerequisite blocker", message)
+            self.assertIn("sandbox_rendezvous_ordering", message)
+            self.assertEqual(stub.calls, 0, "no job may be published before the gate passes")
+
+    def test_attested_sandbox_cannot_use_the_unauthorized_path(self):
+        with tempfile.TemporaryDirectory() as td:
+            stub = _AttestedStub()
+            ctl = controller.Controller(Path(td) / "work", transport=stub)
+            with self.assertRaises(backend.BoundaryNotEstablished):
+                ctl.evaluate(fixture("correct.py"))
+            self.assertEqual(stub.calls, 0)
+
+    def test_host_local_scoring_path_still_works(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            ctl = controller.Controller(
+                root / "work", transport=backend.HostLocalTransport(root / "rt")
+            )
+            row = ctl.evaluate(fixture("correct.py"))
+            self.assertFalse(row["authorized"])
+            self.assertEqual(row["fails"], [False] * 30)
+
+    def test_cli_refuses_sandbox_evaluation_before_staging_anything(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            inbox, outbox = root / "in", root / "out"
+            proc = subprocess.run(
+                [sys.executable, "-I", str(V9 / "controller.py"),
+                 "--bodies", str(HERE / "fixtures"), "--transport", "sandbox",
+                 "--inbox", str(inbox), "--outbox", str(outbox)],
+                capture_output=True, text=True, timeout=120,
+                encoding="utf-8", errors="replace",
+            )
+            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+            self.assertIn("refusing authorized evaluation", proc.stderr)
+            self.assertIn("sandbox_rendezvous_ordering", proc.stderr)
+            self.assertFalse(inbox.exists(), "nothing may be staged before the gate passes")
+            self.assertFalse(outbox.exists())
+            self.assertFalse((root / "runs").exists())
+
+    def test_cli_check_execution_gate_reports_the_blockers(self):
+        proc = subprocess.run(
+            [sys.executable, "-I", str(V9 / "controller.py"), "--check-execution-gate"],
+            capture_output=True, text=True, timeout=120,
+            encoding="utf-8", errors="replace",
+        )
+        self.assertEqual(proc.returncode, 2)
+        payload = json.loads(proc.stdout)
+        self.assertFalse(payload["ok"])
+        ids = {item["id"] for item in payload["blockers"]}
+        self.assertIn("authorization_missing", ids)
+        self.assertIn("gate_not_passing:sandbox_isolation_report", ids)
+
+
+class TelemetryValidationTests(unittest.TestCase):
+    """Guest events arrive through the writable mapping, so the host distrusts them."""
+
+    def _outbox(self) -> Path:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        outbox = Path(tmp.name) / "out"
+        outbox.mkdir(parents=True)
+        return outbox
+
+    def _record(self, seq: int, event: str = "heartbeat", **overrides) -> dict:
+        record = {
+            "v9": protocol.JOB_SCHEMA,
+            "nonce": NONCE,
+            "pid": 4242,
+            "seq": seq,
+            "event": event,
+            "phase": "serve",
+            "timestamp": time.time(),
+            "job_id": None,
+            "job_sequence": None,
+            "detail": None,
+        }
+        record.update(overrides)
+        return record
+
+    def _write(self, outbox: Path, record: dict) -> Path:
+        path = outbox / protocol.event_filename(
+            record["nonce"], record["pid"], record["seq"], record["event"])
+        path.write_text(json.dumps(record), encoding="utf-8")
+        return path
+
+    def test_valid_events_are_ordered_by_sequence(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(2, "heartbeat"))
+        self._write(outbox, self._record(1, "agent_start", phase="startup"))
+        collected = backend.collect_events(outbox, NONCE, expected_pid=4242)
+        self.assertEqual([event["seq"] for event in collected["events"]], [1, 2])
+        self.assertEqual(collected["anomalies"], [])
+        self.assertEqual(collected["max_seq"], 2)
+
+    def test_events_from_another_session_are_ignored(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(1, nonce="d" * 32))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertEqual(collected["events"], [])
+        self.assertEqual(collected["foreign_events"], 1)
+
+    def test_a_malformed_filename_is_an_anomaly(self):
+        outbox = self._outbox()
+        (outbox / "event-not-a-name.json").write_text("{}", encoding="utf-8")
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertEqual(collected["anomalies"][0]["error"], "malformed_event_name")
+
+    def test_a_schema_violation_is_an_anomaly(self):
+        outbox = self._outbox()
+        record = self._record(1)
+        record["extra"] = "field"
+        self._write(outbox, record)
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("keys differ", collected["anomalies"][0]["error"])
+
+    def test_an_oversized_event_is_an_anomaly(self):
+        outbox = self._outbox()
+        path = self._write(outbox, self._record(1))
+        path.write_text(path.read_text(encoding="utf-8") + " " * 5000, encoding="utf-8")
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("over the", collected["anomalies"][0]["error"])
+
+    def test_a_pid_that_differs_from_the_handshake_is_an_anomaly(self):
+        outbox = self._outbox()
+        self._write(outbox, self._record(1))
+        collected = backend.collect_events(outbox, NONCE, expected_pid=9999)
+        self.assertIn("does not match the attested agent", collected["anomalies"][0]["error"])
+
+    def test_filename_must_agree_with_its_content(self):
+        outbox = self._outbox()
+        record = self._record(1)
+        path = outbox / protocol.event_filename(NONCE, 4242, 7, "heartbeat")
+        path.write_text(json.dumps(record), encoding="utf-8")
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertIn("filename disagrees", collected["anomalies"][0]["error"])
+
+    def test_agent_event_log_writes_unique_direct_files(self):
+        outbox = self._outbox()
+        log = sandbox_agent.EventLog(outbox, NONCE)
+        log.emit("agent_start", phase="startup")
+        log.emit("heartbeat", phase="serve")
+        names = sorted(path.name for path in outbox.iterdir())
+        self.assertEqual(len(names), 2)
+        self.assertTrue(all(name.endswith(".json") and not name.endswith(".tmp")
+                            for name in names))
+        collected = backend.collect_events(outbox, NONCE)
+        self.assertEqual([event["seq"] for event in collected["events"]], [1, 2])
+        self.assertEqual(collected["anomalies"], [])
+
+
+class ScriptedGuestTransport:
+    """A Sandbox-shaped transport that emits guest telemetry from a script."""
+
+    name = "scripted-guest"
+
+    def __init__(self, outbox: Path, *, alive_after_b: bool = True,
+                 discover_b: bool = True, start_b: bool = True,
+                 respond_b: bool = True) -> None:
+        self.outbox = Path(outbox)
+        self.nonce = NONCE
+        self.requires_sandbox = True
+        self.isolation_verified = True
+        self.alive_after_b = alive_after_b
+        self.discover_b = discover_b
+        self.start_b = start_b
+        self.respond_b = respond_b
+        self._pid = 5150
+        self._seq = 0
+
+    def attestation(self) -> dict:
+        return {"verified": True, "transport": self.name, "agent": {"pid": self._pid}}
+
+    def emit(self, name: str, job: dict | None = None, detail: str | None = None) -> None:
+        self._seq += 1
+        protocol.write_event(self.outbox, {
+            "v9": protocol.JOB_SCHEMA,
+            "nonce": self.nonce,
+            "pid": self._pid,
+            "seq": self._seq,
+            "event": name,
+            "phase": "serve",
+            "timestamp": time.time(),
+            "job_id": job.get("job_id") if job else None,
+            "job_sequence": job.get("sequence") if job else None,
+            "detail": detail,
+        })
+
+    def _respond(self, job: dict, answer: int) -> dict:
+        record = {
+            "v9": protocol.JOB_SCHEMA,
+            "job_id": job["job_id"],
+            "sequence": job["sequence"],
+            "kind": job["kind"],
+            "body_sha256": job["body_sha256"],
+            "probe_index": job.get("probe_index"),
+            "status": "ok",
+            "tree_empty": True,
+            "answer": answer,
+            "inside_sandbox": True,
+            "raw_stdout": "",
+        }
+        protocol.write_response_exclusive(self.outbox, record)
+        return record
+
+    def execute(self, staging: Path, response_dir: Path, scratch: Path, *,
+                timeout: float, memory_bytes: int, max_processes: int) -> dict:
+        job = protocol.read_job(staging)
+        if job["input"]["n"] == 111:
+            self.emit("job_discovered", job)
+            self.emit("job_started", job)
+            self.emit("response_written", job)
+            return self._respond(job, 111)
+
+        if self.alive_after_b:
+            self.emit("heartbeat")
+        if not self.discover_b:
+            raise backend.FatalBoundaryError("no Sandbox response for job B within 125s")
+        self.emit("job_discovered", job)
+        if not self.start_b:
+            raise backend.FatalBoundaryError("no Sandbox response for job B within 125s")
+        self.emit("job_started", job)
+        if not self.respond_b:
+            raise backend.FatalBoundaryError("no Sandbox response for job B within 125s")
+        self.emit("response_written", job)
+        return self._respond(job, 222)
+
+
+class RendezvousDiagnosticTests(unittest.TestCase):
+    """The four cases the work order names, driven through run_rendezvous."""
+
+    def _controller(self, **behaviour) -> controller.Controller:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        inbox, outbox, scratch = root / "in", root / "out", root / "scratch"
+        for path in (inbox, outbox, scratch):
+            path.mkdir(parents=True, exist_ok=True)
+        controller.stage_runtime(inbox)
+        transport = ScriptedGuestTransport(outbox, **behaviour)
+        return controller.Controller(root / "work", transport=transport,
+                                     case_paths=(inbox, outbox, scratch))
+
+    def _run(self, **behaviour) -> dict:
+        return controller.run_rendezvous(
+            self._controller(**behaviour), HERE / "fixtures" / "echo_input.py"
+        )
+
+    def test_normal_completion_of_a_and_b(self):
+        result = self._run()
+        self.assertTrue(result["ordering_ok"], result["checks"])
+        self.assertIsNone(result["diagnostic"])
+        self.assertEqual(
+            [event["event"] for event in result["guest_events"]],
+            ["job_discovered", "job_started", "response_written",
+             "heartbeat", "job_discovered", "job_started", "response_written"],
+        )
+        self.assertEqual(result["telemetry_anomalies"], [])
+
+    def test_agent_that_stops_after_a(self):
+        result = self._run(alive_after_b=False, discover_b=False)
+        self.assertFalse(result["ordering_ok"])
+        self.assertEqual(result["diagnostic"]["classification"], "agent_stopped")
+        self.assertFalse(result["diagnostic"]["agent_alive_after_b"])
+        self.assertTrue(result["checks"]["A_answered_with_A"])
+
+    def test_agent_alive_but_never_observes_b(self):
+        result = self._run(discover_b=False)
+        self.assertFalse(result["ordering_ok"])
+        self.assertEqual(result["diagnostic"]["classification"], "inbox_not_refreshed")
+        self.assertTrue(result["diagnostic"]["agent_alive_after_b"])
+        self.assertFalse(result["diagnostic"]["job_b_discovered"])
+
+    def test_b_observed_but_no_response_published(self):
+        result = self._run(respond_b=False)
+        self.assertFalse(result["ordering_ok"])
+        self.assertEqual(result["diagnostic"]["classification"],
+                         "supervisor_or_response_path")
+        self.assertTrue(result["diagnostic"]["job_b_discovered"])
+        self.assertTrue(result["diagnostic"]["job_b_started"])
+        self.assertFalse(result["diagnostic"]["job_b_response_written"])
+
+    def test_host_local_transport_has_no_guest_telemetry(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            ctl = controller.Controller(
+                root / "work", transport=backend.HostLocalTransport(root / "rt")
+            )
+            snapshot = controller._snapshot(ctl)
+            self.assertEqual(snapshot["events"], [])
+            self.assertIsNone(controller._telemetry_source(ctl))
 
 
 if __name__ == "__main__":

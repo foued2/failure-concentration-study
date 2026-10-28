@@ -33,6 +33,7 @@ if str(HERE) not in sys.path:
 
 import backend  # noqa: E402
 import constants  # noqa: E402
+import gates  # noqa: E402
 import oracle  # noqa: E402
 import protocol  # noqa: E402
 from backend import BoundaryNotEstablished, FatalBoundaryError  # noqa: E402
@@ -56,11 +57,14 @@ __all__ = [
     "Controller",
     "FatalBoundaryError",
     "BoundaryNotEstablished",
+    "ExecutionNotAuthorized",
     "SANDBOX_RUNTIME_FILES",
     "stage_runtime",
     "run_rendezvous",
     "main",
 ]
+
+ExecutionNotAuthorized = gates.ExecutionNotAuthorized
 
 
 def stage_runtime(dest: Path | str, *, verify_only: bool = False) -> list[str]:
@@ -106,6 +110,126 @@ def _case_dirs(ctl: "Controller", name: str) -> tuple[Path, Path, Path]:
     return staging, response, scratch
 
 
+def _telemetry_source(ctl: "Controller") -> tuple[Path, str] | None:
+    """Where the guest writes events for this session, if the transport has one."""
+    nonce = getattr(ctl.transport, "nonce", None)
+    outbox = getattr(ctl.transport, "outbox", None)
+    if not nonce or outbox is None:
+        return None
+    return Path(outbox), str(nonce)
+
+
+def _snapshot(ctl: "Controller") -> dict[str, Any]:
+    """Read and validate every guest event seen so far. Never raises on content."""
+    source = _telemetry_source(ctl)
+    if source is None:
+        return {"events": [], "anomalies": [], "foreign_events": 0, "max_seq": 0,
+                "started_at": None, "agent_pids": []}
+    outbox, nonce = source
+    expected_pid = None
+    attestation = ctl.transport.attestation()
+    agent = attestation.get("agent") if isinstance(attestation, dict) else None
+    if isinstance(agent, dict) and isinstance(agent.get("pid"), int):
+        expected_pid = agent["pid"]
+    return backend.collect_events(outbox, nonce, expected_pid=expected_pid)
+
+
+DIAGNOSTIC_MEANING = {
+    "inbox_not_refreshed": (
+        "the agent stayed alive and never recorded seeing job B; investigate how "
+        "updates to the mapped inbox become visible before changing the protocol"
+    ),
+    "agent_stopped": (
+        "the heartbeat stopped before job B was discovered; investigate agent exit, "
+        "crash or stall"
+    ),
+    "supervisor_or_response_path": (
+        "job B was discovered and started but no response was published; investigate "
+        "supervisor execution and response publication"
+    ),
+    "response_written_but_not_visible": (
+        "the guest recorded a response for job B that the host never saw; investigate "
+        "visibility of the writable mapped outbox"
+    ),
+    "stalled_after_discovery": (
+        "job B was discovered but never started; investigate the agent loop"
+    ),
+    "agent_not_instrumented": (
+        "the guest produced no instrumentation even for job A, so this run cannot "
+        "explain the missing response"
+    ),
+    "ambiguous_telemetry": (
+        "guest telemetry failed validation, so the cause remains unresolved"
+    ),
+    "unresolved": "cause unresolved",
+}
+
+
+def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
+                         before_b: dict[str, Any],
+                         after_b: dict[str, Any]) -> dict[str, Any]:
+    """Decide, from guest events only, which of the known causes fits.
+
+    The classification never turns a failed ordering run into a pass: it only
+    names what to investigate next. A missing or ambiguous diagnostic stays
+    ``unresolved``.
+    """
+    events = after_b["events"]
+    anomalies = after_b["anomalies"]
+
+    def seen(name: str, job_id: str) -> bool:
+        return any(event["event"] == name and event["job_id"] == job_id
+                   for event in events)
+
+    a_seen = all(seen(name, job_a["job_id"])
+                 for name in ("job_discovered", "job_started", "response_written"))
+    b_discovered = seen("job_discovered", job_b["job_id"])
+    b_started = seen("job_started", job_b["job_id"])
+    b_response = seen("response_written", job_b["job_id"])
+    b_exceptions = [event["detail"] for event in events
+                    if event["event"] == "exception" and event["job_id"] == job_b["job_id"]]
+    heartbeats_after_b = [
+        event for event in events
+        if event["event"] == "heartbeat" and event["seq"] > before_b["max_seq"]
+    ]
+
+    if anomalies:
+        classification = "ambiguous_telemetry"
+    elif not events or not a_seen:
+        classification = "agent_not_instrumented"
+    elif b_response:
+        classification = "response_written_but_not_visible"
+    elif b_started:
+        classification = "supervisor_or_response_path"
+    elif b_discovered:
+        classification = "stalled_after_discovery"
+    elif heartbeats_after_b:
+        classification = "inbox_not_refreshed"
+    elif events:
+        classification = "agent_stopped"
+    else:
+        classification = "unresolved"
+
+    return {
+        "classification": classification,
+        "meaning": DIAGNOSTIC_MEANING.get(classification,
+                                          DIAGNOSTIC_MEANING["unresolved"]),
+        "agent_alive_after_b": bool(heartbeats_after_b),
+        "heartbeats_after_b": len(heartbeats_after_b),
+        "job_a_instrumented": a_seen,
+        "job_b_discovered": b_discovered,
+        "job_b_started": b_started,
+        "job_b_response_written": b_response,
+        "job_b_exceptions": b_exceptions,
+        "anomalies": anomalies,
+        "foreign_events_ignored": after_b["foreign_events"],
+        "event_count": len(events),
+        "agent_pids": after_b["agent_pids"],
+        "last_event": events[-1]["event"] if events else None,
+        "last_seq": events[-1]["seq"] if events else 0,
+    }
+
+
 def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
                    token_a: int = 111, token_b: int = 222) -> dict[str, Any]:
     """Publish token A, confirm its tree is gone, then publish token B.
@@ -114,6 +238,10 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
     mapping that exposed B early would surface as ``token`` = B in A's response.
     ``Controller._verify`` refuses to continue unless the previous process tree
     is confirmed dead, which is what makes this ordering testable at all.
+
+    On a transport that carries guest telemetry, the failure path is not
+    re-raised: the run is still a FAIL, but the report also names which
+    instrumented stage the agent reached, so the next run has a direction.
     """
     body = Path(body_path).read_bytes()
     staging, response_dir, scratch = _case_dirs(ctl, "rendezvous")
@@ -147,20 +275,55 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
     stamp("response_A", job_id=job_a["job_id"], token_seen=record_a.get("answer"),
           status=record_a["status"], tree_empty=record_a["tree_empty"])
 
+    after_a = _snapshot(ctl)
+    stamp("telemetry_after_A", event_count=len(after_a["events"]),
+          max_seq=after_a["max_seq"])
+
     token_b_visible_before_publish = str(token_b) in visible_token()
     stamp("tree_empty_confirmed", job_id=job_a["job_id"],
           token_b_visible=token_b_visible_before_publish)
 
+    # Snapshot immediately before B is published: any later heartbeat proves the
+    # agent was still alive while B was waiting, without trusting its clock.
+    before_b = _snapshot(ctl)
     job_b = publish(token_b)
     stamp("publish_B", job_id=job_b["job_id"], token=token_b)
-    record_b = ctl.transport.execute(
-        staging, response_dir, scratch,
-        timeout=ctl.preflight_timeout, memory_bytes=ctl.memory_bytes,
-        max_processes=ctl.max_processes,
-    )
+
+    try:
+        record_b = ctl.transport.execute(
+            staging, response_dir, scratch,
+            timeout=ctl.preflight_timeout, memory_bytes=ctl.memory_bytes,
+            max_processes=ctl.max_processes,
+        )
+    except FatalBoundaryError as exc:
+        after_b = _snapshot(ctl)
+        stamp("response_B_missing", job_id=job_b["job_id"], error=str(exc))
+        checks = {
+            "A_answered_with_A": record_a.get("answer") == token_a,
+            "A_tree_empty": record_a.get("tree_empty") is True,
+            "B_not_visible_before_A_completed": not token_b_visible_before_publish,
+            "B_answered_with_B": False,
+            "B_tree_empty": False,
+            "distinct_tokens": token_a != token_b,
+            "transport_attested": ctl.transport.isolation_verified,
+        }
+        return {
+            "checks": checks,
+            "ordering_ok": False,
+            "attested": checks["transport_attested"],
+            "transport": ctl.transport.name,
+            "tokens": {"A": token_a, "B": token_b},
+            "events": events,
+            "failure": {"error": type(exc).__name__, "detail": str(exc)},
+            "diagnostic": _classify_rendezvous(job_a, job_b, before_b, after_b),
+            "guest_events": after_b["events"],
+            "telemetry_anomalies": after_b["anomalies"],
+        }
+
     ctl._verify(job_b, record_b)
     stamp("response_B", job_id=job_b["job_id"], token_seen=record_b.get("answer"),
           status=record_b["status"], tree_empty=record_b["tree_empty"])
+    after_b = _snapshot(ctl)
 
     checks = {
         "A_answered_with_A": record_a.get("answer") == token_a,
@@ -179,6 +342,9 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
         "transport": ctl.transport.name,
         "tokens": {"A": token_a, "B": token_b},
         "events": events,
+        "diagnostic": None,
+        "guest_events": after_b["events"],
+        "telemetry_anomalies": after_b["anomalies"],
     }
 
 
@@ -302,17 +468,35 @@ class Controller:
     # -- evaluation ----------------------------------------------------------
 
     def evaluate(self, body_path: Path | str, group_id: str | None = None) -> dict[str, Any]:
-        """Score a body. The row records which boundary produced it."""
+        """Score a body on a development transport. Never study evidence.
+
+        An attested Sandbox transport is reserved for ``evaluate_authorized``:
+        reaching it through this method would run the probes with the isolation
+        check but without the prerequisite gate, which is the gap this revision
+        closes.
+        """
+        if getattr(self.transport, "requires_sandbox", False):
+            raise BoundaryNotEstablished(
+                f"transport {self.transport.name!r} executes inside Windows Sandbox but "
+                "this call is not an authorized evaluation; use evaluate_authorized, "
+                "which requires the prerequisite gate"
+            )
         return self._evaluate(body_path, group_id, authorized=False)
 
     def evaluate_authorized(self, body_path: Path | str,
                             group_id: str | None = None) -> dict[str, Any]:
-        """Score a body for study evidence. Requires an attested Sandbox."""
+        """Score a body for study evidence.
+
+        Two independent conditions, in this order: the transport must carry a
+        verified Sandbox attestation, and the committed prerequisite gate must
+        pass. A valid handshake alone can never authorize evaluation.
+        """
         if not self.transport.isolation_verified:
             raise BoundaryNotEstablished(
                 f"transport {self.transport.name!r} cannot attest Windows Sandbox isolation; "
                 "refusing authorized evaluation"
             )
+        gates.require_authorized()
         return self._evaluate(body_path, group_id, authorized=True)
 
     def _evaluate(self, body_path: Path | str, group_id: str | None,
@@ -391,6 +575,8 @@ def _cli(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--verify-boundary", action="store_true",
                         help="report whether this process is inside Windows Sandbox")
+    parser.add_argument("--check-execution-gate", action="store_true",
+                        help="print the fail-closed prerequisite gate and exit")
     parser.add_argument("--preflight", action="store_true",
                         help="handshake only: prove the Sandbox boundary, publish no job, "
                              "evaluate nothing")
@@ -424,11 +610,18 @@ def _cli(argv: list[str] | None = None) -> int:
         payload = {
             "identity": ident,
             "inside_sandbox": ident["inside_sandbox"],
-            "evaluation_authorized": ident["inside_sandbox"],
-            "note": "authorized evaluation additionally needs a completed nonce handshake",
+            "evaluation_authorized": False,
+            "note": ("identity only: authorized evaluation additionally needs a verified "
+                     "handshake, a passing prerequisite gate and a separate authorization "
+                     "file; see --check-execution-gate"),
         }
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0 if ident["inside_sandbox"] else 2
+
+    if args.check_execution_gate:
+        report = gates.check()
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if report["ok"] else 2
 
     if args.write_sandbox_config:
         if not (args.inbox and args.outbox):
@@ -467,6 +660,15 @@ def _cli(argv: list[str] | None = None) -> int:
               "pass --allow-host-local for scoring-logic tests only.", file=sys.stderr)
         return 2
 
+    if args.transport == "sandbox":
+        # Refuse before staging, before writing session.json and before launching
+        # anything: a verified handshake must never be the whole authorization.
+        try:
+            gates.require_authorized()
+        except gates.ExecutionNotAuthorized as exc:
+            print(f"refusing authorized evaluation: {exc}", file=sys.stderr)
+            return 2
+
     bodies = sorted(Path(args.bodies).glob("*.py"))
     if not bodies:
         parser.error(f"no .py files in {args.bodies}")
@@ -491,7 +693,7 @@ def _cli(argv: list[str] | None = None) -> int:
     status = 0
     for body in bodies:
         row = (ctl.evaluate_authorized(body, group_id=args.group_id)
-               if ctl.transport.isolation_verified
+               if args.transport == "sandbox"
                else ctl.evaluate(body, group_id=args.group_id))
         print(json.dumps(row, sort_keys=True))
         if row["excluded"]:
@@ -542,6 +744,15 @@ def _rendezvous_cli(parser: argparse.ArgumentParser, args: argparse.Namespace) -
         result = {"ordering_ok": False, "error": type(exc).__name__,
                   "detail": str(exc), "transport": transport.name,
                   "attested": transport.isolation_verified}
+        snapshot = _snapshot(ctl)
+        result["guest_events"] = snapshot["events"]
+        result["telemetry_anomalies"] = snapshot["anomalies"]
+        result["diagnostic"] = {
+            "classification": "unresolved",
+            "meaning": DIAGNOSTIC_MEANING["unresolved"],
+            "note": "the rendezvous stopped before the job-B stage was reached",
+            "event_count": len(snapshot["events"]),
+        }
         return _write_report(report_path, result)
 
     result["preflight_attestation"] = transport.attestation()

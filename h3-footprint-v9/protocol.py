@@ -26,6 +26,23 @@ BODY_FILENAME = "body.py"
 JOB_FILENAME = "job.json"
 RESPONSE_DIRNAME = "response"
 
+# Diagnostic telemetry written by the guest agent. It is deliberately *not* part
+# of the job protocol: each event is a new, uniquely named file, so the guest
+# never has to rename anything inside a mapped folder. Telemetry is evidence of
+# what the agent did, never proof that isolation holds.
+EVENT_PREFIX = "event-"
+EVENT_NAMES = (
+    "agent_start",
+    "heartbeat",
+    "job_discovered",
+    "job_started",
+    "response_written",
+    "exception",
+)
+EVENT_PHASES = ("startup", "handshake", "serve")
+EVENT_LIMIT_BYTES = 4096
+EVENT_DETAIL_LIMIT = 512
+
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
@@ -100,6 +117,29 @@ def read_response(response_dir: Path, job_id: str) -> dict[str, Any] | None:
     if not path.exists():
         return None
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def event_filename(nonce: str, pid: int, seq: int, name: str) -> str:
+    """Name an event so its order and origin are readable without its content."""
+    if name not in EVENT_NAMES:
+        raise ValueError(f"unknown event name {name!r}")
+    return f"{EVENT_PREFIX}{nonce}-{int(pid)}-{int(seq):06d}-{name}.json"
+
+
+def write_event(directory: Path, record: dict[str, Any]) -> Path:
+    """Publish one diagnostic event as a new file.
+
+    A mapped folder rejects renames, so the final name is written directly and
+    closed. Nothing is ever overwritten: the sequence number is unique per agent
+    process, which is why a duplicate name means two writers.
+    """
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / event_filename(
+        record["nonce"], record["pid"], record["seq"], record["event"]
+    )
+    _direct_write(path, json.dumps(record, sort_keys=True).encode("utf-8"))
+    return path
 
 
 # --- Windows directory lock -------------------------------------------------

@@ -6,6 +6,11 @@ test_supervisor_refuses_host_execution_when_sandbox_is_required (test_backend.Co
 test_verify_boundary_reports_the_current_identity (test_backend.CommandLineTests.test_verify_boundary_reports_the_current_identity) ... ok
 test_write_sandbox_config_produces_a_verified_file (test_backend.CommandLineTests.test_write_sandbox_config_produces_a_verified_file) ... ok
 test_write_sandbox_config_requires_a_mapped_interpreter (test_backend.CommandLineTests.test_write_sandbox_config_requires_a_mapped_interpreter) ... ok
+test_attested_sandbox_cannot_use_the_unauthorized_path (test_backend.ExecutionGateTests.test_attested_sandbox_cannot_use_the_unauthorized_path) ... ok
+test_cli_check_execution_gate_reports_the_blockers (test_backend.ExecutionGateTests.test_cli_check_execution_gate_reports_the_blockers) ... ok
+test_cli_refuses_sandbox_evaluation_before_staging_anything (test_backend.ExecutionGateTests.test_cli_refuses_sandbox_evaluation_before_staging_anything) ... ok
+test_host_local_scoring_path_still_works (test_backend.ExecutionGateTests.test_host_local_scoring_path_still_works) ... ok
+test_verified_handshake_cannot_bypass_the_prerequisite_gate (test_backend.ExecutionGateTests.test_verified_handshake_cannot_bypass_the_prerequisite_gate) ... ok
 test_accepts_only_a_matching_sandbox_account (test_backend.HandshakePredicateTests.test_accepts_only_a_matching_sandbox_account) ... ok
 test_rejects_each_failure_independently (test_backend.HandshakePredicateTests.test_rejects_each_failure_independently) ... ok
 test_identity_comes_from_the_token_not_the_environment (test_backend.IdentityTests.test_identity_comes_from_the_token_not_the_environment) ... ok
@@ -23,6 +28,11 @@ test_preflight_times_out_without_an_agent (test_backend.PreflightTests.test_pref
 test_valid_handshake_records_attestation_and_publishes_no_job (test_backend.PreflightTests.test_valid_handshake_records_attestation_and_publishes_no_job) ... ok
 test_direct_publish_is_readable_and_leaves_no_temp_files (test_backend.PublishTests.test_direct_publish_is_readable_and_leaves_no_temp_files) ... ok
 test_direct_publish_overwrites_in_place (test_backend.PublishTests.test_direct_publish_overwrites_in_place) ... ok
+test_agent_alive_but_never_observes_b (test_backend.RendezvousDiagnosticTests.test_agent_alive_but_never_observes_b) ... ok
+test_agent_that_stops_after_a (test_backend.RendezvousDiagnosticTests.test_agent_that_stops_after_a) ... ok
+test_b_observed_but_no_response_published (test_backend.RendezvousDiagnosticTests.test_b_observed_but_no_response_published) ... ok
+test_host_local_transport_has_no_guest_telemetry (test_backend.RendezvousDiagnosticTests.test_host_local_transport_has_no_guest_telemetry) ... ok
+test_normal_completion_of_a_and_b (test_backend.RendezvousDiagnosticTests.test_normal_completion_of_a_and_b) ... ok
 test_cli_refuses_rendezvous_on_the_host_without_consent (test_backend.RendezvousTests.test_cli_refuses_rendezvous_on_the_host_without_consent) ... ok
 test_cli_runs_the_harness_with_explicit_host_consent (test_backend.RendezvousTests.test_cli_runs_the_harness_with_explicit_host_consent) ... ok
 test_tokens_are_ordered_and_distinct (test_backend.RendezvousTests.test_tokens_are_ordered_and_distinct) ... ok
@@ -45,6 +55,14 @@ test_unmapped_interpreter_is_rejected (test_backend.SandboxConfigMappingTests.te
 test_staging_is_idempotent (test_backend.StagingTests.test_staging_is_idempotent) ... ok
 test_staging_repairs_a_differing_runtime_when_writing_is_allowed (test_backend.StagingTests.test_staging_repairs_a_differing_runtime_when_writing_is_allowed) ... ok
 test_verify_only_rejects_a_differing_runtime (test_backend.StagingTests.test_verify_only_rejects_a_differing_runtime) ... ok
+test_a_malformed_filename_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_malformed_filename_is_an_anomaly) ... ok
+test_a_pid_that_differs_from_the_handshake_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_pid_that_differs_from_the_handshake_is_an_anomaly) ... ok
+test_a_schema_violation_is_an_anomaly (test_backend.TelemetryValidationTests.test_a_schema_violation_is_an_anomaly) ... ok
+test_agent_event_log_writes_unique_direct_files (test_backend.TelemetryValidationTests.test_agent_event_log_writes_unique_direct_files) ... ok
+test_an_oversized_event_is_an_anomaly (test_backend.TelemetryValidationTests.test_an_oversized_event_is_an_anomaly) ... ok
+test_events_from_another_session_are_ignored (test_backend.TelemetryValidationTests.test_events_from_another_session_are_ignored) ... ok
+test_filename_must_agree_with_its_content (test_backend.TelemetryValidationTests.test_filename_must_agree_with_its_content) ... ok
+test_valid_events_are_ordered_by_sequence (test_backend.TelemetryValidationTests.test_valid_events_are_ordered_by_sequence) ... ok
 test_authorized_evaluation_refuses_host_transport (test_backend.TransportTests.test_authorized_evaluation_refuses_host_transport) ... ok
 test_controller_requires_an_explicit_transport (test_backend.TransportTests.test_controller_requires_an_explicit_transport) ... ok
 test_handshake_rejects_a_stale_nonce (test_backend.TransportTests.test_handshake_rejects_a_stale_nonce) ... ok
@@ -62,6 +80,29 @@ test_constant_wrong_solver_fails_every_probe (test_boundary.ScoringLogicOnHostBa
 test_correct_solver_scores_zero_failures (test_boundary.ScoringLogicOnHostBackend.test_correct_solver_scores_zero_failures) ... ok
 test_stdout_hijack_cannot_improve_score (test_boundary.ScoringLogicOnHostBackend.test_stdout_hijack_cannot_improve_score) ... ok
 test_sys_exit_counts_as_probe_failure (test_boundary.ScoringLogicOnHostBackend.test_sys_exit_counts_as_probe_failure) ... ok
+test_a_fully_satisfied_tree_is_authorized (test_gates.GatePolicyTests.test_a_fully_satisfied_tree_is_authorized) ... ok
+test_absent_authorization_blocks (test_gates.GatePolicyTests.test_absent_authorization_blocks) ... ok
+test_authorization_is_bound_to_the_policy (test_gates.GatePolicyTests.test_authorization_is_bound_to_the_policy) ... ok
+test_authorization_is_bound_to_the_status_ledger (test_gates.GatePolicyTests.test_authorization_is_bound_to_the_status_ledger) ... ok
+test_authorization_must_be_explicit (test_gates.GatePolicyTests.test_authorization_must_be_explicit) ... ok
+test_failed_gate_blocks (test_gates.GatePolicyTests.test_failed_gate_blocks) ... ok
+test_forged_status_cannot_override_the_evidence (test_gates.GatePolicyTests.test_forged_status_cannot_override_the_evidence)
+The gate PASS is not enough: the pinned report must agree. ... ok
+test_missing_evidence_blocks (test_gates.GatePolicyTests.test_missing_evidence_blocks) ... ok
+test_missing_gate_blocks (test_gates.GatePolicyTests.test_missing_gate_blocks) ... ok
+test_missing_verdict_rules_block (test_gates.GatePolicyTests.test_missing_verdict_rules_block) ... ok
+test_not_implemented_gate_blocks (test_gates.GatePolicyTests.test_not_implemented_gate_blocks) ... ok
+test_not_run_gate_blocks (test_gates.GatePolicyTests.test_not_run_gate_blocks) ... ok
+test_partial_gate_blocks (test_gates.GatePolicyTests.test_partial_gate_blocks) ... ok
+test_pinned_but_unreferenced_file_is_a_commitment (test_gates.GatePolicyTests.test_pinned_but_unreferenced_file_is_a_commitment) ... ok
+test_require_authorized_raises_the_boundary_error_family (test_gates.GatePolicyTests.test_require_authorized_raises_the_boundary_error_family) ... ok
+test_require_authorized_returns_the_report_when_clean (test_gates.GatePolicyTests.test_require_authorized_returns_the_report_when_clean) ... ok
+test_tampered_evidence_blocks (test_gates.GatePolicyTests.test_tampered_evidence_blocks) ... ok
+test_tampered_verdict_rules_block (test_gates.GatePolicyTests.test_tampered_verdict_rules_block) ... ok
+test_unpinned_evidence_blocks (test_gates.GatePolicyTests.test_unpinned_evidence_blocks) ... ok
+test_no_authorization_file_is_committed (test_gates.RealRepositoryGateTests.test_no_authorization_file_is_committed) ... ok
+test_the_policy_pins_the_failed_rendezvous_report (test_gates.RealRepositoryGateTests.test_the_policy_pins_the_failed_rendezvous_report) ... ok
+test_this_repository_refuses_authorized_evaluation (test_gates.RealRepositoryGateTests.test_this_repository_refuses_authorized_evaluation) ... ok
 test_eight_bodies_is_complete (test_generation.CompletenessTests.test_eight_bodies_is_complete) ... ok
 test_malformed_line_mixed_with_valid_text_is_rejected (test_generation.CompletenessTests.test_malformed_line_mixed_with_valid_text_is_rejected) ... ok
 test_one_body_is_an_incomplete_response (test_generation.CompletenessTests.test_one_body_is_an_incomplete_response) ... ok
@@ -98,6 +139,6 @@ test_runtime_contains_only_supervisor_and_child (test_secrecy.SandboxImageTests.
 test_supervisor_does_not_import_oracle (test_secrecy.SandboxImageTests.test_supervisor_does_not_import_oracle) ... ok
 
 ----------------------------------------------------------------------
-Ran 93 tests in 109.241s
+Ran 133 tests in 119.829s
 
 OK

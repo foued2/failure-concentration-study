@@ -26,9 +26,12 @@ V9 splits the two roles, and *requires* the split in the execution path:
 | `winjob.py`, `protocol.py` | Sandbox | no |
 
 `Controller.evaluate_authorized` raises `BoundaryNotEstablished` unless the
-transport has a verified Windows Sandbox attestation. The host-local transport
-still exists for scoring-logic tests, is explicitly not a boundary, and marks
-every row `authorized: false`.
+transport has a verified Windows Sandbox attestation, and then requires the
+committed fail-closed gate in `gates.py`: every prerequisite gate `PASS`,
+hash-pinned evidence that still asserts its claim, committed verdict rules, and a
+separate `EVALUATION_AUTHORIZATION.json`. A handshake alone authorizes nothing.
+The host-local transport still exists for scoring-logic tests, is explicitly not
+a boundary, and marks every row `authorized: false`.
 
 **This is measured, not assumed.** A low-integrity child on the host can read
 `oracle.py` and `expected_values.json`; the `key_reader` fixture uses that to
@@ -41,7 +44,8 @@ exposure so it cannot quietly regress into a false sense of safety.
 constants.py        frozen scientific constants (unchanged from V8)
 oracle.py           HOST ONLY: 30 probes, expected answers, k/C scoring
 controller.py       HOST ONLY: one job at a time, transports, preflight, rendezvous, CLI
-backend.py          HOST ONLY: transports, handshake, .wsb config, response trust
+gates.py            HOST ONLY: fail-closed prerequisite gate for authorized evaluation
+backend.py          HOST ONLY: transports, handshake, .wsb config, response trust, event validation
 supervisor.py       Sandbox: secret-free, owns the Job Object
 sandbox_agent.py    Sandbox: one-item broker; polls for the session, refuses to run outside Sandbox
 child_runner.py     untrusted child: low integrity, prints a raw answer
@@ -58,10 +62,16 @@ evidence/           measured host facts: capability classification, verified int
 python -m unittest discover -s tests -v
 python make_manifest.py --check
 python controller.py --verify-boundary
+python controller.py --check-execution-gate
 ```
 
 `--verify-boundary` exits 2 on an ordinary host: that is the correct result and
-the reason evaluation is blocked.
+the reason evaluation is blocked. `--check-execution-gate` exits 2 as well, and
+prints every prerequisite blocker. A verified handshake is necessary but never
+enough: the gate also requires hash-pinned evidence that still asserts what its
+gate claims, committed verdict rules and a separate
+`EVALUATION_AUTHORIZATION.json`, which this revision deliberately does not
+commit.
 
 ## Sandbox workflow
 
@@ -85,8 +95,26 @@ Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
 Windows Sandbox has now run here. The preflight handshake is verified
 (`evidence/preflight-sandbox-2026-10-28.json`) and the two-token rendezvous
 **failed** (`evidence/rendezvous-sandbox-2026-10-28.json`): job A was answered,
-job B was never answered. The measured mapping behaviour is in
-`STATUS.json` under `sandbox_mapping_write_constraints`.
+job B was never answered, and the cause is unresolved. The measured mapping
+behaviour is in `STATUS.json` under `sandbox_mapping_write_constraints`.
+
+Revision 7 instruments the guest so that the next rendezvous can say *where* it
+stopped. The agent writes bounded diagnostic events (`agent_start`, `heartbeat`,
+`job_discovered`, `job_started`, `response_written`, `exception`) as uniquely
+named files in the outbox, written directly and closed. The host validates them
+as untrusted input and attaches the classification to the failing report:
+
+| observation | classification |
+| --- | --- |
+| heartbeat continues, B never discovered | `inbox_not_refreshed` |
+| heartbeat stops before B | `agent_stopped` |
+| B discovered and started, no response | `supervisor_or_response_path` |
+| B response recorded, host saw none | `response_written_but_not_visible` |
+| no instrumentation even for A | `agent_not_instrumented` |
+| telemetry fails validation | `ambiguous_telemetry` |
+
+Telemetry explains a failure; it never establishes isolation, and a missing or
+ambiguous diagnostic stays `unresolved`.
 
 The base image ships no Python, so stage an **embeddable** distribution next — a
 normal install or a venv keeps host paths and is rejected. The staging script
@@ -122,9 +150,10 @@ python controller.py --bodies <staging> --transport sandbox --inbox C:\v9-stage\
 
 - **The one-item broker is not proven.** A Sandbox handshake verifies
   (`evidence/preflight-sandbox-2026-10-28.json`), but the two-token rendezvous
-  failed: job A was answered, job B was published and never answered. Until that
-  is explained, no isolation report, no live ordering result and no authorized
-  evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
+  failed: job A was answered, job B was published and never answered. The cause
+  is unresolved; the guest was not instrumented in that run. Until an
+  instrumented run explains it, no isolation report, no live ordering result and
+  no authorized evaluation exist (`sandbox_rendezvous_ordering: FAIL`).
 - **A live mapping constrains the host.** The host cannot `os.replace` inside a
   folder a running Sandbox maps (`WinError 32`), and the guest cannot label a
   mapped folder with an integrity level. Staging is now idempotent and job

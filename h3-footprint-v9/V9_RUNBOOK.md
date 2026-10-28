@@ -1,6 +1,6 @@
 # V9 runbook
 
-Revision 6. Every command below exists and is exercised by the test suite.
+Revision 7. Every command below exists and is exercised by the test suite.
 
 **Invariant: nothing that needs model output happens before the Sandbox checks
 pass.** Steps 0-2 make no model calls and generate no candidates.
@@ -164,11 +164,27 @@ python controller.py --rendezvous --transport sandbox ^
 Result on 2026-10-28: **FAIL**. Job A was answered correctly (111,
 `tree_empty: true`) five seconds after launch; job B was published and never
 answered, and no response for B appeared four minutes later. `ordering_ok` is
-false. Do not proceed to step 3 or 4 on this result.
+false and the cause is unresolved. Do not proceed to step 3 or 4 on this result.
 
 The harness publishes token A, requires the answer to be A, requires
 `tree_empty: true`, then publishes token B and requires the answer to be B. It
 records whether B was visible in the inbox before A completed.
+
+Revision 7 adds guest instrumentation to the same harness, so a failing run now
+carries `guest_events`, `telemetry_anomalies` and a named `diagnostic` in its
+report. Read the tree before changing anything:
+
+| observation | classification | next question |
+| --- | --- | --- |
+| heartbeat continues, B never discovered | `inbox_not_refreshed` | how do inbox updates become visible? |
+| heartbeats stop before B | `agent_stopped` | did the agent exit, crash or stall? |
+| B discovered and started, no response | `supervisor_or_response_path` | supervisor execution or response publication |
+| B response recorded, host saw none | `response_written_but_not_visible` | outbox visibility |
+| no instrumentation even for A | `agent_not_instrumented` | the run cannot explain anything |
+| telemetry fails validation | `ambiguous_telemetry` | the cause stays unresolved |
+
+Telemetry is evidence of what the agent did, never of isolation. A missing or
+ambiguous diagnostic is still a FAIL.
 
 Stop if `ordering_ok` is false or if the mapping's refresh behaviour is
 ambiguous. Do **not** substitute a slower or weaker transport; that decision goes
@@ -203,8 +219,13 @@ python controller.py --bodies <staging> --transport sandbox ^
 
 The controller refuses `--transport host-local` unless `--allow-host-local` is
 passed explicitly, and rows produced that way are marked `authorized: false`.
-With `--transport sandbox` it requires a completed handshake before executing
-anything, and the supervisor's response must attest `inside_sandbox: true`.
+With `--transport sandbox` it refuses **before staging anything** unless the
+fail-closed gate passes (`python controller.py --check-execution-gate` prints
+why). A verified handshake is necessary but never sufficient: the gate also
+requires every prerequisite gate to be PASS, hash-pinned evidence that still
+asserts the claimed result, committed verdict rules and a separate
+`EVALUATION_AUTHORIZATION.json` binding the policy and the status ledger. None of
+that exists in this revision, so this command exits 2.
 
 It refuses to publish a new job unless the previous response exists and reports
 `tree_empty: true`. Every response is treated as hostile input: bounded size, no
