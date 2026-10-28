@@ -55,7 +55,7 @@ class FutilityTests(unittest.TestCase):
     def write_batches(self, count):
         with (self.gen / "attempts.jsonl").open("w", encoding="utf-8") as fh:
             for batch in range(count):
-                fh.write(json.dumps({"batch_id": batch}) + "\n")
+                fh.write(json.dumps({"batch_id": batch, "completed": True}) + "\n")
 
     def test_checkpoint_not_reached_before_100_batches(self):
         self.write_batches(99)
