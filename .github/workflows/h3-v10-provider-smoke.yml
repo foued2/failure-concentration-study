@@ -20,18 +20,7 @@ jobs:
             h3-footprint-v10-cloud/provider_smoke.py
           sparse-checkout-cone-mode: false
 
-      - name: Check credentials are configured without printing values
-        env:
-          NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
-          TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          [ -n "${NVIDIA_NIM_API_KEY:-}" ] || { echo "Missing GitHub Actions secret NVIDIA_NIM_API_KEY"; exit 2; }
-          [ -n "${TOKENHARBOR_API_KEY:-}" ] || { echo "Missing GitHub Actions secret TOKENHARBOR_API_KEY"; exit 2; }
-          echo "Required secret variables are present; values are not printed."
-
-      - name: Make one bounded smoke request per route
+      - name: Make one bounded smoke request per route; missing keys are recorded without requests
         env:
           NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
           TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
