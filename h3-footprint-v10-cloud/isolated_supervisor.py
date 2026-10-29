@@ -6,6 +6,7 @@ The supervisor is deliberately blind to reference answers and never scores.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 from pathlib import Path
@@ -21,6 +22,8 @@ CHILD = "/trusted/candidate_child.py"
 MAX_LINE_BYTES = 64 * 1024
 MAX_CHILD_OUTPUT_BYTES = 64 * 1024
 DEFAULT_TIMEOUT_SECONDS = 5.0
+MIN_TIMEOUT_SECONDS = 0.2
+MAX_TIMEOUT_SECONDS = 30.0
 UID = 65534
 GID = 65534
 
@@ -307,6 +310,11 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--probe-timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS)
+    args = parser.parse_args()
+    if not MIN_TIMEOUT_SECONDS <= args.probe_timeout <= MAX_TIMEOUT_SECONDS:
+        parser.error(f"--probe-timeout must be between {MIN_TIMEOUT_SECONDS} and {MAX_TIMEOUT_SECONDS} seconds")
     if os.geteuid() != 0:
         print(json.dumps({"v": 1, "status": "supervisor_must_start_as_root"}), flush=True)
         return 70
@@ -324,7 +332,7 @@ def main() -> int:
                 payload = json.loads(raw.decode("utf-8"))
                 if not isinstance(payload, dict):
                     raise ValueError("not_object")
-                record = _run_one(payload, sequence, DEFAULT_TIMEOUT_SECONDS)
+                record = _run_one(payload, sequence, args.probe_timeout)
             except Exception as exc:
                 record = {
                     "v": 1, "sequence": sequence, "status": "invalid_input",
