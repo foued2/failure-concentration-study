@@ -39,6 +39,8 @@ def score(report_path: Path, fixture_manifest_path: Path) -> dict:
         raise ValueError("expected exactly 30 prediction records")
     if report.get("isolation_harness_ok") is not True or report.get("all_trees_empty") is not True:
         raise ValueError("execution harness did not pass")
+    if report.get("static_checks_enforced") is not True:
+        raise ValueError("the fixed-control report must use the frozen V3 static checks")
     if report.get("candidate_generation_performed") is not False:
         raise ValueError("unexpected candidate generation")
     if report.get("scoring_performed") is not False:

@@ -7,12 +7,16 @@ All predictions are untrusted and this program performs no scoring.
 from __future__ import annotations
 
 import argparse
+import ast
+import builtins
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import selectors
 import subprocess
+import symtable
 import sys
 import threading
 import time
@@ -29,6 +33,95 @@ DEFAULT_PROBE_TIMEOUT_SECONDS = 5.0
 
 class ContainerExecutionError(RuntimeError):
     pass
+
+
+FORBIDDEN_IMPORTS = {
+    "os", "subprocess", "socket", "pathlib", "shutil", "importlib",
+    "ctypes", "multiprocessing", "threading", "requests", "urllib", "http",
+    "ftplib", "telnetlib", "pickle", "marshal",
+}
+FORBIDDEN_CALLS = {
+    "open", "eval", "exec", "compile", "__import__", "input", "breakpoint",
+}
+
+
+def unsafe_reason(source: str) -> str | None:
+    """Exact static import/call policy inherited from the frozen V3 gate."""
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as exc:
+        return f"syntax:{exc.msg}"
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name.split(".")[0] in FORBIDDEN_IMPORTS:
+                    return f"import:{alias.name}"
+        elif isinstance(node, ast.ImportFrom):
+            if node.module and node.module.split(".")[0] in FORBIDDEN_IMPORTS:
+                return f"from:{node.module}"
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.func.id in FORBIDDEN_CALLS:
+                return f"call:{node.func.id}"
+    return None
+
+
+def undefined_global_names(source: str) -> list[str]:
+    """Exact conservative undefined-global warning inherited from the V3 gate."""
+    try:
+        root = symtable.symtable(source, "<candidate>", "exec")
+    except SyntaxError:
+        return []
+    module_bound = {
+        symbol.get_name()
+        for symbol in root.get_symbols()
+        if symbol.is_assigned() or symbol.is_imported() or symbol.is_namespace()
+    }
+    runtime_names = {
+        "__name__", "__package__", "__spec__", "__builtins__", "__doc__",
+        "__loader__", "__file__", "__cached__", "__annotations__",
+    }
+    allowed = set(dir(builtins)) | runtime_names
+    missing: set[str] = set()
+
+    def visit(table) -> None:
+        if table.get_type() != "module":
+            for symbol in table.get_symbols():
+                name = symbol.get_name()
+                if symbol.is_referenced() and symbol.is_global() and name not in module_bound and name not in allowed:
+                    missing.add(name)
+        for child in table.get_children():
+            visit(child)
+
+    visit(root)
+    return sorted(missing)
+
+
+def _static_exclusion_report(body: Path, expected_probe_count: int, timeout: float,
+                             reason: str, *, static_checks_enforced: bool = True) -> dict:
+    return {
+        "version": 1,
+        "candidate_sha256": _sha256(body),
+        "image": PYTHON_IMAGE,
+        "container_config": None,
+        "probe_count": 0,
+        "expected_probe_count": expected_probe_count,
+        "probe_timeout_seconds": timeout,
+        "preflight": None,
+        "candidate_valid": False,
+        "candidate_status": "static_rejection" if static_checks_enforced else "test_fixture",
+        "candidate_load_error_type": None,
+        "candidate_exclusion_reason": reason,
+        "results": [],
+        "all_trees_empty": True,
+        "execution_performed": False,
+        "candidate_generation_performed": False,
+        "scoring_performed": False,
+        "reference_answers_present": False,
+        "host_repository_mounted": False,
+        "api_keys_passed_to_container": False,
+        "static_checks_enforced": static_checks_enforced,
+        "isolation_harness_ok": None,
+    }
 
 
 def _sha256(path: Path) -> str:
@@ -180,6 +273,7 @@ def run_candidate(
     *,
     response_timeout: float = DEFAULT_RESPONSE_TIMEOUT,
     probe_timeout: float = DEFAULT_PROBE_TIMEOUT_SECONDS,
+    enforce_static: bool = True,
 ) -> dict:
     body = _regular_file(Path(body_path), "candidate body")
     trusted_dir = Path(trusted_dir).resolve(strict=True)
@@ -196,6 +290,18 @@ def run_candidate(
         raise ValueError("every probe must be an object with a non-empty probe_id")
     if len(set(probe_ids)) != len(probe_ids):
         raise ValueError("probe_id values must be unique")
+
+    if enforce_static:
+        try:
+            candidate_source = body.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            return _static_exclusion_report(body, len(probes), probe_timeout, "encoding:invalid_utf8")
+        static_reason = unsafe_reason(candidate_source)
+        if static_reason:
+            return _static_exclusion_report(body, len(probes), probe_timeout, static_reason)
+        missing = undefined_global_names(candidate_source)
+        if missing:
+            return _static_exclusion_report(body, len(probes), probe_timeout, "undefined_name:" + ",".join(missing))
 
     pull = _docker(["pull", PYTHON_IMAGE], timeout=180.0)
     if pull.returncode != 0:
@@ -352,6 +458,9 @@ def run_candidate(
         "candidate_valid": candidate_valid,
         "candidate_status": candidate_status,
         "candidate_load_error_type": candidate_load_error_type,
+        "candidate_exclusion_reason": None,
+        "execution_performed": True,
+        "static_checks_enforced": enforce_static,
         "results": results,
         "all_trees_empty": preflight_record.get("tree_empty") is True and all(r.get("tree_empty") is True for r in results),
         "candidate_generation_performed": False,
@@ -395,11 +504,13 @@ def main() -> int:
             "expected_probe_count": report["expected_probe_count"],
             "candidate_valid": report["candidate_valid"],
             "candidate_status": report["candidate_status"],
+            "candidate_exclusion_reason": report.get("candidate_exclusion_reason"),
+            "execution_performed": report.get("execution_performed"),
             "statuses": [r.get("status") for r in report["results"]],
             "all_trees_empty": report["all_trees_empty"],
             "report": str(report_path),
         }, sort_keys=True))
-        return 0 if report["isolation_harness_ok"] else 2
+        return 2 if report["isolation_harness_ok"] is False else 0
     except (ContainerExecutionError, ValueError, OSError, subprocess.SubprocessError) as exc:
         message = f"{type(exc).__name__}: {exc}"
         print(json.dumps({"isolation_harness_ok": False, "error": message}, sort_keys=True))

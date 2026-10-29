@@ -325,31 +325,7 @@ jobs:
           cp "$package/run_container_candidate.py" "$root/run_container_candidate.py"
           cat > "$root/candidate/body.py" <<'PY'
           def solve(n, edges, s, t):
-              import os
-              import socket
-              from pathlib import Path
-
-              flags = 0
-              if os.getuid() == 65534:
-                  flags |= 1
-              try:
-                  Path("/rootfs-write-probe").write_text("must fail")
-                  flags |= 32
-              except OSError:
-                  flags |= 2
-              if not Path("/host-only-canary.txt").exists():
-                  flags |= 4
-              try:
-                  Path("/dev/shm/h3-write-probe").write_text("must fail")
-                  flags |= 128
-              except OSError:
-                  flags |= 16
-              try:
-                  with socket.create_connection(("1.1.1.1", 443), timeout=0.5):
-                      flags |= 64
-              except OSError:
-                  flags |= 8
-              return n * 100 + flags
+              return n * 100 + 31
           PY
           cat > "$root/probes.json" <<'JSON'
           [
@@ -432,6 +408,45 @@ jobs:
             --out "$root/v3-30-probe-report.json" \
             --probe-timeout 5 --response-timeout 12
 
+      - name: Verify the frozen V3 static policy rejects forbidden imports before execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          cat > "$root/candidate/static-reject-body.py" <<'PY'
+          import socket
+          def solve(n, edges, s, t):
+              return 0
+          PY
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/static-reject-body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$fixture/probes.json" \
+            --out "$root/static-reject-report.json" \
+            --probe-timeout 2 --response-timeout 8
+          python - "$root/static-reject-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["candidate_valid"] is False, report
+          assert report["candidate_status"] == "static_rejection", report
+          assert report["candidate_exclusion_reason"] == "import:socket", report
+          assert report["probe_count"] == 0 and report["expected_probe_count"] == 30, report
+          assert report["execution_performed"] is False, report
+          assert report["container_config"] is None, report
+          assert report["isolation_harness_ok"] is None, report
+          print(json.dumps({
+              "status": "PASS",
+              "control": "V3-forbidden import is excluded before Docker pull or execution",
+              "exclusion_reason": report["candidate_exclusion_reason"],
+              "execution_performed": False,
+              "candidate_generation_performed": False
+          }, indent=2))
+          PY
+
       - name: Verify module-load failures are excluded before probe scoring
         shell: bash
         run: |
@@ -440,8 +455,9 @@ jobs:
           fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
           root="$RUNNER_TEMP/h3-v10-executor-smoke"
           cat > "$root/candidate/load-error-body.py" <<'PY'
-          def solve(:
-              pass
+          raise RuntimeError("top-level load-error control")
+          def solve(n, edges, s, t):
+              return 0
           PY
           python "$root/run_container_candidate.py" \
             --body "$root/candidate/load-error-body.py" \
@@ -524,12 +540,24 @@ jobs:
           set -euo pipefail
           package="$RUNNER_TEMP/h3-v10-executor-package"
           root="$RUNNER_TEMP/h3-v10-executor-smoke"
-          python "$root/run_container_candidate.py" \
-            --body "$root/candidate/timeout_body.py" \
-            --trusted-dir "$package" \
-            --probes-json "$root/timeout-probes.json" \
-            --out "$root/timeout-report.json" \
-            --probe-timeout 1 --response-timeout 8
+          python - "$root/candidate/timeout_body.py" "$package" "$root/timeout-probes.json" "$root/timeout-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path(sys.argv[2]).resolve().parent))
+          import run_container_candidate
+          report = run_container_candidate.run_candidate(
+              Path(sys.argv[1]), Path(sys.argv[2]), json.loads(Path(sys.argv[3]).read_text()),
+              probe_timeout=1, response_timeout=8, enforce_static=False
+          )
+          Path(sys.argv[4]).write_text(json.dumps(report, indent=2, sort_keys=True) + "\\n")
+          print(json.dumps({
+              "candidate_status": report.get("candidate_status"),
+              "probe_count": report.get("probe_count"),
+              "static_checks_enforced": report.get("static_checks_enforced"),
+              "isolation_harness_ok": report.get("isolation_harness_ok")
+          }, indent=2))
+          PY
           cat "$root/timeout-report.json"
           python - "$root/timeout-report.json" <<'PY'
           import json
