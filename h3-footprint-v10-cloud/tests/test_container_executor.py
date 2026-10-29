@@ -11,6 +11,8 @@ HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 
 import run_container_candidate as executor
+import isolated_supervisor
+from candidate_child import BoundedTextIO, _validate_input
 
 
 class ContainerExecutorUnitTests(unittest.TestCase):
@@ -139,6 +141,58 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                     executor._inspect_container("id", body, supervisor, child)
             finally:
                 executor._docker = original
+
+    def test_preflight_payload_has_an_explicit_phase(self):
+        payload = {"probe_id": "__preflight__", "phase": "preflight",
+                   "n": 1, "edges": [], "s": 0, "t": 0}
+        parsed = _validate_input(payload)
+        self.assertEqual(parsed[-1], "preflight")
+        self.assertEqual(parsed[-2], "__preflight__")
+
+    def test_invalid_phase_is_rejected(self):
+        payload = {"probe_id": "p", "phase": "score",
+                   "n": 1, "edges": [], "s": 0, "t": 0}
+        with self.assertRaises(ValueError):
+            _validate_input(payload)
+
+    def test_supervisor_accepts_load_error_as_distinct_from_probe_exception(self):
+        record = {
+            "v": 1, "phase": "probe", "probe_id": "p", "status": "load_error",
+            "error_type": "ImportError", "answer_type": "none", "answer": None,
+            "solver_output_overflow": False,
+        }
+        parsed = isolated_supervisor._parse_prediction("H3PRED " + json.dumps(record), "p")
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed["status"], "load_error")
+
+    def test_supervisor_rejects_a_phase_mismatch(self):
+        record = {
+            "v": 1, "phase": "preflight", "probe_id": "p", "status": "ok",
+            "answer_type": "callable", "answer": None, "solver_output_overflow": False,
+        }
+        self.assertIsNone(isolated_supervisor._parse_prediction(
+            "H3PRED " + json.dumps(record), "p", "probe"
+        ))
+        self.assertIsNotNone(isolated_supervisor._parse_prediction(
+            "H3PRED " + json.dumps(record), "p", "preflight"
+        ))
+
+    def test_supervisor_rejects_overflowed_solver_output(self):
+        record = {
+            "v": 1, "phase": "probe", "probe_id": "p", "status": "ok",
+            "answer_type": "int", "answer": 4, "solver_output_overflow": True,
+        }
+        self.assertIsNone(isolated_supervisor._parse_prediction(
+            "H3PRED " + json.dumps(record), "p"
+        ))
+
+    def test_bounded_text_io_marks_overflow_without_retaining_it(self):
+        stream = BoundedTextIO(limit=5)
+        self.assertEqual(stream.write("abcd"), 4)
+        self.assertEqual(stream.write("xyz"), 3)
+        self.assertEqual(stream.characters, 5)
+        self.assertTrue(stream.overflow)
+        self.assertEqual("".join(stream.parts), "abcdx")
 
     def test_bad_probe_shapes_fail_before_docker(self):
         with tempfile.TemporaryDirectory() as td:

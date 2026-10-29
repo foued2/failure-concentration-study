@@ -183,7 +183,7 @@ def _read_child(proc: subprocess.Popen, timeout: float) -> dict:
     return result
 
 
-def _parse_prediction(stdout: str, probe_id: str) -> dict | None:
+def _parse_prediction(stdout: str, probe_id: str, phase: str = "probe") -> dict | None:
     records = []
     for line in stdout.splitlines():
         if line.startswith("H3PRED "):
@@ -198,7 +198,13 @@ def _parse_prediction(stdout: str, probe_id: str) -> dict | None:
     item = records[0]
     if item.get("v") != 1 or item.get("probe_id") != probe_id:
         return None
-    if item.get("status") not in {"ok", "exception", "invalid_input"}:
+    if item.get("phase") != phase:
+        return None
+    if item.get("status") not in {"ok", "load_error", "exception", "invalid_input"}:
+        return None
+    # Captured user-level output is bounded separately from the supervisor
+    # protocol stream. An overflowed capture is not a valid prediction record.
+    if item.get("solver_output_overflow") is True:
         return None
     if item.get("status") == "ok":
         if item.get("answer_type") == "int":
@@ -261,8 +267,9 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                 child = _read_child(proc, timeout)
                 tree_present_at_post_child_check = bool(_other_pids())
                 tree_empty = _kill_other_processes()
+                phase = payload.get("phase", "probe")
                 prediction = None if child["timed_out"] or child["output_overflow"] else _parse_prediction(
-                    child["stdout"], str(payload.get("probe_id"))
+                    child["stdout"], str(payload.get("probe_id")), str(phase)
                 )
                 status = "ok"
                 if child["timed_out"]:
@@ -275,6 +282,8 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                     status = "process_tree_leak"
                 elif prediction is None or child["return_code"] != 0:
                     status = "invalid_child_output"
+                elif prediction.get("status") == "load_error":
+                    status = "load_error"
                 elif prediction.get("status") == "exception":
                     status = "exception"
                 elif prediction.get("status") == "invalid_input":
@@ -286,6 +295,7 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                     "v": 1,
                     "sequence": sequence,
                     "probe_id": str(payload.get("probe_id")),
+                    "phase": str(phase),
                     "status": status,
                     "answer_type": answer_type,
                     "answer": answer,

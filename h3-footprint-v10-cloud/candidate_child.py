@@ -69,11 +69,14 @@ def _answer_shape(value) -> tuple[str, int | None]:
     return "other", None
 
 
-def _validate_input(payload: object) -> tuple[int, list[tuple[int, int, int]], int, int, str]:
+def _validate_input(payload: object) -> tuple[int, list[tuple[int, int, int]], int, int, str, str]:
     if not isinstance(payload, dict):
         raise ValueError("input_not_object")
     probe_id = payload.get("probe_id")
+    phase = payload.get("phase", "probe")
     n, edges, source, target = payload.get("n"), payload.get("edges"), payload.get("s"), payload.get("t")
+    if phase not in {"probe", "preflight"}:
+        raise ValueError("invalid_phase")
     if not isinstance(probe_id, str) or not probe_id or len(probe_id) > 128:
         raise ValueError("invalid_probe_id")
     if type(n) is not int or not 1 <= n <= 10000:
@@ -90,7 +93,7 @@ def _validate_input(payload: object) -> tuple[int, list[tuple[int, int, int]], i
         if not (0 <= u < n and 0 <= v < n and w >= 0):
             raise ValueError("edge_out_of_range")
         parsed.append((u, v, w))
-    return n, parsed, source, target, probe_id
+    return n, parsed, source, target, probe_id, phase
 
 
 def _load_solve():
@@ -117,7 +120,7 @@ def main() -> int:
         return 0
     try:
         payload = json.loads(raw.decode("utf-8"))
-        n, edges, source, target, probe_id = _validate_input(payload)
+        n, edges, source, target, probe_id, phase = _validate_input(payload)
     except Exception as exc:
         result = {"v": 1, "status": "invalid_input", "error_type": type(exc).__name__}
         protocol_stdout.write("H3PRED " + json.dumps(result, sort_keys=True) + "\n")
@@ -128,20 +131,9 @@ def main() -> int:
     try:
         with contextlib.redirect_stdout(captured_out), contextlib.redirect_stderr(captured_err):
             solve = _load_solve()
-            answer = solve(n, edges, source, target)
-        answer_type, answer_int = _answer_shape(answer)
-        result = {
-            "v": 1,
-            "probe_id": probe_id,
-            "status": "ok",
-            "answer_type": answer_type,
-            "answer": answer_int,
-            "solver_stdout_characters": captured_out.characters,
-            "solver_stderr_characters": captured_err.characters,
-            "solver_output_overflow": captured_out.overflow or captured_err.overflow,
-        }
     except BaseException as exc:
-        # Do not serialize exception messages from untrusted code.
+        # Keep loader/import failures distinct from solve-time exceptions. The
+        # gate must invalidate a candidate whose module cannot be loaded.
         if isinstance(exc, SystemExit):
             error_type = "SystemExit"
         elif isinstance(exc, KeyboardInterrupt):
@@ -150,8 +142,9 @@ def main() -> int:
             error_type = type(exc).__name__
         result = {
             "v": 1,
+            "phase": phase,
             "probe_id": probe_id,
-            "status": "exception",
+            "status": "load_error",
             "error_type": error_type,
             "answer_type": "none",
             "answer": None,
@@ -159,6 +152,55 @@ def main() -> int:
             "solver_stderr_characters": captured_err.characters,
             "solver_output_overflow": captured_out.overflow or captured_err.overflow,
         }
+    else:
+        if phase == "preflight":
+            result = {
+                "v": 1,
+                "phase": "preflight",
+                "probe_id": probe_id,
+                "status": "ok",
+                "answer_type": "callable",
+                "answer": None,
+                "solver_stdout_characters": captured_out.characters,
+                "solver_stderr_characters": captured_err.characters,
+                "solver_output_overflow": captured_out.overflow or captured_err.overflow,
+            }
+        else:
+            try:
+                with contextlib.redirect_stdout(captured_out), contextlib.redirect_stderr(captured_err):
+                    answer = solve(n, edges, source, target)
+                answer_type, answer_int = _answer_shape(answer)
+                result = {
+                    "v": 1,
+                    "phase": "probe",
+                    "probe_id": probe_id,
+                    "status": "ok",
+                    "answer_type": answer_type,
+                    "answer": answer_int,
+                    "solver_stdout_characters": captured_out.characters,
+                    "solver_stderr_characters": captured_err.characters,
+                    "solver_output_overflow": captured_out.overflow or captured_err.overflow,
+                }
+            except BaseException as exc:
+                # Do not serialize exception messages from untrusted code.
+                if isinstance(exc, SystemExit):
+                    error_type = "SystemExit"
+                elif isinstance(exc, KeyboardInterrupt):
+                    error_type = "KeyboardInterrupt"
+                else:
+                    error_type = type(exc).__name__
+                result = {
+                    "v": 1,
+                    "phase": "probe",
+                    "probe_id": probe_id,
+                    "status": "exception",
+                    "error_type": error_type,
+                    "answer_type": "none",
+                    "answer": None,
+                    "solver_stdout_characters": captured_out.characters,
+                    "solver_stderr_characters": captured_err.characters,
+                    "solver_output_overflow": captured_out.overflow or captured_err.overflow,
+                }
 
     protocol_stdout.write("H3PRED " + json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n")
     protocol_stdout.flush()
