@@ -200,7 +200,7 @@ def _parse_prediction(stdout: str, probe_id: str, phase: str = "probe") -> dict 
         return None
     if item.get("phase") != phase:
         return None
-    if item.get("status") not in {"ok", "load_error", "exception", "invalid_input"}:
+    if item.get("status") not in {"ok", "load_error", "exception", "invalid_input", "timeout", "output_overflow", "invalid_child_output"}:
         return None
     # Captured user-level output is bounded separately from the supervisor
     # protocol stream. An overflowed capture is not a valid prediction record.
@@ -241,7 +241,7 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                 "PYTHONIOENCODING": "utf-8",
             }
             proc = subprocess.Popen(
-                [sys.executable, "-I", "-B", CHILD, "/candidate/body.py"],
+                [sys.executable, "-I", "-B", CHILD, "--probe-timeout", str(timeout)],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 close_fds=True, bufsize=0, env=env, preexec_fn=_drop_child_privileges,
                 start_new_session=True,
@@ -288,6 +288,8 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                     status = "exception"
                 elif prediction.get("status") == "invalid_input":
                     status = "invalid_input"
+                elif prediction.get("status") in {"timeout", "output_overflow", "invalid_child_output"}:
+                    status = prediction["status"]
 
                 answer = prediction.get("answer") if status == "ok" and prediction else None
                 answer_type = prediction.get("answer_type") if status == "ok" and prediction else "none"

@@ -19,13 +19,28 @@ if str(V3) not in sys.path:
 import instrument
 
 
+
+MAX_JSON_BYTES = 2 * 1024 * 1024
+
+def _load_bounded_json(path: Path, label: str):
+    with Path(path).open("rb") as stream:
+        raw = stream.read(MAX_JSON_BYTES + 1)
+    if len(raw) > MAX_JSON_BYTES:
+        raise ValueError(f"{label} exceeds {MAX_JSON_BYTES} byte limit")
+    try:
+        return json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
+        raise ValueError(f"{label} is not valid bounded UTF-8 JSON") from None
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def score(report_path: Path, fixture_manifest_path: Path) -> dict:
-    report = json.loads(Path(report_path).read_text(encoding="utf-8"))
-    manifest = json.loads(Path(fixture_manifest_path).read_text(encoding="utf-8"))
+    report = _load_bounded_json(report_path, "execution report")
+    manifest = _load_bounded_json(fixture_manifest_path, "fixture manifest")
+    if not isinstance(report, dict) or not isinstance(manifest, dict):
+        raise ValueError("report and fixture manifest must be JSON objects")
 
     if manifest.get("kind") != "fixed_harness_control":
         raise ValueError("not a fixed harness-control fixture")
@@ -54,6 +69,21 @@ def score(report_path: Path, fixture_manifest_path: Path) -> dict:
 
     expected = instrument.expected_values()
     results = report["results"]
+    for index, record in enumerate(results):
+        if not isinstance(record, dict):
+            raise ValueError(f"prediction record {index} is not an object")
+        if record.get("status") != "ok":
+            raise ValueError(f"prediction record {index} status is not ok")
+        if record.get("tree_empty") is not True:
+            raise ValueError(f"prediction record {index} does not attest an empty process tree")
+        if record.get("processes_present_at_post_child_check") is not False:
+            raise ValueError(f"prediction record {index} reports a process tree at the post-check")
+        if record.get("tmp_cleanup_ok") is not True:
+            raise ValueError(f"prediction record {index} scratch cleanup did not pass")
+        if record.get("timed_out") is not False or record.get("output_overflow") is not False:
+            raise ValueError(f"prediction record {index} timed out or overflowed output")
+        if record.get("child_return_code") != 0:
+            raise ValueError(f"prediction record {index} worker exit code was not zero")
     result_ids = [record.get("probe_id") for record in results]
     expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
     if result_ids != expected_ids:

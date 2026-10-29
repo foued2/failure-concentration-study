@@ -1,0 +1,94 @@
+name: H3 V10 integrity fix validation
+
+on:
+  push:
+    branches:
+      - gpt/h3-v10-integrity-fix-2026-10-29
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-integrity-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Run full V10 unit tests
+        run: python -m unittest discover -s h3-footprint-v10-cloud/tests -v
+      - name: Build public input-only control fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-integrity"
+          mkdir -p "$root/evidence"
+          python h3-footprint-v10-cloud/build_smoke_fixture.py --out-dir "$root/fixture"
+          (cd "$root/fixture" && sha256sum --check SHA256SUMS)
+      - name: Run fixed control through isolated executor
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-integrity"
+          python h3-footprint-v10-cloud/run_container_candidate.py \
+            --body "$root/fixture/smoke-body.py" \
+            --trusted-dir h3-footprint-v10-cloud \
+            --probes-json "$root/fixture/probes.json" \
+            --out "$root/evidence/control-report.json" \
+            --probe-timeout 5 --response-timeout 12
+          python h3-footprint-v10-cloud/score_smoke_report.py \
+            --report "$root/evidence/control-report.json" \
+            --fixture-manifest "$root/fixture/fixture-manifest.json" \
+            --out "$root/evidence/control-score.json"
+      - name: Run bounded hostile fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-integrity"
+          python h3-footprint-v10-cloud/adversarial/run_adversarial.py \
+            --trusted-dir h3-footprint-v10-cloud \
+            --bodies h3-footprint-v10-cloud/adversarial/bodies \
+            --out "$root/evidence/adversarial-report.json"
+      - name: Audit untrusted scorer input
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-integrity"
+          python h3-footprint-v10-cloud/adversarial/score_audit.py \
+            --report "$root/evidence/control-report.json" \
+            --fixture-manifest "$root/fixture/fixture-manifest.json" \
+            --out "$root/evidence/scorer-audit.json"
+      - name: Enforce critical integrity results
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RUNNER_TEMP/h3-v10-integrity/evidence" <<'PY'
+          import json, sys
+          from pathlib import Path
+          root = Path(sys.argv[1])
+          control = json.loads((root / "control-score.json").read_text())
+          hostile = json.loads((root / "adversarial-report.json").read_text())
+          scorer = json.loads((root / "scorer-audit.json").read_text())
+          assert control["status"] == "PASS" and control["correct_control_predictions"] == 30, control
+          fixtures = {x["fixture"]: x for x in hostile["fixtures"]}
+          assert fixtures["forge"]["verdict"] == "NO_FINDING", fixtures["forge"]
+          assert fixtures["flood"]["verdict"] == "NO_FINDING", fixtures["flood"]
+          cases = {x["case"]: x for x in scorer["cases"]}
+          assert cases["baseline"]["outcome"] == "ACCEPTED", cases["baseline"]
+          assert cases["pad_20MiB"]["outcome"] == "REJECTED", cases["pad_20MiB"]
+          assert cases["record_tree_empty_false_toplevel_true"]["outcome"] == "REJECTED", cases["record_tree_empty_false_toplevel_true"]
+          print("INTEGRITY_VALIDATION_PASS: control 30/30; forged metadata rejected; oversized and inconsistent reports rejected")
+          PY
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-integrity-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/h3-v10-integrity
+          if-no-files-found: warn
+          retention-days: 14

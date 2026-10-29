@@ -1,0 +1,38 @@
+name: H3 V10 one-request Copilot canary
+
+on:
+  push:
+    branches:
+      - gpt/h3-v10-integrity-fix-2026-10-29
+    paths:
+      - ".github/workflows/h3-v10-copilot-canary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  one-bounded-model-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Make exactly one tiny, tool-free canary request
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(timeout 120s copilot -p 'Reply with exactly H3_PROVIDER_SMOKE_OK and no other text.' -s --no-ask-user)"
+          if [[ "$response" != "H3_PROVIDER_SMOKE_OK" ]]; then
+            printf 'COPILOT_CANARY=FAIL response_characters=%s\n' "${#response}" >&2
+            exit 1
+          fi
+          printf 'COPILOT_CANARY=PASS exact_token_match=true response_characters=%s\n' "${#response}"
+          printf '\n## Model access canary\nOne bounded Copilot CLI request succeeded. No candidate generation or solver evaluation was performed.\n' >> "$GITHUB_STEP_SUMMARY"
