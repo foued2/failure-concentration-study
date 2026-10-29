@@ -544,13 +544,13 @@ jobs:
           import json
           import sys
           from pathlib import Path
-          sys.path.insert(0, str(Path(sys.argv[2]).resolve().parent))
+          sys.path.insert(0, str(Path(sys.argv[2]).resolve()))
           import run_container_candidate
           report = run_container_candidate.run_candidate(
               Path(sys.argv[1]), Path(sys.argv[2]), json.loads(Path(sys.argv[3]).read_text()),
               probe_timeout=1, response_timeout=8, enforce_static=False
           )
-          Path(sys.argv[4]).write_text(json.dumps(report, indent=2, sort_keys=True) + "\\n")
+          Path(sys.argv[4]).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
           print(json.dumps({
               "candidate_status": report.get("candidate_status"),
               "probe_count": report.get("probe_count"),
