@@ -43,31 +43,45 @@ class GenerationPlanDraftTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     draft.plan_batch(value)
 
-    def test_generator_source_hash_matches_frozen_manifest(self):
+    def test_generator_source_hash_matches_pinned_frozen_manifest(self):
         import json
         freeze = json.loads(draft.V3_FREEZE_PATH.read_text(encoding="utf-8"))
-        expected = freeze["artifact_hashes_sha256"]["generate.py"]
-        self.assertEqual(draft.V3_GENERATOR_SOURCE_SHA256, expected)
-        self.assertEqual(draft.plan_batch(0)["v3_generator_source_sha256"], expected)
+        self.assertEqual(freeze["tag"], draft.V3_FROZEN_TAG)
+        self.assertEqual(draft._git_blob_sha1(draft.V3_FREEZE_PATH), draft.V3_FROZEN_MANIFEST_GIT_BLOB_SHA1)
+        self.assertEqual(draft.V3_GENERATOR_SOURCE_SHA256, draft.V3_FROZEN_GENERATOR_SHA256)
+        self.assertEqual(freeze["artifact_hashes_sha256"]["generate.py"], draft.V3_GENERATOR_SOURCE_SHA256)
+        self.assertEqual(draft.plan_batch(0)["v3_generator_source_sha256"], draft.V3_FROZEN_GENERATOR_SHA256)
+
+    def test_generator_hash_normalizes_windows_crlf(self):
+        import hashlib
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "generate.py"
+            lf_bytes = b"def solve(): return 0\\n"
+            source.write_bytes(b"def solve(): return 0\\r\\n")
+            expected = hashlib.sha256(lf_bytes).hexdigest()
+            self.assertEqual(draft._verify_v3_generator_source(source, expected), expected)
 
     def test_modified_generator_source_is_rejected(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "generate.py"
+            source.write_bytes(b"def solve(): return 1\\n")
+            with self.assertRaisesRegex(ValueError, "pinned frozen SHA-256"):
+                draft._verify_v3_generator_source(source)
+
+    def test_modified_freeze_manifest_is_rejected(self):
         import json
         import tempfile
         with tempfile.TemporaryDirectory() as td:
-            root = Path(td)
-            source = root / "generate.py"
-            freeze = root / "FREEZE.json"
-            source.write_bytes(b"def solve(): return 0\r\n")
-            canonical_hash = __import__("hashlib").sha256(b"def solve(): return 0\n").hexdigest()
+            freeze = Path(td) / "FREEZE.json"
             freeze.write_text(json.dumps({
-                "artifact_hashes_sha256": {"generate.py": canonical_hash}
+                "tag": draft.V3_FROZEN_TAG,
+                "status": draft.V3_FROZEN_STATUS,
+                "artifact_hashes_sha256": {"generate.py": draft.V3_FROZEN_GENERATOR_SHA256},
             }), encoding="utf-8")
-            self.assertEqual(draft._verify_v3_generator_source(source, freeze), canonical_hash)
-            freeze.write_text(json.dumps({
-                "artifact_hashes_sha256": {"generate.py": "0" * 64}
-            }), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "does not match"):
-                draft._verify_v3_generator_source(source, freeze)
+            with self.assertRaisesRegex(ValueError, "pinned frozen manifest blob"):
+                draft._verify_v3_freeze_manifest(freeze)
 
     def test_prompt_bytes_match_frozen_v3_prompt_construction(self):
         v3 = draft._V3

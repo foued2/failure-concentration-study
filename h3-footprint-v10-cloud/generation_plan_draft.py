@@ -24,23 +24,47 @@ ROUTE_IDS = ("deepseek", "glm", "mimo")
 EXPECTED_VARIANTS = ("direct", "menu", "simple")
 
 
-def _verify_v3_generator_source(path: Path, freeze_path: Path) -> str:
-    if not path.is_file():
-        raise FileNotFoundError("frozen V3 generator source is unavailable")
+V3_FROZEN_TAG = "h3-footprint-v3-freeze-2026-10-27"
+V3_FROZEN_STATUS = "PRE_CANDIDATE_HARNESS_FREEZE"
+V3_FROZEN_MANIFEST_GIT_BLOB_SHA1 = "d112abbdabe904c4f8f29463f018a04e7ab92eea"
+V3_FROZEN_GENERATOR_SHA256 = "ff5b638455f16a3033168b02929e4d7bb63b72a5b486b72930b119b69b3e3456"
+
+
+def _git_blob_sha1(path: Path) -> str:
+    """Hash canonical LF file bytes as a Git blob, independent of checkout CRLF."""
+    raw = path.read_bytes().replace(b"\\r\\n", b"\\n")
+    header = f"blob {len(raw)}\\0".encode("ascii")
+    return hashlib.sha1(header + raw).hexdigest()
+
+
+def _verify_v3_freeze_manifest(freeze_path: Path) -> str:
     if not freeze_path.is_file():
         raise FileNotFoundError("V3 freeze manifest is unavailable")
+    if _git_blob_sha1(freeze_path) != V3_FROZEN_MANIFEST_GIT_BLOB_SHA1:
+        raise ValueError("V3 FREEZE.json does not match the pinned frozen manifest blob")
     freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+    if freeze.get("tag") != V3_FROZEN_TAG or freeze.get("status") != V3_FROZEN_STATUS:
+        raise ValueError("V3 freeze tag or status does not match the pinned pre-candidate freeze")
     expected = (freeze.get("artifact_hashes_sha256") or {}).get("generate.py")
-    if not isinstance(expected, str) or len(expected) != 64:
-        raise ValueError("V3 freeze manifest has no valid generate.py SHA-256")
-    actual = hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-    if actual != expected:
-        raise ValueError("V3 generate.py does not match the frozen SHA-256")
+    if expected != V3_FROZEN_GENERATOR_SHA256:
+        raise ValueError("V3 manifest generator hash does not match the pinned frozen value")
+    return expected
+
+
+def _verify_v3_generator_source(path: Path, expected_hash: str = V3_FROZEN_GENERATOR_SHA256) -> str:
+    if not path.is_file():
+        raise FileNotFoundError("frozen V3 generator source is unavailable")
+    if not isinstance(expected_hash, str) or len(expected_hash) != 64:
+        raise ValueError("expected generator SHA-256 is invalid")
+    actual = hashlib.sha256(path.read_bytes().replace(b"\\r\\n", b"\\n")).hexdigest()
+    if actual != expected_hash:
+        raise ValueError("V3 generate.py does not match the pinned frozen SHA-256")
     return actual
 
 
-V3_GENERATOR_SOURCE_SHA256 = _verify_v3_generator_source(V3_GENERATOR_PATH, V3_FREEZE_PATH)
-
+V3_GENERATOR_SOURCE_SHA256 = _verify_v3_generator_source(
+    V3_GENERATOR_PATH, _verify_v3_freeze_manifest(V3_FREEZE_PATH)
+)
 
 def _load_v3_generator():
     spec = importlib.util.spec_from_file_location("h3_v3_generation_reference", V3_GENERATOR_PATH)
