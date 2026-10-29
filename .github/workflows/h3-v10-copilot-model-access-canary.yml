@@ -1,0 +1,78 @@
+name: H3 V10 Copilot fixed-model access canary
+
+on:
+  push:
+    branches:
+      - gpt/h3-v10-integrity-fix-2026-10-29
+    paths:
+      - ".github/workflows/h3-v10-copilot-model-access-canary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  test-fixed-model-identifiers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: One exact-token request for each documented candidate model
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -u
+          root="$RUNNER_TEMP/h3-v10-model-access"
+          mkdir -p "$root"
+          report="$root/results.tsv"
+          : > "$report"
+          for model in gemini-3.8-flash claude-haiku-4.5 gpt-5.3-codex; do
+            response_file="$root/${model}.txt"
+            err_file="$root/${model}.stderr.txt"
+            set +e
+            timeout 90s copilot -p 'Reply with exactly H3_FIXED_MODEL_CANARY_OK and no other text.' -s --no-ask-user --model="$model" > "$response_file" 2> "$err_file"
+            rc=$?
+            set -e
+            python - "$model" "$rc" "$response_file" "$err_file" "$report" <<'PY'
+          import json, sys
+          from pathlib import Path
+          model, rc_text, response_file, err_file, report_file = sys.argv[1:]
+          rc = int(rc_text)
+          response = Path(response_file).read_text(encoding="utf-8", errors="replace") if Path(response_file).exists() else ""
+          err = Path(err_file).read_text(encoding="utf-8", errors="replace") if Path(err_file).exists() else ""
+          record = {
+              "model_requested": model,
+              "exit_code": rc,
+              "status": "AVAILABLE" if rc == 0 and response.strip() == "H3_FIXED_MODEL_CANARY_OK" else "UNAVAILABLE_OR_NONMATCH",
+              "exact_token_match": rc == 0 and response.strip() == "H3_FIXED_MODEL_CANARY_OK",
+              "response_characters": len(response),
+              "error_category": "model_unavailable" if "not available" in err.lower() else ("timeout" if rc == 124 else ("cli_error" if rc else None)),
+              "raw_response_stored": False,
+          }
+          with Path(report_file).open("a", encoding="utf-8") as stream:
+              stream.write(json.dumps(record, sort_keys=True) + "\n")
+          print(json.dumps(record, sort_keys=True))
+          PY
+          done
+          python - "$report" <<'PY'
+          import json, sys
+          from pathlib import Path
+          rows = [json.loads(line) for line in Path(sys.argv[1]).read_text().splitlines() if line]
+          summary = {"kind":"fixed_model_access_canary", "request_count":len(rows), "available_models":[r["model_requested"] for r in rows if r["status"] == "AVAILABLE"], "results":rows}
+          Path(sys.argv[1]).with_suffix(".json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+          print("AVAILABLE_FIXED_MODELS=" + ",".join(summary["available_models"]))
+          PY
+      - name: Upload redacted access summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-fixed-model-access-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/h3-v10-model-access/results.json
+          if-no-files-found: warn
+          retention-days: 14
