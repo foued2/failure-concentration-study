@@ -20,7 +20,7 @@ import instrument
 import run_gate
 
 
-FROZEN_REQUIRED = ("GATE.md", "expected_values.json", "instrument.py", "run_gate.py")
+FROZEN_REQUIRED = ("GATE.md", "expected_values.json", "instrument.py", "probe_worker.py", "run_gate.py")
 KNOWN_OK_ANSWER_TYPES = {"none", "bool", "int", "int_out_of_range", "str", "float", "other"}
 PROBE_FAILURE_STATUSES = {"timeout", "exception", "output_overflow"}
 CANDIDATE_INVALID_STATUSES = {
