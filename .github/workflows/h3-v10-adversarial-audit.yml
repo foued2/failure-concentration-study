@@ -1,0 +1,149 @@
+name: H3 V10 adversarial audit (claude)
+
+on:
+  push:
+    branches:
+      - claude/h3-v10-adversarial-fixtures
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package unchanged executor, public fixture and audit driver
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assert executor and scorer are byte-identical to tested commit c3156cf
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in run_container_candidate.py isolated_supervisor.py candidate_child.py score_smoke_report.py build_smoke_fixture.py; do
+            a=$(git rev-parse "c3156cf6ec24fb25db9ec3fe55805c0184a7d1c1:h3-footprint-v10-cloud/$f")
+            b=$(git rev-parse "HEAD:h3-footprint-v10-cloud/$f")
+            echo "$f base=$a head=$b"
+            test "$a" = "$b"
+          done
+          echo "HEAD=$(git rev-parse HEAD)"
+      - name: Assemble hash-listed package
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/adv-package"
+          mkdir -p "$root/executor" "$root/fixture" "$root/adversarial"
+          for f in run_container_candidate isolated_supervisor candidate_child; do
+            cp "h3-footprint-v10-cloud/$f.py" "$root/executor/"
+          done
+          python h3-footprint-v10-cloud/build_smoke_fixture.py --out-dir "$root/fixture"
+          cp -r h3-footprint-v10-cloud/adversarial/bodies "$root/adversarial/bodies"
+          cp h3-footprint-v10-cloud/adversarial/run_adversarial.py "$root/adversarial/"
+          (cd "$root" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS && sha256sum --check SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-adv-package-${{ github.sha }}
+          path: ${{ runner.temp }}/adv-package
+          if-no-files-found: error
+          retention-days: 14
+
+  execute:
+    name: Hostile-body fixtures through the unmodified executor
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions: {}
+    steps:
+      # No checkout: no repository, oracle or credentials in this job.
+      - uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-adv-package-${{ github.sha }}
+          path: ${{ runner.temp }}/adv-package
+      - name: Verify package hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/adv-package" && sha256sum --check SHA256SUMS
+      - name: Record runtime and image identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg="$RUNNER_TEMP/adv-package"; ev="$RUNNER_TEMP/adv-evidence"; mkdir -p "$ev"
+          pinned=$(grep -oE 'python:3\.14-slim@sha256:[0-9a-f]{64}' "$pkg/executor/run_container_candidate.py" | head -1)
+          docker pull python:3.14-slim > /dev/null
+          tag_digests=$(docker image inspect python:3.14-slim --format '{{json .RepoDigests}}')
+          docker pull "$pinned" > /dev/null
+          pinned_digests=$(docker image inspect "$pinned" --format '{{json .RepoDigests}}')
+          uname -a > "$ev/uname.txt"
+          docker version > "$ev/docker-version.txt" 2>&1 || true
+          docker info --format '{{json .SecurityOptions}}' > "$ev/docker-security-options.txt" 2>&1 || true
+          PINNED="$pinned" TAG="$tag_digests" PIN="$pinned_digests" EV="$ev" python3 - <<'PY'
+          import json, os
+          digest = os.environ["PINNED"].split("@", 1)[1]
+          tag = json.loads(os.environ["TAG"])
+          rec = {
+              "launcher_pinned_image": os.environ["PINNED"],
+              "mutable_tag_python_3_14_slim_repo_digests_today": tag,
+              "pinned_ref_repo_digests": json.loads(os.environ["PIN"]),
+              "tag_currently_resolves_to_pinned_digest": any(digest in d for d in tag),
+              "note": "GPT keyless container-smoke job uses the mutable tag; the launcher uses the pinned digest",
+          }
+          open(os.environ["EV"] + "/image-identity.json", "w").write(json.dumps(rec, indent=2) + "\n")
+          print(json.dumps(rec, indent=2))
+          PY
+      - name: Control - fixed hand-written solver over the 30 public probes
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg="$RUNNER_TEMP/adv-package"; ev="$RUNNER_TEMP/adv-evidence"
+          python "$pkg/executor/run_container_candidate.py" \
+            --body "$pkg/fixture/smoke-body.py" --trusted-dir "$pkg/executor" \
+            --probes-json "$pkg/fixture/probes.json" --out "$ev/control-report.json" \
+            --probe-timeout 5 --response-timeout 12
+      - name: Hostile fixtures (bounded; verdicts are data, the step does not fail on a finding)
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg="$RUNNER_TEMP/adv-package"; ev="$RUNNER_TEMP/adv-evidence"
+          python "$pkg/adversarial/run_adversarial.py" \
+            --trusted-dir "$pkg/executor" --bodies "$pkg/adversarial/bodies" --out "$ev/adversarial-report.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: h3-v10-adv-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/adv-evidence
+          if-no-files-found: warn
+          retention-days: 14
+
+  score-audit:
+    name: Treat the execution report as untrusted input to the scorer
+    needs: execute
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-adv-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/adv-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-adv-package-${{ github.sha }}
+          path: ${{ runner.temp }}/adv-package
+      - name: Mutate the report and score each variant
+        shell: bash
+        run: |
+          set -euo pipefail
+          python h3-footprint-v10-cloud/adversarial/score_audit.py \
+            --report "$RUNNER_TEMP/adv-evidence/control-report.json" \
+            --fixture-manifest "$RUNNER_TEMP/adv-package/fixture/fixture-manifest.json" \
+            --out "$RUNNER_TEMP/adv-evidence/score-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: h3-v10-adv-score-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/adv-evidence/score-audit.json
+          if-no-files-found: warn
+          retention-days: 14
