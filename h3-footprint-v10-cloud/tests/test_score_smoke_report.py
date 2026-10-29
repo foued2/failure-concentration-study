@@ -8,6 +8,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / "h3-footprint-v3"))
 import instrument
 import score_smoke_report as scorer
 
