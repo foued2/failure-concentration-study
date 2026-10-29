@@ -6,18 +6,19 @@ Status: engineering prototype only. This folder does not freeze a scientific pro
 
 The GitHub-hosted workflow run completed successfully:
 
-https://github.com/foued2/failure-concentration-study/actions/runs/40830442837
+https://github.com/foued2/failure-concentration-study/actions/runs/40832633520
 
 Evidence from that run:
 
 - The existing V9 host regression suite passed: 168 tests on Windows Python 3.12 and 168 tests on Windows Python 3.14.
-- The 24 V10 provider, container-executor, fixture, preflight-phase, load-error, and bounded-output tests passed on both Python versions.
+- The 37 V10 provider, container-executor, fixture, probe-binding, preflight-phase, load-error, output-overflow, and protocol-exclusion tests passed on both Python versions.
 - The frozen V9 manifest check passed.
 - The actual V9 execution gate continued to refuse candidate evaluation with its expected fail-closed exit code.
 - The independent keyless Ubuntu container smoke verified a non-root child, network denial, read-only root, blocked host-canary access, bounded memory/CPU/process count, read-only inputs, and a separately writable output channel.
 - A hand-written, non-generated control solver ran across the full 30-probe V3 input set. Its prediction report was passed to a separate hosted scoring job. That job verified 30/30 control predictions against the frozen trusted reference outputs.
 - A hostile timeout control spawned a grandchild and looped. The isolated supervisor timed it out and verified that the container process tree and temporary work area were cleaned.
-- The container protocol distinguishes module-load failure from an exception inside solve(), binds responses to the requested phase, and rejects output-overflow records rather than allowing them to become valid answers.
+- The container protocol distinguishes module-load failure from an exception inside solve(), binds responses to the requested phase, excludes malformed or forged per-probe protocol records before assigning k, and rejects output-overflow records rather than allowing them to become valid answers.
+- The execution and scoring jobs bind on both the ordered probe IDs and a SHA-256 digest of the exact canonical graph-input payload, not IDs alone.
 
 The 30-probe fixture artifact contains only the input fields (probe ID, graph, source, target) and the hand-written control solver. It does not contain expected answers. The candidate execution job has no repository checkout, oracle, expected-answer file, or model-provider key. The scoring job runs separately after the execution report is produced.
 
@@ -34,6 +35,8 @@ A versioned protocol amendment is required before using this architecture for H3
 3. **Scoring job:** runs on a separate fresh VM, receives prediction records, validates their schema and hashes, loads trusted reference outputs, and scores them. It never imports or executes candidate code.
 
 This trust model is different from the existing Windows Sandbox protocol. It must be independently threat-modelled, tested, and frozen before any H3 candidate data are collected.
+
+A known V10 protocol difference remains unresolved for scientific use: solver stdout/stderr capture is capped at 16 KiB each, and overflowing a capture becomes a failed probe. Frozen V3 captures this output without that cap. This engineering safeguard changes classification for a solver that prints excessively, so it requires an explicit V10 protocol amendment and freeze before any candidate data are collected.
 
 ## Provider feasibility
 
