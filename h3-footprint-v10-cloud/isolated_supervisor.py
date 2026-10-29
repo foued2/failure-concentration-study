@@ -235,7 +235,7 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                 "PYTHONIOENCODING": "utf-8",
             }
             proc = subprocess.Popen(
-                [sys.executable, "-I", CHILD, "/candidate/body.py"],
+                [sys.executable, "-I", "-B", CHILD, "/candidate/body.py"],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 close_fds=True, bufsize=0, env=env, preexec_fn=_drop_child_privileges,
                 start_new_session=True,

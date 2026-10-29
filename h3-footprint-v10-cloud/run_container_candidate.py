@@ -70,13 +70,21 @@ def _inspect_container(container_id: str, body: Path, supervisor: Path, child: P
         "cpu_cap": host.get("NanoCpus") == 1_000_000_000
                    or (host.get("CpuQuota") == 100_000 and host.get("CpuPeriod") == 100_000),
         "capabilities_dropped": "ALL" in (host.get("CapDrop") or []),
-        "supervisor_capabilities_minimal": set(host.get("CapAdd") or []) == {"CHOWN", "SETUID", "SETGID", "KILL"},
+        "supervisor_capabilities_minimal": {
+            str(cap).upper().removeprefix("CAP_") for cap in (host.get("CapAdd") or [])
+        } == {"CHOWN", "SETUID", "SETGID", "KILL"},
         "no_new_privileges": "no-new-privileges" in (host.get("SecurityOpt") or []),
         "root_uid_for_supervisor_only": (record.get("Config") or {}).get("User") in {"0:0", "0"},
         "pinned_image": (record.get("Config") or {}).get("Image") == PYTHON_IMAGE,
+        "tmpfs_paths_only_expected": set(host.get("Tmpfs") or {}) == {"/tmp", "/dev/shm"},
         "tmpfs_present": "/tmp" in (host.get("Tmpfs") or {})
+                         and "rw" in host["Tmpfs"]["/tmp"]
                          and "noexec" in host["Tmpfs"]["/tmp"]
                          and "nosuid" in host["Tmpfs"]["/tmp"],
+        "dev_shm_read_only": "/dev/shm" in (host.get("Tmpfs") or {})
+                         and "ro" in host["Tmpfs"]["/dev/shm"]
+                         and "noexec" in host["Tmpfs"]["/dev/shm"]
+                         and "nosuid" in host["Tmpfs"]["/dev/shm"],
     }
     mounts = {m.get("Destination"): m for m in (record.get("Mounts") or [])}
     expected = {
@@ -92,7 +100,19 @@ def _inspect_container(container_id: str, body: Path, supervisor: Path, child: P
     checks["no_unexpected_mounts"] = set(mounts) == set(expected)
     violations = [key for key, ok in checks.items() if not ok]
     if violations:
-        raise ContainerExecutionError("container isolation configuration rejected: " + ",".join(violations))
+        # These fields contain configuration only, not credentials or candidate output.
+        diagnostic = {
+            "cap_add": host.get("CapAdd"),
+            "cap_drop": host.get("CapDrop"),
+            "tmpfs": host.get("Tmpfs"),
+            "mount_targets": sorted(mounts),
+        }
+        raise ContainerExecutionError(
+            "container isolation configuration rejected: "
+            + ",".join(violations)
+            + "; observed="
+            + json.dumps(diagnostic, sort_keys=True)
+        )
     return {"checks": checks, "verified": True, "image": PYTHON_IMAGE}
 
 
@@ -160,6 +180,7 @@ def run_candidate(
         "--cap-drop", "ALL", "--cap-add", "CHOWN", "--cap-add", "SETUID", "--cap-add", "SETGID", "--cap-add", "KILL",
         "--security-opt", "no-new-privileges",
         "--tmpfs", "/tmp:rw,noexec,nosuid,size=64m,mode=0711",
+        "--tmpfs", "/dev/shm:ro,noexec,nosuid,size=16m",
         "--ulimit", "nofile=32:32",
     ]
     for mount in mounts:
@@ -247,7 +268,9 @@ def run_candidate(
                 pass
         raise
     finally:
-        _docker(["rm", "-f", container_id], timeout=20)
+        cleanup = _docker(["rm", "-f", container_id], timeout=20)
+        if cleanup.returncode != 0 and "no such container" not in cleanup.stderr.lower():
+            raise ContainerExecutionError("Docker failed to remove the candidate container")
 
     return {
         "version": 1,

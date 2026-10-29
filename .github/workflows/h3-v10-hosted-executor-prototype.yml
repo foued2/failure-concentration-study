@@ -294,8 +294,13 @@ jobs:
               if not Path("/host-only-canary.txt").exists():
                   flags |= 4
               try:
+                  Path("/dev/shm/h3-write-probe").write_text("must fail")
+                  flags |= 128
+              except OSError:
+                  flags |= 16
+              try:
                   with socket.create_connection(("1.1.1.1", 443), timeout=0.5):
-                      flags |= 16
+                      flags |= 64
               except OSError:
                   flags |= 8
               return n * 100 + flags
@@ -351,7 +356,7 @@ jobs:
           assert report["host_repository_mounted"] is False, report
           assert report["api_keys_passed_to_container"] is False, report
           assert [r["probe_id"] for r in report["results"]] == ["smoke-a", "smoke-b"], report
-          assert [r["answer"] for r in report["results"]] == [515, 715], report
+          assert [r["answer"] for r in report["results"]] == [531, 731], report
           assert all(r["status"] == "ok" and r["tree_empty"] is True for r in report["results"]), report
           assert all(report["container_config"]["checks"].values()), report
           print(json.dumps({

@@ -76,7 +76,7 @@ def _validate_input(payload: object) -> tuple[int, list[tuple[int, int, int]], i
     n, edges, source, target = payload.get("n"), payload.get("edges"), payload.get("s"), payload.get("t")
     if not isinstance(probe_id, str) or not probe_id or len(probe_id) > 128:
         raise ValueError("invalid_probe_id")
-    if type(n) is not int or not 0 <= n <= 10000:
+    if type(n) is not int or not 1 <= n <= 10000:
         raise ValueError("invalid_n")
     if type(source) is not int or type(target) is not int or not 0 <= source < max(n, 1) or not 0 <= target < max(n, 1):
         raise ValueError("invalid_endpoints")

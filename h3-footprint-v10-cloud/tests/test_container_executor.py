@@ -45,7 +45,10 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                 "NanoCpus": 1000000000, "CapDrop": ["ALL"],
                 "CapAdd": ["CHOWN", "SETUID", "SETGID", "KILL"],
                 "SecurityOpt": ["no-new-privileges"],
-                "Tmpfs": {"/tmp": "rw,noexec,nosuid,size=64m,mode=0711"},
+                "Tmpfs": {
+                    "/tmp": "rw,noexec,nosuid,size=64m,mode=0711",
+                    "/dev/shm": "ro,noexec,nosuid,size=16m",
+                },
             }
             mount_list = [
                 {"Destination": "/candidate/body.py", "Source": str(body), "RW": False},
@@ -77,7 +80,10 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                 "Memory": 536870912, "MemorySwap": 536870912,
                 "NanoCpus": 1000000000, "CapDrop": ["ALL"],
                 "CapAdd": ["CHOWN", "SETUID", "SETGID", "KILL"], "SecurityOpt": ["no-new-privileges"],
-                "Tmpfs": {"/tmp": "rw,noexec,nosuid,size=64m,mode=0711"},
+                "Tmpfs": {
+                    "/tmp": "rw,noexec,nosuid,size=64m,mode=0711",
+                    "/dev/shm": "ro,noexec,nosuid,size=16m",
+                },
             }
             mounts = [
                 {"Destination": "/candidate/body.py", "Source": str(body), "RW": False},
@@ -92,6 +98,43 @@ class ContainerExecutorUnitTests(unittest.TestCase):
             try:
                 with self.assertRaises(executor.ContainerExecutionError):
                     executor._inspect_container("id", body, supervisor, child)
+            finally:
+                executor._docker = original
+
+    def test_prefixed_capability_names_normalize_but_missing_caps_fail(self):
+        # Runtime APIs may represent the same Linux capability with an optional CAP_ prefix.
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            body = root / "body.py"
+            supervisor = root / "isolated_supervisor.py"
+            child = root / "candidate_child.py"
+            for p in (body, supervisor, child):
+                p.write_text("# fixture\\n")
+            host = {
+                "NetworkMode": "none", "ReadonlyRootfs": True, "PidsLimit": 8,
+                "Memory": 536870912, "MemorySwap": 536870912,
+                "NanoCpus": 1000000000, "CapDrop": ["ALL"],
+                "CapAdd": ["CAP_CHOWN", "CAP_SETUID", "CAP_SETGID", "CAP_KILL"],
+                "SecurityOpt": ["no-new-privileges"],
+                "Tmpfs": {
+                    "/tmp": "rw,noexec,nosuid,size=64m,mode=0711",
+                    "/dev/shm": "ro,noexec,nosuid,size=16m",
+                },
+            }
+            mounts = [
+                {"Destination": "/candidate/body.py", "Source": str(body), "RW": False},
+                {"Destination": "/trusted/isolated_supervisor.py", "Source": str(supervisor), "RW": False},
+                {"Destination": "/trusted/candidate_child.py", "Source": str(child), "RW": False},
+            ]
+            fake = {"HostConfig": host, "Config": {"User": "0:0", "Image": executor.PYTHON_IMAGE}, "Mounts": mounts}
+            original = executor._docker
+            executor._docker = lambda args, timeout=30: type("CP", (), {
+                "returncode": 0, "stdout": json.dumps([fake]), "stderr": ""
+            })()
+            try:
+                result = executor._inspect_container("id", body, supervisor, child)
+                self.assertTrue(result["verified"])
+                host["HostConfigMissing"] = None
             finally:
                 executor._docker = original
 
