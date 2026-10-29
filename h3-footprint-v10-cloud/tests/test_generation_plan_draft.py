@@ -11,7 +11,7 @@ import generation_plan_draft as draft
 
 
 def fenced(body: str) -> str:
-    return "```python\\n" + body.strip() + "\\n```\\n"
+    return "```python\n" + body.strip() + "\n```\n"
 
 
 class GenerationPlanDraftTests(unittest.TestCase):
@@ -51,16 +51,16 @@ class GenerationPlanDraftTests(unittest.TestCase):
             self.assertEqual(plan["prompt_sha256"], draft._sha256_text(plan["prompt"]))
 
     def test_extraction_preserves_leading_imports_and_rejects_non_code(self):
-        source = "import heapq\\n\\ndef solve(n, edges, s, t):\\n    return -1\\n"
-        response = fenced(source) + "\\n```python\\nprint('not a solver')\\n```\\n"
+        source = "import heapq\n\ndef solve(n, edges, s, t):\n    return -1\n"
+        response = fenced(source) + "\n```python\nprint('not a solver')\n```\n"
         bodies = draft.extract_candidates(response)
         self.assertEqual(len(bodies), 1)
-        self.assertTrue(bodies[0].startswith("import heapq\\n"))
+        self.assertTrue(bodies[0].startswith("import heapq\n"))
         self.assertIn("def solve", bodies[0])
 
     def test_underproduction_is_recorded_without_retries_or_best_of(self):
-        body1 = "def solve(n, edges, s, t):\\n    return -1\\n"
-        body2 = "def solve(n, edges, s, t):\\n    return 0\\n"
+        body1 = "def solve(n, edges, s, t):\n    return -1\n"
+        body2 = "def solve(n, edges, s, t):\n    return 0\n"
         record = draft.record_response_metadata(0, fenced(body1) + fenced(body2))
         self.assertEqual(record["extracted_bodies"], 2)
         self.assertEqual(record["batch_outcome"], "UNDERPRODUCED")
@@ -73,9 +73,9 @@ class GenerationPlanDraftTests(unittest.TestCase):
         self.assertFalse(record["network_request_performed"])
 
     def test_complete_and_overproduced_responses_are_not_truncated(self):
-        body = "def solve(n, edges, s, t):\\n    return 0\\n"
-        complete = draft.record_response_metadata(1, "\\n".join(fenced(body.replace("return 0", f"return {i}")) for i in range(8)))
-        over = draft.record_response_metadata(1, "\\n".join(fenced(body.replace("return 0", f"return {i}")) for i in range(9)))
+        body = "def solve(n, edges, s, t):\n    return 0\n"
+        complete = draft.record_response_metadata(1, "\n".join(fenced(body.replace("return 0", f"return {i}")) for i in range(8)))
+        over = draft.record_response_metadata(1, "\n".join(fenced(body.replace("return 0", f"return {i}")) for i in range(9)))
         self.assertEqual(complete["batch_outcome"], "COMPLETE")
         self.assertEqual(complete["extracted_bodies"], 8)
         self.assertEqual(over["batch_outcome"], "OVERPRODUCED")
