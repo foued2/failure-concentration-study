@@ -226,7 +226,13 @@ def evaluate_body_hosted(
         raise HostedGateError(f"isolation harness did not pass for {body_hash}")
     if report.get("all_trees_empty") is not True:
         raise HostedGateError(f"process tree cleanup not verified for {body_hash}")
-    if report.get("reference_answers_present") is not False or report.get("api_keys_passed_to_container") is not False:
+    if (
+        report.get("candidate_generation_performed") is not False
+        or report.get("scoring_performed") is not False
+        or report.get("reference_answers_present") is not False
+        or report.get("host_repository_mounted") is not False
+        or report.get("api_keys_passed_to_container") is not False
+    ):
         raise HostedGateError(f"candidate container isolation disclosure failed for {body_hash}")
     checks = (report.get("container_config") or {}).get("checks") or {}
     if not checks or not all(value is True for value in checks.values()):
@@ -278,7 +284,7 @@ def build_hosted_report(
         raise HostedGateError("body_dir must be a directory")
     if not attempts_path.is_file() or attempts_path.is_symlink():
         raise HostedGateError("attempts_path must be a regular file")
-    if body_dir == ROOT or body_dir == V3_DIR or body_dir in V3_DIR.parents:
+    if body_dir == ROOT or body_dir.is_relative_to(ROOT) or body_dir in V3_DIR.parents:
         raise HostedGateError("candidate body directory must be outside the trusted source tree")
 
     workspace = output_dir / "gate-workspace"

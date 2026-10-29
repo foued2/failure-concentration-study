@@ -55,7 +55,10 @@ class HostedFootprintGateTests(unittest.TestCase):
             "candidate_status": "valid",
             "isolation_harness_ok": True,
             "all_trees_empty": True,
+            "candidate_generation_performed": False,
+            "scoring_performed": False,
             "reference_answers_present": False,
+            "host_repository_mounted": False,
             "api_keys_passed_to_container": False,
             "container_config": {"checks": {"network_none": True, "read_only_root": True, "candidate_readonly": True}},
             "results": results,
@@ -127,7 +130,11 @@ class HostedFootprintGateTests(unittest.TestCase):
             self.assertEqual(row["max_f"], 0)
             self.assertEqual(row["eligible"], False)
             saved = json.loads((root / "reports" / f"{body.stem}.json").read_text(encoding="utf-8"))
-            self.assertFalse(saved["candidate_generation_performed"] if "candidate_generation_performed" in saved else True)
+            self.assertFalse(saved["candidate_generation_performed"])
+            self.assertFalse(saved["scoring_performed"])
+            self.assertFalse(saved["reference_answers_present"])
+            self.assertFalse(saved["host_repository_mounted"])
+            self.assertFalse(saved["api_keys_passed_to_container"])
 
     def test_missing_provenance_is_excluded_before_docker(self):
         with tempfile.TemporaryDirectory() as td:
