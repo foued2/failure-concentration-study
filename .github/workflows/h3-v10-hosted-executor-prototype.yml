@@ -66,6 +66,32 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  package-cloud-executor:
+    name: Package only the trusted hosted executor
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out trusted source
+        uses: actions/checkout@v4
+      - name: Package exact executor files and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-trusted-executor"
+          mkdir -p "$root"
+          cp h3-footprint-v10-cloud/run_container_candidate.py "$root/"
+          cp h3-footprint-v10-cloud/isolated_supervisor.py "$root/"
+          cp h3-footprint-v10-cloud/candidate_child.py "$root/"
+          (cd "$root" && sha256sum candidate_child.py isolated_supervisor.py run_container_candidate.py > SHA256SUMS)
+          (cd "$root" && sha256sum --check SHA256SUMS)
+      - name: Publish trusted executor package
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-trusted-executor-${{ github.sha }}
+          path: ${{ runner.temp }}/h3-v10-trusted-executor
+          if-no-files-found: error
+          retention-days: 7
+
   keyless-container-boundary-smoke:
     name: Keyless isolated-container smoke test
     runs-on: ubuntu-latest
@@ -223,5 +249,160 @@ jobs:
         with:
           name: h3-v10-keyless-container-smoke-${{ github.run_id }}
           path: ${{ runner.temp }}/h3-v10-container-smoke
+          if-no-files-found: warn
+          retention-days: 14
+
+  isolated-candidate-executor-smoke:
+    name: One-candidate executor and process-tree timeout control
+    needs: package-cloud-executor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions: {}
+    steps:
+      # No checkout: the VM receives only three hash-pinned trusted executor files.
+      - name: Download trusted executor package
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-trusted-executor-${{ github.sha }}
+          path: ${{ runner.temp }}/h3-v10-executor-package
+
+      - name: Verify trusted package and create a fixed harmless solver fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          mkdir -p "$root/candidate"
+          (cd "$package" && sha256sum --check SHA256SUMS)
+          test "$(find "$package" -maxdepth 1 -type f | wc -l)" -eq 4
+          printf 'HOST-ONLY-CANARY-DO-NOT-MOUNT\n' > "$root/host-only-canary.txt"
+          cp "$package/run_container_candidate.py" "$root/run_container_candidate.py"
+          cat > "$root/candidate/body.py" <<'PY'
+          def solve(n, edges, s, t):
+              import os
+              import socket
+              from pathlib import Path
+
+              flags = 0
+              if os.getuid() == 65534:
+                  flags |= 1
+              try:
+                  Path("/rootfs-write-probe").write_text("must fail")
+                  flags |= 32
+              except OSError:
+                  flags |= 2
+              if not Path("/host-only-canary.txt").exists():
+                  flags |= 4
+              try:
+                  with socket.create_connection(("1.1.1.1", 443), timeout=0.5):
+                      flags |= 16
+              except OSError:
+                  flags |= 8
+              return n * 100 + flags
+          PY
+          cat > "$root/probes.json" <<'JSON'
+          [
+            {"probe_id":"smoke-a","n":5,"edges":[],"s":0,"t":4},
+            {"probe_id":"smoke-b","n":7,"edges":[],"s":0,"t":6}
+          ]
+          JSON
+          cat > "$root/candidate/timeout_body.py" <<'PY'
+          def solve(n, edges, s, t):
+              import subprocess
+              import sys
+              import time
+              subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+              while True:
+                  time.sleep(0.05)
+          PY
+          cat > "$root/timeout-probes.json" <<'JSON'
+          [{"probe_id":"timeout-tree-control","n":5,"edges":[],"s":0,"t":4}]
+          JSON
+          cat "$root/candidate/body.py"
+
+      - name: Run bounded two-input smoke without repository, oracle, or credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$root/probes.json" \
+            --out "$root/execution-report.json" \
+            --probe-timeout 5 --response-timeout 12
+          cat "$root/execution-report.json"
+
+      - name: Validate per-input records and enforced boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          python - "$root/execution-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["isolation_harness_ok"] is True, report
+          assert report["probe_count"] == 2, report
+          assert report["all_trees_empty"] is True, report
+          assert report["reference_answers_present"] is False, report
+          assert report["host_repository_mounted"] is False, report
+          assert report["api_keys_passed_to_container"] is False, report
+          assert [r["probe_id"] for r in report["results"]] == ["smoke-a", "smoke-b"], report
+          assert [r["answer"] for r in report["results"]] == [515, 715], report
+          assert all(r["status"] == "ok" and r["tree_empty"] is True for r in report["results"]), report
+          assert all(report["container_config"]["checks"].values()), report
+          print(json.dumps({
+              "status": "PASS",
+              "scope": "two hand-authored harmless inputs; no generated candidates",
+              "probe_ids": [r["probe_id"] for r in report["results"]],
+              "answers": [r["answer"] for r in report["results"]],
+              "container_config_verified": report["container_config"]["verified"],
+              "all_trees_empty": report["all_trees_empty"],
+              "candidate_generation_performed": False,
+              "scoring_performed": False,
+          }, indent=2))
+          PY
+
+      - name: Run the adversarial process-tree timeout control
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/timeout_body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$root/timeout-probes.json" \
+            --out "$root/timeout-report.json" \
+            --probe-timeout 1 --response-timeout 8
+          cat "$root/timeout-report.json"
+          python - "$root/timeout-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["isolation_harness_ok"] is True, report
+          result = report["results"][0]
+          assert result["status"] == "timeout", result
+          assert result["timed_out"] is True, result
+          assert result["tree_empty"] is True, result
+          print(json.dumps({
+              "status": "PASS",
+              "control": "child spawned a 30-second grandchild and looped; supervisor timed out and cleaned the container process tree",
+              "result_status": result["status"],
+              "tree_empty": result["tree_empty"],
+              "candidate_generation_performed": False,
+          }, indent=2))
+          PY
+
+      - name: Upload candidate-executor smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-executor-smoke-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-v10-executor-smoke
           if-no-files-found: warn
           retention-days: 14
