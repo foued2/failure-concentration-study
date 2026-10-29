@@ -471,6 +471,53 @@ jobs:
           }, indent=2))
           PY
 
+      - name: Verify an output-flooding solve cannot yield a valid answer
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          cat > "$root/candidate/overflow_body.py" <<'PY'
+          def solve(n, edges, s, t):
+              print("X" * 20000)
+              return 0
+          PY
+          python - "$fixture/probes.json" "$root/overflow-probe.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          probes = json.loads(Path(sys.argv[1]).read_text())
+          Path(sys.argv[2]).write_text(json.dumps([probes[0]]) + "\\n")
+          PY
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/overflow_body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$root/overflow-probe.json" \
+            --out "$root/overflow-report.json" \
+            --probe-timeout 5 --response-timeout 12
+          python - "$root/overflow-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["isolation_harness_ok"] is True, report
+          assert report["candidate_valid"] is True, report
+          assert report["probe_count"] == 1, report
+          result = report["results"][0]
+          assert result["status"] == "output_overflow", result
+          assert result["answer"] is None, result
+          assert result["solver_output_overflow"] is True, result
+          assert result["tree_empty"] is True, result
+          print(json.dumps({
+              "status": "PASS",
+              "control": "20,000-character solver output is rejected as a probe prediction",
+              "probe_status": result["status"],
+              "valid_answer": result["answer"],
+              "candidate_generation_performed": False,
+          }, indent=2))
+          PY
+
       - name: Run the adversarial process-tree timeout control
         shell: bash
         run: |
