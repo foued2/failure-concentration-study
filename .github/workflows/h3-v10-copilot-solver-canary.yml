@@ -52,7 +52,7 @@ jobs:
           environment, use subprocesses, open network connections, or execute dynamic
           code. No markdown fences, explanations, tests, or entry-point code.
           PROMPT
-          timeout 120s copilot -p "$(cat "$root/prompt.txt")" -s --no-ask-user --model=claude-sonnet-5.5 > "$root/raw-response.txt"
+          timeout 120s copilot -p "$(cat "$root/prompt.txt")" -s --no-ask-user --model=auto > "$root/raw-response.txt"
           python - "$root/raw-response.txt" "$root/source/body.py" <<'PY'
           import ast, sys
           from pathlib import Path
@@ -114,7 +114,7 @@ jobs:
           manifest = {
               "kind": "single_model_generated_solver_canary",
               "provider_route": "GitHub Copilot CLI via Actions GITHUB_TOKEN",
-              "model_requested": "claude-sonnet-5.5",
+              "model_requested": "auto (Copilot selects an available model)",
               "raw_response_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
               "raw_response_bytes": raw_path.stat().st_size,
               "normalized_solver_sha256": hashlib.sha256(body_path.read_bytes()).hexdigest(),
