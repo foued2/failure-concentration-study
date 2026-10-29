@@ -1,0 +1,142 @@
+name: H3 V10 keyless Copilot solver canary
+
+on:
+  push:
+    branches:
+      - gpt/h3-v10-integrity-fix-2026-10-29
+    paths:
+      - ".github/workflows/h3-v10-copilot-solver-canary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  generate-and-execute-one-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out trusted executor only
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            h3-footprint-v10-cloud/run_container_candidate.py
+            h3-footprint-v10-cloud/isolated_supervisor.py
+            h3-footprint-v10-cloud/candidate_child.py
+          sparse-checkout-cone-mode: false
+      - name: Set up Node and Python
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Make one bounded model-generation request
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-copilot-solver-canary"
+          mkdir -p "$root/source"
+          cat > "$root/prompt.txt" <<'PROMPT'
+          Output only valid Python source code. Implement exactly one function:
+          solve(n, edges, s, t)
+          The directed graph has n vertices numbered 0 through n-1. edges is a list of
+          (u, v, weight) triples with nonnegative integer weights. Return the shortest
+          distance from s to t as an integer, or -1 if t is unreachable. Use a correct
+          algorithm for nonnegative weights. Do not read or write files, inspect the
+          environment, use subprocesses, open network connections, or execute dynamic
+          code. No markdown fences, explanations, tests, or entry-point code.
+          PROMPT
+          timeout 120s copilot -p "$(cat "$root/prompt.txt")" -s --no-ask-user --model=claude-sonnet-5.5 > "$root/raw-response.txt"
+          python - "$root/raw-response.txt" "$root/source/body.py" <<'PY'
+          import ast, sys
+          from pathlib import Path
+          raw = Path(sys.argv[1]).read_text(encoding="utf-8")
+          source = raw.strip()
+          if source.startswith("```"):
+              lines = source.splitlines()
+              if len(lines) < 3 or not lines[-1].strip().startswith("```"):
+                  raise SystemExit("generation response has malformed code fences")
+              source = "\n".join(lines[1:-1]).strip() + "\n"
+          tree = ast.parse(source)
+          funcs = [n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+          if len(funcs) != 1 or not isinstance(funcs[0], ast.FunctionDef) or funcs[0].name != "solve":
+              raise SystemExit("response must define exactly one synchronous solve function")
+          for node in tree.body:
+              if isinstance(node, (ast.FunctionDef, ast.Import, ast.ImportFrom)):
+                  if isinstance(node, ast.ImportFrom) and node.module != "__future__":
+                      raise SystemExit("non-future imports are not permitted in the canary source")
+                  if isinstance(node, ast.Import) and any(a.name != "heapq" for a in node.names):
+                      raise SystemExit("only heapq import is permitted in the canary source")
+                  continue
+              if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                  continue
+              raise SystemExit("unexpected top-level executable code")
+          if len(source.encode("utf-8")) > 64 * 1024:
+              raise SystemExit("generated source exceeds 64 KiB")
+          Path(sys.argv[2]).write_text(source, encoding="utf-8")
+          PY
+      - name: Execute exactly one hand-defined graph through the isolated container
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-copilot-solver-canary"
+          cat > "$root/probes.json" <<'JSON'
+          [{"probe_id":"copilot-canary-basic-01","n":4,"edges":[[0,1,1],[1,2,2],[0,3,20]],"s":0,"t":2}]
+          JSON
+          python h3-footprint-v10-cloud/run_container_candidate.py \
+            --body "$root/source/body.py" \
+            --trusted-dir h3-footprint-v10-cloud \
+            --probes-json "$root/probes.json" \
+            --out "$root/execution-report.json" \
+            --probe-timeout 5 --response-timeout 12
+          python - "$root" <<'PY'
+          import hashlib, json, sys, time
+          from pathlib import Path
+          root = Path(sys.argv[1])
+          report_path = root / "execution-report.json"
+          body_path = root / "source/body.py"
+          raw_path = root / "raw-response.txt"
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          rows = report.get("results")
+          assert report.get("isolation_harness_ok") is True, report
+          assert report.get("probe_count") == 1 and isinstance(rows, list) and len(rows) == 1, report
+          r = rows[0]
+          assert r.get("probe_id") == "copilot-canary-basic-01", r
+          assert r.get("status") == "ok" and r.get("answer_type") == "int" and type(r.get("answer")) is int and r["answer"] == 3, r
+          assert r.get("tree_empty") is True and r.get("processes_present_at_post_child_check") is False, r
+          assert r.get("tmp_cleanup_ok") is True and r.get("timed_out") is False and r.get("output_overflow") is False, r
+          manifest = {
+              "kind": "single_model_generated_solver_canary",
+              "provider_route": "GitHub Copilot CLI via Actions GITHUB_TOKEN",
+              "model_requested": "claude-sonnet-5.5",
+              "raw_response_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
+              "raw_response_bytes": raw_path.stat().st_size,
+              "normalized_solver_sha256": hashlib.sha256(body_path.read_bytes()).hexdigest(),
+              "normalized_solver_bytes": body_path.stat().st_size,
+              "probe_id": r["probe_id"],
+              "answer": r["answer"],
+              "status": r["status"],
+              "candidate_generation_performed": True,
+              "H3_confirmatory_batches_started": False,
+              "held_out_evaluation_performed": False,
+              "H3_scientific_result": False,
+              "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+          }
+          (root / "canary-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print("KEYLESS_GENERATION_CANARY_PASS: one Copilot model response; one isolated probe correct; no H3 batches started")
+          print(json.dumps(manifest, indent=2, sort_keys=True))
+          PY
+      - name: Upload raw response and reproducibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-copilot-solver-canary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/h3-v10-copilot-solver-canary
+          if-no-files-found: warn
+          retention-days: 14
