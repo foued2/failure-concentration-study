@@ -68,12 +68,22 @@ SAFE_HEADER_NAMES = (
 class ProviderError(RuntimeError):
     """Redacted provider failure; never contains credentials or raw response bodies."""
 
-    def __init__(self, route_id: str, status: int | None, category: str,
-                 retry_after: str | None = None):
+    def __init__(
+        self,
+        route_id: str,
+        status: int | None,
+        category: str,
+        retry_after: str | None = None,
+        *,
+        request_attempted: bool | None = None,
+        http_response_received: bool | None = None,
+    ):
         self.route_id = route_id
         self.status = status
         self.category = category
         self.retry_after = retry_after
+        self.request_attempted = (status is not None) if request_attempted is None else request_attempted
+        self.http_response_received = (status is not None) if http_response_received is None else http_response_received
         status_text = "network" if status is None else str(status)
         suffix = f", retry_after={retry_after}" if retry_after else ""
         super().__init__(f"{route_id}: {category} (HTTP {status_text}{suffix})")
@@ -103,7 +113,10 @@ def call_chat(
     route = ROUTES[route_id]
     api_key = os.environ.get(route.key_env, "").strip()
     if not api_key:
-        raise ProviderError(route_id, None, f"missing environment variable {route.key_env}")
+        raise ProviderError(
+            route_id, None, f"missing environment variable {route.key_env}",
+            request_attempted=False, http_response_received=False,
+        )
     if not prompt or not isinstance(prompt, str):
         raise ValueError("prompt must be a non-empty string")
     if not 1 <= max_tokens <= 4096:
@@ -140,23 +153,39 @@ def call_chat(
         raise ProviderError(
             route_id, int(exc.code), "http_error",
             exc.headers.get("Retry-After") if exc.headers else None,
+            request_attempted=True, http_response_received=True,
         ) from None
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         # Do not surface URLs with credentials, full exception strings, or bodies.
-        raise ProviderError(route_id, None, type(exc).__name__) from None
+        raise ProviderError(
+            route_id, None, type(exc).__name__,
+            request_attempted=True, http_response_received=False,
+        ) from None
 
     if status < 200 or status >= 300:
-        raise ProviderError(route_id, status, "non_success_http_status",
-                            headers.get("retry-after"))
+        raise ProviderError(
+            route_id, status, "non_success_http_status",
+            headers.get("retry-after"),
+            request_attempted=True, http_response_received=True,
+        )
     if len(raw) > MAX_RESPONSE_BYTES:
-        raise ProviderError(route_id, status, "response_too_large")
+        raise ProviderError(
+            route_id, status, "response_too_large",
+            request_attempted=True, http_response_received=True,
+        )
     try:
         envelope = json.loads(raw.decode("utf-8"))
         content = envelope["choices"][0]["message"]["content"]
     except (UnicodeDecodeError, json.JSONDecodeError, KeyError, IndexError, TypeError):
-        raise ProviderError(route_id, status, "invalid_openai_compatible_response") from None
+        raise ProviderError(
+            route_id, status, "invalid_openai_compatible_response",
+            request_attempted=True, http_response_received=True,
+        ) from None
     if not isinstance(content, str):
-        raise ProviderError(route_id, status, "response_content_not_text")
+        raise ProviderError(
+            route_id, status, "response_content_not_text",
+            request_attempted=True, http_response_received=True,
+        )
 
     return {
         "route_id": route.route_id,
@@ -165,6 +194,8 @@ def call_chat(
         "api_url": route.api_url,
         "api_model": route.api_model,
         "http_status": status,
+        "request_attempted": True,
+        "http_response_received": True,
         "provider_request_id": str(envelope.get("id", ""))[:200] or None,
         "finish_reason": str(envelope.get("choices", [{}])[0].get("finish_reason", ""))[:80] or None,
         "usage": envelope.get("usage") if isinstance(envelope.get("usage"), dict) else None,

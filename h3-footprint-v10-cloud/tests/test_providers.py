@@ -95,6 +95,8 @@ class ProviderAdapterTests(unittest.TestCase):
             with self.assertRaises(providers.ProviderError) as ctx:
                 providers.call_chat("deepseek", "ping", opener=lambda *a, **k: self.fail("network called"))
         self.assertIn("missing environment variable", str(ctx.exception))
+        self.assertFalse(ctx.exception.request_attempted)
+        self.assertFalse(ctx.exception.http_response_received)
         self.assertNotIn("SENSITIVE-TEST-KEY-DO-NOT-LOG", str(ctx.exception))
 
     def test_unknown_route_and_invalid_parameters_are_rejected_before_network(self):
@@ -146,6 +148,8 @@ class ProviderAdapterTests(unittest.TestCase):
         with self.assertRaises(providers.ProviderError) as ctx:
             providers.call_chat("mimo", "ping", opener=fail)
         self.assertIn("URLError", str(ctx.exception))
+        self.assertTrue(ctx.exception.request_attempted)
+        self.assertFalse(ctx.exception.http_response_received)
         self.assertNotIn("private-url-and-secret", str(ctx.exception))
         self.assertNotIn("SENSITIVE-TEST-KEY-DO-NOT-LOG", str(ctx.exception))
 

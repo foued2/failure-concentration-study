@@ -128,10 +128,9 @@ def record_response_metadata(batch_id: int, response_text: str) -> dict[str, Any
         "response_sha256": _sha256_text(response_text),
         "response_characters": len(response_text),
         "raw_response_persisted": False,
-        "retries_performed": 0,
-        "best_of_selection_performed": False,
-        "candidate_generation_performed": False,
-        "network_request_performed": False,
+        "provider_call_performed_by_helper": False,
+        "retries_observed_by_helper": None,
+        "best_of_selection_performed_by_helper": False,
         "generation_permitted": False,
         "plan_status": PLAN_STATUS,
     }

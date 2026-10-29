@@ -67,10 +67,10 @@ class GenerationPlanDraftTests(unittest.TestCase):
         self.assertEqual(record["provenance_group"], "batch-000")
         self.assertEqual(len(record["body_hashes_in_response_order"]), 2)
         self.assertNotEqual(record["body_hashes_in_response_order"][0], record["body_hashes_in_response_order"][1])
-        self.assertEqual(record["retries_performed"], 0)
-        self.assertFalse(record["best_of_selection_performed"])
-        self.assertFalse(record["candidate_generation_performed"])
-        self.assertFalse(record["network_request_performed"])
+        self.assertFalse(record["provider_call_performed_by_helper"])
+        self.assertIsNone(record["retries_observed_by_helper"])
+        self.assertFalse(record["best_of_selection_performed_by_helper"])
+        self.assertFalse(record["generation_permitted"])
 
     def test_complete_and_overproduced_responses_are_not_truncated(self):
         body = "def solve(n, edges, s, t):\n    return 0\n"

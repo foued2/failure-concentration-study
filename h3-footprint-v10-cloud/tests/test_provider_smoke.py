@@ -61,7 +61,10 @@ class ProviderSmokeTests(unittest.TestCase):
             with mock.patch.object(
                 provider_smoke,
                 "call_chat",
-                side_effect=ProviderError("deepseek", None, "URLError"),
+                side_effect=ProviderError(
+                    "deepseek", None, "URLError",
+                    request_attempted=True, http_response_received=False,
+                ),
             ):
                 report = provider_smoke.run(["deepseek"], timeout=2.0)
         self.assertEqual(report["route_count"], 1)
@@ -101,6 +104,21 @@ class ProviderSmokeTests(unittest.TestCase):
         self.assertEqual(item["exact_token_match"], True)
         self.assertFalse(item["raw_response_stored"])
         self.assertNotIn(provider_smoke.EXPECTED, json.dumps(report))
+        self.assertNotIn("TEST-SECRET", json.dumps(report))
+
+    def test_nonmatching_nonempty_text_is_reachable_but_not_a_passing_smoke(self):
+        mismatched = successful_response("deepseek")
+        mismatched["content"] = "A different answer"
+        with mock.patch.dict(os.environ, {"TOKENHARBOR_API_KEY": "TEST-SECRET"}, clear=True):
+            with mock.patch.object(provider_smoke, "call_chat", return_value=mismatched):
+                report = provider_smoke.run(["deepseek"], timeout=2.0)
+        self.assertEqual(report["outcome"], "BLOCKED")
+        item = report["results"][0]
+        self.assertEqual(item["status"], "REACHABLE_PROMPT_MISMATCH")
+        self.assertTrue(item["request_attempted"])
+        self.assertTrue(item["http_response_received"])
+        self.assertFalse(item["exact_token_match"])
+        self.assertNotIn("A different answer", json.dumps(report))
         self.assertNotIn("TEST-SECRET", json.dumps(report))
 
     def test_unknown_route_rejected_without_calling_provider(self):
