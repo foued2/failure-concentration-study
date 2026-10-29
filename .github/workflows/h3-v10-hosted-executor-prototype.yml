@@ -504,7 +504,7 @@ jobs:
           import sys
           from pathlib import Path
           probes = json.loads(Path(sys.argv[1]).read_text())
-          Path(sys.argv[2]).write_text(json.dumps([probes[0]]) + "\\n")
+          Path(sys.argv[2]).write_text(json.dumps([probes[0]]))
           PY
           python "$root/run_container_candidate.py" \
             --body "$root/candidate/overflow_body.py" \
