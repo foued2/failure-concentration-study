@@ -92,6 +92,43 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  package-public-probe-fixture:
+    name: Package only the 30 public probe inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out trusted probe definitions
+        uses: actions/checkout@v4
+      - name: Build input-only fixture with no expected answers
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          python h3-footprint-v10-cloud/build_smoke_fixture.py --out-dir "$root"
+          (cd "$root" && sha256sum --check SHA256SUMS)
+          python - "$root/fixture-manifest.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          data = json.loads(Path(sys.argv[1]).read_text())
+          assert data["probe_count"] == 30, data
+          assert data["expected_answers_in_fixture"] is False, data
+          assert data["model_generated"] is False, data
+          print(json.dumps({
+              "status": "PASS",
+              "probe_count": data["probe_count"],
+              "expected_answers_in_fixture": False,
+              "model_generated": False
+          }, indent=2))
+          PY
+      - name: Publish public-input fixture
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-public-probe-fixture-${{ github.sha }}
+          path: ${{ runner.temp }}/h3-v10-public-probe-fixture
+          if-no-files-found: error
+          retention-days: 7
+
   keyless-container-boundary-smoke:
     name: Keyless isolated-container smoke test
     runs-on: ubuntu-latest
@@ -254,9 +291,9 @@ jobs:
 
   isolated-candidate-executor-smoke:
     name: One-candidate executor and process-tree timeout control
-    needs: package-cloud-executor
+    needs: [package-cloud-executor, package-public-probe-fixture]
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions: {}
     steps:
       # No checkout: the VM receives only three hash-pinned trusted executor files.
@@ -265,6 +302,12 @@ jobs:
         with:
           name: h3-v10-trusted-executor-${{ github.sha }}
           path: ${{ runner.temp }}/h3-v10-executor-package
+
+      - name: Download input-only 30-probe fixture
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-public-probe-fixture-${{ github.sha }}
+          path: ${{ runner.temp }}/h3-v10-public-probe-fixture
 
       - name: Verify trusted package and create a fixed harmless solver fixture
         shell: bash
@@ -371,6 +414,21 @@ jobs:
           }, indent=2))
           PY
 
+      - name: Run the fixed control across all 30 frozen V3 probe inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          (cd "$fixture" && sha256sum --check SHA256SUMS)
+          python "$root/run_container_candidate.py" \
+            --body "$fixture/smoke-body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$fixture/probes.json" \
+            --out "$root/v3-30-probe-report.json" \
+            --probe-timeout 5 --response-timeout 12
+
       - name: Run the adversarial process-tree timeout control
         shell: bash
         run: |
@@ -409,5 +467,45 @@ jobs:
         with:
           name: h3-v10-executor-smoke-${{ github.run_id }}
           path: ${{ runner.temp }}/h3-v10-executor-smoke
+          if-no-files-found: warn
+          retention-days: 14
+
+  score-fixed-control-smoke:
+    name: Score the fixed harness control in a separate VM
+    needs: isolated-candidate-executor-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out only for trusted reference scoring
+        uses: actions/checkout@v4
+      - name: Download untrusted execution predictions
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-executor-smoke-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-v10-executor-smoke
+      - name: Download public fixture manifest
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-v10-public-probe-fixture-${{ github.sha }}
+          path: ${{ runner.temp }}/h3-v10-public-probe-fixture
+      - name: Verify fixture and score only the fixed control
+        shell: bash
+        run: |
+          set -euo pipefail
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          runroot="$RUNNER_TEMP/h3-v10-executor-smoke"
+          (cd "$fixture" && sha256sum --check SHA256SUMS)
+          python h3-footprint-v10-cloud/score_smoke_report.py \
+            --report "$runroot/v3-30-probe-report.json" \
+            --fixture-manifest "$fixture/fixture-manifest.json" \
+            --out "$runroot/v3-30-probe-scoring-report.json"
+      - name: Upload separate-job scoring record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-fixed-control-score-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-v10-executor-smoke/v3-30-probe-scoring-report.json
           if-no-files-found: warn
           retention-days: 14
