@@ -210,103 +210,124 @@ def _parse_prediction(stdout: str, probe_id: str) -> dict | None:
 
 
 def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
-    if not _kill_other_processes():
-        return {
-            "v": 1, "sequence": sequence, "probe_id": payload.get("probe_id"),
-            "status": "boundary_error", "answer": None, "tree_empty": False,
-        }
-    _clear_tmp()
-    tmpdir = Path("/tmp") / ("h3-" + uuid.uuid4().hex)
-    tmpdir.mkdir(mode=0o700)
-    os.chown(tmpdir, UID, GID)
-    env = {
-        "PATH": "/usr/local/bin:/usr/bin:/bin",
-        "HOME": str(tmpdir),
-        "TMPDIR": str(tmpdir),
-        "PYTHONDONTWRITEBYTECODE": "1",
-        "PYTHONIOENCODING": "utf-8",
-    }
+    tmpdir: Path | None = None
+    result: dict = {}
     try:
-        proc = subprocess.Popen(
-            [sys.executable, "-I", CHILD, "/candidate/body.py"],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            close_fds=True, bufsize=0, env=env, preexec_fn=_drop_child_privileges,
-            start_new_session=True,
-        )
-        line = json.dumps(payload, separators=(",", ":")).encode("utf-8") + b"\n"
-        if len(line) > MAX_LINE_BYTES:
-            try:
-                proc.kill()
-            except OSError:
-                pass
-            return_code = proc.wait(timeout=1)
-            return {
+        if not _kill_other_processes():
+            result = {
                 "v": 1, "sequence": sequence, "probe_id": payload.get("probe_id"),
-                "status": "invalid_input", "answer": None, "tree_empty": _kill_other_processes(),
-                "return_code": return_code,
+                "status": "boundary_error", "answer": None, "tree_empty": False,
+                "fatal": True,
             }
-        proc.stdin.write(line)
-        proc.stdin.close()
-        child = _read_child(proc, timeout)
-        tree_before_cleanup = bool(_other_pids())
-        tree_empty = _kill_other_processes()
-        prediction = None if child["timed_out"] or child["output_overflow"] else _parse_prediction(
-            child["stdout"], str(payload.get("probe_id"))
-        )
-        status = "ok"
-        if child["timed_out"]:
-            status = "timeout"
-        elif child["output_overflow"]:
-            status = "output_overflow"
-        elif not tree_empty:
-            status = "tree_cleanup_failed"
-        elif tree_before_cleanup:
-            status = "process_tree_leak"
-        elif prediction is None or child["return_code"] != 0:
-            status = "invalid_child_output"
-        elif prediction.get("status") == "exception":
-            status = "exception"
-        elif prediction.get("status") == "invalid_input":
-            status = "invalid_input"
+        else:
+            _clear_tmp()
+            tmpdir = Path("/tmp") / ("h3-" + uuid.uuid4().hex)
+            tmpdir.mkdir(mode=0o700)
+            # The supervisor has CAP_CHOWN only within this isolated container.
+            # It takes ownership back during finally so this directory is always
+            # removable even after hostile code creates private files or links.
+            os.chown(tmpdir, UID, GID)
+            env = {
+                "PATH": "/usr/local/bin:/usr/bin:/bin",
+                "HOME": str(tmpdir),
+                "TMPDIR": str(tmpdir),
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "PYTHONIOENCODING": "utf-8",
+            }
+            proc = subprocess.Popen(
+                [sys.executable, "-I", CHILD, "/candidate/body.py"],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                close_fds=True, bufsize=0, env=env, preexec_fn=_drop_child_privileges,
+                start_new_session=True,
+            )
+            line = json.dumps(payload, separators=(",", ":")).encode("utf-8") + b"\n"
+            if len(line) > MAX_LINE_BYTES:
+                try:
+                    proc.kill()
+                except OSError:
+                    pass
+                return_code = proc.wait(timeout=1)
+                tree_empty = _kill_other_processes()
+                result = {
+                    "v": 1, "sequence": sequence, "probe_id": payload.get("probe_id"),
+                    "status": "invalid_input", "answer": None, "tree_empty": tree_empty,
+                    "return_code": return_code,
+                }
+                if not tree_empty:
+                    result["fatal"] = True
+            else:
+                proc.stdin.write(line)
+                proc.stdin.close()
+                child = _read_child(proc, timeout)
+                tree_present_at_post_child_check = bool(_other_pids())
+                tree_empty = _kill_other_processes()
+                prediction = None if child["timed_out"] or child["output_overflow"] else _parse_prediction(
+                    child["stdout"], str(payload.get("probe_id"))
+                )
+                status = "ok"
+                if child["timed_out"]:
+                    status = "timeout"
+                elif child["output_overflow"]:
+                    status = "output_overflow"
+                elif not tree_empty:
+                    status = "tree_cleanup_failed"
+                elif tree_present_at_post_child_check:
+                    status = "process_tree_leak"
+                elif prediction is None or child["return_code"] != 0:
+                    status = "invalid_child_output"
+                elif prediction.get("status") == "exception":
+                    status = "exception"
+                elif prediction.get("status") == "invalid_input":
+                    status = "invalid_input"
 
-        answer = prediction.get("answer") if status == "ok" and prediction else None
-        answer_type = prediction.get("answer_type") if status == "ok" and prediction else "none"
-        result = {
-            "v": 1,
-            "sequence": sequence,
-            "probe_id": str(payload.get("probe_id")),
-            "status": status,
-            "answer_type": answer_type,
-            "answer": answer,
-            "tree_empty_before_cleanup": not tree_before_cleanup,
-            "tree_empty": tree_empty,
-            "timed_out": child["timed_out"],
-            "output_overflow": child["output_overflow"],
-            "child_return_code": child["return_code"],
-            "child_stdout_bytes": child["stdout_bytes"],
-            "child_stderr_bytes": child["stderr_bytes"],
-            "child_stderr_sha256": child["stderr_sha256"],
-            "elapsed_seconds": child["elapsed_seconds"],
-            "solver_stdout_characters": (prediction or {}).get("solver_stdout_characters"),
-            "solver_stderr_characters": (prediction or {}).get("solver_stderr_characters"),
-            "solver_output_overflow": (prediction or {}).get("solver_output_overflow"),
-        }
-        if not tree_empty:
-            # Fail closed: the host should terminate the entire container.
-            result["fatal"] = True
-        return result
+                answer = prediction.get("answer") if status == "ok" and prediction else None
+                answer_type = prediction.get("answer_type") if status == "ok" and prediction else "none"
+                result = {
+                    "v": 1,
+                    "sequence": sequence,
+                    "probe_id": str(payload.get("probe_id")),
+                    "status": status,
+                    "answer_type": answer_type,
+                    "answer": answer,
+                    "processes_present_at_post_child_check": tree_present_at_post_child_check,
+                    "tree_empty": tree_empty,
+                    "timed_out": child["timed_out"],
+                    "output_overflow": child["output_overflow"],
+                    "child_return_code": child["return_code"],
+                    "child_stdout_bytes": child["stdout_bytes"],
+                    "child_stderr_bytes": child["stderr_bytes"],
+                    "child_stderr_sha256": child["stderr_sha256"],
+                    "elapsed_seconds": child["elapsed_seconds"],
+                    "solver_stdout_characters": (prediction or {}).get("solver_stdout_characters"),
+                    "solver_stderr_characters": (prediction or {}).get("solver_stderr_characters"),
+                    "solver_output_overflow": (prediction or {}).get("solver_output_overflow"),
+                }
+                if not tree_empty:
+                    result["fatal"] = True
     except BaseException as exc:
-        _kill_other_processes()
-        return {
+        tree_empty = _kill_other_processes()
+        result = {
             "v": 1, "sequence": sequence, "probe_id": payload.get("probe_id"),
             "status": "supervisor_error", "error_type": type(exc).__name__,
-            "answer": None, "tree_empty": not bool(_other_pids()),
+            "answer": None, "tree_empty": tree_empty, "fatal": True,
         }
     finally:
-        try:
-            shutil.rmtree(tmpdir)
-        except OSError:
-            pass
+        cleanup_ok = True
+        if tmpdir is not None:
+            try:
+                # Child-owned scratch may be mode 0700; reclaim it before deletion.
+                os.chown(tmpdir, 0, 0)
+                os.chmod(tmpdir, 0o700)
+                shutil.rmtree(tmpdir)
+                cleanup_ok = not tmpdir.exists()
+            except OSError:
+                cleanup_ok = False
+        result["tmp_cleanup_ok"] = cleanup_ok
+        if not cleanup_ok:
+            result["status"] = "tmp_cleanup_failed"
+            result["fatal"] = True
+            result["tree_empty"] = False
+    return result
 
 
 def main() -> int:
