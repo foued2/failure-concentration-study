@@ -71,8 +71,10 @@ def build_probe_payloads() -> list[dict]:
 def write_fixture(out_dir: Path) -> dict:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    payloads = build_probe_payloads()
     body = SMOKE_BODY.encode("utf-8")
-    probes = (json.dumps(build_probe_payloads(), sort_keys=True, indent=2) + "\n").encode("utf-8")
+    probes = (json.dumps(payloads, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    canonical_payloads = json.dumps(payloads, sort_keys=True, separators=(",", ":")).encode("utf-8")
     body_path = out_dir / "smoke-body.py"
     probes_path = out_dir / "probes.json"
     body_path.write_bytes(body)
@@ -84,7 +86,8 @@ def write_fixture(out_dir: Path) -> dict:
         "source_instrument": "h3-footprint-v3/instrument.py",
         "source_instrument_sha256": sha256((V3 / "instrument.py").read_bytes()),
         "probe_count": 30,
-        "probe_ids": [item["probe_id"] for item in build_probe_payloads()],
+        "probe_ids": [item["probe_id"] for item in payloads],
+        "probe_payload_sha256": sha256(canonical_payloads),
         "body_sha256": sha256(body),
         "probes_sha256": sha256(probes),
         "expected_answers_in_fixture": False,

@@ -23,6 +23,13 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def validate_probe_binding(report: dict, manifest: dict) -> None:
+    if report.get("probe_payload_sha256") != manifest.get("probe_payload_sha256"):
+        raise ValueError("executed probe payload hash does not match the fixture manifest")
+    if report.get("probe_ids") != manifest.get("probe_ids"):
+        raise ValueError("executed probe IDs do not match the fixture manifest")
+
+
 def score(report_path: Path, fixture_manifest_path: Path) -> dict:
     report = json.loads(Path(report_path).read_text(encoding="utf-8"))
     manifest = json.loads(Path(fixture_manifest_path).read_text(encoding="utf-8"))
@@ -33,6 +40,7 @@ def score(report_path: Path, fixture_manifest_path: Path) -> dict:
         raise ValueError("fixture must not include expected answers")
     if manifest.get("model_generated") is not False:
         raise ValueError("this control cannot be model-generated")
+    validate_probe_binding(report, manifest)
     if report.get("candidate_sha256") != manifest.get("body_sha256"):
         raise ValueError("executed body hash does not match the fixture manifest")
     if report.get("probe_count") != 30 or len(report.get("results", [])) != 30:

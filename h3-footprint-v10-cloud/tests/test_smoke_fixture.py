@@ -33,6 +33,17 @@ class FixedFixtureTests(unittest.TestCase):
             self.assertEqual(len(payload), 30)
             self.assertNotIn("expected_values", json.dumps(payload))
 
+    def test_scorer_checks_probe_payload_hash_and_ids(self):
+        manifest = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "R2"]}
+        good = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "R2"]}
+        score_smoke_report.validate_probe_binding(good, manifest)
+        bad_hash = {"probe_payload_sha256": "tampered", "probe_ids": ["R1", "R2"]}
+        with self.assertRaises(ValueError):
+            score_smoke_report.validate_probe_binding(bad_hash, manifest)
+        bad_ids = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "Z2"]}
+        with self.assertRaises(ValueError):
+            score_smoke_report.validate_probe_binding(bad_ids, manifest)
+
     def test_scorer_rejects_a_non_fixture_manifest(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

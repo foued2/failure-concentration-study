@@ -169,7 +169,7 @@ def solve(n, edges, s, t):
 def solve(n, edges, s, t):
     return 0
 """)
-            report = executor._static_exclusion_report(body, 30, 5.0, "import:socket")
+            report = executor._static_exclusion_report(body, [{"probe_id": str(i)} for i in range(30)], 5.0, "import:socket")
             self.assertFalse(report["candidate_valid"])
             self.assertEqual(report["candidate_status"], "static_rejection")
             self.assertEqual(report["probe_count"], 0)

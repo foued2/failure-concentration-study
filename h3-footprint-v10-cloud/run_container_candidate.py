@@ -96,7 +96,7 @@ def undefined_global_names(source: str) -> list[str]:
     return sorted(missing)
 
 
-def _static_exclusion_report(body: Path, expected_probe_count: int, timeout: float,
+def _static_exclusion_report(body: Path, probes: list[dict], timeout: float,
                              reason: str, *, static_checks_enforced: bool = True) -> dict:
     return {
         "version": 1,
@@ -104,7 +104,9 @@ def _static_exclusion_report(body: Path, expected_probe_count: int, timeout: flo
         "image": PYTHON_IMAGE,
         "container_config": None,
         "probe_count": 0,
-        "expected_probe_count": expected_probe_count,
+        "expected_probe_count": len(probes),
+        "probe_payload_sha256": _probe_payload_sha256(probes),
+        "probe_ids": [probe.get("probe_id") for probe in probes],
         "probe_timeout_seconds": timeout,
         "preflight": None,
         "candidate_valid": False,
@@ -122,6 +124,11 @@ def _static_exclusion_report(body: Path, expected_probe_count: int, timeout: flo
         "static_checks_enforced": static_checks_enforced,
         "isolation_harness_ok": None,
     }
+
+
+def _probe_payload_sha256(probes: list[dict]) -> str:
+    canonical = json.dumps(probes, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
 
 
 def _sha256(path: Path) -> str:
@@ -295,13 +302,13 @@ def run_candidate(
         try:
             candidate_source = body.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            return _static_exclusion_report(body, len(probes), probe_timeout, "encoding:invalid_utf8")
+            return _static_exclusion_report(body, probes, probe_timeout, "encoding:invalid_utf8")
         static_reason = unsafe_reason(candidate_source)
         if static_reason:
-            return _static_exclusion_report(body, len(probes), probe_timeout, static_reason)
+            return _static_exclusion_report(body, probes, probe_timeout, static_reason)
         missing = undefined_global_names(candidate_source)
         if missing:
-            return _static_exclusion_report(body, len(probes), probe_timeout, "undefined_name:" + ",".join(missing))
+            return _static_exclusion_report(body, probes, probe_timeout, "undefined_name:" + ",".join(missing))
 
     pull = _docker(["pull", PYTHON_IMAGE], timeout=180.0)
     if pull.returncode != 0:
@@ -453,6 +460,8 @@ def run_candidate(
         "container_config": container_config,
         "probe_count": len(results),
         "expected_probe_count": len(probes),
+        "probe_payload_sha256": _probe_payload_sha256(probes),
+        "probe_ids": [probe["probe_id"] for probe in probes],
         "probe_timeout_seconds": probe_timeout,
         "preflight": preflight_record,
         "candidate_valid": candidate_valid,
