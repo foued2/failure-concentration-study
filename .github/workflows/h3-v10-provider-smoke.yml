@@ -1,0 +1,63 @@
+name: H3 V10 provider access smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provider-access-smoke:
+    name: One non-candidate request per configured provider route
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
+      TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
+    steps:
+      - name: Check out only the provider smoke code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            h3-footprint-v10-cloud/providers.py
+            h3-footprint-v10-cloud/provider_smoke.py
+          sparse-checkout-cone-mode: false
+
+      - name: Check credentials are configured without printing values
+        shell: bash
+        run: |
+          set -euo pipefail
+          [ -n "${NVIDIA_NIM_API_KEY:-}" ] || { echo "Missing GitHub Actions secret NVIDIA_NIM_API_KEY"; exit 2; }
+          [ -n "${TOKENHARBOR_API_KEY:-}" ] || { echo "Missing GitHub Actions secret TOKENHARBOR_API_KEY"; exit 2; }
+          echo "Required secret variables are present; values are not printed."
+
+      - name: Make one bounded smoke request per route
+        shell: bash
+        run: |
+          set +e
+          python h3-footprint-v10-cloud/provider_smoke.py --routes deepseek glm mimo --timeout 60 --out "$RUNNER_TEMP/h3-v10-provider-smoke.json"
+          rc=$?
+          set -e
+          echo "PROVIDER_SMOKE_EXIT_CODE=$rc" >> "$GITHUB_ENV"
+          if [ -f "$RUNNER_TEMP/h3-v10-provider-smoke.json" ]; then
+            cat "$RUNNER_TEMP/h3-v10-provider-smoke.json"
+          fi
+          exit 0
+
+      - name: Upload redacted provider smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-provider-smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/h3-v10-provider-smoke.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Enforce smoke outcome after report upload
+        if: always()
+        shell: bash
+        run: |
+          if [ "${PROVIDER_SMOKE_EXIT_CODE:-2}" != "0" ]; then
+            echo "At least one provider route is blocked or unavailable. Candidate generation remains prohibited."
+            exit 1
+          fi
