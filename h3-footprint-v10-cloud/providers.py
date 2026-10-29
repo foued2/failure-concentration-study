@@ -31,10 +31,10 @@ ROUTES: dict[str, Route] = {
     "deepseek": Route(
         route_id="deepseek",
         original_alias="opencode/deepseek-v4.1-flash-free",
-        provider="nvidia-nim",
-        api_url="https://integrate.api.nvidia.com/v1/chat/completions",
-        api_model="deepseek-ai/deepseek-v4.1-flash",
-        key_env="NVIDIA_NIM_API_KEY",
+        provider="token-harbor",
+        api_url="https://tokenharbor.ai/v1/chat/completions",
+        api_model="deepseek-v4.1-flash:free",
+        key_env="TOKENHARBOR_API_KEY",
     ),
     "glm": Route(
         route_id="glm",
