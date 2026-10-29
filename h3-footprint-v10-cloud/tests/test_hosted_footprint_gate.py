@@ -188,6 +188,19 @@ class HostedFootprintGateTests(unittest.TestCase):
             self.assertTrue((output_dir / "REPORT.md").is_file())
             self.assertTrue((output_dir / "runner-reports" / f"{body.stem}.json").is_file())
 
+    def test_symlinked_parent_path_is_detected_before_resolve(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            real = root / "real"
+            real.mkdir()
+            alias = root / "alias"
+            try:
+                alias.symlink_to(real, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("directory symlink creation unavailable on this runner")
+            self.assertFalse(hosted._has_symlink_component(real / "attempts.jsonl"))
+            self.assertTrue(hosted._has_symlink_component(alias / "attempts.jsonl"))
+
     def test_missing_provenance_is_excluded_before_docker(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
