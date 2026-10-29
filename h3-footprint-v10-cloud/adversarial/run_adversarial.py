@@ -105,6 +105,8 @@ def v_pids(rows):
     notes = ["n=5 status=%s started=%s tree_empty=%s" % (r and r["status"], r and r["answer"], r and r["tree_empty"])]
     if not (r and c and c["status"] == "ok"):
         return "INCONCLUSIVE", notes + ["recovery probe n=6 not ok"]
+    if not isinstance(r["answer"], int):
+        return "INCONCLUSIVE", notes + ["no started-count returned (probe did not complete normally)"]
     if isinstance(r["answer"], int) and r["answer"] >= 8:
         return "FINDING", notes + ["pids-limit 8 did not cap process creation"]
     return "NO_FINDING", notes

@@ -9,7 +9,8 @@ def solve(n, edges, s, t):
         started = 0
         for _ in range(30):
             try:
-                subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+                subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"],
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 started += 1
             except OSError:
                 break
