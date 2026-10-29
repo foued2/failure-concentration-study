@@ -6,6 +6,7 @@ on:
       - work/h3-v10-hosted-executor-prototype-2026-10-29
     paths-ignore:
       - "h3-footprint-v10-cloud/README.md"
+      - "h3-footprint-v10-cloud/PROTOCOL_AMENDMENT_DRAFT.md"
       - ".github/workflows/h3-v10-provider-smoke.yml"
   workflow_dispatch:
 
