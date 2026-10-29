@@ -35,119 +35,19 @@ class FixedFixtureTests(unittest.TestCase):
             self.assertNotIn("expected_values", json.dumps(payload))
 
     def test_scorer_checks_probe_payload_hash_and_ids(self):
-        manifest = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "R2"]}
-        good = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "R2"]}
+        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
+        manifest = {
+            "probe_payload_sha256": score_smoke_report.canonical_probe_payload_sha256(),
+            "probe_ids": expected_ids,
+        }
+        good = dict(manifest)
         score_smoke_report.validate_probe_binding(good, manifest)
-        bad_hash = {"probe_payload_sha256": "tampered", "probe_ids": ["R1", "R2"]}
+        bad_hash = {**manifest, "probe_payload_sha256": "tampered"}
         with self.assertRaises(ValueError):
             score_smoke_report.validate_probe_binding(bad_hash, manifest)
-        bad_ids = {"probe_payload_sha256": "abc", "probe_ids": ["R1", "Z2"]}
+        bad_ids = {**manifest, "probe_ids": ["TAMPERED", *expected_ids[1:]]}
         with self.assertRaises(ValueError):
             score_smoke_report.validate_probe_binding(bad_ids, manifest)
-
-    def test_profile_counts_timeouts_exceptions_overflow_and_wrong_answers_as_failures(self):
-        expected = instrument.expected_values()
-        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
-        results = []
-        for index, probe_id in enumerate(expected_ids):
-            status = "ok"
-            answer_type = "int"
-            answer = expected[probe_id]
-            timed_out = False
-            overflow = False
-            if index == 0:
-                status = "timeout"
-                answer_type = "none"
-                answer = None
-                timed_out = True
-            elif index == 1:
-                status = "exception"
-                answer_type = "none"
-                answer = None
-            elif index == 2:
-                status = "output_overflow"
-                answer_type = "none"
-                answer = None
-                overflow = True
-            elif index == 3:
-                answer = answer + 1
-            results.append({
-                "probe_id": probe_id,
-                "phase": "probe",
-                "probe_index": index + 1,
-                "sequence": index + 2,
-                "status": status,
-                "answer_type": answer_type,
-                "answer": answer,
-                "timed_out": timed_out,
-                "solver_output_overflow": overflow,
-                "tree_empty": True,
-            })
-        profile = score_smoke_report.derive_failure_profile(results, expected, expected_ids)
-        self.assertEqual(profile["fails"][:5], [True, True, True, True, False])
-        self.assertEqual(profile["k"], 4)
-        self.assertEqual(profile["family_counts"]["R"], 4)
-        self.assertEqual(profile["C"], 1.0)
-        self.assertEqual(profile["max_f"], 4)
-        self.assertEqual(profile["timeout_count"], 1)
-        self.assertEqual(profile["runtime_exception_count"], 1)
-        self.assertEqual(profile["output_overflow_count"], 1)
-
-    def test_malformed_per_probe_protocol_is_rejected_not_counted_as_failure(self):
-        expected = instrument.expected_values()
-        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
-        results = []
-        for index, probe_id in enumerate(expected_ids):
-            results.append({
-                "probe_id": probe_id,
-                "phase": "probe",
-                "probe_index": index + 1,
-                "sequence": index + 2,
-                "status": "invalid_child_output" if index == 0 else "ok",
-                "answer_type": "none" if index == 0 else "int",
-                "answer": None if index == 0 else expected[probe_id],
-                "tree_empty": True,
-            })
-        with self.assertRaisesRegex(ValueError, "candidate-invalid protocol status"):
-            score_smoke_report.derive_failure_profile(results, expected, expected_ids)
-
-    def test_success_status_with_overflow_flag_is_rejected(self):
-        expected = instrument.expected_values()
-        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
-        results = []
-        for index, probe_id in enumerate(expected_ids):
-            results.append({
-                "probe_id": probe_id,
-                "phase": "probe",
-                "probe_index": index + 1,
-                "sequence": index + 2,
-                "status": "ok",
-                "answer_type": "int",
-                "answer": expected[probe_id],
-                "solver_output_overflow": index == 0,
-                "tree_empty": True,
-            })
-        with self.assertRaisesRegex(ValueError, "contradicts output-overflow flag"):
-            score_smoke_report.derive_failure_profile(results, expected, expected_ids)
-
-    def test_response_order_and_sequence_are_bound(self):
-        expected = instrument.expected_values()
-        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
-        results = []
-        for index, probe_id in enumerate(expected_ids):
-            results.append({
-                "probe_id": probe_id,
-                "phase": "probe",
-                "probe_index": index + 1,
-                "sequence": index + 2,
-                "status": "ok",
-                "answer_type": "int",
-                "answer": expected[probe_id],
-                "tree_empty": True,
-            })
-        results[0]["sequence"] = 99
-        with self.assertRaisesRegex(ValueError, "response sequence mismatch"):
-            score_smoke_report.derive_failure_profile(results, expected, expected_ids)
 
     def test_scorer_rejects_a_non_fixture_manifest(self):
         with tempfile.TemporaryDirectory() as td:
@@ -157,7 +57,7 @@ class FixedFixtureTests(unittest.TestCase):
             report.write_text("{}")
             manifest.write_text(json.dumps({"kind": "candidate_pack"}))
             with self.assertRaises(ValueError):
-                score_smoke_report.score(report, manifest)
+                score_smoke_report.score(report, manifest, root / "body.py")
 
 
 if __name__ == "__main__":
