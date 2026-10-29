@@ -21,6 +21,7 @@ import run_gate
 
 
 FROZEN_REQUIRED = ("GATE.md", "expected_values.json", "instrument.py", "probe_worker.py", "run_gate.py")
+FROZEN_V3_FREEZE_GIT_BLOB_SHA1 = "d112abbdabe904c4f8f29463f018a04e7ab92eea"
 KNOWN_OK_ANSWER_TYPES = {"none", "bool", "int", "int_out_of_range", "str", "float", "other"}
 PROBE_FAILURE_STATUSES = {"timeout", "exception", "output_overflow"}
 CANDIDATE_INVALID_STATUSES = {
@@ -35,6 +36,13 @@ def sha256_bytes(data: bytes) -> str:
 
 def sha256(path: Path) -> str:
     return sha256_bytes(Path(path).read_bytes())
+
+
+def git_blob_sha1(path: Path) -> str:
+    """Hash canonical LF bytes as a Git blob, independent of checkout line endings."""
+    raw = Path(path).read_bytes().replace(b"\r\n", b"\n")
+    header = f"blob {len(raw)}\0".encode("ascii")
+    return hashlib.sha1(header + raw).hexdigest()
 
 
 def canonical_probe_payloads() -> list[dict]:
@@ -57,6 +65,8 @@ def canonical_probe_payload_sha256() -> str:
 
 def verify_frozen_v3() -> dict:
     freeze_path = V3 / "FREEZE.json"
+    if git_blob_sha1(freeze_path) != FROZEN_V3_FREEZE_GIT_BLOB_SHA1:
+        raise ValueError("V3 FREEZE.json does not match the pinned frozen manifest blob")
     freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
     if freeze.get("tag") != "h3-footprint-v3-freeze-2026-10-27":
         raise ValueError("unexpected V3 freeze tag")

@@ -34,6 +34,29 @@ class FixedFixtureTests(unittest.TestCase):
             self.assertEqual(len(payload), 30)
             self.assertNotIn("expected_values", json.dumps(payload))
 
+    def test_scorer_pins_the_exact_frozen_manifest_blob(self):
+        self.assertEqual(
+            score_smoke_report.git_blob_sha1(score_smoke_report.V3 / "FREEZE.json"),
+            score_smoke_report.FROZEN_V3_FREEZE_GIT_BLOB_SHA1,
+        )
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "FREEZE.json").write_text(
+                json.dumps({
+                    "tag": "h3-footprint-v3-freeze-2026-10-27",
+                    "status": "PRE_CANDIDATE_HARNESS_FREEZE",
+                    "artifact_hashes_sha256": {},
+                }),
+                encoding="utf-8",
+            )
+            original_v3 = score_smoke_report.V3
+            score_smoke_report.V3 = root
+            try:
+                with self.assertRaisesRegex(ValueError, "pinned frozen manifest blob"):
+                    score_smoke_report.verify_frozen_v3()
+            finally:
+                score_smoke_report.V3 = original_v3
+
     def test_scorer_checks_probe_payload_hash_and_ids(self):
         expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
         manifest = {
