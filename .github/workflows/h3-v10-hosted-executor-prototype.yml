@@ -1,0 +1,223 @@
+name: H3 V10 hosted execution prototype
+
+on:
+  push:
+    branches:
+      - work/h3-v10-hosted-executor-prototype-2026-10-29
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: h3-v10-prototype-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-tests:
+    name: Existing V9 host tests on Python ${{ matrix.python-version }}
+    runs-on: windows-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: h3-footprint-v9
+    steps:
+      - name: Check out source for trusted tests only
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run full host regression suite
+        run: |
+          python -m unittest discover -s tests -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\h3-v9-tests.txt"
+          if ($LASTEXITCODE -ne 0) { throw "Host test suite failed." }
+      - name: Verify repository manifest
+        run: |
+          python make_manifest.py --check
+          if ($LASTEXITCODE -ne 0) { throw "Manifest check failed." }
+      - name: Verify the real gate still blocks candidate evaluation
+        run: |
+          $pythonExe = (Get-Command python -ErrorAction Stop).Source
+          $out = Join-Path $env:RUNNER_TEMP "gate.stdout.txt"
+          $err = Join-Path $env:RUNNER_TEMP "gate.stderr.txt"
+          $p = Start-Process -FilePath $pythonExe -ArgumentList @("controller.py", "--check-execution-gate") -NoNewWindow -Wait -PassThru -RedirectStandardOutput $out -RedirectStandardError $err
+          if (Test-Path $out) { Get-Content $out | ForEach-Object { Write-Host $_ } }
+          if (Test-Path $err) { Get-Content $err | ForEach-Object { Write-Host $_ } }
+          if ($p.ExitCode -ne 2) { throw "Expected fail-closed exit code 2; got $($p.ExitCode)." }
+      - name: Upload trusted host-test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-host-tests-py${{ matrix.python-version }}-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}\h3-v9-tests.txt
+            ${{ runner.temp }}\gate.stdout.txt
+            ${{ runner.temp }}\gate.stderr.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+  keyless-container-boundary-smoke:
+    name: Keyless isolated-container smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Intentionally no checkout: this job must not download the repository,
+      # the oracle, candidate labels, or model-provider credentials.
+      - name: Create disposable canary and harmless probe fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-container-smoke"
+          mkdir -p "$root/candidate" "$root/inputs" "$root/out"
+          chmod 755 "$root" "$root/candidate" "$root/inputs"
+          chmod 777 "$root/out"
+          printf 'HOST-ONLY-CANARY-DO-NOT-MOUNT\n' > "$root/host-only-canary.txt"
+          printf '{"probe":"harmless-smoke","value":17}\n' > "$root/inputs/probe.json"
+          cat > "$root/candidate/probe.py" <<'PY'
+          import json
+          import os
+          import socket
+          from pathlib import Path
+
+          result = {
+              "uid": os.getuid(),
+              "input_readable": False,
+              "input_value": None,
+              "output_writable": False,
+              "host_canary_visible": False,
+              "rootfs_write_allowed": None,
+              "network_connected": None,
+              "pids_max": None,
+              "memory_max": None,
+              "cpu_max": None,
+          }
+          try:
+              payload = json.loads(Path("/inputs/probe.json").read_text())
+              result["input_readable"] = True
+              result["input_value"] = payload.get("value")
+          except Exception as exc:
+              result["input_error"] = type(exc).__name__
+          try:
+              result["host_canary_visible"] = (
+                  "HOST-ONLY-CANARY-DO-NOT-MOUNT" in Path("/host-only-canary.txt").read_text()
+              )
+          except OSError:
+              result["host_canary_visible"] = False
+          try:
+              Path("/rootfs-write-probe").write_text("must fail")
+              result["rootfs_write_allowed"] = True
+          except OSError:
+              result["rootfs_write_allowed"] = False
+          try:
+              with socket.create_connection(("1.1.1.1", 443), timeout=1.5):
+                  result["network_connected"] = True
+          except OSError:
+              result["network_connected"] = False
+          for name, key in (
+              ("/sys/fs/cgroup/pids.max", "pids_max"),
+              ("/sys/fs/cgroup/memory.max", "memory_max"),
+              ("/sys/fs/cgroup/cpu.max", "cpu_max"),
+          ):
+              try:
+                  result[key] = Path(name).read_text().strip()
+              except OSError:
+                  pass
+          try:
+              Path("/out/result.json").write_text(json.dumps(result, sort_keys=True) + "\n")
+              result["output_writable"] = True
+              # Rewrite after setting the output control.
+              Path("/out/result.json").write_text(json.dumps(result, sort_keys=True) + "\n")
+          except OSError:
+              raise SystemExit(31)
+          PY
+          cat "$root/candidate/probe.py"
+
+      - name: Pull runtime image and run without oracle, repository, or credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-container-smoke"
+          image="python:3.14-slim"
+          docker pull "$image"
+          docker image inspect "$image" > "$root/image-inspect.json"
+          id="$(docker create             --name h3-v10-container-smoke             --network none             --read-only             --pids-limit 8             --memory 536870912             --cpus 1             --user 65534:65534             --security-opt no-new-privileges             --cap-drop ALL             --tmpfs /tmp:rw,noexec,nosuid,size=64m             --mount "type=bind,source=$root/candidate,target=/candidate,readonly"             --mount "type=bind,source=$root/inputs,target=/inputs,readonly"             --mount "type=bind,source=$root/out,target=/out"             "$image" python -I /candidate/probe.py)"
+          printf '%s\n' "$id" > "$root/container-id.txt"
+          set +e
+          docker start --attach "$id"
+          rc=$?
+          set -e
+          docker inspect "$id" > "$root/container-inspect.json"
+          docker logs "$id" > "$root/container-stdout.txt" 2> "$root/container-stderr.txt" || true
+          docker rm "$id" > /dev/null
+          if [ "$rc" -ne 0 ]; then
+            echo "Container exited with code $rc" >&2
+            exit "$rc"
+          fi
+
+      - name: Validate observed behavior and enforced container settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-v10-container-smoke"
+          python - "$root" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          report = json.loads((root / "out" / "result.json").read_text())
+          config = json.loads((root / "container-inspect.json").read_text())[0]
+          host = config["HostConfig"]
+
+          assert report["uid"] == 65534, report
+          assert report["input_readable"] is True and report["input_value"] == 17, report
+          assert report["output_writable"] is True, report
+          assert report["host_canary_visible"] is False, report
+          assert report["rootfs_write_allowed"] is False, report
+          assert report["network_connected"] is False, report
+
+          assert host["NetworkMode"] == "none", host
+          assert host["ReadonlyRootfs"] is True, host
+          assert host["PidsLimit"] == 8, host
+          assert host["Memory"] == 536870912, host
+          assert host["CpuQuota"] == 100000 and host["CpuPeriod"] == 100000, host
+          assert "ALL" in host["CapDrop"], host
+          assert any("no-new-privileges" in item for item in host["SecurityOpt"]), host
+          mounts = {m["Destination"]: m for m in config["Mounts"]}
+          assert set(mounts) == {"/candidate", "/inputs", "/out"}, mounts
+          assert mounts["/candidate"]["RW"] is False
+          assert mounts["/inputs"]["RW"] is False
+          assert mounts["/out"]["RW"] is True
+          print(json.dumps({
+              "status": "PASS",
+              "scope": "one harmless smoke body on one ephemeral GitHub-hosted Ubuntu runner",
+              "uid": report["uid"],
+              "input_readable": report["input_readable"],
+              "output_writable": report["output_writable"],
+              "host_canary_visible": report["host_canary_visible"],
+              "rootfs_write_allowed": report["rootfs_write_allowed"],
+              "network_connected": report["network_connected"],
+              "pids_max": report["pids_max"],
+              "memory_max": report["memory_max"],
+              "cpu_max": report["cpu_max"],
+              "container_settings_verified": True,
+              "repository_checked_out_in_this_job": False,
+              "oracle_or_expected_answers_present_in_this_job": False,
+              "generated_solvers_run": False
+          }, indent=2))
+          PY
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-v10-keyless-container-smoke-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-v10-container-smoke
+          if-no-files-found: warn
+          retention-days: 14
