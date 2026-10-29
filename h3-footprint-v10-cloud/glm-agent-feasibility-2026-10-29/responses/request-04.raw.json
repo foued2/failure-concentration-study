@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```python\nimport heapq\n\ndef solve(n, edges, s, t):\n    # Build adjacency list\n    adj = [[] for _ in range(n)]\n    for u, v, w in edges:\n        adj[u].append((v, w))\n    \n    # Priority queue for Dijkstra's algorithm\n    heap = []\n    heapq.heappush(heap, (0, s))\n    \n    # Distance dictionary\n    dist = {}\n    \n    while heap:\n        d, u = heapq.heappop(heap)\n        \n        if u == t:\n            return d\n        \n        if u in dist:\n            continue\n        \n        dist[u] = d\n        \n        for v, w in adj[u]:\n            if v not in dist:\n                heapq.heappush(heap, (d + w, v))\n    \n    return -1\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1793269772,
+  "id": "20261029182930891aed0b09864217",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20261029182930891aed0b09864217",
+  "usage": {
+    "completion_tokens": 170,
+    "prompt_tokens": 136,
+    "total_tokens": 306
+  }
+}

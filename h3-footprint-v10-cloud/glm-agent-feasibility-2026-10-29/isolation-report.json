@@ -1,0 +1,109 @@
+{
+  "all_required_pass": true,
+  "controls": {
+    "C1_network_denied": {
+      "elapsed_seconds": 0.045,
+      "pass": true,
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "NET-RESULT: blocked OSError\nDNS-RESULT: blocked gaierror\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    },
+    "C2_repo_hidden": {
+      "elapsed_seconds": 0.031,
+      "pass": true,
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "REPO-READ: blocked FileNotFoundError\nENV-READ: blocked FileNotFoundError\nPROC-LISTING: blocked FileNotFoundError\nROOT-LISTING: ['bin', 'candidate', 'dev', 'lib', 'lib64', 'tmp', 'trusted', 'usr', 'var']\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    },
+    "C3_write_confined": {
+      "elapsed_seconds": 0.031,
+      "host_home_listing_unchanged": true,
+      "pass": true,
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "HOME-WRITE: blocked FileNotFoundError\nWROTE /tmp/escape-test.txt (view tmpfs, discarded at ns exit)\nWROTE scratch file (allowed)\nROOT-LISTING: ['bin', 'candidate', 'dev', 'lib', 'lib64', 'tmp', 'trusted', 'usr', 'var']\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    },
+    "C4_memory_capped": {
+      "elapsed_seconds": 0.031,
+      "pass": true,
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "MEM-RESULT: blocked MemoryError\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    },
+    "C5_hostile_timeout_control": {
+      "elapsed_seconds": 4.902,
+      "pass": true,
+      "prediction_record": {
+        "answer": null,
+        "answer_type": "none",
+        "phase": "probe",
+        "probe_id": "hostile-ctl",
+        "solver_output_overflow": false,
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "timeout",
+        "v": 1
+      },
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "H3PRED {\"answer\":null,\"answer_type\":\"none\",\"phase\":\"probe\",\"probe_id\":\"hostile-ctl\",\"solver_output_overflow\":false,\"solver_stderr_characters\":0,\"solver_stdout_characters\":0,\"status\":\"timeout\",\"v\":1}\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    },
+    "C6_control_solver_correct": {
+      "elapsed_seconds": 0.082,
+      "pass": true,
+      "prediction_record": {
+        "answer": 3,
+        "answer_type": "int",
+        "phase": "probe",
+        "probe_id": "control-ctl",
+        "solver_output_overflow": false,
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "v": 1
+      },
+      "required": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "H3PRED {\"answer\":3,\"answer_type\":\"int\",\"phase\":\"probe\",\"probe_id\":\"control-ctl\",\"solver_output_overflow\":false,\"solver_stderr_characters\":0,\"solver_stdout_characters\":0,\"status\":\"ok\",\"v\":1}\n",
+      "survivors_after_cleanup": [],
+      "timed_out": false,
+      "tree_empty": true
+    }
+  },
+  "date_utc": "2026-10-29T10:28:13Z",
+  "deviations_from_container_reference": [
+    "No Docker runtime in this sandbox; namespace/tmpfs/chroot/rlimit stack used instead (pinned python:3.14-slim container replaced by host CPython 3.13.5 at /usr/bin/python3).",
+    "Child runs as mapped-root inside the private user namespace (newuidmap unavailable), so in-namespace root could in principle attempt umount of overlays or a double-chroot escape; the static forbidden-import filter (os/ctypes/subprocess...) blocks accepted candidates from attempting it, the view root exposes no /proc, and host-side canaries make any successful escape detectable. Residual accepted and monitored for this exploratory pilot only.",
+    "Process-tree leak check is scoped to the child session id, not container-global PIDs."
+  ],
+  "host_canaries": {
+    "canary_sha256_after": "6c4991cc0a8741ece4728791d8cad1a7e9dc8f35dec183ad4de5a0b051f6bd39",
+    "canary_sha256_before": "6c4991cc0a8741ece4728791d8cad1a7e9dc8f35dec183ad4de5a0b051f6bd39",
+    "canary_unchanged": true,
+    "host_home_listing_unchanged": true,
+    "repo_canary_file": "/home/z/my-project/fcs-verify/PROTOCOL.md"
+  },
+  "kind": "glm_agent_h3_pilot_isolation_check",
+  "mechanism": "unshare -r -m -n (private user+mount+network namespace) + fresh size-capped tmpfs over /home/z /root /var/tmp /tmp /dev/shm /run + minimal chroot view root (read-only /usr /lib /lib64 /dev/null binds, candidate body at /candidate, trusted harness at /trusted, no /proc) + env -i + RLIMIT_AS 384MiB / RLIMIT_CPU 8s / RLIMIT_FSIZE 1MiB / RLIMIT_NOFILE 32 + per-probe 5s deadline with killpg + session-scoped process-tree leak check + host-side tamper canaries"
+}

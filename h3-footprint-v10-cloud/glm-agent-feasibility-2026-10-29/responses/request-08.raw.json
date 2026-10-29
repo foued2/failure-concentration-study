@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```python\nimport heapq\n\ndef solve(n, edges, s, t):\n    # Build adjacency list\n    adj = [[] for _ in range(n)]\n    for u, v, w in edges:\n        adj[u].append((v, w))\n    \n    # Priority queue: (distance, vertex)\n    heap = []\n    heapq.heappush(heap, (0, s))\n    \n    # Distance array, initialized to infinity\n    dist = [float('inf')] * n\n    dist[s] = 0\n    \n    while heap:\n        d, u = heapq.heappop(heap)\n        if d != dist[u]:\n            continue\n        if u == t:\n            return d\n        for v, w in adj[u]:\n            if dist[v] > d + w:\n                dist[v] = d + w\n                heapq.heappush(heap, (dist[v], v))\n    \n    return -1 if dist[t] == float('inf') else dist[t]\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1793269799,
+  "id": "20261029182950ec974fe82e5d4a51",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20261029182950ec974fe82e5d4a51",
+  "usage": {
+    "completion_tokens": 204,
+    "prompt_tokens": 154,
+    "total_tokens": 358
+  }
+}

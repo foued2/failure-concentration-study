@@ -1,0 +1,282 @@
+{
+  "candidates": {
+    "request-01": {
+      "body_sha256": "2b521ebe24591ffe95dbf03a42e18f96a5b3e66a677eab0912471c7cb9b20f34",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.08,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-02": {
+      "body_sha256": "6d8b9a2d1ea72cb8f8431501e7b1e27f16a5f84c0cdc0649ee3a498cc64ae3f9",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.079,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-03": {
+      "body_sha256": "4075db87413d057c0941d0920501f01b1116dc6f3ee6368e9535032d72463853",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.078,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-04": {
+      "body_sha256": "ea1a1f8806b4c213659d3bbfa78ced6445e2bd9e7e07ca0ba9e7edb957bfb987",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.076,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-05": {
+      "body_sha256": "0786038adeaefa508cd852ff319f6ee8725e2949ca80535c6e84edef7a19c14f",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.075,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-06": {
+      "body_sha256": "4c340d54d5714a8e6d80d2e5542cc2f658e729a49a82114a47a44b7046a69cce",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.082,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-07": {
+      "body_sha256": "3d6d89d6224b48ff23509d0eec8b0725fc78d651f2f2a06c03e234e930536257",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.079,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-08": {
+      "body_sha256": "fa82febd1c418edd4e4cce31d6ecb9177eb1d3f85d749cdbeed11fa380bf5885",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.083,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-09": {
+      "body_sha256": "1b778ef67114acb4b30ac891f437b078c7d63e9da8f6d7c4b46173e48c269f0a",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.08,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-10": {
+      "body_sha256": "dc898e1f0c044d7c01fadf1996f3c852cc5750684af8fbb395a180992f206e63",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.08,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-11": {
+      "body_sha256": "79170a5d341eea6118ba200718458f19a7de007c52dff25e673d44f8c39fdafb",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.075,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    },
+    "request-12": {
+      "body_sha256": "c85e7cc350d207ba19e54dcdbdaf45ab5403572ade638ec4b22520a10bdf6bf5",
+      "preflight": {
+        "answer": null,
+        "answer_type": "callable",
+        "child_return_code": 0,
+        "child_stderr_bytes": 0,
+        "child_timed_out": false,
+        "elapsed_seconds": 0.076,
+        "phase": "preflight",
+        "prediction_raw_status": "ok",
+        "probe_id": "preflight",
+        "solver_stderr_characters": 0,
+        "solver_stdout_characters": 0,
+        "status": "ok",
+        "survivors_after_cleanup": [],
+        "tree_empty": true
+      },
+      "status_counts": {
+        "ok": 30
+      },
+      "verdict": "executed_30_probes"
+    }
+  },
+  "finished_utc": "2026-10-29T10:31:44Z",
+  "started_utc": "2026-10-29T10:31:15Z"
+}

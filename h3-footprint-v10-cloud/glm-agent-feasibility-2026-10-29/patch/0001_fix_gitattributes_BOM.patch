@@ -1,0 +1,8 @@
+diff --git a/v03p/a1/.gitattributes b/v03p/a1/.gitattributes
+index 6a80b35..bf87a59 100644
+--- a/v03p/a1/.gitattributes
++++ b/v03p/a1/.gitattributes
+@@ -1,2 +1,2 @@
+-﻿# Preserve exact bytes for A1 review artifacts across platforms (no EOL conversion).
++# Preserve exact bytes for A1 review artifacts across platforms (no EOL conversion).
+ * -text

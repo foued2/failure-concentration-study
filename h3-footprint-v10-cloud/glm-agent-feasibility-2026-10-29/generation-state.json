@@ -1,0 +1,452 @@
+{
+  "first_hash_request": {
+    "0786038adeaefa508cd852ff319f6ee8725e2949ca80535c6e84edef7a19c14f": "request-05",
+    "1b778ef67114acb4b30ac891f437b078c7d63e9da8f6d7c4b46173e48c269f0a": "request-09",
+    "2b521ebe24591ffe95dbf03a42e18f96a5b3e66a677eab0912471c7cb9b20f34": "request-01",
+    "3d6d89d6224b48ff23509d0eec8b0725fc78d651f2f2a06c03e234e930536257": "request-07",
+    "4075db87413d057c0941d0920501f01b1116dc6f3ee6368e9535032d72463853": "request-03",
+    "4c340d54d5714a8e6d80d2e5542cc2f658e729a49a82114a47a44b7046a69cce": "request-06",
+    "6d8b9a2d1ea72cb8f8431501e7b1e27f16a5f84c0cdc0649ee3a498cc64ae3f9": "request-02",
+    "79170a5d341eea6118ba200718458f19a7de007c52dff25e673d44f8c39fdafb": "request-11",
+    "c85e7cc350d207ba19e54dcdbdaf45ab5403572ade638ec4b22520a10bdf6bf5": "request-12",
+    "dc898e1f0c044d7c01fadf1996f3c852cc5750684af8fbb395a180992f206e63": "request-10",
+    "ea1a1f8806b4c213659d3bbfa78ced6445e2bd9e7e07ca0ba9e7edb957bfb987": "request-04",
+    "fa82febd1c418edd4e4cce31d6ecb9177eb1d3f85d749cdbeed11fa380bf5885": "request-08"
+  },
+  "requests": {
+    "request-01": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 3.55,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:22Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 611,
+      "body_path": "bodies/request-01.py",
+      "body_sha256": "2b521ebe24591ffe95dbf03a42e18f96a5b3e66a677eab0912471c7cb9b20f34",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029182922d56fdc688ab04932",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029182922d56fdc688ab04932",
+      "endpoint_usage": {
+        "completion_tokens": 188,
+        "prompt_tokens": 136,
+        "total_tokens": 324
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "direct",
+      "provenance_group": "request-01",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1082,
+      "raw_response_sha256": "85b6b3ef4a05b7ce7f1828bcb876c9a1ed2125d4ca3c326e7b0854b9b1a9f2ad",
+      "request_id": "request-01",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-02": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.16,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:25Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 587,
+      "body_path": "bodies/request-02.py",
+      "body_sha256": "6d8b9a2d1ea72cb8f8431501e7b1e27f16a5f84c0cdc0649ee3a498cc64ae3f9",
+      "duplicate_of": null,
+      "endpoint_completion_id": "2026102918292513337efb2d574760",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "2026102918292513337efb2d574760",
+      "endpoint_usage": {
+        "completion_tokens": 176,
+        "prompt_tokens": 154,
+        "total_tokens": 330
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "menu",
+      "provenance_group": "request-02",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1057,
+      "raw_response_sha256": "6f95ccbe416745df8e518f465ae1c413440058824d5252ccf9d50894fa6e71d6",
+      "request_id": "request-02",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-03": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.15,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:27Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 576,
+      "body_path": "bodies/request-03.py",
+      "body_sha256": "4075db87413d057c0941d0920501f01b1116dc6f3ee6368e9535032d72463853",
+      "duplicate_of": null,
+      "endpoint_completion_id": "2026102918292772824653c0c144aa",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "2026102918292772824653c0c144aa",
+      "endpoint_usage": {
+        "completion_tokens": 168,
+        "prompt_tokens": 140,
+        "total_tokens": 308
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "simple",
+      "provenance_group": "request-03",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1050,
+      "raw_response_sha256": "f16c0382cab83953234209b0371e6bbb3408c2afa1ab21c35df06a28e4081189",
+      "request_id": "request-03",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-04": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.68,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:30Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 621,
+      "body_path": "bodies/request-04.py",
+      "body_sha256": "ea1a1f8806b4c213659d3bbfa78ced6445e2bd9e7e07ca0ba9e7edb957bfb987",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029182930891aed0b09864217",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029182930891aed0b09864217",
+      "endpoint_usage": {
+        "completion_tokens": 170,
+        "prompt_tokens": 136,
+        "total_tokens": 306
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "direct",
+      "provenance_group": "request-04",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1098,
+      "raw_response_sha256": "c67973827e5b424f173725ff6c24f7fc43dd513cbe699767265adff5d7e3d487",
+      "request_id": "request-04",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-05": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.49,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:42Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 563,
+      "body_path": "bodies/request-05.py",
+      "body_sha256": "0786038adeaefa508cd852ff319f6ee8725e2949ca80535c6e84edef7a19c14f",
+      "duplicate_of": null,
+      "endpoint_completion_id": "202610291829421ba55595d9e04f83",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "202610291829421ba55595d9e04f83",
+      "endpoint_usage": {
+        "completion_tokens": 175,
+        "prompt_tokens": 154,
+        "total_tokens": 329
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "menu",
+      "provenance_group": "request-05",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1032,
+      "raw_response_sha256": "9f1cca42620fa3b60a3d6a812de2a0046b06abc201bbc2c37f048e01fbfabf05",
+      "request_id": "request-05",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-06": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.39,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:45Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 523,
+      "body_path": "bodies/request-06.py",
+      "body_sha256": "4c340d54d5714a8e6d80d2e5542cc2f658e729a49a82114a47a44b7046a69cce",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029182945127f6eacb7ea4909",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029182945127f6eacb7ea4909",
+      "endpoint_usage": {
+        "completion_tokens": 163,
+        "prompt_tokens": 140,
+        "total_tokens": 303
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "simple",
+      "provenance_group": "request-06",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 992,
+      "raw_response_sha256": "2e736c92d28dd1c0eee8d30e34821ae91610a5504d8ca08209f88da5e698b61a",
+      "request_id": "request-06",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-07": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.71,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:47Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 699,
+      "body_path": "bodies/request-07.py",
+      "body_sha256": "3d6d89d6224b48ff23509d0eec8b0725fc78d651f2f2a06c03e234e930536257",
+      "duplicate_of": null,
+      "endpoint_completion_id": "202610291829477e3dbabd82504bb4",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "202610291829477e3dbabd82504bb4",
+      "endpoint_usage": {
+        "completion_tokens": 200,
+        "prompt_tokens": 136,
+        "total_tokens": 336
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "direct",
+      "provenance_group": "request-07",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1173,
+      "raw_response_sha256": "cd4501ff08ea2c05b99b6addba0017ba44d19bfa22f43ff3d85dbb80fc89ae4a",
+      "request_id": "request-07",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-08": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 8.97,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:29:50Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 691,
+      "body_path": "bodies/request-08.py",
+      "body_sha256": "fa82febd1c418edd4e4cce31d6ecb9177eb1d3f85d749cdbeed11fa380bf5885",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029182950ec974fe82e5d4a51",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029182950ec974fe82e5d4a51",
+      "endpoint_usage": {
+        "completion_tokens": 204,
+        "prompt_tokens": 154,
+        "total_tokens": 358
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "menu",
+      "provenance_group": "request-08",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1165,
+      "raw_response_sha256": "0c997cbb4969a234f486d6149c4074659d4f29bd8af416b209be73cace2bb9b4",
+      "request_id": "request-08",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-09": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.24,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:30:04Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 547,
+      "body_path": "bodies/request-09.py",
+      "body_sha256": "1b778ef67114acb4b30ac891f437b078c7d63e9da8f6d7c4b46173e48c269f0a",
+      "duplicate_of": null,
+      "endpoint_completion_id": "2026102918300408116967ff674bf6",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "2026102918300408116967ff674bf6",
+      "endpoint_usage": {
+        "completion_tokens": 164,
+        "prompt_tokens": 140,
+        "total_tokens": 304
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "simple",
+      "provenance_group": "request-09",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1017,
+      "raw_response_sha256": "a4d657b1361b5bf28512153dcfa09981e6599c01e40c6aba95650f5a5daccf51",
+      "request_id": "request-09",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-10": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.99,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:30:06Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 610,
+      "body_path": "bodies/request-10.py",
+      "body_sha256": "dc898e1f0c044d7c01fadf1996f3c852cc5750684af8fbb395a180992f206e63",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029183006b62af193f94f43ae",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029183006b62af193f94f43ae",
+      "endpoint_usage": {
+        "completion_tokens": 188,
+        "prompt_tokens": 136,
+        "total_tokens": 324
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "direct",
+      "provenance_group": "request-10",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1081,
+      "raw_response_sha256": "0832f78f652ca6b885bab6d6c2e833a916ab5f8956dfcb8aaee48be43b727ab4",
+      "request_id": "request-10",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-11": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 4.46,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:30:09Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 562,
+      "body_path": "bodies/request-11.py",
+      "body_sha256": "79170a5d341eea6118ba200718458f19a7de007c52dff25e673d44f8c39fdafb",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029183009605af45c2ef64291",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029183009605af45c2ef64291",
+      "endpoint_usage": {
+        "completion_tokens": 175,
+        "prompt_tokens": 154,
+        "total_tokens": 329
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "menu",
+      "provenance_group": "request-11",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1031,
+      "raw_response_sha256": "d3e859ff7fecb2a6b8872a255e9bc60dc8d75800c1926922c27054b0fb491c0d",
+      "request_id": "request-11",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    },
+    "request-12": {
+      "actual_model_identity_verified": false,
+      "attempt": {
+        "elapsed_seconds": 2.34,
+        "exit_code": 0,
+        "started_utc": "2026-10-29T10:30:13Z",
+        "stderr_excerpt": "",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "body_bytes": 586,
+      "body_path": "bodies/request-12.py",
+      "body_sha256": "c85e7cc350d207ba19e54dcdbdaf45ab5403572ade638ec4b22520a10bdf6bf5",
+      "duplicate_of": null,
+      "endpoint_completion_id": "20261029183013b9f2035727e84913",
+      "endpoint_reported_model": "glm-4-plus",
+      "endpoint_request_id": "20261029183013b9f2035727e84913",
+      "endpoint_usage": {
+        "completion_tokens": 176,
+        "prompt_tokens": 140,
+        "total_tokens": 316
+      },
+      "finish_reason": "stop",
+      "model_requested": "platform-default",
+      "prompt_variant": "simple",
+      "provenance_group": "request-12",
+      "provider_route": "z-ai CLI chat (platform-provided GLM access in analysis sandbox)",
+      "raw_response_bytes": 1056,
+      "raw_response_sha256": "e41b4827049b5b6082723e474e49d6ff19286b625b01c70fb6ae849f504880c7",
+      "request_id": "request-12",
+      "retry_count": 0,
+      "status": "candidate_ready"
+    }
+  },
+  "schedule": [
+    {
+      "prompt_variant": "direct",
+      "request_id": "request-01"
+    },
+    {
+      "prompt_variant": "menu",
+      "request_id": "request-02"
+    },
+    {
+      "prompt_variant": "simple",
+      "request_id": "request-03"
+    },
+    {
+      "prompt_variant": "direct",
+      "request_id": "request-04"
+    },
+    {
+      "prompt_variant": "menu",
+      "request_id": "request-05"
+    },
+    {
+      "prompt_variant": "simple",
+      "request_id": "request-06"
+    },
+    {
+      "prompt_variant": "direct",
+      "request_id": "request-07"
+    },
+    {
+      "prompt_variant": "menu",
+      "request_id": "request-08"
+    },
+    {
+      "prompt_variant": "simple",
+      "request_id": "request-09"
+    },
+    {
+      "prompt_variant": "direct",
+      "request_id": "request-10"
+    },
+    {
+      "prompt_variant": "menu",
+      "request_id": "request-11"
+    },
+    {
+      "prompt_variant": "simple",
+      "request_id": "request-12"
+    }
+  ]
+}
