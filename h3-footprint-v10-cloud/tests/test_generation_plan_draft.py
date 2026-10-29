@@ -43,6 +43,27 @@ class GenerationPlanDraftTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     draft.plan_batch(value)
 
+    def test_generator_source_hash_matches_frozen_manifest(self):
+        import json
+        freeze = json.loads(draft.V3_FREEZE_PATH.read_text(encoding="utf-8"))
+        expected = freeze["artifact_hashes_sha256"]["generate.py"]
+        self.assertEqual(draft.V3_GENERATOR_SOURCE_SHA256, expected)
+        self.assertEqual(draft.plan_batch(0)["v3_generator_source_sha256"], expected)
+
+    def test_modified_generator_source_is_rejected(self):
+        import json
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "generate.py"
+            freeze = root / "FREEZE.json"
+            source.write_text("def solve(): return 0\\n", encoding="utf-8")
+            freeze.write_text(json.dumps({
+                "artifact_hashes_sha256": {"generate.py": "0" * 64}
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "does not match"):
+                draft._verify_v3_generator_source(source, freeze)
+
     def test_prompt_bytes_match_frozen_v3_prompt_construction(self):
         v3 = draft._V3
         for batch_id in (0, 1, 2, 3, 17, 399):

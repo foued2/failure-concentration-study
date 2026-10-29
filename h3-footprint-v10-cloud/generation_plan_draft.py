@@ -9,11 +9,13 @@ from __future__ import annotations
 import ast
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 V3_GENERATOR_PATH = ROOT / "h3-footprint-v3" / "generate.py"
+V3_FREEZE_PATH = ROOT / "h3-footprint-v3" / "FREEZE.json"
 PLAN_STATUS = "DRAFT_NOT_FROZEN"
 GENERATION_PERMITTED = False
 BODIES_PER_BATCH = 8
@@ -22,9 +24,25 @@ ROUTE_IDS = ("deepseek", "glm", "mimo")
 EXPECTED_VARIANTS = ("direct", "menu", "simple")
 
 
-def _load_v3_generator():
-    if not V3_GENERATOR_PATH.is_file():
+def _verify_v3_generator_source(path: Path, freeze_path: Path) -> str:
+    if not path.is_file():
         raise FileNotFoundError("frozen V3 generator source is unavailable")
+    if not freeze_path.is_file():
+        raise FileNotFoundError("V3 freeze manifest is unavailable")
+    freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+    expected = (freeze.get("artifact_hashes_sha256") or {}).get("generate.py")
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError("V3 freeze manifest has no valid generate.py SHA-256")
+    actual = hashlib.sha256(path.read_bytes()).hexdigest()
+    if actual != expected:
+        raise ValueError("V3 generate.py does not match the frozen SHA-256")
+    return actual
+
+
+V3_GENERATOR_SOURCE_SHA256 = _verify_v3_generator_source(V3_GENERATOR_PATH, V3_FREEZE_PATH)
+
+
+def _load_v3_generator():
     spec = importlib.util.spec_from_file_location("h3_v3_generation_reference", V3_GENERATOR_PATH)
     if spec is None or spec.loader is None:
         raise ImportError("cannot load frozen V3 generator source")
@@ -66,7 +84,7 @@ def plan_batch(batch_id: int) -> dict[str, Any]:
         "requested_bodies": BODIES_PER_BATCH,
         "prompt": prompt,
         "prompt_sha256": _sha256_text(prompt),
-        "v3_generator_source_sha256": hashlib.sha256(V3_GENERATOR_PATH.read_bytes()).hexdigest(),
+        "v3_generator_source_sha256": V3_GENERATOR_SOURCE_SHA256,
         "plan_status": PLAN_STATUS,
         "generation_permitted": False,
         "temperature": None,
