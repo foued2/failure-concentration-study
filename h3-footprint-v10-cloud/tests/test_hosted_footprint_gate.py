@@ -136,6 +136,57 @@ class HostedFootprintGateTests(unittest.TestCase):
             self.assertFalse(saved["host_repository_mounted"])
             self.assertFalse(saved["api_keys_passed_to_container"])
 
+    def test_full_gate_uses_frozen_aggregation_without_generating_candidates(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            body_dir = root / "bodies"
+            body_dir.mkdir()
+            body = self._write_body(
+                body_dir,
+                "def solve(n, edges, s, t):\n    return 0\n",
+            )
+            attempts = root / "attempts-v10.jsonl"
+            attempts.write_text(
+                json.dumps({
+                    "batch_id": 0,
+                    "original_route_alias": "opencode/deepseek-v4.1-flash-free",
+                    "prompt_variant": "direct",
+                    "requested_bodies": 8,
+                    "extracted_bodies": 1,
+                    "candidate_records": [{"body_sha256": body.stem}],
+                }) + "\n",
+                encoding="utf-8",
+            )
+            output_dir = root / "gate-output"
+            trusted_dir = root / "trusted"
+            trusted_dir.mkdir()
+            mocked_execution = self._valid_mock_report(body)
+            with mock.patch.object(hosted.executor, "run_candidate", return_value=mocked_execution) as execute:
+                summary = hosted.build_hosted_report(
+                    body_dir=body_dir,
+                    attempts_path=attempts,
+                    trusted_dir=trusted_dir,
+                    output_dir=output_dir,
+                )
+            execute.assert_called_once()
+            self.assertEqual(summary["protocol_status"], "V10_DRAFT_NOT_FROZEN")
+            self.assertEqual(summary["candidate_bodies"], 1)
+            self.assertEqual(summary["valid_bodies"], 1)
+            self.assertEqual(summary["eligible_bodies"], 0)
+            self.assertEqual(summary["verdict"], "FAIL")
+            self.assertEqual(summary["reason"], "insufficient_support")
+            self.assertFalse(summary["candidate_generation_performed_by_this_gate"])
+            self.assertEqual(summary["model_calls_performed_by_this_gate"], 0)
+            self.assertFalse(summary["held_out_work_performed"])
+            report = json.loads((output_dir / "footprint.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["rows"][0]["k"], 0)
+            self.assertEqual(report["rows"][0]["C"], 0.0)
+            manifest = json.loads((output_dir / "V10_EXECUTION_MANIFEST.json").read_text(encoding="utf-8"))
+            self.assertFalse(manifest["h3_scientific_result"])
+            self.assertFalse(manifest["candidate_generation_performed_by_this_gate"])
+            self.assertTrue((output_dir / "REPORT.md").is_file())
+            self.assertTrue((output_dir / "runner-reports" / f"{body.stem}.json").is_file())
+
     def test_missing_provenance_is_excluded_before_docker(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
