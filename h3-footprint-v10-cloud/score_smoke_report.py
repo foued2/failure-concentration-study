@@ -80,7 +80,8 @@ def verify_frozen_v3() -> dict:
         expected = artifact_hashes.get(name)
         if not isinstance(expected, str):
             raise ValueError(f"V3 freeze omits required file: {name}")
-        actual = sha256(V3 / name)
+        canonical_bytes = (V3 / name).read_bytes().replace(b"\r\n", b"\n")
+        actual = sha256_bytes(canonical_bytes)
         if actual != expected:
             raise ValueError(f"frozen V3 hash mismatch: {name}")
         checked[name] = actual
