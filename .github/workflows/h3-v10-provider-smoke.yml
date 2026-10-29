@@ -11,9 +11,6 @@ jobs:
     name: One non-candidate request per configured provider route
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
-      TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
     steps:
       - name: Check out only the provider smoke code
         uses: actions/checkout@v4
@@ -24,6 +21,9 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Check credentials are configured without printing values
+        env:
+          NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
+          TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail
@@ -32,6 +32,9 @@ jobs:
           echo "Required secret variables are present; values are not printed."
 
       - name: Make one bounded smoke request per route
+        env:
+          NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
+          TOKENHARBOR_API_KEY: ${{ secrets.TOKENHARBOR_API_KEY }}
         shell: bash
         run: |
           set +e
