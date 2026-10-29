@@ -59,9 +59,11 @@ class ProviderAdapterTests(unittest.TestCase):
 
     def test_all_routes_have_explicit_unique_ids_and_key_names(self):
         self.assertEqual(set(providers.ROUTES), {"deepseek", "glm", "mimo"})
-        self.assertEqual(providers.ROUTES["deepseek"].key_env, "NVIDIA_NIM_API_KEY")
+        self.assertEqual(providers.ROUTES["deepseek"].key_env, "TOKENHARBOR_API_KEY")
         self.assertEqual(providers.ROUTES["glm"].key_env, "NVIDIA_NIM_API_KEY")
         self.assertEqual(providers.ROUTES["mimo"].key_env, "TOKENHARBOR_API_KEY")
+        self.assertEqual(providers.ROUTES["deepseek"].api_model, "deepseek-v4.1-flash:free")
+        self.assertEqual(providers.ROUTES["mimo"].api_model, "mimo-v2.6-flash:free")
         self.assertTrue(all(route.api_url.startswith("https://") for route in providers.ROUTES.values()))
 
     def test_success_sends_openai_compatible_body_and_returns_redacted_metadata(self):
