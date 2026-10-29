@@ -24,6 +24,7 @@ MEMORY_BYTES = 536870912
 MAX_PROCESSES = 8
 MAX_LINE_BYTES = 128 * 1024
 DEFAULT_RESPONSE_TIMEOUT = 12.0
+DEFAULT_PROBE_TIMEOUT_SECONDS = 5.0
 
 
 class ContainerExecutionError(RuntimeError):
@@ -80,7 +81,7 @@ def _inspect_container(container_id: str, body: Path, supervisor: Path, child: P
     mounts = {m.get("Destination"): m for m in (record.get("Mounts") or [])}
     expected = {
         "/candidate/body.py": (str(body), True),
-        "/trusted/supervisor.py": (str(supervisor), True),
+        "/trusted/isolated_supervisor.py": (str(supervisor), True),
         "/trusted/candidate_child.py": (str(child), True),
     }
     for target, (source, readonly) in expected.items():
@@ -123,6 +124,7 @@ def run_candidate(
     probes: list[dict],
     *,
     response_timeout: float = DEFAULT_RESPONSE_TIMEOUT,
+    probe_timeout: float = DEFAULT_PROBE_TIMEOUT_SECONDS,
 ) -> dict:
     body = _regular_file(Path(body_path), "candidate body")
     trusted_dir = Path(trusted_dir).resolve(strict=True)
@@ -132,6 +134,8 @@ def run_candidate(
         raise ValueError("at least one probe input is required")
     if not 1 <= response_timeout <= 120:
         raise ValueError("response_timeout must be between 1 and 120 seconds")
+    if not 0.2 <= probe_timeout <= 30:
+        raise ValueError("probe_timeout must be between 0.2 and 30 seconds")
     probe_ids = [p.get("probe_id") for p in probes if isinstance(p, dict)]
     if len(probe_ids) != len(probes) or any(not isinstance(pid, str) or not pid for pid in probe_ids):
         raise ValueError("every probe must be an object with a non-empty probe_id")
@@ -145,7 +149,7 @@ def run_candidate(
     container_name = "h3v10-" + uuid.uuid4().hex[:20]
     mounts = [
         f"type=bind,source={body},target=/candidate/body.py,readonly",
-        f"type=bind,source={supervisor},target=/trusted/supervisor.py,readonly",
+        f"type=bind,source={supervisor},target=/trusted/isolated_supervisor.py,readonly",
         f"type=bind,source={child},target=/trusted/candidate_child.py,readonly",
     ]
     cmd = [
@@ -160,7 +164,7 @@ def run_candidate(
     ]
     for mount in mounts:
         cmd.extend(["--mount", mount])
-    cmd.extend(["--entrypoint", "python", PYTHON_IMAGE, "-I", "/trusted/isolated_supervisor.py"])
+    cmd.extend(["--entrypoint", "python", PYTHON_IMAGE, "-I", "/trusted/isolated_supervisor.py", "--probe-timeout", str(probe_timeout)])
     created = _docker(cmd, timeout=30)
     if created.returncode != 0 or not created.stdout.strip():
         raise ContainerExecutionError("docker create failed")
@@ -251,6 +255,7 @@ def run_candidate(
         "image": PYTHON_IMAGE,
         "container_config": container_config,
         "probe_count": len(probes),
+        "probe_timeout_seconds": probe_timeout,
         "results": results,
         "all_trees_empty": all(r.get("tree_empty") is True for r in results),
         "candidate_generation_performed": False,
@@ -270,6 +275,7 @@ def main() -> int:
     parser.add_argument("--probes-json", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--response-timeout", type=float, default=DEFAULT_RESPONSE_TIMEOUT)
+    parser.add_argument("--probe-timeout", type=float, default=DEFAULT_PROBE_TIMEOUT_SECONDS)
     args = parser.parse_args()
     try:
         probe_data = json.loads(Path(args.probes_json).read_text(encoding="utf-8"))
@@ -278,6 +284,7 @@ def main() -> int:
         report = run_candidate(
             Path(args.body), Path(args.trusted_dir), probe_data,
             response_timeout=args.response_timeout,
+            probe_timeout=args.probe_timeout,
         )
         report_path = Path(args.out)
         report_path.parent.mkdir(parents=True, exist_ok=True)
