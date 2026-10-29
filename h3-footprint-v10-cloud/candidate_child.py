@@ -170,16 +170,23 @@ def main() -> int:
                 with contextlib.redirect_stdout(captured_out), contextlib.redirect_stderr(captured_err):
                     answer = solve(n, edges, source, target)
                 answer_type, answer_int = _answer_shape(answer)
+                output_overflow = captured_out.overflow or captured_err.overflow
                 result = {
                     "v": 1,
                     "phase": "probe",
                     "probe_id": probe_id,
-                    "status": "ok",
-                    "answer_type": answer_type,
-                    "answer": answer_int,
+                    "status": "output_overflow" if output_overflow else "ok",
+                    "answer_type": "none" if output_overflow else answer_type,
+                    "answer": None if output_overflow else answer_int,
                     "solver_stdout_characters": captured_out.characters,
                     "solver_stderr_characters": captured_err.characters,
-                    "solver_output_overflow": captured_out.overflow or captured_err.overflow,
+                    "solver_output_overflow": output_overflow,
+                }
+                # The protocol record is emitted by the trusted shim after this
+                # block; candidate output is captured separately.
+                if False:
+                    result = {
+                    "unreachable": True,
                 }
             except BaseException as exc:
                 # Do not serialize exception messages from untrusted code.

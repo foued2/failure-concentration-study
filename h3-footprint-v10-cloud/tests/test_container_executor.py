@@ -142,6 +142,46 @@ class ContainerExecutorUnitTests(unittest.TestCase):
             finally:
                 executor._docker = original
 
+    def test_preflight_payload_is_answer_free(self):
+        probe = {"probe_id": "real-probe", "n": 3, "edges": [[0, 1, 2]], "s": 0, "t": 1}
+        payload = executor._preflight_payload(probe)
+        self.assertEqual(payload["probe_id"], "__h3_preflight__")
+        self.assertEqual(payload["phase"], "preflight")
+        self.assertEqual(payload["n"], 3)
+        self.assertEqual(payload["edges"], [[0, 1, 2]])
+        self.assertEqual(set(payload), {"probe_id", "phase", "n", "edges", "s", "t"})
+        self.assertFalse(any("answer" in key.lower() or "expected" in key.lower() for key in payload))
+
+    def test_preflight_classifies_load_error_as_invalid_candidate_not_k(self):
+        valid, status, error = executor._preflight_state({
+            "phase": "preflight", "status": "load_error", "error_type": "ImportError"
+        })
+        self.assertFalse(valid)
+        self.assertEqual(status, "load_error")
+        self.assertEqual(error, "ImportError")
+
+    def test_preflight_accepts_only_callable_without_output_overflow(self):
+        record = {"phase": "preflight", "status": "ok", "answer_type": "callable",
+                  "answer": None, "solver_output_overflow": False}
+        self.assertEqual(executor._preflight_state(record), (True, "valid", None))
+        record["solver_output_overflow"] = True
+        self.assertEqual(executor._preflight_state(record), (False, "preflight_output_overflow", None))
+
+    def test_preflight_timeout_is_not_a_probe_failure(self):
+        valid, status, error = executor._preflight_state({"phase": "preflight", "status": "timeout"})
+        self.assertFalse(valid)
+        self.assertEqual(status, "preflight_timeout")
+        self.assertIsNone(error)
+
+    def test_overflow_status_is_preserved_by_supervisor_parser(self):
+        record = {
+            "v": 1, "phase": "probe", "probe_id": "p", "status": "output_overflow",
+            "answer_type": "none", "answer": None, "solver_output_overflow": True,
+        }
+        parsed = isolated_supervisor._parse_prediction("H3PRED " + json.dumps(record), "p")
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed["status"], "output_overflow")
+
     def test_preflight_payload_has_an_explicit_phase(self):
         payload = {"probe_id": "__preflight__", "phase": "preflight",
                    "n": 1, "edges": [], "s": 0, "t": 0}

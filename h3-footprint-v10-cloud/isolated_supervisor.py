@@ -204,7 +204,7 @@ def _parse_prediction(stdout: str, probe_id: str, phase: str = "probe") -> dict 
         return None
     # Captured user-level output is bounded separately from the supervisor
     # protocol stream. An overflowed capture is not a valid prediction record.
-    if item.get("solver_output_overflow") is True:
+    if item.get("solver_output_overflow") is True and item.get("status") != "output_overflow":
         return None
     if item.get("status") == "ok":
         if item.get("answer_type") == "int":
@@ -284,6 +284,8 @@ def _run_one(payload: dict, sequence: int, timeout: float) -> dict:
                     status = "invalid_child_output"
                 elif prediction.get("status") == "load_error":
                     status = "load_error"
+                elif prediction.get("status") == "output_overflow":
+                    status = "output_overflow"
                 elif prediction.get("status") == "exception":
                     status = "exception"
                 elif prediction.get("status") == "invalid_input":

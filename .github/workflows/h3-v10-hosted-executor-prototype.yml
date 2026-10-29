@@ -432,6 +432,42 @@ jobs:
             --out "$root/v3-30-probe-report.json" \
             --probe-timeout 5 --response-timeout 12
 
+      - name: Verify module-load failures are excluded before probe scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          printf 'def solve(:\\n    pass\\n' > "$root/candidate/load-error-body.py"
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/load-error-body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$fixture/probes.json" \
+            --out "$root/load-error-report.json" \
+            --probe-timeout 2 --response-timeout 8
+          python - "$root/load-error-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["isolation_harness_ok"] is True, report
+          assert report["candidate_valid"] is False, report
+          assert report["candidate_status"] == "load_error", report
+          assert report["probe_count"] == 0, report
+          assert report["expected_probe_count"] == 30, report
+          assert report["preflight"]["status"] == "load_error", report
+          assert report["all_trees_empty"] is True, report
+          print(json.dumps({
+              "status": "PASS",
+              "control": "invalid Python module fails preflight and is excluded before k assignment",
+              "candidate_status": report["candidate_status"],
+              "probe_count": report["probe_count"],
+              "expected_probe_count": report["expected_probe_count"],
+              "candidate_generation_performed": False,
+          }, indent=2))
+          PY
+
       - name: Run the adversarial process-tree timeout control
         shell: bash
         run: |

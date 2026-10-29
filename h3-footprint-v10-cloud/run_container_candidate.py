@@ -138,6 +138,41 @@ def _read_line(stream, pending: bytearray, timeout: float) -> bytes:
         pending.extend(chunk)
 
 
+def _preflight_payload(probe: dict) -> dict:
+    """Create an answer-free import/callability check using one valid input shape."""
+    required = ("n", "edges", "s", "t")
+    if any(key not in probe for key in required):
+        raise ValueError("each probe must contain n, edges, s, and t")
+    return {
+        "probe_id": "__h3_preflight__",
+        "phase": "preflight",
+        "n": probe["n"],
+        "edges": probe["edges"],
+        "s": probe["s"],
+        "t": probe["t"],
+    }
+
+
+def _preflight_state(record: dict) -> tuple[bool, str, str | None]:
+    """Classify module preflight separately from any probe's outcome."""
+    if record.get("phase") != "preflight":
+        return False, "preflight_protocol_error", None
+    if record.get("status") == "ok" and record.get("answer_type") == "callable" and record.get("answer") is None:
+        if record.get("solver_output_overflow") is True:
+            return False, "preflight_output_overflow", None
+        return True, "valid", None
+    status = record.get("status")
+    if status == "load_error":
+        return False, "load_error", str(record.get("error_type") or "unknown")
+    if status == "timeout":
+        return False, "preflight_timeout", None
+    if status == "exception":
+        return False, "preflight_exception", str(record.get("error_type") or "unknown")
+    if status == "output_overflow":
+        return False, "preflight_output_overflow", None
+    return False, "preflight_failed", str(status or "unknown")
+
+
 def run_candidate(
     body_path: Path,
     trusted_dir: Path,
@@ -216,30 +251,63 @@ def run_candidate(
         stderr_thread = threading.Thread(target=drain_stderr, daemon=True)
         stderr_thread.start()
         pending = bytearray()
-        for sequence, probe in enumerate(probes, start=1):
-            payload = json.dumps(probe, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
-            if len(payload) > MAX_LINE_BYTES:
-                raise ContainerExecutionError(f"probe input {sequence} exceeds the byte cap")
-            if start.poll() is not None:
-                raise ContainerExecutionError(f"container exited before probe {sequence}")
-            start.stdin.write(payload)
-            start.stdin.flush()
-            line = _read_line(start.stdout, pending, response_timeout)
-            try:
-                record = json.loads(line.decode("utf-8"))
-            except (UnicodeDecodeError, json.JSONDecodeError):
-                raise ContainerExecutionError(f"supervisor output for probe {sequence} was not JSON") from None
-            if not isinstance(record, dict) or record.get("v") != 1:
-                raise ContainerExecutionError(f"invalid supervisor response schema at probe {sequence}")
-            if record.get("sequence") != sequence or record.get("probe_id") != probe["probe_id"]:
-                raise ContainerExecutionError(f"supervisor response is not bound to probe {sequence}")
-            if record.get("tree_empty") is not True:
-                fatal = True
-                raise ContainerExecutionError(f"process tree did not empty after probe {sequence}")
-            if record.get("status") == "tree_cleanup_failed" or record.get("fatal"):
-                fatal = True
-                raise ContainerExecutionError(f"supervisor cleanup failed after probe {sequence}")
-            results.append(record)
+
+        # Preflight loads the candidate module and verifies solve() is callable,
+        # without invoking solve or exposing expected answers. A load failure
+        # invalidates the candidate and receives no k; it is not 30 probe failures.
+        preflight_payload = _preflight_payload(probes[0])
+        preflight_bytes = json.dumps(preflight_payload, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+        if len(preflight_bytes) > MAX_LINE_BYTES:
+            raise ContainerExecutionError("preflight input exceeds byte cap")
+        start.stdin.write(preflight_bytes)
+        start.stdin.flush()
+        preflight_line = _read_line(start.stdout, pending, response_timeout)
+        try:
+            preflight_record = json.loads(preflight_line.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            raise ContainerExecutionError("supervisor preflight output was not JSON") from None
+        if not isinstance(preflight_record, dict) or preflight_record.get("v") != 1:
+            raise ContainerExecutionError("invalid supervisor preflight schema")
+        if preflight_record.get("sequence") != 1 or preflight_record.get("probe_id") != "__h3_preflight__":
+            raise ContainerExecutionError("supervisor preflight response is not bound to request")
+        if preflight_record.get("phase") != "preflight":
+            raise ContainerExecutionError("supervisor response phase mismatch during preflight")
+        if preflight_record.get("tree_empty") is not True:
+            fatal = True
+            raise ContainerExecutionError("process tree did not empty after candidate preflight")
+        if preflight_record.get("status") == "tree_cleanup_failed" or preflight_record.get("fatal"):
+            fatal = True
+            raise ContainerExecutionError("supervisor cleanup failed after candidate preflight")
+
+        candidate_valid, candidate_status, candidate_load_error_type = _preflight_state(preflight_record)
+        if candidate_valid:
+            for sequence, probe in enumerate(probes, start=1):
+                payload = json.dumps(probe, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+                if len(payload) > MAX_LINE_BYTES:
+                    raise ContainerExecutionError(f"probe input {sequence} exceeds the byte cap")
+                if start.poll() is not None:
+                    raise ContainerExecutionError(f"container exited before probe {sequence}")
+                start.stdin.write(payload)
+                start.stdin.flush()
+                line = _read_line(start.stdout, pending, response_timeout)
+                try:
+                    record = json.loads(line.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    raise ContainerExecutionError(f"supervisor output for probe {sequence} was not JSON") from None
+                if not isinstance(record, dict) or record.get("v") != 1:
+                    raise ContainerExecutionError(f"invalid supervisor response schema at probe {sequence}")
+                if record.get("sequence") != sequence + 1 or record.get("probe_id") != probe["probe_id"]:
+                    raise ContainerExecutionError(f"supervisor response is not bound to probe {sequence}")
+                if record.get("phase") != "probe":
+                    raise ContainerExecutionError(f"supervisor response phase mismatch at probe {sequence}")
+                if record.get("tree_empty") is not True:
+                    fatal = True
+                    raise ContainerExecutionError(f"process tree did not empty after probe {sequence}")
+                if record.get("status") == "tree_cleanup_failed" or record.get("fatal"):
+                    fatal = True
+                    raise ContainerExecutionError(f"supervisor cleanup failed after probe {sequence}")
+                record["probe_index"] = sequence
+                results.append(record)
 
         start.stdin.close()
         try:
@@ -277,17 +345,26 @@ def run_candidate(
         "candidate_sha256": candidate_hash,
         "image": PYTHON_IMAGE,
         "container_config": container_config,
-        "probe_count": len(probes),
+        "probe_count": len(results),
+        "expected_probe_count": len(probes),
         "probe_timeout_seconds": probe_timeout,
+        "preflight": preflight_record,
+        "candidate_valid": candidate_valid,
+        "candidate_status": candidate_status,
+        "candidate_load_error_type": candidate_load_error_type,
         "results": results,
-        "all_trees_empty": all(r.get("tree_empty") is True for r in results),
+        "all_trees_empty": preflight_record.get("tree_empty") is True and all(r.get("tree_empty") is True for r in results),
         "candidate_generation_performed": False,
         "scoring_performed": False,
         "reference_answers_present": False,
         "host_repository_mounted": False,
         "api_keys_passed_to_container": False,
         "container_stderr_tail": bytes(stderr_tail).decode("utf-8", "replace"),
-        "isolation_harness_ok": not fatal and len(results) == len(probes),
+        "isolation_harness_ok": (
+            not fatal
+            and preflight_record.get("tree_empty") is True
+            and ((candidate_valid and len(results) == len(probes)) or (not candidate_valid and len(results) == 0))
+        ),
     }
 
 
@@ -315,6 +392,9 @@ def main() -> int:
         print(json.dumps({
             "isolation_harness_ok": report["isolation_harness_ok"],
             "probe_count": report["probe_count"],
+            "expected_probe_count": report["expected_probe_count"],
+            "candidate_valid": report["candidate_valid"],
+            "candidate_status": report["candidate_status"],
             "statuses": [r.get("status") for r in report["results"]],
             "all_trees_empty": report["all_trees_empty"],
             "report": str(report_path),
