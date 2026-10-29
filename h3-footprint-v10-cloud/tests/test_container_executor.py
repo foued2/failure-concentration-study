@@ -101,7 +101,7 @@ class ContainerExecutorUnitTests(unittest.TestCase):
             finally:
                 executor._docker = original
 
-    def test_prefixed_capability_names_normalize_but_missing_caps_fail(self):
+    def test_prefixed_capability_names_normalize_and_missing_caps_fail(self):
         # Runtime APIs may represent the same Linux capability with an optional CAP_ prefix.
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -134,7 +134,9 @@ class ContainerExecutorUnitTests(unittest.TestCase):
             try:
                 result = executor._inspect_container("id", body, supervisor, child)
                 self.assertTrue(result["verified"])
-                host["HostConfigMissing"] = None
+                host["CapAdd"] = ["CAP_CHOWN", "CAP_SETUID", "CAP_SETGID"]
+                with self.assertRaises(executor.ContainerExecutionError):
+                    executor._inspect_container("id", body, supervisor, child)
             finally:
                 executor._docker = original
 

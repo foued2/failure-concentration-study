@@ -95,7 +95,7 @@ def _inspect_container(container_id: str, body: Path, supervisor: Path, child: P
     for target, (source, readonly) in expected.items():
         m = mounts.get(target)
         checks[f"mount_{target}_present"] = bool(m)
-        checks[f"mount_{target}_source"] = bool(m and Path(m.get("Source", "")).resolve() == Path(source))
+        checks[f"mount_{target}_source"] = bool(m and Path(m.get("Source", "")).resolve() == Path(source).resolve())
         checks[f"mount_{target}_readonly"] = bool(m and m.get("RW") is (not readonly))
     checks["no_unexpected_mounts"] = set(mounts) == set(expected)
     violations = [key for key, ok in checks.items() if not ok]
