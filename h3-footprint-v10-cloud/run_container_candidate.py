@@ -70,7 +70,7 @@ def _inspect_container(container_id: str, body: Path, supervisor: Path, child: P
         "cpu_cap": host.get("NanoCpus") == 1_000_000_000
                    or (host.get("CpuQuota") == 100_000 and host.get("CpuPeriod") == 100_000),
         "capabilities_dropped": "ALL" in (host.get("CapDrop") or []),
-        "supervisor_capabilities_minimal": set(host.get("CapAdd") or []) == {"SETUID", "SETGID", "KILL"},
+        "supervisor_capabilities_minimal": set(host.get("CapAdd") or []) == {"CHOWN", "SETUID", "SETGID", "KILL"},
         "no_new_privileges": "no-new-privileges" in (host.get("SecurityOpt") or []),
         "root_uid_for_supervisor_only": (record.get("Config") or {}).get("User") in {"0:0", "0"},
         "pinned_image": (record.get("Config") or {}).get("Image") == PYTHON_IMAGE,
@@ -157,7 +157,7 @@ def run_candidate(
         "--network", "none", "--read-only", "--pids-limit", str(MAX_PROCESSES),
         "--memory", str(MEMORY_BYTES), "--memory-swap", str(MEMORY_BYTES),
         "--cpus", "1", "--user", "0:0",
-        "--cap-drop", "ALL", "--cap-add", "SETUID", "--cap-add", "SETGID", "--cap-add", "KILL",
+        "--cap-drop", "ALL", "--cap-add", "CHOWN", "--cap-add", "SETUID", "--cap-add", "SETGID", "--cap-add", "KILL",
         "--security-opt", "no-new-privileges",
         "--tmpfs", "/tmp:rw,noexec,nosuid,size=64m,mode=0711",
         "--ulimit", "nofile=32:32",
