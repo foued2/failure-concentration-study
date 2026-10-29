@@ -542,6 +542,24 @@ class CommandLineTests(unittest.TestCase):
 class RendezvousTests(unittest.TestCase):
     """Two-token ordering, exercised through the real transport interface."""
 
+    def test_legacy_token_visibility_parses_input_not_arbitrary_substrings(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / protocol.JOB_FILENAME
+            path.write_text(json.dumps({
+                "job_id": "a" * 29 + "222",
+                "input": {"n": 111, "edges": [], "s": 0, "t": 0},
+            }), encoding="utf-8")
+            self.assertFalse(controller._legacy_job_token_visible(path, 222))
+
+            path.write_text(json.dumps({
+                "job_id": "a" * 29 + "111",
+                "input": {"n": 222, "edges": [], "s": 0, "t": 0},
+            }), encoding="utf-8")
+            self.assertTrue(controller._legacy_job_token_visible(path, 222))
+
+            path.write_text("{malformed", encoding="utf-8")
+            self.assertTrue(controller._legacy_job_token_visible(path, 222))
+
     def test_tokens_are_ordered_and_distinct(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
