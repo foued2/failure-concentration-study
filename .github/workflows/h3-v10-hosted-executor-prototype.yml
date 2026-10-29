@@ -439,7 +439,10 @@ jobs:
           package="$RUNNER_TEMP/h3-v10-executor-package"
           fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
           root="$RUNNER_TEMP/h3-v10-executor-smoke"
-          printf 'def solve(:\\n    pass\\n' > "$root/candidate/load-error-body.py"
+          cat > "$root/candidate/load-error-body.py" <<'PY'
+          def solve(:
+              pass
+          PY
           python "$root/run_container_candidate.py" \
             --body "$root/candidate/load-error-body.py" \
             --trusted-dir "$package" \

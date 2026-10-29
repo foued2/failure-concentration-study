@@ -182,12 +182,6 @@ def main() -> int:
                     "solver_stderr_characters": captured_err.characters,
                     "solver_output_overflow": output_overflow,
                 }
-                # The protocol record is emitted by the trusted shim after this
-                # block; candidate output is captured separately.
-                if False:
-                    result = {
-                    "unreachable": True,
-                }
             except BaseException as exc:
                 # Do not serialize exception messages from untrusted code.
                 if isinstance(exc, SystemExit):
