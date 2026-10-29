@@ -43,7 +43,7 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                 "NetworkMode": "none", "ReadonlyRootfs": True, "PidsLimit": 8,
                 "Memory": 536870912, "MemorySwap": 536870912,
                 "NanoCpus": 1000000000, "CapDrop": ["ALL"],
-                "CapAdd": ["SETUID", "SETGID", "KILL"],
+                "CapAdd": ["CHOWN", "SETUID", "SETGID", "KILL"],
                 "SecurityOpt": ["no-new-privileges"],
                 "Tmpfs": {"/tmp": "rw,noexec,nosuid,size=64m,mode=0711"},
             }
@@ -76,7 +76,7 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                 "NetworkMode": "bridge", "ReadonlyRootfs": False, "PidsLimit": 8,
                 "Memory": 536870912, "MemorySwap": 536870912,
                 "NanoCpus": 1000000000, "CapDrop": ["ALL"],
-                "CapAdd": ["SETUID", "SETGID", "KILL"], "SecurityOpt": ["no-new-privileges"],
+                "CapAdd": ["CHOWN", "SETUID", "SETGID", "KILL"], "SecurityOpt": ["no-new-privileges"],
                 "Tmpfs": {"/tmp": "rw,noexec,nosuid,size=64m,mode=0711"},
             }
             mounts = [
