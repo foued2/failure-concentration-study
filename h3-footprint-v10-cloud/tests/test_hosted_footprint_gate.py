@@ -12,6 +12,7 @@ HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 
 import hosted_footprint_gate as hosted
+import build_smoke_fixture
 import generation_plan_draft as draft
 import score_smoke_report
 
