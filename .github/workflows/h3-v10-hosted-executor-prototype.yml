@@ -656,7 +656,25 @@ jobs:
           python h3-footprint-v10-cloud/score_smoke_report.py \
             --report "$runroot/v3-30-probe-report.json" \
             --fixture-manifest "$fixture/fixture-manifest.json" \
+            --body "$fixture/smoke-body.py" \
             --out "$runroot/v3-30-probe-scoring-report.json"
+          python - "$runroot/v3-30-probe-scoring-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          result = json.loads(Path(sys.argv[1]).read_text())
+          assert result["status"] == "PASS", result
+          assert result["correct_control_predictions"] == 30, result
+          assert result["k"] == 0 and result["C"] == 0.0 and result["max_f"] == 0, result
+          assert result["family_counts"] == {"R": 0, "Z": 0, "A": 0, "I": 0, "S": 0, "U": 0}, result
+          assert result["H3_scientific_result"] is False, result
+          assert result["candidate_generation_performed"] is False, result
+          print(json.dumps({
+              "status": "PASS",
+              "control_profile": {"k": result["k"], "C": result["C"], "max_f": result["max_f"]},
+              "h3_scientific_result": False
+          }, indent=2))
+          PY
       - name: Upload separate-job scoring record
         if: always()
         uses: actions/upload-artifact@v4
