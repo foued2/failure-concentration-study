@@ -32,8 +32,8 @@ V3_FROZEN_GENERATOR_SHA256 = "ff5b638455f16a3033168b02929e4d7bb63b72a5b486b72930
 
 def _git_blob_sha1(path: Path) -> str:
     """Hash canonical LF file bytes as a Git blob, independent of checkout CRLF."""
-    raw = path.read_bytes().replace(b"\\r\\n", b"\\n")
-    header = f"blob {len(raw)}\\0".encode("ascii")
+    raw = path.read_bytes().replace(b"\r\n", b"\n")
+    header = f"blob {len(raw)}\0".encode("ascii")
     return hashlib.sha1(header + raw).hexdigest()
 
 
@@ -56,7 +56,7 @@ def _verify_v3_generator_source(path: Path, expected_hash: str = V3_FROZEN_GENER
         raise FileNotFoundError("frozen V3 generator source is unavailable")
     if not isinstance(expected_hash, str) or len(expected_hash) != 64:
         raise ValueError("expected generator SHA-256 is invalid")
-    actual = hashlib.sha256(path.read_bytes().replace(b"\\r\\n", b"\\n")).hexdigest()
+    actual = hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     if actual != expected_hash:
         raise ValueError("V3 generate.py does not match the pinned frozen SHA-256")
     return actual

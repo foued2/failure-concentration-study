@@ -57,8 +57,8 @@ class GenerationPlanDraftTests(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as td:
             source = Path(td) / "generate.py"
-            lf_bytes = b"def solve(): return 0\\n"
-            source.write_bytes(b"def solve(): return 0\\r\\n")
+            lf_bytes = b"def solve(): return 0\n"
+            source.write_bytes(b"def solve(): return 0\r\n")
             expected = hashlib.sha256(lf_bytes).hexdigest()
             self.assertEqual(draft._verify_v3_generator_source(source, expected), expected)
 
@@ -66,7 +66,7 @@ class GenerationPlanDraftTests(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as td:
             source = Path(td) / "generate.py"
-            source.write_bytes(b"def solve(): return 1\\n")
+            source.write_bytes(b"def solve(): return 1\n")
             with self.assertRaisesRegex(ValueError, "pinned frozen SHA-256"):
                 draft._verify_v3_generator_source(source)
 
