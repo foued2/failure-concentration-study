@@ -91,7 +91,7 @@ class ProviderAdapterTests(unittest.TestCase):
         self.assertNotIn("SENSITIVE-TEST-KEY-DO-NOT-LOG", json.dumps(result))
 
     def test_missing_key_fails_closed_without_network_call(self):
-        with mock.patch.dict(os.environ, {"NVIDIA_NIM_API_KEY": ""}, clear=False):
+        with mock.patch.dict(os.environ, {"TOKENHARBOR_API_KEY": ""}, clear=False):
             with self.assertRaises(providers.ProviderError) as ctx:
                 providers.call_chat("deepseek", "ping", opener=lambda *a, **k: self.fail("network called"))
         self.assertIn("missing environment variable", str(ctx.exception))
