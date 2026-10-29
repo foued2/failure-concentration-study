@@ -200,7 +200,7 @@ def _parse_prediction(stdout: str, probe_id: str, phase: str = "probe") -> dict 
         return None
     if item.get("phase") != phase:
         return None
-    if item.get("status") not in {"ok", "load_error", "exception", "invalid_input"}:
+    if item.get("status") not in {"ok", "load_error", "exception", "invalid_input", "output_overflow"}:
         return None
     # Captured user-level output is bounded separately from the supervisor
     # protocol stream. An overflowed capture is not a valid prediction record.
