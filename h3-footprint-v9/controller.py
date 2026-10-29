@@ -277,6 +277,26 @@ def _classify_rendezvous(job_a: dict[str, Any], job_b: dict[str, Any],
     }
 
 
+def _legacy_job_token_visible(path: Path, token: int) -> bool:
+    """Fail closed when checking whether a legacy job.json exposes a token.
+
+    Searching the serialized JSON for a decimal token is incorrect: the same
+    digits can occur in a random job id, a content hash, or unrelated metadata.
+    Parse the actual input field. A malformed or unreadable job is ambiguous,
+    so it cannot support the claim that a second request was absent.
+    """
+    try:
+        job = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return True
+    if not isinstance(job, dict):
+        return True
+    job_input = job.get("input")
+    if not isinstance(job_input, dict) or "n" not in job_input:
+        return True
+    return job_input.get("n") == token
+
+
 def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
                    token_a: int = 111, token_b: int = 222,
                    immutable: bool = False) -> dict[str, Any]:
@@ -315,10 +335,7 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
         if immutable:
             pattern = f"{protocol.IMMUTABLE_JOB_PREFIX}{(ctl._sequence + 1):06d}-*.json"
             return any(staging.glob(pattern))
-        try:
-            return str(token_b) in (staging / protocol.JOB_FILENAME).read_text(encoding="utf-8")
-        except OSError:
-            return False
+        return _legacy_job_token_visible(staging / protocol.JOB_FILENAME, token_b)
 
     job_a = publish(token_a)
     stamp("publish_A", job_id=job_a["job_id"], token=token_a,
