@@ -12,7 +12,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-from typing import Any, Callable
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 V3_DIR = ROOT / "h3-footprint-v3"
@@ -37,6 +37,16 @@ class HostedGateError(RuntimeError):
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+def _has_symlink_component(path: Path) -> bool:
+    """Detect a symlink at any existing component before resolve() erases evidence."""
+    absolute = Path(path).absolute()
+    current = Path(absolute.anchor)
+    for part in absolute.parts[1:]:
+        current = current / part
+        if current.is_symlink():
+            return True
+    return False
 
 
 def canonical_body_hash(source: str) -> str:
@@ -188,8 +198,6 @@ def evaluate_body_hosted(
         return _invalid_candidate(row, "encoding:invalid_utf8")
     if canonical_body_hash(source) != body_hash:
         return _invalid_candidate(row, "body_hash_mismatch")
-    if sha256_bytes(source_bytes) == "":
-        raise HostedGateError("unreachable SHA-256 calculation failure")
     static_reason = V3_GATE.unsafe_reason(source)
     if static_reason:
         return _invalid_candidate(row, static_reason)
@@ -276,14 +284,28 @@ def build_hosted_report(
     if generation_plan_draft.V3_GENERATOR_SOURCE_SHA256 != "ff5b638455f16a3033168b02929e4d7bb63b72a5b486b72930b119b69b3e3456":
         raise HostedGateError("frozen V3 generator hash changed")
 
-    body_dir = Path(body_dir).resolve(strict=True)
-    attempts_path = Path(attempts_path).resolve(strict=True)
-    output_dir = Path(output_dir).resolve()
-    trusted_dir = Path(trusted_dir).resolve(strict=True)
-    if not body_dir.is_dir() or body_dir.is_symlink():
+    body_dir = Path(body_dir)
+    attempts_path = Path(attempts_path)
+    output_dir = Path(output_dir)
+    trusted_dir = Path(trusted_dir)
+    for label, path in (
+        ("body_dir", body_dir),
+        ("attempts_path", attempts_path),
+        ("output_dir", output_dir),
+        ("trusted_dir", trusted_dir),
+    ):
+        if _has_symlink_component(path):
+            raise HostedGateError(f"{label} contains a symlink component")
+    body_dir = body_dir.resolve(strict=True)
+    attempts_path = attempts_path.resolve(strict=True)
+    output_dir = output_dir.resolve()
+    trusted_dir = trusted_dir.resolve(strict=True)
+    if not body_dir.is_dir():
         raise HostedGateError("body_dir must be a directory")
-    if not attempts_path.is_file() or attempts_path.is_symlink():
+    if not attempts_path.is_file():
         raise HostedGateError("attempts_path must be a regular file")
+    if not trusted_dir.is_dir():
+        raise HostedGateError("trusted_dir must be a directory")
     if body_dir == ROOT or body_dir.is_relative_to(ROOT) or body_dir in V3_DIR.parents:
         raise HostedGateError("candidate body directory must be outside the trusted source tree")
 
