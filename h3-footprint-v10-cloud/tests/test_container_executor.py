@@ -143,22 +143,32 @@ class ContainerExecutorUnitTests(unittest.TestCase):
                 executor._docker = original
 
     def test_static_policy_matches_v3_for_forbidden_imports(self):
-        source = "import os\\ndef solve(n, edges, s, t):\\n    return 0\\n"
+        source = """import os
+def solve(n, edges, s, t):
+    return 0
+"""
         self.assertEqual(executor.unsafe_reason(source), "import:os")
 
     def test_static_policy_rejects_undefined_global(self):
-        source = "def solve(n, edges, s, t):\\n    return missing_distance\\n"
+        source = """def solve(n, edges, s, t):
+    return missing_distance
+"""
         self.assertEqual(executor.undefined_global_names(source), ["missing_distance"])
 
     def test_static_policy_allows_simple_self_contained_solver(self):
-        source = "def solve(n, edges, s, t):\\n    return 0\\n"
+        source = """def solve(n, edges, s, t):
+    return 0
+"""
         self.assertIsNone(executor.unsafe_reason(source))
         self.assertEqual(executor.undefined_global_names(source), [])
 
     def test_static_rejection_report_does_not_launch_execution(self):
         with tempfile.TemporaryDirectory() as td:
             body = Path(td) / "body.py"
-            body.write_text("import socket\\ndef solve(n, edges, s, t):\\n    return 0\\n")
+            body.write_text("""import socket
+def solve(n, edges, s, t):
+    return 0
+""")
             report = executor._static_exclusion_report(body, 30, 5.0, "import:socket")
             self.assertFalse(report["candidate_valid"])
             self.assertEqual(report["candidate_status"], "static_rejection")
