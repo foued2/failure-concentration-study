@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -26,6 +27,10 @@ EXPECTED = "H3_PROVIDER_SMOKE_OK"
 def run(routes: list[str], timeout: float) -> dict:
     results = []
     for route_id in routes:
+        if route_id not in ROUTES:
+            raise ValueError(f"unknown route_id: {route_id}")
+        route = ROUTES[route_id]
+        credential_present = bool(os.environ.get(route.key_env, "").strip())
         started = time.time()
         try:
             result = call_chat(
@@ -43,6 +48,8 @@ def run(routes: list[str], timeout: float) -> dict:
                 "api_url": result["api_url"],
                 "api_model": result["api_model"],
                 "status": "REACHABLE" if response.strip() else "EMPTY_RESPONSE",
+                "request_attempted": credential_present,
+                "http_response_received": True,
                 "http_status": result["http_status"],
                 "provider_request_id": result["provider_request_id"],
                 "finish_reason": result["finish_reason"],
@@ -63,6 +70,8 @@ def run(routes: list[str], timeout: float) -> dict:
                 "api_url": ROUTES[route_id].api_url,
                 "api_model": ROUTES[route_id].api_model,
                 "status": "BLOCKED",
+                "request_attempted": credential_present,
+                "http_response_received": exc.status is not None,
                 "http_status": exc.status,
                 "error_category": exc.category,
                 "retry_after": exc.retry_after,
@@ -76,7 +85,9 @@ def run(routes: list[str], timeout: float) -> dict:
         "candidate_generation_performed": False,
         "candidate_evaluation_performed": False,
         "outcome": "PASS" if results and all(r["status"] == "REACHABLE" for r in results) else "BLOCKED",
-        "request_count": len(results),
+        "route_count": len(results),
+        "request_attempt_count": sum(1 for item in results if item["request_attempted"]),
+        "http_response_count": sum(1 for item in results if item["http_response_received"]),
         "results": results,
     }
 
@@ -95,8 +106,12 @@ def main() -> int:
     path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({
         "outcome": report["outcome"],
-        "request_count": report["request_count"],
+        "route_count": report["route_count"],
+        "request_attempt_count": report["request_attempt_count"],
+        "http_response_count": report["http_response_count"],
         "routes": [{"route_id": r["route_id"], "status": r["status"],
+                    "request_attempted": r["request_attempted"],
+                    "http_response_received": r["http_response_received"],
                     "http_status": r.get("http_status"), "error_category": r.get("error_category"),
                     "provider_request_id": r.get("provider_request_id"),
                     "elapsed_seconds": r.get("elapsed_seconds")} for r in report["results"]],
