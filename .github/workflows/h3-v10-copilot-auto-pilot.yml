@@ -1,0 +1,198 @@
+name: H3 V10 Copilot-Auto exploratory footprint screen
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - gpt/h3-v10-integrity-fix-2026-10-29
+    paths:
+      - "h3-footprint-v10-cloud/copilot_auto_pilot.py"
+      - ".github/workflows/h3-v10-copilot-auto-pilot.yml"
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  generate-capped-candidates:
+    name: Generate at most 12 candidates, no retries
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out prompt tool and public probe definitions only
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            h3-footprint-v10-cloud/copilot_auto_pilot.py
+            h3-footprint-v10-cloud/build_smoke_fixture.py
+            h3-footprint-v3/instrument.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Prepare public probe inputs, without expected answers
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-copilot-auto-pilot"
+          mkdir -p "$root/inputs"
+          python h3-footprint-v10-cloud/build_smoke_fixture.py --out-dir "$root/inputs"
+          python - "$root/inputs/probes.json" <<'PY'
+          import json, sys
+          from pathlib import Path
+          p = json.loads(Path(sys.argv[1]).read_text())
+          assert len(p) == 30 and len({x["probe_id"] for x in p}) == 30
+          assert all(set(x) == {"probe_id","n","edges","s","t"} for x in p)
+          print("PUBLIC_INPUTS_READY: 30 probes, no expected answers in fixture")
+          PY
+      - name: Make fixed 12-request Copilot-Auto screen
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python h3-footprint-v10-cloud/copilot_auto_pilot.py generate --out-dir "$RUNNER_TEMP/h3-copilot-auto-pilot/generated"
+      - name: Upload candidate bodies, provenance index, and input-only probes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-generated-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/h3-copilot-auto-pilot/generated
+            ${{ runner.temp }}/h3-copilot-auto-pilot/inputs/probes.json
+            ${{ runner.temp }}/h3-copilot-auto-pilot/inputs/fixture-manifest.json
+            ${{ runner.temp }}/h3-copilot-auto-pilot/inputs/SHA256SUMS
+          if-no-files-found: warn
+          retention-days: 14
+
+  isolated-execution:
+    name: Run ready candidates in networkless containers, without answers or tokens
+    needs: generate-capped-candidates
+    if: always() && needs.generate-capped-candidates.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions: {}
+    steps:
+      - name: Check out trusted executor files only
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            h3-footprint-v10-cloud/run_container_candidate.py
+            h3-footprint-v10-cloud/isolated_supervisor.py
+            h3-footprint-v10-cloud/candidate_child.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Download generated bodies and public inputs only
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-generated-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-copilot-auto-pilot
+      - name: Execute unique candidates, each with the same 30 public probes
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-copilot-auto-pilot"
+          generated="$root/generated"
+          reports="$root/execution-reports"
+          mkdir -p "$reports"
+          test -f "$generated/candidate-index.json"
+          test -f "$root/inputs/probes.json"
+          python - "$generated/candidate-index.json" "$generated/bodies" "$reports" "$root/inputs/probes.json" <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          index_path, bodies_dir, reports_dir, probes_path = map(Path, sys.argv[1:])
+          index = json.loads(index_path.read_text())
+          records = index.get("requests", [])
+          ready = []
+          seen = set()
+          for rec in records:
+              if rec.get("status") != "candidate_ready":
+                  continue
+              body_hash = rec.get("body_sha256")
+              if body_hash in seen:
+                  continue
+              seen.add(body_hash)
+              body = bodies_dir / Path(rec["body_path"]).name
+              if not body.is_file():
+                  raise SystemExit(f"candidate body missing for {rec['request_id']}")
+              ready.append((rec, body))
+          if len(records) > 12:
+              raise SystemExit("request cap violated")
+          print(f"UNIQUE_CANDIDATES_TO_EXECUTE={len(ready)}")
+          for rec, body in ready:
+              out = reports_dir / f"{rec['request_id']}.json"
+              cmd = [
+                  sys.executable, "h3-footprint-v10-cloud/run_container_candidate.py",
+                  "--body", str(body), "--trusted-dir", "h3-footprint-v10-cloud",
+                  "--probes-json", str(probes_path), "--out", str(out),
+                  "--probe-timeout", "5", "--response-timeout", "12",
+              ]
+              run = subprocess.run(cmd, check=False, timeout=180)
+              if run.returncode != 0:
+                  raise SystemExit(f"isolated execution failed for {rec['request_id']} (exit {run.returncode})")
+          print("ISOLATED_EXECUTION_COMPLETE: candidate code received no token, oracle, expected answers, or repository mount")
+          PY
+      - name: Upload untrusted prediction records only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-predictions-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-copilot-auto-pilot/execution-reports
+          if-no-files-found: warn
+          retention-days: 14
+
+  separate-scoring:
+    name: Score predictions on a fresh VM and report exploratory footprint only
+    needs: [generate-capped-candidates, isolated-execution]
+    if: always() && needs.generate-capped-candidates.result == 'success' && needs.isolated-execution.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out trusted scorer inputs only
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            h3-footprint-v10-cloud/copilot_auto_pilot.py
+            h3-footprint-v3/instrument.py
+            h3-footprint-v3/expected_values.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Download candidate index and isolated predictions
+        uses: actions/download-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-generated-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-copilot-auto-pilot
+      - uses: actions/download-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-predictions-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-copilot-auto-pilot/execution-reports
+      - name: Validate provenance and compute the bounded descriptive report
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/h3-copilot-auto-pilot"
+          python h3-footprint-v10-cloud/copilot_auto_pilot.py score \
+            --index "$root/generated/candidate-index.json" \
+            --reports-dir "$root/execution-reports" \
+            --expected-values h3-footprint-v3/expected_values.json \
+            --instrument h3-footprint-v3/instrument.py \
+            --out "$root/exploratory-footprint-report.json"
+          cat "$root/exploratory-footprint-report.json"
+      - name: Upload final report and full reproducibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h3-copilot-auto-pilot-final-${{ github.run_id }}
+          path: ${{ runner.temp }}/h3-copilot-auto-pilot
+          if-no-files-found: warn
+          retention-days: 30
