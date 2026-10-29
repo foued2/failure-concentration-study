@@ -33,7 +33,7 @@ def _verify_v3_generator_source(path: Path, freeze_path: Path) -> str:
     expected = (freeze.get("artifact_hashes_sha256") or {}).get("generate.py")
     if not isinstance(expected, str) or len(expected) != 64:
         raise ValueError("V3 freeze manifest has no valid generate.py SHA-256")
-    actual = hashlib.sha256(path.read_bytes().replace(b"\\r\\n", b"\\n")).hexdigest()
+    actual = hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     if actual != expected:
         raise ValueError("V3 generate.py does not match the frozen SHA-256")
     return actual
