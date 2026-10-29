@@ -116,7 +116,9 @@ def v_persist(rows):
     r = row(rows, 6)
     if not (r and r["status"] == "ok"):
         return "INCONCLUSIVE", ["n=6 not ok: %s" % (r,)]
-    return ("NO_FINDING" if r["answer"] == 1 else "FINDING"), ["other processes visible at next probe: %s (expected 1)" % r["answer"]]
+    # The redesigned architecture has both the container supervisor and the
+    # trusted candidate coordinator visible beside the worker (expected 2).
+    return ("NO_FINDING" if r["answer"] == 2 else "FINDING"), ["other processes visible inside worker: %s (expected 2: supervisor + coordinator)" % r["answer"]]
 
 
 def v_introspect(rows):

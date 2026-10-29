@@ -1,5 +1,5 @@
 """HOSTILE TEST BODY: tries to survive past its probe by daemonizing (setsid) and leaving a marker.
-n=6 counts other processes visible in /proc (expected: only the supervisor, i.e. 1)."""
+n=6 counts processes other than the worker (expected: supervisor + trusted coordinator, i.e. 2)."""
 import os
 import time
 

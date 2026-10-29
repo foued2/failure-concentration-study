@@ -176,8 +176,8 @@ def _kill_worker(proc: subprocess.Popen) -> None:
             pass
 
 
-def _run_worker(payload: dict, timeout: float) -> tuple[str, str, int | None]:
-    """Run untrusted solver code in a process that cannot write supervisor metadata."""
+def _run_worker(payload: dict, timeout: float) -> tuple[str, str, int | None, int, int, bool]:
+    """Run untrusted solver code and independently measure its stdout/stderr."""
     phase = payload.get("phase", "probe")
     worker_payload = {
         "phase": phase,
@@ -187,25 +187,34 @@ def _run_worker(payload: dict, timeout: float) -> tuple[str, str, int | None]:
         "t": payload["t"],
     }
     raw = json.dumps(worker_payload, separators=(",", ":")).encode("utf-8") + b"\n"
-    proc = subprocess.Popen(
-        [sys.executable, "-I", "-B", str(Path(__file__).resolve()), "--worker"],
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        close_fds=True, bufsize=0, start_new_session=True,
-    )
+    answer_read_fd, answer_write_fd = os.pipe()
+    proc = None
+    selector = selectors.DefaultSelector()
     stdout = bytearray()
     stderr = bytearray()
-    selector = selectors.DefaultSelector()
-    total_bytes = 0
+    answer = bytearray()
     timed_out = False
-    overflow = False
+    output_overflow = False
+    answer_overflow = False
     started = time.monotonic()
     deadline = started + max(0.1, timeout - 0.15)
+    total_solver_bytes = 0
     try:
+        proc = subprocess.Popen(
+            [sys.executable, "-I", "-B", str(Path(__file__).resolve()), "--worker", "--result-fd", str(answer_write_fd)],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            close_fds=True, pass_fds=(answer_write_fd,), bufsize=0, start_new_session=True,
+        )
+        os.close(answer_write_fd)
+        answer_write_fd = -1
         proc.stdin.write(raw)
         proc.stdin.close()
         for name, stream in (("stdout", proc.stdout), ("stderr", proc.stderr)):
             os.set_blocking(stream.fileno(), False)
             selector.register(stream, selectors.EVENT_READ, name)
+        os.set_blocking(answer_read_fd, False)
+        selector.register(answer_read_fd, selectors.EVENT_READ, "answer")
+
         while selector.get_map() or proc.poll() is None:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -214,66 +223,91 @@ def _run_worker(payload: dict, timeout: float) -> tuple[str, str, int | None]:
                 break
             for key, _ in selector.select(min(0.025, remaining)):
                 try:
-                    chunk = os.read(key.fileobj.fileno(), 4096)
+                    chunk = os.read(key.fd, 4096)
                 except BlockingIOError:
                     continue
                 if not chunk:
                     selector.unregister(key.fileobj)
                     continue
-                total_bytes += len(chunk)
-                if total_bytes > MAX_WORKER_OUTPUT_BYTES:
-                    overflow = True
+                if key.data == "answer":
+                    if len(answer) + len(chunk) > 4096:
+                        answer_overflow = True
+                        _kill_worker(proc)
+                        break
+                    answer.extend(chunk)
+                    continue
+                target = stdout if key.data == "stdout" else stderr
+                total_solver_bytes += len(chunk)
+                target.extend(chunk)
+                if (total_solver_bytes > MAX_WORKER_OUTPUT_BYTES
+                        or len(stdout.decode("utf-8", "replace")) > MAX_CAPTURE_CHARS
+                        or len(stderr.decode("utf-8", "replace")) > MAX_CAPTURE_CHARS):
+                    output_overflow = True
                     _kill_worker(proc)
                     break
-                (stdout if key.data == "stdout" else stderr).extend(chunk)
-            if overflow:
+            if output_overflow or answer_overflow:
                 break
+        stdout_chars = len(stdout.decode("utf-8", "replace"))
+        stderr_chars = len(stderr.decode("utf-8", "replace"))
         if timed_out:
-            return "timeout", "none", None
-        if overflow:
-            return "output_overflow", "none", None
+            return "timeout", "none", None, stdout_chars, stderr_chars, False
+        if output_overflow:
+            return "output_overflow", "none", None, stdout_chars, stderr_chars, True
+        if answer_overflow:
+            return "invalid_child_output", "none", None, stdout_chars, stderr_chars, False
         try:
             return_code = proc.wait(timeout=0.5)
         except subprocess.TimeoutExpired:
             _kill_worker(proc)
-            return "timeout", "none", None
+            return "timeout", "none", None, stdout_chars, stderr_chars, False
         if return_code != 0:
-            return "exception", "none", None
-        parsed = _parse_worker_response(bytes(stdout), phase)
+            return "exception", "none", None, stdout_chars, stderr_chars, False
+        parsed = _parse_worker_response(bytes(answer), phase)
         if parsed is None:
-            return "invalid_child_output", "none", None
-        return "ok", parsed[0], parsed[1]
+            return "invalid_child_output", "none", None, stdout_chars, stderr_chars, False
+        return "ok", parsed[0], parsed[1], stdout_chars, stderr_chars, False
     finally:
         selector.close()
-        for stream in (proc.stdin, proc.stdout, proc.stderr):
-            try:
-                if stream is not None:
-                    stream.close()
-            except OSError:
-                pass
+        if proc is not None:
+            for stream in (proc.stdin, proc.stdout, proc.stderr):
+                try:
+                    if stream is not None:
+                        stream.close()
+                except OSError:
+                    pass
+        if answer_write_fd >= 0:
+            os.close(answer_write_fd)
+        try:
+            os.close(answer_read_fd)
+        except OSError:
+            pass
 
 
 def _worker_main() -> int:
-    """Execute the candidate and emit only its answer value; no status metadata."""
-    protocol_stdout = sys.stdout
+    """Run candidate code; the answer channel contains only an untrusted answer value."""
+    args = sys.argv[2:]
+    if len(args) != 2 or args[0] != "--result-fd":
+        return 64
+    try:
+        result_fd = int(args[1])
+    except ValueError:
+        return 64
     raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
     if len(raw) > MAX_INPUT_BYTES:
         return 64
     payload = json.loads(raw.decode("utf-8"))
     # The real probe identifier is intentionally not passed into this process.
     n, edges, source, target, _unused_probe_id, phase = _validate_input({**payload, "probe_id": "worker"})
-    captured_out, captured_err = BoundedTextIO(), BoundedTextIO()
-    with contextlib.redirect_stdout(captured_out), contextlib.redirect_stderr(captured_err):
-        solve = _load_solve()
-        if phase == "preflight":
-            answer_type, answer_int = "callable", None
-        else:
-            answer = solve(n, edges, source, target)
-            answer_type, answer_int = _answer_shape(answer)
-    # These two fields are the only data the coordinator accepts from this process.
+    solve = _load_solve()
+    if phase == "preflight":
+        answer_type, answer_int = "callable", None
+    else:
+        answer = solve(n, edges, source, target)
+        answer_type, answer_int = _answer_shape(answer)
+    # No status, probe ID, timeout, or cleanup metadata crosses this boundary.
     response = {"answer_type": answer_type, "answer": answer_int}
-    protocol_stdout.write(json.dumps(response, sort_keys=True, separators=(",", ":")) + "\n")
-    protocol_stdout.flush()
+    os.write(result_fd, json.dumps(response, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n")
+    os.close(result_fd)
     return 0
 
 
@@ -307,7 +341,7 @@ def _coordinator_main() -> int:
         protocol_stdout.flush()
         return 0
 
-    status, answer_type, answer = _run_worker(normalized, timeout)
+    status, answer_type, answer, stdout_chars, stderr_chars, output_overflow = _run_worker(normalized, timeout)
     result = {
         "v": 1,
         "phase": phase,
@@ -315,6 +349,9 @@ def _coordinator_main() -> int:
         "status": status,
         "answer_type": answer_type,
         "answer": answer,
+        "solver_stdout_characters": stdout_chars,
+        "solver_stderr_characters": stderr_chars,
+        "solver_output_overflow": output_overflow,
     }
     protocol_stdout.write("H3PRED " + json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n")
     protocol_stdout.flush()

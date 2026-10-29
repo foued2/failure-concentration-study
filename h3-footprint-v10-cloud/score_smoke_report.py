@@ -21,6 +21,33 @@ import instrument
 
 
 MAX_JSON_BYTES = 2 * 1024 * 1024
+MAX_JSON_DEPTH = 64
+
+def _check_json_depth(text: str, label: str) -> None:
+    depth = 0
+    in_string = False
+    escaped = False
+    for char in text:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char in "[{":
+            depth += 1
+            if depth > MAX_JSON_DEPTH:
+                raise ValueError(f"{label} exceeds maximum JSON nesting depth {MAX_JSON_DEPTH}")
+        elif char in "]}":
+            depth -= 1
+            if depth < 0:
+                raise ValueError(f"{label} has unbalanced JSON nesting")
+    if in_string or depth != 0:
+        raise ValueError(f"{label} has incomplete JSON structure")
 
 def _load_bounded_json(path: Path, label: str):
     with Path(path).open("rb") as stream:
@@ -28,7 +55,9 @@ def _load_bounded_json(path: Path, label: str):
     if len(raw) > MAX_JSON_BYTES:
         raise ValueError(f"{label} exceeds {MAX_JSON_BYTES} byte limit")
     try:
-        return json.loads(raw.decode("utf-8"))
+        text = raw.decode("utf-8")
+        _check_json_depth(text, label)
+        return json.loads(text)
     except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
         raise ValueError(f"{label} is not valid bounded UTF-8 JSON") from None
 

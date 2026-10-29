@@ -78,9 +78,11 @@ jobs:
           fixtures = {x["fixture"]: x for x in hostile["fixtures"]}
           assert fixtures["forge"]["verdict"] == "NO_FINDING", fixtures["forge"]
           assert fixtures["flood"]["verdict"] == "NO_FINDING", fixtures["flood"]
+          assert fixtures["persist"]["verdict"] == "NO_FINDING", fixtures["persist"]
           cases = {x["case"]: x for x in scorer["cases"]}
           assert cases["baseline"]["outcome"] == "ACCEPTED", cases["baseline"]
           assert cases["pad_20MiB"]["outcome"] == "REJECTED", cases["pad_20MiB"]
+          assert cases["nesting_depth_100000"]["outcome"] == "REJECTED", cases["nesting_depth_100000"]
           assert cases["record_tree_empty_false_toplevel_true"]["outcome"] == "REJECTED", cases["record_tree_empty_false_toplevel_true"]
           print("INTEGRITY_VALIDATION_PASS: control 30/30; forged metadata rejected; oversized and inconsistent reports rejected")
           PY

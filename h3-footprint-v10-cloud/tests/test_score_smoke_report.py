@@ -33,6 +33,13 @@ class ScorerBoundaryTests(unittest.TestCase):
         mp.write_text(json.dumps(manifest), encoding="utf-8")
         return rp, mp, report
 
+    def test_bounded_json_reader_rejects_excessive_nesting(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "deep.json"
+            path.write_text("[" * 100 + "0" + "]" * 100, encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "nesting depth"):
+                scorer._load_bounded_json(path, "execution report")
+
     def test_scorer_rejects_record_level_cleanup_failure_even_if_top_level_is_true(self):
         with tempfile.TemporaryDirectory() as td:
             rp, mp, report = self._valid_report_and_manifest(Path(td))
