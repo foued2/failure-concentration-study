@@ -143,6 +143,8 @@ def derive_failure_profile(results: list[dict], expected: dict[str, int], expect
             output_overflow_count += 1
             reason = "output_overflow_v10_policy"
         elif status == "ok":
+            if record.get("solver_output_overflow") is True:
+                raise ValueError(f"success status contradicts output-overflow flag at probe {index + 1}")
             answer_type = record.get("answer_type")
             if answer_type not in KNOWN_OK_ANSWER_TYPES:
                 raise ValueError(f"unknown answer type at probe {index + 1}")
@@ -240,9 +242,20 @@ def score(report_path: Path, fixture_manifest_path: Path, body_path: Path) -> di
         raise ValueError("repository was unexpectedly mounted in candidate container")
     if report.get("api_keys_passed_to_container") is not False:
         raise ValueError("API keys were unexpectedly passed to candidate container")
-    if report.get("preflight", {}).get("phase") != "preflight" or report.get("preflight", {}).get("status") != "ok":
-        raise ValueError("fixed control module preflight did not pass")
-    if report.get("preflight", {}).get("tree_empty") is not True:
+    preflight = report.get("preflight")
+    if not isinstance(preflight, dict):
+        raise ValueError("preflight record is missing")
+    if (
+        preflight.get("phase") != "preflight"
+        or preflight.get("probe_id") != "__h3_preflight__"
+        or preflight.get("sequence") != 1
+        or preflight.get("status") != "ok"
+        or preflight.get("answer_type") != "callable"
+        or preflight.get("answer") is not None
+        or preflight.get("solver_output_overflow") is True
+    ):
+        raise ValueError("fixed control module preflight did not pass its full schema")
+    if preflight.get("tree_empty") is not True:
         raise ValueError("process cleanup was not verified after preflight")
     if not report.get("container_config", {}).get("verified"):
         raise ValueError("container configuration was not verified")

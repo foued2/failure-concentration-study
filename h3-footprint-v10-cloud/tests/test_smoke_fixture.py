@@ -111,6 +111,25 @@ class FixedFixtureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "candidate-invalid protocol status"):
             score_smoke_report.derive_failure_profile(results, expected, expected_ids)
 
+    def test_success_status_with_overflow_flag_is_rejected(self):
+        expected = instrument.expected_values()
+        expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
+        results = []
+        for index, probe_id in enumerate(expected_ids):
+            results.append({
+                "probe_id": probe_id,
+                "phase": "probe",
+                "probe_index": index + 1,
+                "sequence": index + 2,
+                "status": "ok",
+                "answer_type": "int",
+                "answer": expected[probe_id],
+                "solver_output_overflow": index == 0,
+                "tree_empty": True,
+            })
+        with self.assertRaisesRegex(ValueError, "contradicts output-overflow flag"):
+            score_smoke_report.derive_failure_profile(results, expected, expected_ids)
+
     def test_response_order_and_sequence_are_bound(self):
         expected = instrument.expected_values()
         expected_ids = [probe["probe_id"] for probe in instrument.PROBES]
