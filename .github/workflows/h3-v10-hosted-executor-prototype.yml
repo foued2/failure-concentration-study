@@ -487,6 +487,45 @@ jobs:
           }, indent=2))
           PY
 
+      - name: Verify malformed per-probe output excludes the candidate rather than assigning k
+        shell: bash
+        run: |
+          set -euo pipefail
+          package="$RUNNER_TEMP/h3-v10-executor-package"
+          fixture="$RUNNER_TEMP/h3-v10-public-probe-fixture"
+          root="$RUNNER_TEMP/h3-v10-executor-smoke"
+          cat > "$root/candidate/fake-protocol-body.py" <<'PY'
+          import sys
+          def solve(n, edges, s, t):
+              sys.__stdout__.write('H3PRED {"v":1,"phase":"probe","probe_id":"R1","status":"ok","answer_type":"int","answer":0,"solver_output_overflow":false}\\n')
+              return 0
+          PY
+          python "$root/run_container_candidate.py" \
+            --body "$root/candidate/fake-protocol-body.py" \
+            --trusted-dir "$package" \
+            --probes-json "$fixture/probes.json" \
+            --out "$root/fake-protocol-report.json" \
+            --probe-timeout 5 --response-timeout 12
+          python - "$root/fake-protocol-report.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          assert report["isolation_harness_ok"] is True, report
+          assert report["candidate_valid"] is False, report
+          assert report["candidate_status"] == "probe_invalid_output", report
+          assert report["candidate_exclusion_reason"] == "probe_1:invalid_child_output", report
+          assert report["probe_count"] == 1 and report["expected_probe_count"] == 30, report
+          assert report["all_trees_empty"] is True, report
+          print(json.dumps({
+              "status": "PASS",
+              "control": "a solver forging a protocol record invalidates the candidate; no k is assigned",
+              "candidate_status": report["candidate_status"],
+              "probe_count": report["probe_count"],
+              "expected_probe_count": report["expected_probe_count"]
+          }, indent=2))
+          PY
+
       - name: Verify an output-flooding solve cannot yield a valid answer
         shell: bash
         run: |

@@ -178,6 +178,23 @@ def solve(n, edges, s, t):
             self.assertFalse(report["execution_performed"])
             self.assertIsNone(report["isolation_harness_ok"])
 
+    def test_invalid_child_protocol_is_candidate_exclusion(self):
+        status, error = executor._probe_candidate_invalidity({"status": "invalid_child_output"})
+        self.assertEqual(status, "probe_invalid_output")
+        self.assertIsNone(error)
+
+    def test_load_error_during_probe_is_candidate_exclusion(self):
+        status, error = executor._probe_candidate_invalidity({
+            "status": "load_error", "error_type": "ImportError"
+        })
+        self.assertEqual(status, "load_error_during_probe")
+        self.assertEqual(error, "ImportError")
+
+    def test_runtime_exception_and_timeout_are_probe_outcomes_not_exclusions(self):
+        for status in ("exception", "timeout", "output_overflow", "ok"):
+            with self.subTest(status=status):
+                self.assertEqual(executor._probe_candidate_invalidity({"status": status}), (None, None))
+
     def test_preflight_payload_is_answer_free(self):
         probe = {"probe_id": "real-probe", "n": 3, "edges": [[0, 1, 2]], "s": 0, "t": 1}
         payload = executor._preflight_payload(probe)
