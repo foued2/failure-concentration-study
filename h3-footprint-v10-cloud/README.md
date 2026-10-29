@@ -33,9 +33,11 @@ The direct provider adapter and its unit tests are in this folder. A manual-only
 
 Routes proposed for that smoke:
 
-- DeepSeek V4.1 Flash through NVIDIA NIM, with NVIDIA_NIM_API_KEY.
-- GLM-5.3-Flash through NVIDIA NIM, with NVIDIA_NIM_API_KEY.
-- MiMo-V2.6-Flash through Token Harbor's :free route, with TOKENHARBOR_API_KEY.
+- DeepSeek V4.1 Flash through Token Harbor's explicit deepseek-v4.1-flash:free route.
+- MiMo V2.6 Flash through Token Harbor's explicit mimo-v2.6-flash:free route.
+- GLM-5.3-Flash through NVIDIA NIM's free prototype endpoint, with NVIDIA_NIM_API_KEY.
+
+DeepSeek and MiMo share TOKENHARBOR_API_KEY; GLM uses NVIDIA_NIM_API_KEY. The Token Harbor :free routes are labelled free and are never billed, but consume its rolling seven-day value-based free allowance. NVIDIA NIM free endpoints are under the NVIDIA API trial terms and can be rate limited or changed.
 
 The NVIDIA developer program documents free prototype access to NIM endpoints; the NVIDIA endpoints are under trial terms. Token Harbor documents its free routes as a rolling seven-day, value-based allowance that is exhausted and then stops; it is not unlimited. Availability and quotas must be measured through smoke tests and the provider dashboard before budgeting any generation run.
 
