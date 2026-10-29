@@ -186,7 +186,7 @@ jobs:
           assert host["ReadonlyRootfs"] is True, host
           assert host["PidsLimit"] == 8, host
           assert host["Memory"] == 536870912, host
-          assert host["CpuQuota"] == 100000 and host["CpuPeriod"] == 100000, host
+          assert host["NanoCpus"] == 1000000000 or (host["CpuQuota"] == 100000 and host["CpuPeriod"] == 100000), host
           assert "ALL" in host["CapDrop"], host
           assert any("no-new-privileges" in item for item in host["SecurityOpt"]), host
           mounts = {m["Destination"]: m for m in config["Mounts"]}
