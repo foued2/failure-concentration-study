@@ -58,7 +58,7 @@ class GenerationPlanDraftTests(unittest.TestCase):
             source = root / "generate.py"
             freeze = root / "FREEZE.json"
             source.write_bytes(b"def solve(): return 0\r\n")
-            canonical_hash = __import__("hashlib").sha256(b"def solve(): return 0\\n").hexdigest()
+            canonical_hash = __import__("hashlib").sha256(b"def solve(): return 0\n").hexdigest()
             freeze.write_text(json.dumps({
                 "artifact_hashes_sha256": {"generate.py": canonical_hash}
             }), encoding="utf-8")
