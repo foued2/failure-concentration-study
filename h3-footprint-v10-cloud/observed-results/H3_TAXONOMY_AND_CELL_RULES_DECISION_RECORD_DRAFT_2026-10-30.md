@@ -218,6 +218,8 @@ Every scored row must provide the following (an unscored row supplies only its i
 - `max_family_count`: integer, the largest per-family failure count. For `k >= 1`, `1 <= max_family_count <= min(k, 5)`; for `k = 0`, `max_family_count = 0`. A boolean or non-integer is rejected. Present whenever `k` is present. The upper bound of `5` follows from the six-family probe structure: the 30 probes are six families of five probes each, so no single family count can exceed five.
 - `eligible_2_to_24`: **derived** from the validated integer `k` as `2 <= k <= 24`. It is not an independent input and never overrides `k`. If a producer also supplies a boolean flag, the supplied value must equal the derived value; a disagreement is a measurement-integrity failure — for example `k = 25` with `eligible_2_to_24 = true`, or `k = 9` with `eligible_2_to_24 = false` — and the row is rejected rather than resolved in favour of either input.
 - `body_sha256`: exact body hash, for duplicate handling.
+- `pool_id`: an evidence-pool identifier **derived** from the pair `(route, run_id)` and never supplied as an independent input. Two rows share a `pool_id` only when both their `route` and their `run_id` are equal. A row whose namespace is incomplete has no valid `pool_id` and cannot enter the algorithm.
+- `active_pool_id`: an explicit algorithm input naming the single `(route, run_id)` pool being processed. It selects the rows that enter Stage 0 (§3.2). It has no default, is never inferred from the data, and must be declared before the algorithm runs. Processing any second pool requires a separate pass with its own `active_pool_id`; the algorithm never iterates across pools.
 
 The recorded `k` and `max_family_count` must agree with the six underlying family counts; they are not independent values to be trusted on their own. A row is a **measurement-integrity failure** if any of the following holds:
 
@@ -242,7 +244,7 @@ A row with a valid score but invalid provenance keeps its measured `k` for audit
 
 ### 3.2 Normative algorithm
 
-The following reproduces frozen V8 cell construction (`h3-footprint-v8/run_gate.py:541-588`) with the approved exclusions made explicit.
+The following reproduces frozen V8 cell construction (`h3-footprint-v8/run_gate.py:541-588`) with the proposed exclusions made explicit.
 
 ```
 # Stage 0 - duplicate handling is part of the algorithm, not a preprocessing step (§4.4).
@@ -389,7 +391,7 @@ This record concerns only mechanism labels, cell eligibility, provenance, and th
 A provenance group is the independent generation unit that produced a candidate. Its identifier is a **namespaced triple `(route, run_id, batch_or_request_id)`**, rendered as one opaque string. Group identity is assigned before scoring, from the generation record, and is never derived from a body. Multiple bodies produced by one generation response belong to one group.
 
 - `route` names the generation route (for example `v8-gate`, `glm-cloud`, `copilot-auto`).
-- `run_id` identifies the generation run whose record file contains the unit. It must be stable and declared in that run's protocol; for a published artifact it is the run or commit identifier.
+- `run_id` identifies the generation run whose record file contains the unit. It must be an identifier **assigned to that generation run by its own protocol or run manifest** — declared before generation, stable thereafter. A documentation, audit, review, or release commit hash must not serve as `run_id`: such a hash records when an artifact was published, not which generation run produced the bodies, so using it would let a later administrative commit redefine the run. A commit hash may be recorded only as supplementary provenance alongside the run identifier. For a published artifact, `run_id` is the original run identifier in its manifest, not the commit that published the report.
 - `batch_or_request_id` identifies the independent generation unit within that run.
 
 A bare `batch-001` or `request-001` is **not** a valid identifier: it can collide across runs and routes, and it hides which route's independence definition applies.
@@ -806,7 +808,7 @@ The following table records the reviewer's **recommended** dispositions. They ar
 
 **D15.** No V4 implementation starts until D1-D16 have each been decided or explicitly deferred, with the rationale and scope restriction recorded. Every decision affecting the proposed implementation scope must be decided before work begins. A single-pool implementation may proceed only after the no-pooling default is approved and one `(route, run_id)` evidence pool is explicitly declared. No cross-pool aggregation, support credit, or combined PASS is authorized. D16.1 remains deferred and blocks all cross-pool pooling.
 
-**D16.** Approve the evidence-pool and cross-route pooling policy. Default: each `(route, run_id)` pair is a separate evidence pool; every supported cell, `m_min` check, cross-C pair, and PASS group total is computed within one pool; no cross-route or cross-run pooling occurs, and no combined PASS is calculated, unless a further explicit amendment authorizes it and defines which unit is independent and how runs combine. A `run_id` must be a stable generation-run identifier declared in that run's protocol (a run manifest or run identifier). A later documentation or audit commit hash may be recorded as supplementary provenance, but it must not redefine the generation run. V4 may be developed for one explicitly declared pool once D16 has been explicitly decided, normally by approving this default, under the D15 rule; any combination of pools requires a further explicit amendment.
+**D16.** Approve the evidence-pool and cross-route pooling policy. Default: each `(route, run_id)` pair is a separate evidence pool; every supported cell, `m_min` check, cross-C pair, and PASS group total is computed within one pool; no cross-route or cross-run pooling occurs, and no combined PASS is calculated, unless a further explicit amendment authorizes it and defines which unit is independent and how runs combine. A `run_id` must be a stable generation-run identifier assigned by that run's protocol or manifest (§4.1). A later documentation or audit commit hash may be recorded as supplementary provenance, but it must not redefine the generation run. V4 may be developed for one explicitly declared pool once D16 has been explicitly decided, normally by approving this default, under the D15 rule; any combination of pools requires a further explicit amendment.
 
 **D16.1** Cross-pool duplicates are deferred to that amendment, not resolved by the per-pool rule. D16.1 is deferred under D15 and blocks all cross-pool pooling: it must be decided before any pooling amendment is approved. If pooling is later approved and the same exact body appears in more than one pool, the pooling amendment must state all four of the following before any combined cell table or PASS total is produced:
 
