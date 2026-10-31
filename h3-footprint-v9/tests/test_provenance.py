@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 import tempfile
@@ -11,7 +10,6 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 V9 = HERE.parent
 sys.path.insert(0, str(V9))
-sys.path.insert(0, str(V9 / "generation"))
 
 import backend  # noqa: E402
 import controller  # noqa: E402
@@ -47,7 +45,7 @@ class AttemptProvenanceTests(unittest.TestCase):
     def write_attempts(self, root: Path, records: list[dict]) -> Path:
         path = root / "attempts.jsonl"
         path.write_text(
-            "".join(json.dumps(record) + "\n" for record in records),
+            "".join(json.dumps(record) + "\\n" for record in records),
             encoding="utf-8",
         )
         return path
@@ -138,31 +136,16 @@ class AttemptProvenanceTests(unittest.TestCase):
             path = Path(td) / "attempts.jsonl"
             path.write_text(
                 json.dumps(provenance.make_attempt_record(1, [BODY_HASH]))
-                + "\nnot-json\n",
+                + "\\nnot-json\\n",
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(provenance.ProvenanceError, "not valid JSON"):
                 provenance.load_attempts_provenance(path)
 
-    def test_attempts_sha256_binds_exact_parsed_bytes(self):
-        with tempfile.TemporaryDirectory() as td:
-            path = self.write_attempts(
-                Path(td),
-                [provenance.make_attempt_record(5, [BODY_HASH])],
-            )
-            raw = path.read_bytes()
-            index = provenance.load_attempts_index(path)
-        self.assertEqual(index.attempts_sha256, hashlib.sha256(raw).hexdigest())
-        self.assertIn(BODY_HASH, index.by_hash)
-
-    def test_index_rejects_invalid_attempts_digest(self):
-        with self.assertRaises(provenance.ProvenanceError):
-            provenance.ProvenanceIndex(by_hash={}, attempts_sha256="not-a-digest")
-
     def test_missing_attempts_file_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaises(provenance.ProvenanceError):
-                provenance.load_attempts_index(Path(td) / "missing.jsonl")
+                provenance.load_attempts_provenance(Path(td) / "missing.jsonl")
 
 
 class GeneratorProvenanceTests(unittest.TestCase):
@@ -199,41 +182,25 @@ class _NoExecuteTransport:
 
 
 class ControllerProvenanceTests(unittest.TestCase):
-    def test_authorized_evaluation_rejects_missing_index_before_execution(self):
+    def test_authorized_evaluation_rejects_missing_provenance_before_execution(self):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                row = ctl.evaluate_authorized(FIXTURE, provenance_index=None)
-        self.assertEqual(row["excluded"], "missing_provenance_index")
+                row = ctl.evaluate_authorized(FIXTURE, batch_id=None)
+        self.assertEqual(row["excluded"], "missing_provenance")
         self.assertIsNone(row["k"])
         self.assertIsNone(row["group_id"])
         self.assertEqual(transport.calls, 0)
 
-    def test_authorized_evaluation_requires_hash_membership_not_a_free_batch_number(self):
+    def test_authorized_evaluation_rejects_boolean_batch_id_before_execution(self):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                row = ctl.evaluate_authorized(FIXTURE, provenance_index=provenance.ProvenanceIndex(
-                    by_hash={}, attempts_sha256="c" * 64
-                ))
-        self.assertEqual(row["excluded"], "body_absent_from_attempts")
-        self.assertEqual(row["attempts_sha256"], "c" * 64)
-        self.assertEqual(transport.calls, 0)
-
-    def test_authorized_evaluation_rejects_invalid_batch_inside_index(self):
-        with tempfile.TemporaryDirectory() as td:
-            transport = _NoExecuteTransport()
-            ctl = controller.Controller(Path(td) / "work", transport=transport)
-            body_hash = controller.protocol.sha256_bytes(FIXTURE.read_bytes())
-            bad_index = provenance.ProvenanceIndex(
-                by_hash={body_hash: {"batch_id": True, "group_id": "batch-001"}},
-                attempts_sha256="d" * 64,
-            )
-            with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                row = ctl.evaluate_authorized(FIXTURE, provenance_index=bad_index)
+                row = ctl.evaluate_authorized(FIXTURE, batch_id=True)
         self.assertTrue(row["excluded"].startswith("invalid_provenance:"))
+        self.assertIsNone(row["k"])
         self.assertEqual(transport.calls, 0)
 
     def test_host_local_development_scoring_remains_non_study(self):

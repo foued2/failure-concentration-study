@@ -15,7 +15,7 @@ from typing import Any, Mapping
 
 import constants
 
-_SHA256_RE = re.compile(r"[0-9a-f]{64}\\Z")
+_SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 
 
 class ProvenanceError(ValueError):
