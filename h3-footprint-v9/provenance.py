@@ -1,24 +1,37 @@
 """Strict, first-observed provenance for V9 candidate bodies.
 
-A generation response is the solver-side dependence group. This module refuses
-synthetic per-body groups: every attempt record must carry a real batch ID and
-an explicit list of accepted body hashes.
+A generation response is the solver-side dependence group. Attempt data are
+parsed from one byte snapshot; its SHA-256 is carried into every scored row.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import constants
 
-_SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+_SHA256_RE = re.compile(r"[0-9a-f]{64}\\Z")
 
 
 class ProvenanceError(ValueError):
     """Raised when a candidate cannot be assigned trustworthy batch provenance."""
+
+
+@dataclass(frozen=True)
+class ProvenanceIndex:
+    """Body-hash provenance plus the digest of the exact attempts-file bytes."""
+
+    by_hash: Mapping[str, Mapping[str, Any]]
+    attempts_sha256: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.attempts_sha256, str) or _SHA256_RE.fullmatch(self.attempts_sha256) is None:
+            raise ProvenanceError("attempts_sha256 must be a lowercase 64-character SHA-256 digest")
 
 
 def validate_batch_id(value: object) -> int:
@@ -60,24 +73,14 @@ def make_attempt_record(batch_id: object, accepted_hashes: object) -> dict[str, 
     return {"batch_id": valid_batch, "accepted_hashes": hashes}
 
 
-def load_attempts_provenance(path: Path | str) -> dict[str, dict[str, Any]]:
-    """Load body provenance from JSONL, retaining the first valid occurrence.
-
-    Any malformed line, missing/null/invalid batch ID, or malformed accepted
-    hash list aborts the whole load. In particular, an invalid first occurrence
-    cannot be repaired by a later duplicate with a valid batch ID.
-    """
-    source = Path(path)
-    if not source.is_file():
-        raise ProvenanceError(f"attempts file does not exist: {source}")
+def _parse_attempts_bytes(raw: bytes) -> dict[str, dict[str, Any]]:
+    try:
+        text = raw.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise ProvenanceError(f"attempts file is not valid UTF-8: {exc}") from exc
 
     first_seen: dict[str, dict[str, Any]] = {}
-    try:
-        lines = source.read_text(encoding="utf-8").splitlines()
-    except OSError as exc:
-        raise ProvenanceError(f"cannot read attempts file: {exc}") from exc
-
-    for line_number, line in enumerate(lines, start=1):
+    for line_number, line in enumerate(text.splitlines(), start=1):
         if not line.strip():
             continue
         try:
@@ -103,5 +106,28 @@ def load_attempts_provenance(path: Path | str) -> dict[str, dict[str, Any]]:
                 body_hash,
                 {"batch_id": batch_id, "group_id": group_id},
             )
-
     return first_seen
+
+
+def load_attempts_index(path: Path | str) -> ProvenanceIndex:
+    """Parse and hash the same immutable byte snapshot of the attempts file."""
+    source = Path(path)
+    if not source.is_file():
+        raise ProvenanceError(f"attempts file does not exist: {source}")
+    try:
+        raw = source.read_bytes()
+    except OSError as exc:
+        raise ProvenanceError(f"cannot read attempts file: {exc}") from exc
+    try:
+        by_hash = _parse_attempts_bytes(raw)
+    except ProvenanceError:
+        raise
+    return ProvenanceIndex(
+        by_hash=by_hash,
+        attempts_sha256=hashlib.sha256(raw).hexdigest(),
+    )
+
+
+def load_attempts_provenance(path: Path | str) -> dict[str, dict[str, Any]]:
+    """Compatibility helper returning only the first-observed body mapping."""
+    return dict(load_attempts_index(path).by_hash)
