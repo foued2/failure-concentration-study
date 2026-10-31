@@ -10,6 +10,7 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 V9 = HERE.parent
 sys.path.insert(0, str(V9))
+sys.path.insert(0, str(V9 / "generation"))
 
 import backend  # noqa: E402
 import controller  # noqa: E402
