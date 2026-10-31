@@ -23,6 +23,7 @@ INCLUDE = (
     "sandbox_agent.py",
     "winjob.py",
     "protocol.py",
+    "provenance.py",
     "gates.py",
     "runtime_stage.py",
     "isolation_battery.py",

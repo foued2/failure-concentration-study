@@ -54,6 +54,25 @@ protocol.py         atomic job/response records, ACL lock helpers
 generation/         enforced no-tools agent + strictly gated generator
 tests/              regression suite and hand-authored fixtures
 evidence/           measured host facts: capability classification, verified interpreter, preflight attempts
+
+## Provenance is fail-closed
+
+Sandbox evaluation no longer accepts a free-form `--group-id`. It requires
+`--attempts attempts.jsonl`, whose records have the form
+`{"batch_id": 12, "accepted_hashes": ["<64 lowercase hex SHA-256>", ...]}`.
+Every record, including a rejected/empty batch, must carry an exact JSON integer
+batch ID in `[0, 400)` and an explicit `accepted_hashes` array. Booleans,
+strings, floats, nulls and out-of-range values are rejected before any candidate
+job is published. A body hash keeps its first observed valid batch; a malformed
+candidate-bearing record aborts provenance loading, so a later duplicate cannot
+repair an invalid first occurrence. Group IDs are derived internally as
+`batch-NNN`.
+
+Host-local scoring remains available for development tests without provenance,
+but those rows are explicitly unauthorized and cannot be treated as study
+evidence. The V9 generation batch runner is still not implemented; its
+`attempt_record()` helper defines the canonical attempt-record shape for that
+future runner.
 ```
 
 ## Quick start (host, no model calls)
