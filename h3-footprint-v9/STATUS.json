@@ -23,7 +23,7 @@
       "manufacturer_model": "MSI MS-7699",
       "bios": "American Megatrends V1.2",
       "cpu": "AMD FX-8350 Eight-Core, 4 cores / 8 logical processors",
-      "ram_gib": 16.0,
+      "ram_gib": 16,
       "free_disk_gib": 23.5,
       "firmware_virtualization_enabled": true,
       "vm_monitor_mode_extensions": true,
@@ -165,10 +165,10 @@
   "gates": [
     {
       "id": "unit_tests",
-      "status": "PASS",
+      "status": "NOT_RUN",
       "scope": "host",
       "evidence": "tests/unit-test-log.txt",
-      "detail": "223 tests, 0 failures"
+      "detail": "The archived baseline log records 223 tests passing before the provenance-hardening changes. The successor adds tests/test_provenance.py (24 tests) and changes controller, generator and provenance code; the updated suite has not yet been run. The prior 223-test log is retained as historical evidence only."
     },
     {
       "id": "constants_match_v8",
@@ -394,5 +394,12 @@
       "evidence": null,
       "detail": "blocked twice over: the fail-closed gate refuses because the ordering gate FAILED, the isolation battery is only PARTIAL (process-tree and normal-exit probes never ran), the caps are only PARTIAL, the verdict layer is missing and no authorization file exists; and evaluation remains blocked by decision"
     }
+  ],
+  "provenance_hardening": [
+    "V9 Sandbox evaluation requires a validated immutable ProvenanceIndex; a caller-supplied free batch ID is no longer accepted by evaluate_authorized.",
+    "attempts.jsonl has an exact schema: batch_id plus accepted_hashes; exact integer IDs 0..399 only; malformed lines, invalid UTF-8, unknown fields and invalid hashes fail closed.",
+    "The loader parses and hashes one byte snapshot; its SHA-256 is recorded in each evaluation row as attempts_sha256.",
+    "Candidate hashes use canonical UTF-8/LF bytes from generation_v9.body_bytes; future generation persistence must write those exact bytes.",
+    "The provenance regression module contains 24 tests. They are committed but not yet executed on the updated tree."
   ]
 }
