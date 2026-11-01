@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -10,6 +11,7 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 V9 = HERE.parent
 sys.path.insert(0, str(V9))
+sys.path.insert(0, str(V9 / "generation"))
 
 import backend  # noqa: E402
 import controller  # noqa: E402
@@ -27,8 +29,7 @@ class BatchIdValidationTests(unittest.TestCase):
         self.assertEqual(provenance.group_id_for_batch(399), "batch-399")
 
     def test_rejects_missing_null_boolean_string_float_and_out_of_range_ids(self):
-        invalid = (None, True, False, "5", 5.0, -1, 400)
-        for value in invalid:
+        for value in (None, True, False, "5", 5.0, -1, 400):
             with self.subTest(batch_id=value):
                 with self.assertRaises(provenance.ProvenanceError):
                     provenance.validate_batch_id(value)
@@ -44,16 +45,14 @@ class BatchIdValidationTests(unittest.TestCase):
 class AttemptProvenanceTests(unittest.TestCase):
     def write_attempts(self, root: Path, records: list[dict]) -> Path:
         path = root / "attempts.jsonl"
-        path.write_text(
-            "".join(json.dumps(record) + "\\n" for record in records),
-            encoding="utf-8",
+        path.write_bytes(
+            "".join(json.dumps(record) + "\n" for record in records).encode("utf-8")
         )
         return path
 
     def test_attempt_record_uses_the_canonical_schema(self):
-        record = provenance.make_attempt_record(5, [BODY_HASH, SECOND_HASH])
         self.assertEqual(
-            record,
+            provenance.make_attempt_record(5, [BODY_HASH, SECOND_HASH]),
             {"batch_id": 5, "accepted_hashes": [BODY_HASH, SECOND_HASH]},
         )
 
@@ -64,11 +63,10 @@ class AttemptProvenanceTests(unittest.TestCase):
     def test_loader_maps_hash_to_the_batch_group(self):
         with tempfile.TemporaryDirectory() as td:
             path = self.write_attempts(
-                Path(td),
-                [provenance.make_attempt_record(5, [BODY_HASH])],
+                Path(td), [provenance.make_attempt_record(5, [BODY_HASH])]
             )
-            mapping = provenance.load_attempts_provenance(path)
-        self.assertEqual(mapping[BODY_HASH], {
+            index = provenance.load_attempts_index(path)
+        self.assertEqual(index.by_hash[BODY_HASH], {
             "batch_id": 5, "group_id": "batch-005"
         })
 
@@ -81,9 +79,9 @@ class AttemptProvenanceTests(unittest.TestCase):
                     provenance.make_attempt_record(12, [BODY_HASH]),
                 ],
             )
-            mapping = provenance.load_attempts_provenance(path)
-        self.assertEqual(mapping[BODY_HASH]["batch_id"], 5)
-        self.assertEqual(mapping[BODY_HASH]["group_id"], "batch-005")
+            index = provenance.load_attempts_index(path)
+        self.assertEqual(index.by_hash[BODY_HASH]["batch_id"], 5)
+        self.assertEqual(index.by_hash[BODY_HASH]["group_id"], "batch-005")
 
     def test_missing_batch_id_on_first_occurrence_blocks_later_valid_duplicate(self):
         with tempfile.TemporaryDirectory() as td:
@@ -95,7 +93,7 @@ class AttemptProvenanceTests(unittest.TestCase):
                 ],
             )
             with self.assertRaisesRegex(provenance.ProvenanceError, "batch_id"):
-                provenance.load_attempts_provenance(path)
+                provenance.load_attempts_index(path)
 
     def test_null_batch_id_on_first_occurrence_blocks_later_valid_duplicate(self):
         with tempfile.TemporaryDirectory() as td:
@@ -107,7 +105,7 @@ class AttemptProvenanceTests(unittest.TestCase):
                 ],
             )
             with self.assertRaisesRegex(provenance.ProvenanceError, "batch_id"):
-                provenance.load_attempts_provenance(path)
+                provenance.load_attempts_index(path)
 
     def test_boolean_string_float_negative_and_400_ids_fail_closed(self):
         for batch_id in (True, False, "5", 5.0, -1, 400):
@@ -117,35 +115,70 @@ class AttemptProvenanceTests(unittest.TestCase):
                     [{"batch_id": batch_id, "accepted_hashes": [BODY_HASH]}],
                 )
                 with self.assertRaises(provenance.ProvenanceError):
-                    provenance.load_attempts_provenance(path)
+                    provenance.load_attempts_index(path)
 
     def test_missing_or_malformed_hash_list_fails_closed(self):
-        bad_records = [
+        for record in (
             {"batch_id": 1},
             {"batch_id": 1, "accepted_hashes": None},
             {"batch_id": 1, "accepted_hashes": ["not-a-sha256"]},
-        ]
-        for record in bad_records:
+            {"batch_id": 1, "accepted_hashes": ["A" * 64]},
+            {"batch_id": 1, "accepted_hashes": [], "legacy_body_hashes": []},
+        ):
             with self.subTest(record=record), tempfile.TemporaryDirectory() as td:
                 path = self.write_attempts(Path(td), [record])
                 with self.assertRaises(provenance.ProvenanceError):
-                    provenance.load_attempts_provenance(path)
+                    provenance.load_attempts_index(path)
 
     def test_malformed_jsonl_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
             path = Path(td) / "attempts.jsonl"
-            path.write_text(
-                json.dumps(provenance.make_attempt_record(1, [BODY_HASH]))
-                + "\\nnot-json\\n",
-                encoding="utf-8",
+            path.write_bytes(
+                (json.dumps(provenance.make_attempt_record(1, [BODY_HASH]))
+                 + "\nnot-json\n").encode("utf-8")
             )
             with self.assertRaisesRegex(provenance.ProvenanceError, "not valid JSON"):
-                provenance.load_attempts_provenance(path)
+                provenance.load_attempts_index(path)
+
+    def test_non_utf8_attempts_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "attempts.jsonl"
+            path.write_bytes(b"\xff\xfe")
+            with self.assertRaisesRegex(provenance.ProvenanceError, "UTF-8"):
+                provenance.load_attempts_index(path)
+
+    def test_attempts_digest_identifies_exact_parsed_bytes(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = self.write_attempts(
+                Path(td), [provenance.make_attempt_record(5, [BODY_HASH])]
+            )
+            raw = path.read_bytes()
+            index = provenance.load_attempts_index(path)
+        self.assertEqual(index.attempts_sha256, hashlib.sha256(raw).hexdigest())
+        self.assertIn(BODY_HASH, index.by_hash)
+
+    def test_index_mapping_is_immutable(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = self.write_attempts(
+                Path(td), [provenance.make_attempt_record(5, [BODY_HASH])]
+            )
+            index = provenance.load_attempts_index(path)
+        with self.assertRaises(TypeError):
+            index.by_hash[BODY_HASH] = {"batch_id": 2, "group_id": "batch-002"}
+
+    def test_index_rejects_invalid_digest_and_group(self):
+        with self.assertRaises(provenance.ProvenanceError):
+            provenance.ProvenanceIndex(by_hash={}, attempts_sha256="not-a-digest")
+        with self.assertRaises(provenance.ProvenanceError):
+            provenance.ProvenanceIndex(
+                by_hash={BODY_HASH: {"batch_id": 5, "group_id": "untracked:body"}},
+                attempts_sha256="c" * 64,
+            )
 
     def test_missing_attempts_file_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaises(provenance.ProvenanceError):
-                provenance.load_attempts_provenance(Path(td) / "missing.jsonl")
+                provenance.load_attempts_index(Path(td) / "missing.jsonl")
 
 
 class GeneratorProvenanceTests(unittest.TestCase):
@@ -163,6 +196,12 @@ class GeneratorProvenanceTests(unittest.TestCase):
                     generation.batch_dir(Path("work"), value)
                 with self.assertRaises(provenance.ProvenanceError):
                     generation.build_command(value, Path("work"), "opencode")
+
+    def test_candidate_digest_matches_exact_canonical_file_bytes(self):
+        source = "def solve(*args):\n    return -1  \r\n"
+        canonical = generation.body_bytes(source)
+        self.assertEqual(generation.digest(source), hashlib.sha256(canonical).hexdigest())
+        self.assertEqual(canonical, b"def solve(*args):\n    return -1\n")
 
 
 class _NoExecuteTransport:
@@ -182,26 +221,43 @@ class _NoExecuteTransport:
 
 
 class ControllerProvenanceTests(unittest.TestCase):
-    def test_authorized_evaluation_rejects_missing_provenance_before_execution(self):
+    def test_authorized_evaluation_rejects_missing_index_before_execution(self):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                row = ctl.evaluate_authorized(FIXTURE, batch_id=None)
-        self.assertEqual(row["excluded"], "missing_provenance")
+                row = ctl.evaluate_authorized(FIXTURE, provenance_index=None)
+        self.assertEqual(row["excluded"], "missing_provenance_index")
         self.assertIsNone(row["k"])
         self.assertIsNone(row["group_id"])
         self.assertEqual(transport.calls, 0)
 
-    def test_authorized_evaluation_rejects_boolean_batch_id_before_execution(self):
+    def test_authorized_evaluation_requires_body_hash_membership(self):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
+            index = provenance.ProvenanceIndex(
+                by_hash={}, attempts_sha256="c" * 64
+            )
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                row = ctl.evaluate_authorized(FIXTURE, batch_id=True)
-        self.assertTrue(row["excluded"].startswith("invalid_provenance:"))
-        self.assertIsNone(row["k"])
+                row = ctl.evaluate_authorized(FIXTURE, provenance_index=index)
+        self.assertEqual(row["excluded"], "body_absent_from_attempts")
+        self.assertEqual(row["attempts_sha256"], "c" * 64)
         self.assertEqual(transport.calls, 0)
+
+    def test_authorized_evaluation_with_valid_membership_reaches_transport(self):
+        with tempfile.TemporaryDirectory() as td:
+            transport = _NoExecuteTransport()
+            ctl = controller.Controller(Path(td) / "work", transport=transport)
+            body_hash = controller.protocol.sha256_bytes(FIXTURE.read_bytes())
+            index = provenance.ProvenanceIndex(
+                by_hash={body_hash: {"batch_id": 5, "group_id": "batch-005"}},
+                attempts_sha256="d" * 64,
+            )
+            with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
+                with self.assertRaises(AssertionError):
+                    ctl.evaluate_authorized(FIXTURE, provenance_index=index)
+        self.assertEqual(transport.calls, 1)
 
     def test_host_local_development_scoring_remains_non_study(self):
         with tempfile.TemporaryDirectory() as td:
@@ -213,6 +269,7 @@ class ControllerProvenanceTests(unittest.TestCase):
             row = ctl.evaluate(FIXTURE)
         self.assertFalse(row["authorized"])
         self.assertIsNone(row["group_id"])
+        self.assertIsNone(row["attempts_sha256"])
         self.assertEqual(row["fails"], [False] * 30)
 
 
