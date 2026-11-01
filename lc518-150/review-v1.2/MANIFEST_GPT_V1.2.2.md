@@ -9,7 +9,7 @@
 
 | Path | Git blob SHA |
 |---|---|
-| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `2f883f25335732fc0544d089099d6e7a80adb1a2` |
+| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `d38e5b5f2bf8ef399182aa62b70d40fbaaf18764` |
 | `lc518-150/review-v1.2/GPT_REVIEW_C9_DRYRUN_AND_v1.2.2.md` | `34605e2f404d357e2a69511338da802585663027` |
 
 The GPT independent-review note below is preserved unchanged from the parent branch. It documents the original v1.2.2 review and is not a substitute for review of the follow-up text.
@@ -32,3 +32,6 @@ The GPT independent-review note below is preserved unchanged from the parent bra
 ## Scope
 
 No bank files are included. No solver bodies, candidate execution, private mutation annex, or mutation assignments are included. C8/E3 remains open. The follow-up branch does not alter `master`, the v1.2.1 file, the original parent review branch, or any frozen v1.0 design document.
+
+
+**Hash notation:** The 40-character identifiers in this manifest are Git blob SHA-1 object IDs. They are not SHA-256 digests of the file bytes. Where the specification requires file-level SHA-256, it explicitly uses 64-character lowercase hexadecimal digests.
