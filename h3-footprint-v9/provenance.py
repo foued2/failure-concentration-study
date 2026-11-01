@@ -66,12 +66,29 @@ def make_attempt_record(batch_id: object, accepted_hashes: object) -> dict[str, 
     return {"batch_id": valid_batch, "accepted_hashes": hashes}
 
 
-@dataclass(frozen=True)
+_INDEX_FACTORY_TOKEN = object()
+
+
+@dataclass(frozen=True, init=False)
 class ProvenanceIndex:
-    """Immutable first-observed body mapping plus the exact attempts-file digest."""
+    """Immutable first-observed body mapping plus the exact attempts-file digest.
+
+    Instances are created only by load_attempts_index(), after parsing and
+    hashing the exact attempts-file byte snapshot.
+    """
 
     by_hash: Mapping[str, Mapping[str, Any]]
     attempts_sha256: str
+
+    def __init__(
+        self, *, by_hash: Mapping[str, Mapping[str, Any]],
+        attempts_sha256: str, _token: object | None = None,
+    ) -> None:
+        if _token is not _INDEX_FACTORY_TOKEN:
+            raise ProvenanceError("ProvenanceIndex must be created by load_attempts_index()")
+        object.__setattr__(self, "by_hash", by_hash)
+        object.__setattr__(self, "attempts_sha256", attempts_sha256)
+        self.__post_init__()
 
     def __post_init__(self) -> None:
         if (not isinstance(self.attempts_sha256, str)
@@ -158,4 +175,5 @@ def load_attempts_index(path: Path | str) -> ProvenanceIndex:
     return ProvenanceIndex(
         by_hash=by_hash,
         attempts_sha256=hashlib.sha256(raw).hexdigest(),
+        _token=_INDEX_FACTORY_TOKEN,
     )
