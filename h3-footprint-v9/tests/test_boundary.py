@@ -50,6 +50,7 @@ class HostBoundaryExposure(unittest.TestCase):
     rather than the boundary.
     """
 
+    @unittest.skipUnless(sys.platform == "win32", "HostLocalTransport requires Windows Job Objects")
     def test_host_backend_exposes_the_reference_data(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -69,6 +70,7 @@ class HostBoundaryExposure(unittest.TestCase):
             self.assertFalse(row["isolation_verified"])
             self.assertFalse(row["authorized"])
 
+    @unittest.skipUnless(sys.platform == "win32", "HostLocalTransport requires Windows Job Objects")
     def test_host_backend_lets_an_attack_score_perfectly(self):
         """Keys + channel control = fabricated correct answers, exactly the V8 finding."""
         with tempfile.TemporaryDirectory() as td:
@@ -81,6 +83,7 @@ class HostBoundaryExposure(unittest.TestCase):
             self.assertFalse(row["isolation_verified"])
             self.assertFalse(row["authorized"])
 
+    @unittest.skipUnless(sys.platform == "win32", "HostLocalTransport requires Windows Job Objects")
     def test_attack_without_the_host_path_falls_back_to_guessing(self):
         """Without a usable path the same attack cannot answer the probes."""
         with tempfile.TemporaryDirectory() as td:
@@ -106,6 +109,7 @@ class HostBoundaryExposure(unittest.TestCase):
                 ctl.evaluate_authorized(body, provenance_index=index)
 
 
+@unittest.skipUnless(sys.platform == "win32", "HostLocalTransport requires Windows Job Objects")
 class ScoringLogicOnHostBackend(unittest.TestCase):
     """Oracle-control tests. These are scoring-logic tests, not isolation evidence.
 
