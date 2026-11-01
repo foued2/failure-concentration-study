@@ -2,7 +2,7 @@
 
 **Purpose:** make the latest GLM correction record and its verification map available for independent review.
 
-**Source archives (preserved at repository root):**
+**Source archives:** Both ZIPs were retrieved from the repository root on `master`. They remain on `master`; they are not duplicated on this review branch.
 - `message-70b0882f-9d72-402f-a641-36fa9f386b75.zip` — raw SHA-256 `bc7ca0cb20c5576a0c041b2133982c9d7a0bef42b36655b6e2213d3ffa604628`; Git blob `4c38d663b194d4cee7f824385d560548a2b96bd5`.
 - `message-73aed204-bc5d-400e-8910-47557479f75e.zip` — raw SHA-256 `d2eee09368e6f70d0856048be25cad96cd8416f7d02844fbc929a1fd35e84257`; Git blob `58ecbc771004d9c26f902f348c2f3871eb50e492`.
 
