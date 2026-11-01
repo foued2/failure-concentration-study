@@ -54,6 +54,32 @@ protocol.py         atomic job/response records, ACL lock helpers
 generation/         enforced no-tools agent + strictly gated generator
 tests/              regression suite and hand-authored fixtures
 evidence/           measured host facts: capability classification, verified interpreter, preflight attempts
+
+## Provenance is fail-closed
+
+Sandbox evaluation no longer accepts a free-form `--group-id`. It requires
+`--attempts attempts.jsonl`, whose records have the form
+`{"batch_id": 12, "accepted_hashes": ["<64 lowercase hex SHA-256>", ...]}`.
+Every record, including a rejected/empty batch, must contain exactly
+`batch_id` and `accepted_hashes`. The batch ID must be an exact JSON integer in
+`[0, 400)`; Booleans, strings, floats, nulls, out-of-range IDs, extra schema
+fields, malformed JSON and invalid UTF-8 are rejected before any candidate job
+is published. A body hash keeps its first observed valid batch; any malformed
+record aborts the whole load, so a later duplicate cannot repair an invalid
+first occurrence. Group IDs are derived internally as `batch-NNN`.
+
+The loader parses and hashes the same exact attempts-file byte snapshot. That
+SHA-256 is attached to every scored row as `attempts_sha256`. Candidate body
+hashes refer to canonical UTF-8/LF bytes from `generation_v9.body_bytes()`;
+the future batch runner must persist those exact bytes so the accepted hash
+matches the file later evaluated. The attempts-file digest identifies the input
+record used, but is not a digital signature or proof of who created that file.
+
+Host-local scoring remains available for development tests without provenance,
+but those rows are explicitly unauthorized and cannot be treated as study
+evidence. The V9 generation batch runner is still not implemented; its
+`attempt_record()` helper defines the canonical attempt-record shape for that
+future runner.
 ```
 
 ## Quick start (host, no model calls)

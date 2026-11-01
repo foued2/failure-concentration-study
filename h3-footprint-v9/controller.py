@@ -36,6 +36,7 @@ import constants  # noqa: E402
 import gates  # noqa: E402
 import oracle  # noqa: E402
 import protocol  # noqa: E402
+import provenance  # noqa: E402
 from backend import BoundaryNotEstablished, FatalBoundaryError  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -373,8 +374,10 @@ def run_rendezvous(ctl: "Controller", body_path: Path | str, *,
 
 def _invalid(reason: str, body_hash: str, group_id: str | None,
              **boundary: Any) -> dict[str, Any]:
+    batch_id = boundary.pop("batch_id", None)
     return {
         "body_sha256": body_hash,
+        "batch_id": batch_id,
         "group_id": group_id,
         "excluded": reason,
         "fails": None,
@@ -516,7 +519,7 @@ class Controller:
 
     # -- evaluation ----------------------------------------------------------
 
-    def evaluate(self, body_path: Path | str, group_id: str | None = None) -> dict[str, Any]:
+    def evaluate(self, body_path: Path | str, batch_id: object | None = None) -> dict[str, Any]:
         """Score a body on a development transport. Never study evidence.
 
         An attested Sandbox transport is reserved for ``evaluate_authorized``:
@@ -530,10 +533,12 @@ class Controller:
                 "this call is not an authorized evaluation; use evaluate_authorized, "
                 "which requires the prerequisite gate"
             )
-        return self._evaluate(body_path, group_id, authorized=False)
+        return self._evaluate(body_path, batch_id, authorized=False)
 
-    def evaluate_authorized(self, body_path: Path | str,
-                            group_id: str | None = None) -> dict[str, Any]:
+    def evaluate_authorized(
+        self, body_path: Path | str,
+        provenance_index: provenance.ProvenanceIndex | None = None,
+    ) -> dict[str, Any]:
         """Score a body for study evidence.
 
         Two independent conditions, in this order: the transport must carry a
@@ -546,12 +551,61 @@ class Controller:
                 "refusing authorized evaluation"
             )
         gates.require_authorized()
-        return self._evaluate(body_path, group_id, authorized=True)
+        return self._evaluate(
+            body_path, None, authorized=True, provenance_index=provenance_index
+        )
 
-    def _evaluate(self, body_path: Path | str, group_id: str | None,
-                  *, authorized: bool) -> dict[str, Any]:
+    def _evaluate(
+        self, body_path: Path | str, batch_id: object | None,
+        *, authorized: bool,
+        provenance_index: provenance.ProvenanceIndex | None = None,
+    ) -> dict[str, Any]:
         body = Path(body_path).read_bytes()
         body_hash = protocol.sha256_bytes(body)
+
+        attempts_sha256 = None
+        if authorized:
+            if not isinstance(provenance_index, provenance.ProvenanceIndex):
+                return _invalid(
+                    "missing_provenance_index", body_hash, None, batch_id=None
+                )
+            attempts_sha256 = provenance_index.attempts_sha256
+            provenance_entry = provenance_index.by_hash.get(body_hash)
+            if provenance_entry is None:
+                return _invalid(
+                    "body_absent_from_attempts", body_hash, None,
+                    batch_id=None, attempts_sha256=attempts_sha256,
+                )
+            try:
+                valid_batch_id = provenance.validate_batch_id(
+                    provenance_entry.get("batch_id")
+                )
+                group_id = provenance.group_id_for_batch(valid_batch_id)
+            except provenance.ProvenanceError as exc:
+                return _invalid(
+                    "invalid_provenance:" + str(exc), body_hash, None,
+                    batch_id=None, attempts_sha256=attempts_sha256,
+                )
+            if provenance_entry.get("group_id") != group_id:
+                return _invalid(
+                    "invalid_provenance:group_id_mismatch", body_hash, None,
+                    batch_id=None, attempts_sha256=attempts_sha256,
+                )
+        else:
+            try:
+                valid_batch_id = (
+                    provenance.validate_batch_id(batch_id)
+                    if batch_id is not None else None
+                )
+            except provenance.ProvenanceError as exc:
+                return _invalid(
+                    "invalid_provenance:" + str(exc), body_hash, None,
+                    batch_id=None,
+                )
+            group_id = (
+                provenance.group_id_for_batch(valid_batch_id)
+                if valid_batch_id is not None else None
+            )
 
         if self._case_paths is None:
             case = self.work_root / "case"
@@ -564,6 +618,8 @@ class Controller:
 
         boundary = {
             "authorized": authorized,
+            "batch_id": valid_batch_id,
+            "attempts_sha256": attempts_sha256,
             "transport": self.transport.name,
             "isolation_verified": self.transport.isolation_verified,
         }
@@ -651,7 +707,10 @@ def _cli(argv: list[str] | None = None) -> int:
     parser.add_argument("--handshake-timeout", type=float, default=300.0)
     parser.add_argument("--bodies", help="directory of candidate .py files to evaluate")
     parser.add_argument("--work-root", default=str(Path("runs") / "current"))
-    parser.add_argument("--group-id", default=None)
+    parser.add_argument("--attempts", default=None,
+                        help="validated JSONL batch attempts file; required for Sandbox scoring")
+    parser.add_argument("--batch-id", type=int, default=None,
+                        help="batch ID for host-local development scoring only")
     parser.add_argument("--transport", choices=("sandbox", "host-local"), default="host-local")
     parser.add_argument("--allow-host-local", action="store_true",
                         help="score bodies on the host for unit testing; rows are not study evidence")
@@ -730,6 +789,28 @@ def _cli(argv: list[str] | None = None) -> int:
     if not bodies:
         parser.error(f"no .py files in {args.bodies}")
 
+    provenance_index = None
+    if args.transport == "sandbox":
+        if not args.attempts:
+            print("refusing authorized evaluation: --attempts is required for Sandbox scoring",
+                  file=sys.stderr)
+            return 2
+        if args.batch_id is not None:
+            parser.error("--batch-id is for host-local development scoring; Sandbox uses --attempts")
+        try:
+            provenance_index = provenance.load_attempts_index(args.attempts)
+        except provenance.ProvenanceError as exc:
+            print(f"refusing authorized evaluation: invalid provenance: {exc}", file=sys.stderr)
+            return 2
+        missing = [
+            body.name for body in bodies
+            if protocol.sha256_bytes(body.read_bytes()) not in provenance_index.by_hash
+        ]
+        if missing:
+            print("refusing authorized evaluation: bodies missing from validated attempts: "
+                  + ", ".join(missing), file=sys.stderr)
+            return 2
+
     work_root = Path(args.work_root)
     if args.transport == "sandbox":
         if not (args.inbox and args.outbox):
@@ -749,9 +830,10 @@ def _cli(argv: list[str] | None = None) -> int:
     print(json.dumps(ctl.boundary_status(), sort_keys=True))
     status = 0
     for body in bodies:
-        row = (ctl.evaluate_authorized(body, group_id=args.group_id)
-               if args.transport == "sandbox"
-               else ctl.evaluate(body, group_id=args.group_id))
+        if args.transport == "sandbox":
+            row = ctl.evaluate_authorized(body, provenance_index=provenance_index)
+        else:
+            row = ctl.evaluate(body, batch_id=args.batch_id)
         print(json.dumps(row, sort_keys=True))
         if row["excluded"]:
             status = 2

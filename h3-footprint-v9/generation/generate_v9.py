@@ -34,6 +34,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import constants
+import provenance
 
 HERE = Path(__file__).resolve().parent
 AGENT_DIR = HERE / "agent"
@@ -83,8 +84,13 @@ def normalize(source: str) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
+def body_bytes(source: str) -> bytes:
+    """Canonical UTF-8/LF bytes persisted for a candidate body."""
+    return normalize(source).encode("utf-8")
+
+
 def digest(source: str) -> str:
-    return hashlib.sha256(normalize(source).encode()).hexdigest()
+    return hashlib.sha256(body_bytes(source)).hexdigest()
 
 
 def extract_bodies(text: str) -> list[str]:
@@ -208,11 +214,22 @@ def batch_outcome(returncode: int, stdout: str,
     }
 
 
+def attempt_record(batch_id: object, outcome: dict) -> dict:
+    """Create the canonical provenance record for one completed batch."""
+    if not isinstance(outcome, dict):
+        raise provenance.ProvenanceError("batch outcome must be an object")
+    return provenance.make_attempt_record(
+        batch_id, outcome.get("accepted_hashes")
+    )
+
+
 def batch_dir(work_root: Path, batch_id: int) -> Path:
-    return work_root / f"batch-{batch_id:03d}"
+    valid_batch_id = provenance.validate_batch_id(batch_id)
+    return work_root / f"batch-{valid_batch_id:03d}"
 
 
 def build_command(batch_id: int, workdir: Path, opencode: str) -> list[str]:
+    batch_id = provenance.validate_batch_id(batch_id)
     model = constants.MODELS[batch_id % len(constants.MODELS)]
     variant = constants.PROMPT_VARIANTS[(batch_id // len(constants.MODELS)) % len(constants.PROMPT_VARIANTS)]
     return [
