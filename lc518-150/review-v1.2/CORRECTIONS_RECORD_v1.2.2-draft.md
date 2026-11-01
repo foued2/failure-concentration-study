@@ -298,7 +298,17 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 > | D7 | H5 | Only H5 reaches n=50–120; common amounts are 100–500. |
 > | D8 | H5, H6, H7 | H5 overlap is at amount 2,000 and n=30; H6 overlaps at n=5–30 and amounts 3,500–5,000; unreachable D8 inputs can overlap H7. |
 >
+> **Structural explanations for selected table absences (pairwise reasoning, not exhaustive enumeration).** The following four absent pairs are impossible under the pinned stratum rules:
+> - **D3–H2:** D3 candidates have oracle answer exactly 0; every H2 record is required to have oracle answer at least 2.
+> - **D1–H8:** if a D1 candidate contains coin 1, then c_min = 1 and its largest prescribed amount is 2·c_min + 1 = 3; H8 requires amount at least 6. If D1 does not contain coin 1, it cannot equal either H8 anchor.
+> - **D4–H8:** every D4 denomination set is all-odd or all-even, whereas each H8 anchor ({1,2,3} or {1,3,4}) contains both odd and even denominations.
+> - **D2–H7:** a D2 amount is itself one of its denominations. Therefore the minimum denomination cannot exceed the amount, excluding H7's min-coin rule; and the gcd of all denominations divides that denomination (the amount), excluding H7's non-divisible-gcd rule.
+>
+> These are direct pairwise deductions from the stated rules. They are not the result of exhaustive enumeration of canonical keys.
+>
 > A listed overlap means some keys are possible, not that all candidates in that diagnostic stratum are removed. For the realized run, the exact excluded set in D_i is D_i's admissible candidate support intersected with H. The actual number of rejected whole candidates is recorded by stratum as required below. In particular, D5 random records 3–8 can produce the fixed H8 key (amount 6, coins {1,3,4}): n=3, further coins {3,4}, amount=6. Under the pinned uniform draws, the probability for this specific key on one candidate attempt is (1/3) × (1/28) × (1/26) = 1/2,184 ≈ 0.000458, not 0.0014. This is an illustrative single-key probability only; it is not the realized D5 rejection rate or the total D5/H8 overlap probability.
+>
+> **Directionality of held-out collision counts (structural, not empirical).** The held-out bank is generated before random diagnostic candidates exist, so held-out candidates are never filtered against random diagnostic records. The only held-out-side cross-bank check is against the fixed D5 key set F_D. Any hit is logged as a fatal contradiction and aborts the run; it is not an ordinary retry and cannot produce a completed PASS run. Retryable cross-bank collision rejections therefore occur only during diagnostic generation. Consequently, H1–H8 counts in a completed PASS report must all be zero. This is a logical consequence of the protocol, not an observed zero collision rate.
 >
 > **Realized collision counts.** Every output report must include the exact number of CROSS_BANK_COLLISION whole-candidate rejection events for each of D1–D8 and H1–H8, including explicit zero values. Counts are taken from the rejection sidecars, not estimated from the support map. The report counts must reconcile exactly with sidecar rows. Under the held-out-first protocol, all H1–H8 counts must be zero for a completed run; a held-out/F_D hit is a logged fatal preflight contradiction and makes the run NOT_ACCEPTED. The D1–D8 counts quantify the realized support exclusions for this seeded run; they must be reported by stratum and not described as measured probabilities.
 >
