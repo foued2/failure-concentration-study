@@ -1,6 +1,6 @@
 # GPT v1.2.2 held-out-first collision-policy review manifest
 
-**Branch:** `gpt/lc518-150-v1.2.2-heldout-first-claude-fixes-2026-11-01`  
+**Branch:** `gpt/lc518-150-v1.2.2-claude-final-doc-fixes-2026-11-01`  
 **Parent review branch:** `gpt/lc518-150-v1.2.2-heldout-first-2026-11-01`  
 **Current documentation-fix branch base commit:** `96da10721ef6ec6ddbc43244cb970e0b889bf15f`  
 **Prior reviewed head's direct parent commit:** `5787e65a60bed262353a35869e3533057a32d59d`  
@@ -47,7 +47,7 @@ No bank files are included. No solver bodies, candidate execution, private mutat
 
 The prior held-out-first review branch was created at base/comparison commit `4169f9b2f6ace5b5a2a7a6d330558d88db8080d1`; its commit ancestry is `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. The current follow-up branch `gpt/lc518-150-v1.2.2-heldout-first-claude-fixes-2026-11-01` was forked directly from `d7267b4596ab7909a82838ec1f5e3fdc2b94432f`. Its exact subsequent commit chain is `5979bc2c50446a700fb698b93d02d11d98447d88` (correction-record support/count edits), `4359a1f2e5fc0b5317ad24685da8075c2b481c46` (manifest update), `3e9f5bf22949b9e4aa4ed1395cd4743b837ec984` (correction-record lineage clarification), `4dcd3f91979f7df037737e914d06a92990bd023a` (manifest refresh), and `5787e65a60bed262353a35869e3533057a32d59d` (complete commit-lineage clarification in the correction record). The present manifest update follows this chain. The prior branch ancestry remains `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. Thus `c49241c3` is the direct parent of `d7267b45`, while `4169f9b2` is the comparison base. No rebase occurred.
 
-The present documentation-fix branch is based on the prior reviewed head `96da10721ef6ec6ddbc43244cb970e0b889bf15f`. Its correction-record update is commit `4c7a6491980e2d7aaeee8aac02e9d7df9fc342cb`, whose parent is `96da107`; this manifest refresh follows that correction-record commit. Therefore `5787e65` above identifies the direct parent of the prior reviewed head `96da107`, not the parent of this newer documentation-fix branch's eventual head. The original held-out-first follow-up branch fork base remains `d7267b45`.
+The present documentation-fix branch is based on the prior reviewed head `96da10721ef6ec6ddbc43244cb970e0b889bf15f`. Its correction-record update is commit `4c7a6491980e2d7aaeee8aac02e9d7df9fc342cb`, whose parent is `96da107`; the first manifest refresh is commit `d78dec54743b5925eef19a0f80695467f498ae2c`. This final metadata-only manifest correction follows that first refresh. Therefore `5787e65` above identifies the direct parent of the prior reviewed head `96da107`, not the parent of this newer documentation-fix branch's eventual head. The original held-out-first follow-up branch fork base remains `d7267b45`.
 
 ## Additional review changes
 
