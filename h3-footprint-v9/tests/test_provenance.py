@@ -166,14 +166,9 @@ class AttemptProvenanceTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             index.by_hash[BODY_HASH] = {"batch_id": 2, "group_id": "batch-002"}
 
-    def test_index_rejects_invalid_digest_and_group(self):
-        with self.assertRaises(provenance.ProvenanceError):
-            provenance.ProvenanceIndex(by_hash={}, attempts_sha256="not-a-digest")
-        with self.assertRaises(provenance.ProvenanceError):
-            provenance.ProvenanceIndex(
-                by_hash={BODY_HASH: {"batch_id": 5, "group_id": "untracked:body"}},
-                attempts_sha256="c" * 64,
-            )
+    def test_index_cannot_be_fabricated_without_loading_attempts_file(self):
+        with self.assertRaisesRegex(provenance.ProvenanceError, "load_attempts_index"):
+            provenance.ProvenanceIndex(by_hash={}, attempts_sha256="c" * 64)
 
     def test_missing_attempts_file_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
@@ -221,6 +216,13 @@ class _NoExecuteTransport:
 
 
 class ControllerProvenanceTests(unittest.TestCase):
+    def load_index(self, root: Path, body_hash: str) -> provenance.ProvenanceIndex:
+        attempts = root / "attempts.jsonl"
+        attempts.write_bytes(
+            (json.dumps(provenance.make_attempt_record(5, [body_hash])) + "\n").encode("utf-8")
+        )
+        return provenance.load_attempts_index(attempts)
+
     def test_authorized_evaluation_rejects_missing_index_before_execution(self):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
@@ -236,9 +238,7 @@ class ControllerProvenanceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
-            index = provenance.ProvenanceIndex(
-                by_hash={}, attempts_sha256="c" * 64
-            )
+            index = self.load_index(root, SECOND_HASH)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
                 row = ctl.evaluate_authorized(FIXTURE, provenance_index=index)
         self.assertEqual(row["excluded"], "body_absent_from_attempts")
@@ -250,10 +250,7 @@ class ControllerProvenanceTests(unittest.TestCase):
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
             body_hash = controller.protocol.sha256_bytes(FIXTURE.read_bytes())
-            index = provenance.ProvenanceIndex(
-                by_hash={body_hash: {"batch_id": 5, "group_id": "batch-005"}},
-                attempts_sha256="d" * 64,
-            )
+            index = self.load_index(root, body_hash)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
                 with self.assertRaises(AssertionError):
                     ctl.evaluate_authorized(FIXTURE, provenance_index=index)
