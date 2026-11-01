@@ -11,7 +11,7 @@
 
 | Path | Git blob SHA |
 |---|---|
-| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `46a9ae6314db17c55af3a2befb58541920d5d529` |
+| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `e3db9be1a35aad3c31aa949a66c0abf2d3a18da1` |
 | `lc518-150/review-v1.2/GPT_REVIEW_C9_DRYRUN_AND_v1.2.2.md` | `34605e2f404d357e2a69511338da802585663027` |
 
 The GPT independent-review note below is preserved unchanged from the parent branch. It documents the original v1.2.2 review and is not a substitute for review of the follow-up text.
@@ -43,7 +43,7 @@ No bank files are included. No solver bodies, candidate execution, private mutat
 
 ## Review lineage
 
-The prior held-out-first review branch was created at base/comparison commit `4169f9b2f6ace5b5a2a7a6d330558d88db8080d1`; its commit ancestry is `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. The current branch starts at `d7267b45` and adds the Claude-requested support/count/proof amendments. In particular, `c49241c3` is the direct parent of `d7267b45`; `4169f9b2` is the comparison base, not the immediate parent. No rebase occurred.
+The prior held-out-first review branch was created at base/comparison commit `4169f9b2f6ace5b5a2a7a6d330558d88db8080d1`; its commit ancestry is `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. The current follow-up branch `gpt/lc518-150-v1.2.2-heldout-first-claude-fixes-2026-11-01` was forked directly from `d7267b4596ab7909a82838ec1f5e3fdc2b94432f`. Its first correction-record commit is `5979bc2c50446a700fb698b93d02d11d98447d88`, followed by `3e9f5bf22949b9e4aa4ed1395cd4743b837ec984`; the manifest update follows on the same branch. The prior branch ancestry remains `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. Thus `c49241c3` is the direct parent of `d7267b45`, while `4169f9b2` is the comparison base. No rebase occurred.
 
 ## Additional review changes
 
