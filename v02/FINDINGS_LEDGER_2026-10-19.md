@@ -493,3 +493,55 @@ rank(basis)=4 rank(basis|C)=4
 max_abs_residual_of_C_on_basis=1.100e-13 col_space_dim=4
 elapsed_seconds=15.9
 ```
+
+## 7. Disposition of the 2026-11-01 AI review
+
+**Review source:** `reviews/AI_REVIEW_2026-11-01.md` (GitHub Copilot; present on `master` at review commit `b01b160`). This section responds to its five substantive concerns. It is interpretive documentation only: no frozen protocol, analysis code, solver pack, outcome, or terminal classification is changed.
+
+### 7.1 Main scientific claim: accepted limitation, with the confirmatory count brought up to date
+
+The review correctly identifies the central design limitation: v0.2 did not create eligible observations with the same k and different C. The review cites the earlier 90/90 pilot audit; the later read-only reconstruction in this ledger's Appendix B extends that finding to the full confirmatory set: **1,200/1,200 eligible pairs satisfy C = 5/k**, with one family fully failed in every row. The observed (k,C) support is exactly (5,1), (10,0.5), (20,0.25), and (25,0.2 (F1).
+
+The identity is not universal for all eligible patterns with k >= 2. It is a property of the realized eligible support; it is guaranteed by the six-family/five-probe geometry for k >= 25, but for the smaller observed k values it is a property of the realized failure vectors. The important inference is unchanged: there is no within-k variation in the data used by the frozen comparison. The appended C column adds no function-space capacity on the observed support (F2-F3).
+
+**Correct scientific interpretation:** the formal v0.2 classification remains **NEGATIVE under its frozen decision rule**, but this is not a substantive rejection of the hypothesis that concentration may predict correctness when it varies independently of k. That question is untested by v0.1 and v0.2. The broad hypothesis remains unresolved, neither supported nor refuted. This is already the disposition in F13 and section 6; this addendum makes it the explicit answer to the Copilot review.
+
+### 7.2 Soft-label fitting: exact loss aggregation, not a joint-likelihood claim
+
+The review is right to challenge imprecise use of the word likelihood. The frozen protocol's phrase likelihood-equivalent to input-level fitting should be read narrowly as an exact aggregation of the **specified mean per-hidden-input log-loss objective**, not as a claim that the 20 hidden outcomes are independent experimental replications or that the analysis specifies their full joint probability distribution.
+
+For eligible pair i, let y_ih be the binary outcome on hidden input h, s_i = sum_h y_ih, and let the pair-level design produce the same fitted probability p_i for all 20 outcomes. The exact pair-average binary log loss is:
+
+    ell_i(p_i) = -(1/20) sum_h [y_ih log(p_i) + (1-y_ih) log(1-p_i)]
+
+which equals:
+
+    -[(s_i/20) log(p_i) + (1-s_i/20) log(1-p_i)].
+
+Thus replacing the 20 outcomes by the soft label s_i/20 preserves the pair's **mean log-loss contribution exactly**. With row weight 1/n_g, where n_g is the number of eligible pairs in instance g, it also preserves the protocol's equal-instance-weighted fitting objective exactly. This is an algebraic identity for the chosen loss and common pair-level prediction; it does not require the 20 outcomes to be statistically independent. It does not, by itself, define a joint likelihood for dependent hidden outcomes.
+
+The implementation detail also needs precise naming. `v02/models_v02.py` uses a ridge term (RIDGE = 1e-6) in a finite, stabilized IRLS-style iteration (MAX_ITER = 50); it is therefore a **ridge-penalized weighted logistic fit**, not an unpenalized maximum-likelihood fit. The source docstring's Weighted logistic MLE label is imprecise. The frozen code is not rewritten because that would alter the historical executed artifact. Any successor implementation should use the precise estimator name and record its convergence status explicitly.
+
+**Disposition:** the Copilot review's concern about a fully specified joint binomial likelihood is valid as a wording/interpretation distinction. Its description of the soft-label loss as merely a pragmatic approximation is not correct for the protocol's stated mean-log-loss objective: the aggregation above is exact.
+
+### 7.3 Randomized family labels: reference benchmark, not a general null test
+
+The v0.2 control takes each of 200 prespecified balanced partitions of the 30 probe slots, groups the slots into six groups of five, recomputes the largest-group failure share, and applies that partition consistently across all instances using the same folds and scoring. The reported p95 is the empirical 95th percentile of the resulting 200 Δ values.
+
+This is a **balanced random-partition reference benchmark**: it asks whether the fixed family partition's model comparison exceeds the comparisons obtained under those particular random repartitions. It is not an exact randomization test of the broad null that family labels contain no predictive information, it is not a proof that the original semantic family labels carry no information, and the p95 is not a p-value. The protocol's Positive rule uses it as a prespecified benchmark; conclusions must remain at that scope.
+
+**Disposition:** the review's caution is accepted. The control is retained as a stress/reference benchmark, not promoted into a stronger inferential null than its construction supports.
+
+### 7.4 Synthetic positive controls: software check only
+
+The post-exposure P1 synthetic check shows that this implementation can recover a deliberately planted C-signal in synthetic data under that check's construction. P2 checks the count-only case. These checks are useful software diagnostics; they do not establish construct validity on the observed solver data, create equal-k/different-C empirical support, validate the resampling assumptions, or rescue the v0.2 scientific claim. They do not change the frozen result.
+
+**Disposition:** the report's phrase the pipeline is not a dead instrument is limited to the tested synthetic behavior. It must not be used as evidence that the real instrument identified an independent concentration effect.
+
+### 7.5 Closure and reader-facing summary
+
+The concern that repeated audit notes can obscure the decisive result is accepted as an editorial warning, not as a new empirical finding. The authoritative evidence and scope remain consolidated in this ledger's sections 2, 5, and 6; the dated interpretability audit and addenda are retained as provenance, not as competing conclusions. The repository root README is updated on the review branch to lead with the actual scientific disposition and direct readers to this ledger.
+
+**Final v0.2 statement:** the frozen procedure produced a reproducible NEGATIVE classification for its prespecified comparison and threshold. Because C had no variation at fixed k on all 1,200 eligible confirmatory pairs, that result does **not** answer whether independently varying family concentration adds predictive information beyond failure count. That hypothesis remains unresolved.
+
+No experiment, solver execution, pack regeneration, model refit, or successor study is authorized by this addendum.
