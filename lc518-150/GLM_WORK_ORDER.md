@@ -115,7 +115,7 @@ Do not reduce exceptions, wrong types, wrong values and timeouts to one bit in t
 
 ### Resource-related behaviour
 
-The LC518 statement does not provide this study with a wall-clock or memory cutoff. Do not invent one. M08-style resource inefficiency may be documented as a designed performance-risk candidate, but it cannot be labelled an observed timeout until a separate execution protocol declares the runtime, memory budget and timeout rule.
+The LC518 statement does not provide this study with a wall-clock or memory cutoff. Do not invent one. A resource-inefficiency candidate may be documented as a designed performance risk, but it cannot be labelled an observed timeout until a separate execution protocol declares the runtime, memory budget and timeout rule.
 
 ## 9. Primary analysis: matched within-parent correctness contrasts
 
