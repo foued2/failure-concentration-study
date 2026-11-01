@@ -500,7 +500,7 @@ elapsed_seconds=15.9
 
 ### 7.1 Main scientific claim: accepted limitation, with the confirmatory count brought up to date
 
-The review correctly identifies the central design limitation: v0.2 did not create eligible observations with the same k and different C. The review cites the earlier 90/90 pilot audit; the later read-only reconstruction in this ledger's Appendix B extends that finding to the full confirmatory set: **1,200/1,200 eligible pairs satisfy C = 5/k**, with one family fully failed in every row. The observed (k,C) support is exactly (5,1), (10,0.5), (20,0.25), and (25,0.2 (F1).
+The review correctly identifies the central design limitation: v0.2 did not create eligible observations with the same k and different C. The review cites the earlier 90/90 pilot audit; the later read-only reconstruction in this ledger's Appendix B extends that finding to the full confirmatory set: **1,200/1,200 eligible pairs satisfy C = 5/k**, with one family fully failed in every row. The observed (k,C) support is exactly (5,1), (10,0.5), (20,0.25), and (25,0.2) (F1).
 
 The identity is not universal for all eligible patterns with k >= 2. It is a property of the realized eligible support; it is guaranteed by the six-family/five-probe geometry for k >= 25, but for the smaller observed k values it is a property of the realized failure vectors. The important inference is unchanged: there is no within-k variation in the data used by the frozen comparison. The appended C column adds no function-space capacity on the observed support (F2-F3).
 
