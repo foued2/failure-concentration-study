@@ -84,8 +84,13 @@ def normalize(source: str) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
+def body_bytes(source: str) -> bytes:
+    """Canonical UTF-8/LF bytes persisted for a candidate body."""
+    return normalize(source).encode("utf-8")
+
+
 def digest(source: str) -> str:
-    return hashlib.sha256(normalize(source).encode()).hexdigest()
+    return hashlib.sha256(body_bytes(source)).hexdigest()
 
 
 def extract_bodies(text: str) -> list[str]:
