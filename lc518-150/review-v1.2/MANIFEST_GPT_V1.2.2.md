@@ -10,7 +10,7 @@
 | Path | Git blob SHA |
 |---|---|
 | `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `04af735e056b8ea75afdef07a07dd9fd8dececa3` |
-| `lc518-150/review-v1.2/GPT_REVIEW_C9_DRYRUN_AND_v1.2.2.md` | `90975ab1b38186af61c0e7b4b13d332aabb4d6d5` |
+| `lc518-150/review-v1.2/GPT_REVIEW_C9_DRYRUN_AND_v1.2.2.md` | `34605e2f404d357e2a69511338da802585663027` |
 
 ## Source artifacts preserved unchanged
 
