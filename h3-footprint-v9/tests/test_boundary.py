@@ -12,6 +12,7 @@ sys.path.insert(0, str(HERE))
 
 import backend  # noqa: E402
 import controller  # noqa: E402
+import provenance  # noqa: E402
 from _support import fixture, seed_targets  # noqa: E402
 
 V9 = HERE.parent
@@ -54,7 +55,7 @@ class HostBoundaryExposure(unittest.TestCase):
             root = Path(td)
             ctl = host_controller(root, case_paths=case_dirs(root))
             seed_targets(root, **reference_targets())
-            row = ctl.evaluate(fixture("oracle_hunt.py"), group_id="g-exposure")
+            row = ctl.evaluate(fixture("oracle_hunt.py"))
             self.assertIsNone(row["excluded"])
 
             report = json.loads((root / "scratch" / "oracle_hunt.json").read_text(encoding="utf-8"))
@@ -74,7 +75,7 @@ class HostBoundaryExposure(unittest.TestCase):
             root = Path(td)
             ctl = host_controller(root, case_paths=case_dirs(root))
             seed_targets(root, **reference_targets())
-            row = ctl.evaluate(fixture("key_reader.py"), group_id="g-perfect")
+            row = ctl.evaluate(fixture("key_reader.py"))
             self.assertIsNone(row["excluded"])
             self.assertEqual(row["k"], 0, "the key-reading fixture failed to reach the oracle")
             self.assertFalse(row["isolation_verified"])
@@ -85,7 +86,7 @@ class HostBoundaryExposure(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             ctl = host_controller(root, case_paths=case_dirs(root))
-            row = ctl.evaluate(fixture("key_reader.py"), group_id="g-guess")
+            row = ctl.evaluate(fixture("key_reader.py"))
             self.assertIsNone(row["excluded"])
             self.assertEqual(row["k"], 30)
 
@@ -93,8 +94,16 @@ class HostBoundaryExposure(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             ctl = host_controller(root)
+            body = fixture("correct.py")
+            body_hash = controller.protocol.sha256_bytes(body.read_bytes())
+            attempts = root / "attempts.jsonl"
+            attempts.write_text(
+                json.dumps(provenance.make_attempt_record(0, [body_hash])) + "\\n",
+                encoding="utf-8",
+            )
+            index = provenance.load_attempts_index(attempts)
             with self.assertRaises(controller.BoundaryNotEstablished):
-                ctl.evaluate_authorized(fixture("correct.py"), group_id="g-refused")
+                ctl.evaluate_authorized(body, provenance_index=index)
 
 
 class ScoringLogicOnHostBackend(unittest.TestCase):
@@ -112,7 +121,7 @@ class ScoringLogicOnHostBackend(unittest.TestCase):
         cls.ctl = host_controller(cls.root)
 
     def test_correct_solver_scores_zero_failures(self):
-        row = self.ctl.evaluate(fixture("correct.py"), group_id="g-correct")
+        row = self.ctl.evaluate(fixture("correct.py"))
         self.assertIsNone(row["excluded"])
         self.assertEqual(row["probes_completed"], 30)
         self.assertEqual(row["k"], 0)
@@ -121,7 +130,7 @@ class ScoringLogicOnHostBackend(unittest.TestCase):
         self.assertFalse(row["authorized"])
 
     def test_constant_wrong_solver_fails_every_probe(self):
-        row = self.ctl.evaluate(fixture("wrong_constant.py"), group_id="g-wrong")
+        row = self.ctl.evaluate(fixture("wrong_constant.py"))
         self.assertIsNone(row["excluded"])
         self.assertEqual(row["k"], 30)
         self.assertEqual(row["max_f"], 5)
@@ -130,12 +139,12 @@ class ScoringLogicOnHostBackend(unittest.TestCase):
         self.assertAlmostEqual(row["C"], 5 / 30, places=12)
 
     def test_sys_exit_counts_as_probe_failure(self):
-        row = self.ctl.evaluate(fixture("sys_exit.py"), group_id="g-exit")
+        row = self.ctl.evaluate(fixture("sys_exit.py"))
         self.assertIsNone(row["excluded"], "a raising solver is a failing solver, not an invalid one")
         self.assertEqual(row["k"], 30)
 
     def test_stdout_hijack_cannot_improve_score(self):
-        row = self.ctl.evaluate(fixture("stdout_hijack.py"), group_id="g-hijack")
+        row = self.ctl.evaluate(fixture("stdout_hijack.py"))
         self.assertIsNone(row["excluded"])
         # A fixed forged guess can collide with a genuine expected value (Z4 is
         # 0), so it may win a single probe. It cannot win without the key.
