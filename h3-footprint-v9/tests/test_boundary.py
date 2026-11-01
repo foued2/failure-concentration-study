@@ -98,7 +98,7 @@ class HostBoundaryExposure(unittest.TestCase):
             body_hash = controller.protocol.sha256_bytes(body.read_bytes())
             attempts = root / "attempts.jsonl"
             attempts.write_text(
-                json.dumps(provenance.make_attempt_record(0, [body_hash])) + "\\n",
+                json.dumps(provenance.make_attempt_record(0, [body_hash])) + "\n",
                 encoding="utf-8",
             )
             index = provenance.load_attempts_index(attempts)
