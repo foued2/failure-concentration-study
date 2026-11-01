@@ -1,0 +1,324 @@
+# CORRECTIONS_RECORD_v1.2.2-draft.md — LC518 150-Body Construction Study
+
+**Study package:** lc518-150
+**Version:** 1.2.2-draft (single unambiguous identifier; supersession chain in the Changelog)
+**Prepared by:** GLM (base document); GPT (v1.2.2 review amendment)
+**Date:** 2026-11-01
+**Supersedes:** v1.2.1-draft (preserved unchanged on the review branch); earlier v1.2-draft, v1.1.1-draft and v1.1-draft are preserved by hash in the Changelog.
+**Authorization scope (owner, 2026-11-01, updated):** the owner subsequently instructed GPT to work directly in the repository and publish review artifacts for Claude review. This authorizes commits and pushes of review documents, mathematical verification scripts, and review reports on dedicated review branches. It does NOT authorize generating the 150 solver bodies, generating either input bank, executing candidate solver bodies, opening or modifying the private mutation-design annex, or publishing a candidate-solver package. Any later bank generation or solver work remains subject to the agreed scientific review, explicit owner authorization, and the private-annex gate.
+**Status of v1.0 documents:** UNCHANGED and UNTOUCHED. Byte-identical to pushed commit `3e9a29c9652a6ab4f6bab0919e386757280b2654`:
+- `PARENT_DESIGN.md` sha256 `c6138342af84fe02a64390c2f6a7f4077f0268aa875ad90ee534c76a725f3437`
+- `BANK_DESIGN.md` sha256 `da7f8c1ae3c5e3a582c38d91be2463061bce2acb0a772fac72d34459f4b17843`
+- `ANALYSIS_SPEC.md` sha256 `fb24910cc7712c7e9e27753084ad3683d1fd422a20d875b0b5a4ca33a55f4e78`
+
+**Review-chain status (2026-11-01, v1.2.2-draft):** C1–C7 corrections are carried forward from the reviewed parent drafts. Claude's C9 dry run identified a cross-bank exemplar collision, a false D4 answer-zero claim, and the absence of a qualifying H4 repeated-use record. GPT independently reviewed the committed harness and identified unbounded internal retry loops, a non-identity permutation check that is tautological, a command-line argument contrary to item 6, and an acceptance check performed only after writing diagnostic outputs. The C9 corrections in this draft are proposals for Claude review; **NOT YET ACCEPTED**. C8/E3 remains an owner decision. No bank generation, solver construction, candidate execution or annex access is authorized by this draft.
+
+---
+
+## 0. What changed in v1.2.2-draft (reviewer-driven)
+
+| GPT finding | Where addressed |
+|---|---|
+| C1 two-pointer runs in the wrong direction; complexity over-collapsed; amount-zero memo states unaccounted | C1, Precomputation / Complexity / Boundary conditions and memo discipline |
+| C3 extremal examples arithmetically wrong; aggregate bounds on the wrong scale (missing 1/80); single-contrast bounds missing | C3, View 2 (rewritten as a general contrast-bounds mechanism) |
+| C9 draw order contradicts D1's `c_min` dependency; stratum quotas unpinned; "single RNG stream" wording conflicts with v1.0 :65–66; canonical JSON underspecified | C9, items 2–5 (per-stratum procedures, RNG protocol, serialization) |
+| Header vs changelog version mismatch | Header (single identifier `1.2-draft`) + Changelog |
+| C4/C5: zero-variance standardization must map constant columns to 0 | C4/C5 addendum |
+| C6: count vs denominator must be explicit; rate descriptive and undefined at zero denominator | C6 addendum |
+
+**GLM's own additional tightenings (disclosed for Claude's challenge; not demanded by GPT):** (a) the C1 memo-state count `min(n, A) + 1` silently relied on **distinct denominations** — the premise is now explicit, cited to BANK_DESIGN :29, with the degraded bound stated for the duplicate case; (b) the C1 memo discipline is pinned as an implementation ORDER (boundary check → compaction → memo lookup → memo store), which is what makes the state count provable; (c) C3's complete-case estimate normalization was ambiguous in v1.1 ("computed on C(g) only") — now pinned as the C(g)-conditional mean, explicitly separated from the 1/80-scale full-bank bounds; (d) C9 pins the `int32_guard` log field and reconciles it with the :67–69 field list; (e) C9 pins "no degenerate randrange calls" (all range widths ≥ 2).
+
+---
+
+## C1 — G22 algorithm description incoherent (PARENT_DESIGN §3.3 :170, §4 :271) — REVISED in v1.2
+
+**v1.0 text (:170):**
+> `| G22 | K3-bisect-prune: coins sorted ascending; at each call, bisect_left advances i past all coins > a (skip-run compaction); dict memo | Adds search-based pruning; reduces effective branching |`
+
+**Defect.** In an ascending suffix recursion over `coins[i:]`, coins `> a` occupy the TAIL of the suffix. `bisect_left(coins, a+1) = j` bounds the usable PREFIX `[0, j)`; "advancing i past all coins > a" would advance `i` over the smallest coins and retain the oversized tail — the opposite of the stated purpose. Confirmed independently by GPT, Claude, and GLM.
+
+**Amendment history (owned).** v1.1's replacement specified `u(a)` correctly but gave a two-pointer precomputation that iterates amounts in ASCENDING order with a forward-only pointer. For descending coins, `u(a)` is non-increasing in `a` (as the amount grows, the first usable index moves LEFT), so a forward-only pointer cannot track it: on `c = [5, 3, 1]`, A = 5, the v1.1 loop returns `u(a) = 2` for **every** a — reporting `u(5) = 2` and skipping the denominations 5 and 3 entirely, which would make G22 return incorrect answers. Found by GPT (his counterexample table adopted verbatim); defect reproduced by GLM's verification script (worklog entry 39 receipt). The bisect derivation and the compaction lemma were never affected — GPT: "The issue is specifically the two-pointer pseudocode, not the definition of u(a) or the compaction lemma."
+
+**Replacement text (exact, for §3.3 parent table and expanded in a new §3.3.1):**
+
+> **G22 — K3-desc-firstusable-prune.** Coins sorted **descending** `c_1 ≥ c_2 ≥ … ≥ c_n` (0-indexed `c[0] ≥ … ≥ c[n−1]`). Suffix recursion as in family K3: `f(i, a) = f(i+1, a) + (a ≥ c_i ? f(i, a − c_i) : 0)`, `f(i, 0) = 1`, `f(n, a>0) = 0`, dict memo. Before any transition at a state `(i, a)` with `a > 0`, the index is compacted to `i' = max(i, u(a))`, where `u(a)` is the **precomputed first usable index**: `u(a) = min{ i : c_i ≤ a }`, `u(a) = n` if none. `f(i, a) = f(i', a)`; recursion proceeds from `i'` only.
+>
+> **Precomputation (CORRECTED in v1.2 — descending amounts).** With `A ≥ 1`: sort descending, O(n log n); then fill the table by two pointers iterating amounts in DESCENDING order, so that the required `u(a)` values are non-decreasing along the iteration and a single forward-moving pointer suffices:
+> ```
+> u = [n] * (A + 1)            # sentinel; u[0] stays n and is never read
+> j = 0
+> for a in range(A, 0, -1):    # A, A−1, …, 1 — DESCENDING
+>     while j < n and c[j] > a:
+>         j += 1               # advances at most n times over the whole loop
+>     u[a] = j
+> ```
+> Correctness of the sweep: for `a > a'` (both ≥ 1), `{ i : c_i ≤ a' } ⊆ { i : c_i ≤ a }`, hence `u(a) ≤ u(a')`; iterating `a` from `A` down to `1` therefore demands non-decreasing `u` values, which the monotone pointer delivers. Cost O(n + A) for the sweep. **Worked example (GPT's, independently re-verified):** `c = [5, 3, 1]`, `A = 5`:
+>
+> | amount a | 1 | 2 | 3 | 4 | 5 |
+> |---|---|---|---|---|---|
+> | u(a) | 2 | 2 | 1 | 1 | 0 |
+>
+> Equivalent one-shot derivation (unchanged, verified equivalent to the sweep over 3,000 randomized trials including duplicate-coin cases — worklog entry 39): with `d = (−c_0, …, −c_{n−1})` ascending, `u(a) = bisect_left(d, −a)` for `a ≥ 1` (yielding `n` exactly when no coin is ≤ a).
+>
+> **Compaction lemma (unchanged from v1.1; GPT: coherent).** For `a > 0` and `i ≤ u(a)`: `f(i, a) = f(u(a), a)`. Proof: descending order gives `c_j > a` for all `j < u(a)` (else `u(a)` smaller). At any such `j`, the use branch requires `a ≥ c_j` — false — so `f(j, a) = f(j+1, a)` (skip only). Chaining over `j = i, …, u(a)−1` gives the claim. Since the use branch strictly decreases `a`, every deeper state `(i'', a'')` reachable from `(u(a), a)` has `a'' ≤ a`, hence `c_j > a ≥ a''` for `j < u(a)` remains dead at all deeper states: no usable coin is ever skipped. ∎ (For the measure `M(i,a) = a + (n−i)(A+1)`, compaction `i ← max(i,u(a))` is non-increasing because it can only increase `i` and is a no-op when `i ≥ u(a)`. After compaction, each recursive skip transition `i → i+1` strictly decreases `M` by `A+1`, and each use transition `a → a−c_i` strictly decreases `M` by `c_i ≥ 1`. Thus every recursive edge strictly decreases `M`; compaction itself need not.)
+>
+> **Boundary conditions and memo discipline (CLARIFIED in v1.2).** `A = 0` → return 1 immediately (the empty multiset; no sort, no table, no recursion). Otherwise, evaluation of a state `(i, a)` follows this pinned ORDER: (1) if `a = 0`, return 1 — amount-zero states are terminal and are **never memoized** (no memo write, no memo read); (2) compact `i ← max(i, u(a))` (compaction is defined only for `a > 0`; `u[0]` is never read); (3) memo lookup on `(i, a)`; (4) compute and store. `f(n, a>0) = 0` (suffix exhausted, amount unmet).
+>
+> **Memo-state count (CORRECTED in v1.2, with an explicit premise).** By the pinned order, every memoized key `(i, a)` has `a ≥ 1`; and whenever `i < n`, compaction guarantees `i ≥ u(a)`, hence `c_i ≤ a ≤ A`, i.e. `i ∈ { j : c_j ≤ A } ∪ { n }`. **Why skip transitions add nothing outside this set (GPT's stated proof obligation, made explicit pre-delivery):** the skip successor of a compacted state `(i, a)` enters as `(i + 1, a)` and is re-compacted to `max(i + 1, u(a)) = i + 1` — because `i + 1 > i ≥ u(a)` — so it satisfies the same invariant; and since the coins are descending, `c_{i+1} ≤ c_i ≤ a ≤ A`, so its index is again an index of a coin ≤ A. The use branch re-enters at `(i, a − c_i)` and compacts to `max(i, u(a − c_i))` with `u(a − c_i) ≥ u(a)` (the amount strictly decreased), preserving the invariant identically. Index-set membership therefore holds for ANY descending list via compaction-at-entry; GPT's distinctness formulation (`u(c_i) = i`, connecting skip successors to threshold indices) is subsumed — distinctness is invoked only for the COUNT below. **Premise (now explicit):** the bank guarantees *coins distinct, ∈ [1, 5000]* (BANK_DESIGN §1 :29 — itself the mirror of LC518's official constraint that all coin values are unique). Distinct positive integers all ≤ A are at most `min(n, A)` in number, so distinct memo index values ≤ `min(n, A) + 1` and memoized states ≤ `(min(n, A) + 1) · A ⊆ O(nA)`. Amount-zero states contribute nothing (never memoized — this closes GPT's accounting condition). Without distinctness the sharper count fails — adversarial, with the trace spelled out: 40 copies of coin 1 with `A = 1` compact-and-memoize `(k, 1)` for `k = 0 … 40` along the skip chain — 41 memoized keys, 41 distinct index values, against `min(n, A) + 1 = 2` — and the set characterization itself fails under duplicates (`c = [3, 3, 1]`, `A = 3`: the key `(1, 3)` lies outside `{u(a) : a ∈ [1,3]} ∪ {n} = {0, 2, 3}`); both verified in the entry-40 receipt. The bound then degrades gracefully to `(n + 1) · A ⊆ O(nA)`. **Correctness scope (tightened pre-delivery):** the compaction lemma, the recurrence, and every bound above hold for any descending list of positive integers; VALUE-correctness as an LC518 counter is claimed only inside the study contract, whose inputs have distinct denominations (BANK_DESIGN :29). Behaviour on duplicate denominations is outside the contract and is not claimed (the suffix recursion counts position-combinations there).
+>
+> **Recursion depth (unchanged from v1.1.1).** G22 remains a top-down recursive algorithm — no explicit stack — so it inherits the family K3 mandate (§3.3 :153–158) in full: `sys.setrecursionlimit(depth_bound + 200)` with `depth_bound = n + ⌊A/c_min⌋ + 1 ≤ 5301`, derivation recorded in the source header. Compaction shortens skip chains and reduces realized depth, but the declared worst-case bound is unchanged and the limit mandate is not waived by the pruning.
+>
+> **Complexity (CORRECTED in v1.2 — no collapse).** Sorting O(n log n); sweep O(n + A); DP O((min(n, A) + 1) · A) states × O(1) per state (compaction is a table lookup). Total time: **O(n log n + nA + A)** — stated without collapsing to O(nA), since for independently chosen n and A (in particular A = O(1)) the n log n term dominates nA (GPT's correction adopted). `A = 0` is O(1) by the immediate return. Space: memo ≤ `(min(n, A) + 1) · A` entries (dict) + O(n + A) for the sorted array and table + O(depth) stack, depth ≤ 5301. The per-state-bisect alternative O(nA log n) (GPT's original objection) remains avoided by the O(A)-sweep precomputation.
+>
+> **Near-duplicate disclosure (unchanged from v1.1.1; GPT: coherent).** PRINCIPAL affinity: **G20** (descending-order suffix recursion, largest-part-first reading, lru_cache) — the corrected G22 is an optimization of the G20 approach, the threshold precomputation `u(a)` being a data-structural accelerator for exactly G20's traversal; same family K3. SECONDARY affinity (separate explanation, as GPT requires): **G17** shares only the sparse dict memo carrier; it differs in sort normalization (given order vs descending), branch mechanics (skip-first vs compacted use/skip), and has no compaction. The v1.0 text's apparent affinity to **G21** was an artifact of the defective description and lapses with this correction.
+
+Also apply to §4 roster (:271): `| 22 | G22 | K3 | descending coins, precomputed first-usable-index compaction, dict memo |`
+
+**Justification.** GPT's reversed-iteration remedy adopted verbatim; his [5,3,1] counterexample is now a pinned worked example; his complexity-expression and terminal-state conditions adopted; the distinctness premise (GLM) is added because the state-count lemma is FALSE without it — disclosed rather than left implicit, so Claude can attack it directly.
+
+---
+
+## C2 — K5 final-step complexity and risk ranking (PARENT_DESIGN §3 table :64, §3.5 :236–239) — ACCEPTED by GPT, unchanged
+
+**v1.0 text (:236–239):**
+> `**Complexity.** O(nA) for both half-products plus O((A+1)²) ≈ 2.5 × 10⁷ operations for the final Cauchy product at A = 5000. **Designed performance risk:** the quadratic final convolution is the single heaviest step in the population; recorded per contract line 55 discipline as a designed risk, never as an observed timeout.`
+
+**Defect.** The formulation (:227) computes only the target coefficient `W(A,S) = Σ_{t=0}^{A} P_L[t]·P_R[A−t]` — one dot product of two length-(A+1) arrays. Cost O(A) ≈ 5 × 10³, not O(A²) ≈ 2.5 × 10⁷. Confirmed by GPT and Claude; GLM concurs (own error).
+
+**Replacement text (exact, unchanged from v1.1):**
+> `**Complexity.** O(nA) for both half-products plus O(A) ≈ 5 × 10³ operations for the final coefficient (one dot product Σ_{t=0}^{A} P_L[t]·P_R[A−t]; the full convolution array is never formed). **Designed performance risk:** none material; the K5 parents are among the lightest in the population. The heaviest declared workload in the population is the K4 doubling schedule, O(n · A · log2(A / c_min)) ≈ 2 × 10⁷ cell operations (§3.4), which therefore carries the population's principal designed performance risk, recorded per contract line 55 discipline, never as an observed timeout.`
+
+Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
+
+**Justification.** Algebra per GPT; consequence per GPT §1: K4-doubling becomes the computationally demanding formulation. No correctness claim changes. **GPT review status: accepted ("The final coefficient is a dot product, O(A).").**
+
+---
+
+## C3 — E1 matched contrasts: two-view reporting with pattern-enumerated bounds (ANALYSIS_SPEC §3 :48–72) — REVISED in v1.2
+
+**v1.0 text (:51–54):**
+> `All five versions of a parent use identical held-out records, identical oracle outputs, and identical execution conditions (work order §9). Because unresolved records are neither pass nor fail, L is reported on the resolved subset with coverage, together with worst/best bounds over unresolved records (worst: all unresolved are FAIL; best: all are PASS). No unresolved record is silently counted either way.`
+
+**Defect.** "Reported on the resolved subset" implies per-version denominators; resolved subsets can differ across versions, so contrasts are not strictly matched. The per-input interaction (:65–68) is undefined where any of the four versions is unresolved, with no aggregation rule. Confirmed by GPT; adopted.
+
+**Amendment history (owned).** v1.1.1's View 2 stated the correct range `i ∈ {−2,…,2}` but (i) gave extremal PATTERNS that do not attain the extremes — "max 2 = SAB fails, S0/SA/SB pass" computes `1 − 0 − 0 + 0 = +1`, and the mirrored minimum pattern computes −1 (found by GPT; owned — the error was in the draft's explanatory examples however sourced); (ii) wrote the aggregate bounds as raw sums `I_min = Σ_x min i(x)` although every aggregate contrast is a MEAN over 80 records, putting the bounds on the wrong scale; and (iii) gave bounds only for the four-version interaction, leaving the three single contrasts without full-bank bounds. All three are corrected below.
+
+**Replacement text (exact, replaces :51–54 and extends :63–72):**
+
+> All five versions of a parent use identical held-out records, identical oracle outputs, and identical execution conditions (work order §9). Unresolved records are never counted as pass or fail. Two pre-declared reporting views are used; neither is constructed after seeing outcomes. Notation: `loss(g, v, x) = 1[status(g, v, x) = FAIL]` for resolved outcomes, undefined for unresolved ones (:65–67); `L(g, v) = mean over the 80 held-out records of loss(g, v, x)` (:48).
+>
+> **View 1 — complete-case matched estimates.** For each contrast, let `C(g)` be the set of held-out records resolved by **every version entering that contrast** — explicitly: the 2 versions {S0, SA} for the A-only contrast, {S0, SB} for B-only, {S0, S-extra} for S-extra, and the 4 versions {S0, SA, SB, SAB} for the pair/interaction contrast. **This contrast-specific complete-case definition is stated as the PRIMARY convention (GPT's explicitness demand): it is per-contrast, NOT "resolved under all five versions"; the all-five convention `C₅(g) = ∩ of all five versions' resolved sets` is also computed and reported descriptively, with `|C₅(g)|/80` beside it; both coverages appear in every table so the two conventions are never confused.** Per version, `L(g, v)` is additionally reported descriptively as the resolved-subset rate with its own coverage — descriptive only, never contrasted against a different version's denominator. **Normalization (pinned in v1.2):** the matched complete-case estimate of a contrast is the C(g)-conditional mean `(1/|C(g)|) · Σ_{x ∈ C(g)} c(x)` and is always labeled as conditional on resolution; it is never mixed with, or compared against, the full-bank bounds of View 2, which are on the 1/80 full-bank scale.
+>
+> **View 2 — full-bank bounds with unresolved retained as unknown (REWRITTEN in v1.2).** Every E1 contrast is, per record, a fixed linear combination of the entering versions' losses: a **single contrast** `Δ(g) ∈ {Δ_A, Δ_B, Δ_S-extra}` has per-record value `d(x) = loss(g, v₁, x) − loss(g, v₀, x)` (weights +1 on the patched version, −1 on S0); the **pair/interaction contrast** has per-record value `i(g, A, B, x) = loss(g, SAB, x) − loss(g, SA, x) − loss(g, SB, x) + loss(g, S0, x)`.
+>
+> Per-record ranges (correct and unchanged): `d(x) ∈ {−1, 0, 1}`; `i(x) ∈ {−2, −1, 0, 1, 2}`. **Corrected extremal patterns** — written as losses in the fixed order `(S0, SA, SB, SAB)`:
+>
+> | Extreme | Losses (S0, SA, SB, SAB) | Computation | Reading |
+> |---|---|---|---|
+> | Maximum +2 | (1, 0, 0, 1) | 1 − 0 − 0 + 1 = +2 | S0 FAILS; both single patches PASS; the combined patch FAILS — each patch alone repairs the base failure, their combination does not |
+> | Minimum −2 | (0, 1, 1, 0) | 0 − 1 − 1 + 0 = −2 | S0 PASSES; both single patches FAIL; the combined patch PASSES — each patch alone breaks a passing base, their combination does not |
+>
+> Each extreme is attained by exactly this one pattern (all 16 loss patterns enumerated in the entry-39 receipt; unique argmax/argmin). The v1.1.1 examples (SAB fails with the other three passing, and the mirror) give +1 and −1 and are withdrawn.
+>
+> Unresolved handling: for a record where `k` of the contrast's versions are unresolved (`k` is the **PER-INPUT** count within the contrast's version set: `k ≤ 2` for singles → at most 2² = 4 completions; `k ≤ 4` for the interaction → at most 2⁴ = 16 completions; GPT's clarification retained), the record's contrast value ranges over the `2^k` completions assigning PASS/FAIL to the unresolved components with resolved components fixed; the record contributes the interval `[m_min(x), m_max(x)]` over those patterns. Enumeration of unresolved assignments across the entire 80-record bank is explicitly NOT performed. All four contrasts — Δ_A, Δ_B, Δ_S-extra and I(g, A, B) — receive this identical treatment; no contrast is bounds-free.
+>
+> **Aggregate estimand and bounds (CORRECTED in v1.2 — the 1/80 factor).** Each `L(g, v)` is a mean over 80 records (:48), so every aggregate contrast carries the factor 1/80: `Δ(g) = (1/80) Σ_x d(x)` and `I(g, A, B) = (1/80) Σ_x i(x)`. The full-bank bounds are therefore
+> `Δ_min(g) = (1/80) Σ_x m_min(x)` and `Δ_max(g) = (1/80) Σ_x m_max(x)`, and identically `I_min(g) = (1/80) Σ_x m_min(x)`, `I_max(g) = (1/80) Σ_x m_max(x)` for the interaction. (v1.1.1's unscaled sums are withdrawn — GPT: "Without division by 80, the result is on the wrong scale.") Closed form for the singles (CORRECTED pre-delivery; the unconditional form issued with the entry-39 text is WITHDRAWN — see Changelog). On records where both entering versions are resolved the record contributes `d(x)`. On a record with at least one unresolved component the resolved component is FIXED and the record contributes: `m_max(x) = 1` iff the S0-side status is resolved-PASS or unresolved **and** the patched-side status is resolved-FAIL or unresolved, otherwise `m_max(x) = 0`; `m_min(x) = −1` iff the S0-side status is resolved-FAIL or unresolved **and** the patched-side status is resolved-PASS or unresolved, otherwise `m_min(x) = 0`. The withdrawn form — adding `|{x : at least one unresolved}|` unconditionally — over-counted exactly the two cases where one resolved component pins the record away from the extreme: S0 resolved FAIL with the patched version unresolved, and the patched version resolved PASS with S0 unresolved, whose true max is 0, not 1 (mirrored for the minimum). The entry-39 cross-check embedded the same assumption in its enumeration harness and therefore could not detect the discrepancy — owned. Then `Δ_max(g) = (1/80) Σ_x m_max(x)` and `Δ_min(g) = (1/80) Σ_x m_min(x)`; the corrected form was verified against true per-record enumeration — exhaustive over all 9 per-record resolution-status pairs and 20,000 randomized 80-record banks, 0 mismatches (entry-40 receipt, `scripts/verify_v12_predelivery.py`). Bounds are deterministic worst-case envelopes over the unresolved completions — attained simultaneously across records because completions are per-record independent — and are NOT statistical confidence intervals. Bounds are computed **per record by pattern enumeration**, never by independently combining version-level averages, which would ignore that the unresolved records are the same matched records across versions and produce incorrect joint bounds. The full per-input distribution (determined records) and the list of undetermined records with their intervals are reported; the cancellation rule (:70–72) is unchanged.
+
+**Justification.** Preserves matching (GPT's two-view structure); the bounds machinery is now uniform over all four E1 contrasts, on the correct 1/80 scale, with extremal patterns that actually attain the stated extremes. Claude's confirmation of the {−2,…,2} range is recorded.
+
+---
+
+## C4 — Deviation features: fixed zero sentinel + defined indicator (ANALYSIS_SPEC §4 :93–94) — ACCEPTED by GPT, plus v1.2 addendum
+
+**v1.0 text (:93–94):**
+> `| d_meandev_s | mean of |returned − expected| over wrong integer outputs in s; NaN + defined=False when undefined |`
+> `| d_maxdev_s | max of |returned − expected| over wrong integer outputs in s; NaN + defined=False when undefined |`
+
+**Defect.** NaN values enter a ridge design matrix with no specified treatment. Confirmed by GPT and Claude.
+
+**Replacement text (exact, unchanged from v1.1):**
+> `| d_meandev_s | mean of |returned − expected| over wrong integer outputs in s; **0 when undefined** (no wrong integer outputs in s), with companion indicator d_meandev_s_defined = False |`
+> `| d_maxdev_s | max of |returned − expected| over wrong integer outputs in s; **0 when undefined**, with companion indicator d_maxdev_s_defined = False |`
+
+**Justification (unchanged).** A wrong integer output has `|returned − expected| ≥ 1`, so 0 is never a genuine deviation value (GPT): the sentinel is out-of-domain by construction and unambiguous, avoiding fold-specific imputation. The indicator columns carry the missingness; ridge absorbs the collinearity. Standardization remains fitted on training data only, inside every fold (:140–141 unchanged). No imputation is "fitted" because none is needed — the sentinel is fixed before any data exists.
+
+**v1.2 addendum (GPT §4):** the same fold-fitted standardization is subject to the zero-variance rule of the C5 addendum: a training-fold-constant column — which the `_defined` indicators can be (e.g., all-defined in a fold) — maps to 0 for every row, never to division by zero or NaN. **GPT review status: accepted.**
+
+---
+
+## C5 — `other` failure-manifestation count added (ANALYSIS_SPEC §4 :86–94) — ACCEPTED in principle, plus v1.2 addendum
+
+**v1.0 context.** §2 (:32–34) permits manifestations "wrong answer, invalid return type, exception, timeout/resource breach, other explicitly defined status"; the §4 table counts only wrong answer / invalid return / exception (+ unresolved coverage).
+
+**Defect (GPT, detail 1).** A permitted manifestation class has no feature column; the enriched arm would be blind to it while the typed record retains it.
+
+**Replacement text (exact, unchanged from v1.1):** add row after `d_exception_s`:
+> `| d_other_s | count of FAIL records in s whose typed manifestation is classified other (explicitly defined status, excluding timeout/resource, which remain reserved columns until the execution protocol exists) |`
+
+**v1.2 addendum (GPT §4 — zero-variance standardization rule, pre-declared):** numeric feature standardization inside each fold uses the training fold's mean and standard deviation (:140–141 unchanged). If a training-fold feature has **zero variance** (constant column — `d_other_s` is the motivating case, constant 0 if `other` never occurs; the rule applies to any column, including C4's indicators), the standardized column is **defined as 0 for every row** (training and validation rows alike): no division is performed, no NaN or ±∞ can be produced, the column's coefficient is 0 by construction, and the column is still reported rather than dropped (consistent with :101–102). **GPT review status: accepted in principle with this specification demanded — supplied.**
+
+---
+
+## C6 — `d_order_inconsistent` defined and added to the enriched arm (ANALYSIS_SPEC §4, §6 :131–134; BANK_DESIGN §6 :136–138) — ACCEPTED in principle, plus v1.2 addendum
+
+**v1.0 text (BANK_DESIGN :136–137):**
+> `The D6 permutation pairs are diagnostic-only instruments for the order-invariance feature (ANALYSIS_SPEC.md §4, d_order_inconsistent).`
+
+**Defect.** The referenced feature does not exist anywhere in ANALYSIS_SPEC v1.0 (table :86–94, aggregates :96–98, enriched arm :131–134). Confirmed by GPT and Claude.
+
+**Replacement text (exact, unchanged from v1.1.1):** add three rows to the §4 table:
+> `| d_order_pairs_resolved | count of D6 canonical pairs (of 4) where BOTH orderings resolved (status PASS or FAIL, any manifestation) |`
+> `| d_order_pairs_comparable | count of D6 canonical pairs where both executions resolved AND both returned comparable values — exact int return values (PASS, or FAIL with a wrong-integer output). Pairs where either execution ended in invalid return type or exception have no comparable value and are excluded here while remaining visible in d_order_pairs_resolved |`
+> `| d_order_inconsistent | count of D6 canonical pairs, among the comparable pairs, whose two returned integer values differ. Value-based only |`
+
+**v1.2 addendum (GPT §4):** the feature table states explicitly that `d_order_inconsistent` is a **count** and `d_order_pairs_comparable` is its **denominator**; **both columns are fed to the predictive model** (as the enriched arm intends). The rate `d_order_inconsistent / d_order_pairs_comparable` may additionally be reported descriptively and is **undefined (reported as null) when the denominator is 0** — it is never silently set to 0 and never imputed.
+
+**Justification (unchanged core).** GPT's comparability condition adopted: a FAIL does not imply a comparable return value exists, so the inconsistency count is restricted to comparable pairs, with the evaluation count recorded at two levels (resolved, comparable). Correctness and order invariance remain separate measurements; a correct solver is order-invariant by (F-ORD); identical wrong values under both orderings count as consistent (an order-invariant bug). Enriched arm (:131–134) amended to include all three columns; BANK_DESIGN's cross-reference becomes true. **GPT review status: accepted in principle with the count/denominator clarification demanded — supplied.**
+
+---
+
+## C7 — `coverage_diag`: definition written, excluded from both arms (ANALYSIS_SPEC §4 :96–98, §6 :130) — ACCEPTED by GPT, unchanged
+
+**v1.0 text (:96–98):**
+> `Aggregate baseline columns: k_fail (total diagnostic FAIL count), k_unresolved (total diagnostic UNRESOLVED count), family (parent algorithm family Z from PARENT_DESIGN.md §4 — prespecified context variable), coverage_diag.`
+**v1.0 text (:130):**
+> `- **Baseline arm:** ridge regression on k_fail, k_unresolved, family.`
+
+**Defect.** Column list and arm specification disagree (GPT's extra point 1; Claude's "partly right" resolved in GPT's favour on line-by-line reading).
+
+**Replacement text (exact, unchanged from v1.1):**
+> `Aggregate columns: k_fail, k_unresolved, family, coverage_diag, where coverage_diag = (resolved diagnostic records)/64 = 1 − k_unresolved/64 per solver (Coverage definition of §2 applied to the 64-record diagnostic bank).`
+> `- **Baseline arm:** ridge regression on k_fail, k_unresolved, family. coverage_diag is REPORTED but EXCLUDED as a predictor in both arms: it is an affine function of k_unresolved (1 − k_unresolved/64) and would add no information while duplicating a column (GPT).`
+
+**Justification.** GPT's identity holds under the §2 coverage definition; exclusion is pre-declared before any data exists. Reporting keeps coverage_diag visible (§7 rule 1). **GPT review status: accepted ("an affine function of k_unresolved, so reporting it without using it as a predictor is appropriate").**
+
+---
+
+## C8 — E3 target under unresolved held-out outcomes: OWNER DECISION SLOT (ANALYSIS_SPEC §6, with §5 :116–119) — OPEN, unchanged in substance
+
+**v1.0 gap.** §5 defines Q and its unresolved-case reporting (Q_resolved + coverage + bounds), but §6 never states which target the E3 regression fits.
+
+**Options (written before any data exists, per GPT and Claude):**
+- **Option 1 (GPT — strict).** E3 proceeds only if all 150 bodies have complete, resolved held-out outcomes on all 80 records; otherwise E3 = `NOT_ESTIMABLE` with the precise reason, and unresolved counts + Q bounds are reported descriptively. Pro: single well-defined target Q for every body; no subset scoring. Con (Claude): timeout classification needs an execution protocol that does not yet exist, so unresolved counts are unknown and Option 1 may be NOT_ESTIMABLE by construction.
+- **Option 2 (Claude — threshold).** Pre-declare a maximum unresolved fraction τ (e.g., 0.025 = 2/80 per body); E3 proceeds only if every body is at or under τ. Requires a target definition for bodies with unresolved records — which reintroduces either subset scoring (rejected by GPT) or a convention that §5 currently forbids (counting unresolved as wrong). Any threshold rule must also specify the target exactly, before data. **GPT's renewed assessment (this round): "Option 2 is not ready because a threshold alone does not define a common prediction target."**
+- **Option 3 (Claude — descriptive only).** E3 is declared descriptive-only from the outset: no baseline-vs-enriched model comparison is fitted; the §4 features and Q outcomes are reported descriptively. Removes the estimand entirely; nothing to gate. **GPT's renewed assessment: "a legitimate decision if the owner decides to abandon the predictive comparison, but it removes E3 rather than resolving its missing-outcome problem."**
+
+**GLM recommendation (unchanged):** Option 1 — the only option whose target is exactly the preregistered Q with no redefinition; an honest `NOT_ESTIMABLE` is an acceptable outcome for an exploratory secondary estimand (§6 item 9 already provides the machinery); the descriptive fallback under Option 1 is exactly Option 3's content, so nothing is lost.
+
+**GPT's renewed recommendation (recorded verbatim in substance, this round):** Option 1 — "E3 is estimable only if all 150 versions have resolved outcomes on all 80 held-out records. Otherwise E3 is NOT_ESTIMABLE, with coverage and correctness bounds reported descriptively." GPT explicitly reconfirms: "The choice remains yours. I am not treating my recommendation as authorization."
+
+**STATUS: OPEN — OWNER DECIDES BEFORE ANY DATA EXISTS OR THE ANNEX OPENS.** No default is applied; until the owner decides, E3 has no runnable target specification. (Claude's addition adopted: the decision is scheduled before the annex, as step 5 of the agreed sequence.)
+
+---
+
+## C9 — Bank generation pinned to byte-reproducibility (BANK_DESIGN §4 :62–79) — REVISED in v1.2.2-draft
+
+**v1.0 text (:62–66):**
+> \`- Generator: Python 3.11+ random.Random (to be pinned exactly by the execution protocol before any solver execution; bank regeneration is deterministic under the pinned interpreter).\`
+> \`- Seeds: SEED_HELDOUT = 20261101, SEED_DIAGNOSTIC = 11052026. Seeded generators are created independently per bank; record order follows generation order.\`
+**v1.0 text (:67–69):**
+> \`- Every record carries: input_id, amount, coins (as-given order), canonical_id, stratum, rule_id, rule_params, and a record_sha256 computed over the canonical JSON serialization of the record at file freeze.\`
+
+**Defect carried forward.** Seeds, ranges and guards did not fully determine the sampling process. v1.2.1 pinned most per-stratum construction rules but left a cross-bank exemplar collision, a false D4 parity guarantee, an incomplete repeated-use failsafe, a D4 redraw contradiction, and several implementation obligations insufficiently operationalized.
+
+**Findings from the C9 dry run.** Claude's dry run found that the frozen D5 exemplar (amount 6, coins {1,3,4}) duplicates held-out H8 record 7; D4 records 3–4 do not guarantee answer zero; and H4 had no record satisfying the repeated-use predicate. Claude subsequently withdrew two false gaps in its report (D3 gcd draw order and H2 denomination-count range) and corrected the D4 draw-order description. Claude also reported that the proposed D5 replacement below did not collide with its realized held-out bank. Because the scratch bank was deleted and was not committed, GPT has not independently reproduced that particular realized-bank check. The complete item-8 canonical-disjointness check remains mandatory and controls acceptance.
+
+**Additional implementation defects identified in review.** The committed dry-run harness contains internal unbounded retry loops that bypass the outer 1,000-attempt cap; D4's gcd redraw restarts only the t-set despite the general whole-record rule; its permutation predicate does not reject identity permutations; it accepts a command-line output-directory argument despite item 6; and it writes files before checking cross-bank disjointness. The harness is a diagnostic review artifact, not a conforming production generator. These defects are addressed by the operational rules below.
+
+**Replacement text (exact; supersedes the C9 replacement in v1.2.1-draft):**
+
+> **Sampling and construction conventions (pinned before any bank file exists):**
+>
+> **1. Uniform inclusive ranges.** Every stated inclusive interval [lo, hi] is sampled uniformly. A general draw is made with \`rng.randrange(lo, hi + 1)\`. A quantity fixed by construction consumes no random draw. No call uses a degenerate one-value range.
+>
+> **2. Per-stratum draw order.** The JSON key order is independent of random draw order. Each row below gives the complete draw order. A value derived from another field is computed only after its source field has been drawn. Forced placements consume no random draw. No unlisted field draw or random source is permitted.
+>
+> **3. Candidate-attempt and retry protocol.**
+>
+> A whole-record candidate attempt begins at the first random draw in that stratum's row and continues through all fields, derived values, and required checks. A whole-record rejection discards the entire candidate and restarts that record from its first draw. The only exception is a duplicate denomination encountered while filling a coin-array slot: redraw that slot immediately, without redrawing earlier fields. Each coin-array slot is limited to 1,000 randrange attempts; exhaustion aborts generation as a generator defect.
+>
+> Every other rejection is a whole-record rejection: a min-coin construction with minimum denomination 1; a gcd or parity condition that is not met; a D5 greedy/minimum-count equality; an H2/H4 threshold or answer mandate failure; an int32 overflow; or a within-bank canonical collision. There are no inner while-until-success loops. All whole-record rejection reasons are logged. A record is limited to 1,000 consecutive whole-record candidate attempts; exhaustion aborts generation as a generator defect and is not converted into a study result.
+>
+> A D6 or H6 reorder-pair candidate is one whole instance, including amount, n, coins, and shuffle. It is rejected and redrawn from its first draw if it fails validity, int32, within-bank canonical-collision, or non-identity-permutation checks. Each instance is limited to 1,000 attempts. A pair is accepted only if its two coin arrays differ in order, while their sorted denominations and amount agree exactly. The original and permutation records are adjacent and share one canonical_id and one pair_id.
+>
+> The common acceptance pipeline is: (a) validate amount, n, denomination bounds and within-record distinctness; any violation aborts as a generator defect; (b) compute the LC518 combinations-count oracle; if the answer exceeds 2,147,483,647, reject the whole record or pair instance; (c) apply every stratum-specific oracle mandate below; a failed mandate rejects the whole record; (d) check within-bank canonical identity; a collision with any previously accepted record rejects the whole record or pair instance, except that the two records of the same declared permutation pair share one canonical identity by design; (e) after both banks are assembled, run the cross-bank canonical-disjointness check in item 8. A failure at item 8 aborts acceptance. It is never repaired by a silent redraw or seed change.
+>
+> **3. Per-stratum construction procedures.** Record k means the kth record in generation order within its stratum. The strata run in order D1 through D8 for the diagnostic bank and H1 through H8 for the held-out bank. Within each stratum, records run in increasing k. A paired instance emits its original record followed immediately by its permutation.
+>
+> | Stratum | Pinned construction (record k) |
+> |---|---|
+> | D1 boundary-amount (8) | For each record, draw n = randrange(1,5), then n distinct coins uniformly from [1,20]. Let c_min be their minimum. Amount is not drawn: records 1–8 use, in order, [0, 1, 2, c_min−1, c_min, c_min+1, 2c_min, 2c_min+1]. The maximum is 41 and satisfies the contract. rule_params = {c_min, pattern_index}, with pattern_index = k−1. Draw order: n, coins, derived amount. |
+> | D2 exact-match (8) | Draw m = randrange(1,5), then c_star = randrange(1,5001), then m distinct distractor denominations from [1,5000] excluding c_star. The emitted coins array is exactly [c_star] followed by the distractors in their draw order; amount = c_star. rule_params = {match_coin: c_star}. Draw order: m, c_star, distractors, derived amount. |
+> | D3 unreachable (8) | Records 1–4: draw n = randrange(2,7), then n distinct coins from [1,5000]. If c_min = 1, reject the whole record. If c_min = 2, set amount = 1 deterministically; otherwise draw amount uniformly from [1,c_min−1]. This guarantees answer 0. Records 5–8: draw g = randrange(2,11), then n = randrange(2,7), then n distinct t values from [1,floor(5000/g)]; set coins = g·t. Draw amount from [1,5000]; if g divides amount, reject the whole record from the first draw (g). This guarantees answer 0. rule_params = {mechanism: "min-coin"} for records 1–4 and {mechanism: "gcd", g} for records 5–8. Draw order: n/coins/derived amount for records 1–4; g, n, t, amount for records 5–8. |
+> | D4 modular-parity (8) | Records 1–2: draw n = randrange(2,7), then n distinct t values from [1,2500], and set coins = 2t−1 (all odd). Draw amount as 2·randrange(0,2501), giving a uniform even amount in [0,5000]. Records 3–4: use the same all-odd coin construction, and draw amount as 2·randrange(0,2500)+1, giving a uniform odd amount in [1,4999]. Records 3–4 are parity-contrast cases only: no answer-zero guarantee is claimed or checked for them. Records 5–8: draw n = randrange(2,7), then n distinct t values from [1,2500]. Accept the t set only when gcd(t)=1; otherwise reject the entire record and restart from n. Set coins = 2t, so their gcd is exactly 2. Draw amount as 2·randrange(0,2500)+1. The odd amount is not divisible by the coin gcd, so the oracle answer is exactly 0. rule_params = {mechanism: "odd-even-amt"} for records 1–2, {mechanism: "odd-odd-amt"} for records 3–4, and {mechanism: "gcd2"} for records 5–8. |
+> | D5 non-greedy (8) | Record 1 is replaced to avoid duplicating held-out H8's frozen {1,3,4}, amount-6 exemplar: coins exactly [1,5,7], amount 10. Largest-first greedy uses 4 coins (7+1+1+1); the minimum is 2 (5+5). Record 2 remains coins [1,3,4], amount 10; greedy uses 4 and the minimum is 3 (4+3+3). These are fixed exemplars and consume no RNG. Records 3–8: draw n = randrange(3,6), place coin 1, draw n−1 distinct further coins from [2,9], then draw amount from [5,30]. Accept only if largest-first greedy coin count differs from the separately computed minimum-coin count. If they are equal, reject the whole record from its n draw; do not keep the coin set and redraw only the amount. The minimum-coin reference is M(0)=0 and M(a)=1+min M(a−c) over denominations c≤a, with infinity for unreachable amounts. Coin 1 guarantees reachability. This auxiliary objective selects diagnostic inputs only; the LC518 oracle remains the number of combinations. rule_params = {exemplar_id: "D5-E1"} for record 1, {exemplar_id: "D5-E2"} for record 2, and {coin_1_fixed: true} for records 3–8. |
+> | D6 reorder-pairs (8) | Generate four instances. For each instance draw amount = randrange(10,201), n = randrange(3,9), n distinct coins from [1,200], then shuffle a copy with random.Random.shuffle (Fisher–Yates). If the shuffled array equals the original array, reject and redraw the entire instance from amount. Each accepted instance emits original and permutation records, adjacent, with identical amount and sorted coin set. rule_params = {pair_id: "D6-P01" through "D6-P04", ordering: "original" or "permutation"}. |
+> | D7 wide-n (8) | Draw amount = randrange(50,501), n = randrange(50,301), then n distinct coins from [1,5000]. rule_params = {}. |
+> | D8 large-amount (8) | Draw amount = randrange(2000,5001), n = randrange(3,31), then n distinct coins from [1,5000]. The int32 guard is expected to reject some candidates. rule_params = {}. |
+> | H1 tiny-amount (12) | Records 1–3: draw amount = randrange(0,2), guaranteeing at least three records with amount 0 or 1. Record 4 is the repeated-use witness: coins exactly [2,3], amount 12. Its unbounded oracle answer is 3 (2·6, 2·3+3·2, 3·4); N0 is 0 because no subset of {2,3} sums to 12. Records 5–12: draw amount = randrange(2,13). All records other than the fixed witness draw n = randrange(1,5) and n distinct coins from [1,20]. Amount-zero records must have oracle answer 1. rule_params = {edge: bool, repeated_use_witness: bool}. |
+> | H2 small-amount (12) | Records 1–4 contain coin 1 by deterministic placement; n = randrange(2,7), with remaining coins distinct from [2,60]. Record 1 uses amount = max(coins); if this amount is below 13, reject the whole record. Records 2–4 draw amount from [13,60]. Record 5 is the repeated-use witness: coins exactly [2,58], amount 60. Its oracle answer is 2 (thirty 2s, or 2+58); N0 is 1 (the subset {2,58}). Records 6–12 draw n = randrange(2,7), n distinct coins from [1,60], and amount from [13,60]. Every H2 record must have oracle answer at least 2; a failure rejects the whole record. This preserves the BANK_DESIGN n range [2,6] for all H2 records and the four-record coin-1 quota. rule_params = {forced_coin_1: bool, match_amount: bool, repeated_use_witness: bool}. |
+> | H3 single-coin (8) | Record 1 is the repeated-use witness: coins exactly [50], amount 100. Its oracle answer is 1 (two 50s); N0 is 0 because the single distinct denomination may be used at most once in N0. Records 2–8: draw amount from [0,5000], then coin from [1,50]. n=1. rule_params = {repeated_use_witness: bool}. |
+> | H4 two-coin (8) | Records 1–2 remain exact-match cases: draw two distinct coins from [1,5000], set amount = max(coins), and reject the whole record if amount < 20. Record 3 is the repeated-use witness: coins exactly [4,96], amount 100. Its oracle answer is 2 (twenty-five 4s, or 4+96); N0 is 1 (the subset {4,96}). Records 4–8: draw amount from [20,5000], then two distinct coins from [1,5000]. n=2. rule_params = {match_amount: bool, repeated_use_witness: bool}. |
+> | H5 many-coins (10) | Draw amount from [100,2000], n from [30,120], then n distinct coins from [1,5000]. rule_params = {}. |
+> | H6 large-amount (10) | Records 1–6 are singletons: draw amount from [3500,5000], n from [5,40], then n distinct coins from [1,5000]. Records 7–10 are two reorder instances: draw amount, n and coins using the same ranges, then shuffle a copy with random.Random.shuffle. Reject and redraw the whole instance if the permutation is identical to the original. Each pair emits adjacent original and permutation records. rule_params = {singleton: true} for singletons; {pair_id: "H6-P01" or "H6-P02", ordering: "original" or "permutation"} for pair records. |
+> | H7 unreachable (8) | Records 1–4: draw n = randrange(2,7), then n distinct coins from [1,5000]. If c_min=1, reject the whole record. If c_min=2, set amount=1 deterministically; otherwise draw amount from [1,c_min−1]. Records 5–8: draw g=randrange(2,11), then n=randrange(2,7), then n distinct t values from [1,floor(5000/g)]; coins=g·t. Draw amount from [1,5000]; if g divides amount, reject the whole record from its first draw. All H7 answers are exactly 0. rule_params = {mechanism: "min-coin"} or {mechanism: "gcd", g}. |
+> | H8 rich-combination (12) | Records 1–6: place anchor {1,2,3}; draw total n = randrange(3,9), then n−3 distinct further coins from [4,5000], then amount from [6,800]. Record 7 remains the frozen exemplar: coins exactly [1,3,4], amount 6. Records 8–12: place anchor {1,3,4}; draw total n = randrange(3,9), then n−3 distinct further coins from [2,5000] excluding 1,3,4; then amount from [6,800]. Every H8 record must have oracle answer at least 2; a failure rejects the whole record. rule_params = {anchor: "1-2-3" or "1-3-4", anchor_fixed: true}. |
+>
+> **3a. Repeated-use mandate (exact predicate and fixed witnesses).** For an amount a and distinct denomination set C, define N0(a,C) as the number of subsets U of C for which the sum of denominations in U equals a. Because denominations are distinct, this is the number of combinations that use each denomination at most once. The repeated-use predicate is exactly oracle_answer(a,C) > N0(a,C). The generator computes N0 by a 0/1 subset-count dynamic program over the distinct denominations; it must not infer the predicate from an example heuristic.
+>
+> The required witness is fixed in advance in each of H1–H4: H1 record 4, H2 record 5, H3 record 1, H4 record 3. The exact records and their oracle/N0 values are given in item 3. These witnesses are not generated by a post-generation replacement loop and consume no RNG beyond any explicitly stated draw (all four are fixed records). The generator must verify the predicate independently for each witness and abort if any fails. It must also log the predicate result for every record in H1–H4. No random search for a witness is permitted; this removes the previously unspecified stratum-regeneration rule.
+>
+> **4. RNG protocol.** Create exactly two independent streams: rng_diag = random.Random(11052026) and rng_hold = random.Random(20261101). Each stream is used only for its own bank. Within a bank, consume the stream in strata order D1→D8 or H1→H8, records in generation order, and fields in the order pinned in item 3. Rejected whole-record or whole-instance candidates consume all draws made by that candidate; the next attempt starts at the first draw of that same candidate construction. A duplicate coin-slot draw consumes only the draw calls for that slot. Use only random.Random.randrange and random.Random.shuffle (Fisher–Yates for D6/H6). No random module globals, sample, numpy, time-based seed, entropy source, external configuration, or additional RNG is permitted.
+>
+> **5. Identifiers, canonical identity, serialization and record hashes.**
+>
+> - input_id is the bank prefix followed by a three-digit, one-based global record ordinal in that bank: D001–D064 or H001–H080. Pair records receive consecutive ordinals in original-then-permutation order.
+> - rule_id is exactly the stratum identifier: D1–D8 or H1–H8. No other spelling or suffix is permitted.
+> - For D6/H6 pairs, pair_id is D6-P01 through D6-P04 or H6-P01 through H6-P02. ordering is exactly original or permutation. Both records carry the same pair_id and canonical_id.
+> - canonical identity is (amount, tuple(sorted(coins))). canonical_id is C- followed by the lowercase SHA-256 hex digest of the UTF-8 bytes of the canonical JSON payload {"amount": amount, "coins": sorted_coins}, serialized by json.dumps with sort_keys=True, separators=(",",":"), ensure_ascii=False and allow_nan=False. This identity is order-invariant and identical across banks for the same mathematical input.
+> - rule_params contains only the stratum-specific fields listed in item 3; all keys and allowed value types are fixed by the row. Empty rule_params is {}. No undeclared key is permitted.
+> - The record-hash payload contains exactly input_id, amount, coins (as-given order), canonical_id, stratum, rule_id, rule_params and int32_guard. int32_guard is {status: "accepted" or "redrawn", redraws: k}; status is redrawn only if at least one earlier whole candidate for that accepted record was rejected by the int32 guard; redraws counts only int32-overflow rejections. Other rejection reasons and their attempt numbers are recorded in the sidecar log. record_sha256 is excluded from its own payload. Serialize the payload with json.dumps(payload, sort_keys=True, separators=(",",":"), ensure_ascii=False, allow_nan=False) and UTF-8 encoding. Integers use JSON decimal notation; no floats or NaN values are allowed. record_sha256 is the lowercase hexadecimal SHA-256 digest of those payload bytes and is added only to the written record.
+> - Bank files are UTF-8 JSON Lines, no BOM, one canonical JSON record per line, each line terminated by LF including the final line. Sidecar logs use UTF-8 JSON Lines with the same canonical JSON formatting and record rejected attempt number, bank, stratum, record/instance, and rejection reason.
+>
+> **6. Generator script freeze.** The production generator is one script with seeds hardcoded as the v1.0 literals. It accepts no command-line arguments, reads no environment variables or configuration files, and uses only the constants and procedures in this specification. Its output directory is a single fixed constant agreed in the execution protocol; it is not a run-time parameter. The script's SHA-256 is recorded and the byte-identical script is published beside the bank files before any bank generation. A diagnostic harness used for review may have a separate interface, but it is not the production generator and cannot be represented as implementing this item.
+>
+> **7. Interpreter pin.** Bank generation does not start until the execution protocol names the exact Python interpreter version. Generation and regeneration cross-checks use that same interpreter version and the byte-identical frozen script.
+>
+> **8. Cross-bank disjointness (acceptance condition).** At file freeze, compute the full intersection of the two banks' canonical identities. It must be empty. Any collision aborts acceptance and is reported to the owner with the two input_ids, canonical_id, amount and sorted denomination list. No collision is silently redrawn at this final stage, no seed is changed, and no bank is patched. Any remedy requires an owner-reviewed version change and full regeneration from scratch under the new specification.
+>
+> **Justification.** This amendment removes the D5/H8 exemplar collision, removes the false D4 zero-answer claim for odd coins with odd amounts, resolves the conflict between the D4 row and the whole-record redraw rule, replaces the ambiguous H1–H4 repetition failsafe with four named oracle-checked witnesses, defines all identifier formats, bounds every retry loop, requires non-identity reorder pairs, and distinguishes the diagnostic harness from the production generator. It preserves the two independent bank seeds, the bank sizes, the stratum counts, the LC518 task contract and the requirement for a full cross-bank disjointness check. No bank has been generated by GPT in preparing this draft.
+---
+
+## Consistency matrix and effect summary
+
+| Correction | File touched | v1.0 lines | Other sections affected | GPT review status (2026-11-01) |
+|---|---|---|---|---|
+| C1 G22 | PARENT_DESIGN | :170, :271 | §11 near-duplicate report (construction time) | REVISED in v1.2 (direction, complexity, terminal states) |
+| C2 K5 | PARENT_DESIGN | :64, :236–239 | §3.4 risk note becomes population-max (no text change needed) | ACCEPTED |
+| C3 E1 | ANALYSIS_SPEC | :51–54, :63–68 | §7 rule 1 reporting unchanged | REVISED in v1.2 (examples, 1/80 scale, all contrasts) |
+| C4 dev sentinel | ANALYSIS_SPEC | :93–94 | :131–134 arm list unchanged (indicators already listed) | ACCEPTED + zero-variance addendum |
+| C5 other count | ANALYSIS_SPEC | :86–94 | reserved timeout columns :100–102 unchanged | ACCEPTED in principle + zero-variance rule |
+| C6 order feature | ANALYSIS_SPEC (+BANK_DESIGN xref) | :131–134 | BANK_DESIGN :136–137 becomes consistent | ACCEPTED in principle + count/denominator addendum |
+| C7 coverage_diag | ANALYSIS_SPEC | :96–98, :130 | §7 rule 1 unchanged | ACCEPTED |
+| C8 E3 target | ANALYSIS_SPEC | §6 | §5 unchanged; item 9 machinery reused | OPEN — owner decides (GPT recommends Option 1) |
+| C9 bank pinning | BANK_DESIGN | :62–64 | §9 :168–170 satisfied earlier | REVISED in v1.2 (stratum algorithms, RNG, serialization) |
+
+**Explicit non-authorizations (owner, 2026-11-01; current scope):** no solver bodies (0/150), no input-bank generation, no candidate-solver execution, and no opening or modification of the private mutation-design annex. The earlier v1.2 and v1.2.1 snapshots' statements that no commits or pushes were authorized record the then-current permission and are superseded for review artifacts only by the owner's later direct instruction to GPT. v1.0 documents remain byte-frozen as the historical reference; review-only updates must remain on dedicated branches and must not contain candidate solver packages.
+
+**Open owner decisions (none blocking the Claude → GPT review of this record):**
+1. C8: E3 unresolved rule — Option 1 / 2 / 3 (needed before the annex opens, not before this review).
+2. Second-commit push of the updated worklog snapshot (entries 30–39) to the handoff branch — per work order :217.
+3. GitHub token disposition — recommendation to revoke stands on record (GPT, Claude, GLM); owner's standing instruction is to keep it; GLM acts on the owner's word only.
+
+- **2026-11-01, v1.2.2-draft (GPT C9 review amendment; not accepted):** D5 record 1 replaced with {1,5,7}/amount 10 to remove the held-out H8 exemplar duplication; D4 records 3–4 are relabelled parity contrasts without an answer-zero guarantee; D4 gcd acceptance now restarts the complete record; four fixed H1–H4 repeated-use witnesses replace the undefined regeneration failsafe; input_id, canonical_id, rule_id and pair_id formats are pinned; all coin-slot and whole-record/whole-instance retries are bounded; D6/H6 require non-identity permutations; the production generator is distinguished from a diagnostic harness and must accept no CLI arguments. No input bank was generated in preparing this amendment. v1.2.1-draft remains unchanged.
+
+---
+
+## Changelog
+
+- **2026-11-01, initial draft (v1.1-draft):** C1–C9 as issued. sha256 `083cd85a1bfb9abd7afc9f7e19b34cdc8d0cdd61a7592816be2f3479aaa462ae` (preserved per GPT's document-control requirement).
+- **2026-11-01, amendment (v1.1.1-draft), responding to GPT's first conditions:** C1 + explicit recursion-limit mandate; C1 near-duplicate re-ranked (PRINCIPAL G20, SECONDARY G17, G21 artifact); C3 + 2^k per-input clarification + both complete-case conventions; C6 + comparability distinction (three columns). On-disk sha256 `663193006fa3c94a8601eee4b6ac2ed499b0443c342da71914fc572e68d9c78f` — the exact text GPT reviewed in the current round. Header/changelog version mismatch flagged by GPT and resolved as of THIS version.
+- **2026-11-01, this draft (v1.2-draft), responding to GPT's required revision:** C1 two-pointer reversed to descending amounts + worked example + O(n log n + nA + A) without collapse + A=0 immediate return + amount-zero states never memoized + explicit distinctness premise for the state count; C3 extremal patterns corrected to the unique (1,0,0,1)/(0,1,1,0) loss patterns, aggregate bounds divided by 80, uniform bounds machinery extended to all three single contrasts, complete-case normalization pinned; C9 per-stratum draw orders and construction procedures (D1–D8, H1–H8) with forced-record quotas, two-independent-stream RNG protocol stated explicitly, exact canonical-JSON serialization with record_sha256 excluded from the hashed payload; C4/C5 zero-variance standardization rule; C6 count/denominator clarification; header aligned to the single identifier **1.2-draft**. Verification receipts in worklog entry 39 (script `scripts/verify_v12_math.py`; editorial verification only — no solver bodies, no bank generation, no pipeline execution). On-disk sha256 at issue `c97c95e0b80d154997b8ba2be1b0fddc5f1e6125593d4d92af8dcb26be32b08e` (51,903 bytes; archived byte-identically at `archive/superseded-CORRECTIONS_RECORD_v1.2-draft.entry39-issue-sha256c97c95e0.md`).
+- **2026-11-01, pre-delivery amendment (still v1.2-draft — GLM self-check before Claude's line-challenge; the entry-39 issue hash above is superseded by this file's hash, re-taken at delivery in worklog entry 40):** (1) **C3 closed form withdrawn and replaced** — the issued single-contrast closed form `Δ_max = (1/80)(Σ_{both resolved} d(x) + #{≥1 unresolved})` shared an assumption with its entry-39 cross-check harness (both treated every unresolved-involved record as fully free); it over-counts the two cases where one resolved component pins the record away from the extreme (S0 resolved-FAIL with patched unresolved; patched resolved-PASS with S0 unresolved — true max 0, not 1; mirrored for the minimum). Replaced by the case-conditioned form in C3, verified against TRUE per-record enumeration (exhaustive over all 9 status pairs; 20,000 randomized 80-record banks; 0 mismatches; script `scripts/verify_v12_predelivery.py`). (2) **C1 memo-count paragraph extended**: the skip-successor step is now explicit (GPT's stated proof obligation), the 40×coin-1 adversarial trace is spelled out (41 keys, 41 distinct index values vs bound 2), the duplicate set-characterization counterexample `(1,3)` for `c = [3,3,1]` is added, and the correctness claim is scoped to the contract (distinct denominations, BANK_DESIGN :29 / LC518's official uniqueness constraint) — "valid for arbitrary positive denominations" was an overclaim and is withdrawn. (3) **C9 byte-exactness repairs**: D1 pattern indexing pinned (records 1–8 → PATTERN in order; pattern_index = k−1); D3/H7 `c_min = 2` degenerate `randrange(1, c_min)` width repaired (amount = 1 deterministic, no RNG); D4 amount draws pinned to `randrange(0, 5001)` with parity rejection and the "FIRST t forced odd" gcd device WITHDRAWN (t = (3, 6) → coins 6, 12, gcd 6) in favour of the gcd(t) = 1 acceptance check; D5 divergence redraws bounded by the new item-3 redraw cap (42 allowed coin sets — e.g. {1,2,3}, {1,2,4} — never diverge on any amount in [5, 30]); general redraw discipline pinned (whole-record/whole-instance re-run, exact fresh-candidate consumption, 1,000-attempt cap, instance-level int32 guard for permutation pairs per BANK_DESIGN §7.3); pipeline (e) split into per-record mandate checks vs the item-3a per-stratum failsafe (also fixing its stale "3c" cross-reference); item 3a predicate pinned EXACTLY as `oracle_answer > N₀(record)` (0/1 subset-count DP), the :107–108 "e.g." demoted to illustration; H8 rule_params anchor pinned as string "1-2-3"/"1-3-4" (a JSON array violated item 5's int/str/bool schema). All repairs verified in the entry-40 receipt; still editorial verification only — no solver bodies, no bank generation, no pipeline execution.
+- **2026-11-01, v1.2.1-draft (GPT repository-review amendment; parent of this draft):** (1) C1 termination-measure wording corrected: compaction is non-increasing (not necessarily strictly decreasing); each recursive skip/use edge strictly decreases the measure after compaction. (2) C9 D5 clarified to compare the greedy number of coins against a separately defined minimum-coin-count reference, explicitly distinct from LC518's combinations-count oracle. (3) C9 canonical-collision exemption narrowed to the two orderings within the same declared D6/H6 pair; cross-pair and pair-to-singleton canonical collisions trigger whole-instance/whole-record redraw. (4) authorization paragraph updated to reflect the owner's later permission for GPT to publish review artifacts only; bank generation and all candidate-solver work remain unauthorized. The v1.2-draft text remains preserved unchanged as the parent review version.
