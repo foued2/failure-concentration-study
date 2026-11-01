@@ -23,3 +23,14 @@ The byte-identical superseded v1.2 draft from the entry-39 issue is retained und
 The two ZIPs contain five Markdown files in total (four distinct documents, with the superseded v1.2 version duplicated across the archives). They do **not** contain the two verification scripts, captured verification outputs, README/MANIFEST from GLM's earlier claimed 11-file package, the worklog, or the private mutation annex. Those items have not been reconstructed or invented here.
 
 No solver bodies were added. No solver code was executed. No input bank was generated. The v1.0 source documents were not modified. This branch is a review-material handoff only; the correction record remains a draft and is not scientifically approved by this commit.
+
+
+## GPT follow-up review branch
+
+A later review-only branch, `gpt/lc518-150-review-followup-2026-11-01`, adds:
+- `CORRECTIONS_RECORD_v1.2.1-draft.md` (new version; does not replace the archived v1.2 draft);
+- `GPT_REVIEW_v1.2.md` (independent findings and remaining C9 conditions);
+- `verification/verify_lc518_v1_2_math.py` (solver-free G22/E1 checks);
+- `MANIFEST_GPT_FOLLOWUP.md` (sizes and SHA-256 receipts).
+
+No bank generation or candidate-solver work is included or authorized by that review branch.
