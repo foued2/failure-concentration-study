@@ -21,8 +21,8 @@
 |---|---|
 | C1 two-pointer runs in the wrong direction; complexity over-collapsed; amount-zero memo states unaccounted | C1, Precomputation / Complexity / Boundary conditions and memo discipline |
 | C3 extremal examples arithmetically wrong; aggregate bounds on the wrong scale (missing 1/80); single-contrast bounds missing | C3, View 2 (rewritten as a general contrast-bounds mechanism) |
-| C9 draw order contradicts D1's `c_min` dependency; stratum quotas unpinned; "single RNG stream" wording conflicts with v1.0 :65–66; canonical JSON underspecified | C9, items 2–5 (per-stratum procedures, RNG protocol, serialization) |
-| Header vs changelog version mismatch | Header (single identifier `1.2-draft`) + Changelog |
+| C9 dry-run findings: D5/H8 collision, false D4 answer-zero claim, missing repeated-use witness, and implementation-protocol defects | C9, v1.2.2-draft replacement text |
+| Version control | Header and Changelog use the single identifier `1.2.2-draft`; prior draft hashes remain preserved |
 | C4/C5: zero-variance standardization must map constant columns to 0 | C4/C5 addendum |
 | C6: count vs denominator must be explicit; rate descriptive and undefined at zero denominator | C6 addendum |
 
@@ -215,10 +215,10 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 ## C9 — Bank generation pinned to byte-reproducibility (BANK_DESIGN §4 :62–79) — REVISED in v1.2.2-draft
 
 **v1.0 text (:62–66):**
-> \`- Generator: Python 3.11+ random.Random (to be pinned exactly by the execution protocol before any solver execution; bank regeneration is deterministic under the pinned interpreter).\`
-> \`- Seeds: SEED_HELDOUT = 20261101, SEED_DIAGNOSTIC = 11052026. Seeded generators are created independently per bank; record order follows generation order.\`
+> `- Generator: Python 3.11+ random.Random (to be pinned exactly by the execution protocol before any solver execution; bank regeneration is deterministic under the pinned interpreter).`
+> `- Seeds: SEED_HELDOUT = 20261101, SEED_DIAGNOSTIC = 11052026. Seeded generators are created independently per bank; record order follows generation order.`
 **v1.0 text (:67–69):**
-> \`- Every record carries: input_id, amount, coins (as-given order), canonical_id, stratum, rule_id, rule_params, and a record_sha256 computed over the canonical JSON serialization of the record at file freeze.\`
+> `- Every record carries: input_id, amount, coins (as-given order), canonical_id, stratum, rule_id, rule_params, and a record_sha256 computed over the canonical JSON serialization of the record at file freeze.`
 
 **Defect carried forward.** Seeds, ranges and guards did not fully determine the sampling process. v1.2.1 pinned most per-stratum construction rules but left a cross-bank exemplar collision, a false D4 parity guarantee, an incomplete repeated-use failsafe, a D4 redraw contradiction, and several implementation obligations insufficiently operationalized.
 
@@ -230,7 +230,7 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 
 > **Sampling and construction conventions (pinned before any bank file exists):**
 >
-> **1. Uniform inclusive ranges.** Every stated inclusive interval [lo, hi] is sampled uniformly. A general draw is made with \`rng.randrange(lo, hi + 1)\`. A quantity fixed by construction consumes no random draw. No call uses a degenerate one-value range.
+> **1. Uniform inclusive ranges.** Every stated inclusive interval [lo, hi] is sampled uniformly. A general draw is made with `rng.randrange(lo, hi + 1)`. A quantity fixed by construction consumes no random draw. No call uses a degenerate one-value range.
 >
 > **2. Per-stratum draw order.** The JSON key order is independent of random draw order. Each row below gives the complete draw order. A value derived from another field is computed only after its source field has been drawn. Forced placements consume no random draw. No unlisted field draw or random source is permitted.
 >
@@ -242,7 +242,7 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 >
 > A D6 or H6 reorder-pair candidate is one whole instance, including amount, n, coins, and shuffle. It is rejected and redrawn from its first draw if it fails validity, int32, within-bank canonical-collision, or non-identity-permutation checks. Each instance is limited to 1,000 attempts. A pair is accepted only if its two coin arrays differ in order, while their sorted denominations and amount agree exactly. The original and permutation records are adjacent and share one canonical_id and one pair_id.
 >
-> The common acceptance pipeline is: (a) validate amount, n, denomination bounds and within-record distinctness; any violation aborts as a generator defect; (b) compute the LC518 combinations-count oracle; if the answer exceeds 2,147,483,647, reject the whole record or pair instance; (c) apply every stratum-specific oracle mandate below; a failed mandate rejects the whole record; (d) check within-bank canonical identity; a collision with any previously accepted record rejects the whole record or pair instance, except that the two records of the same declared permutation pair share one canonical identity by design; (e) after both banks are assembled, run the cross-bank canonical-disjointness check in item 8. A failure at item 8 aborts acceptance. It is never repaired by a silent redraw or seed change.
+> The common acceptance pipeline is: (a) validate amount, n, denomination bounds and within-record distinctness; any violation aborts as a generator defect; (b) compute the LC518 combinations-count oracle; if the answer exceeds 2,147,483,647, reject the whole record or pair instance; (c) apply every stratum-specific oracle mandate below; a failed mandate rejects the whole record; (d) check within-bank canonical identity; a collision with any previously accepted record rejects the whole record or pair instance, except that the two records of the same declared permutation pair share one canonical identity by design; (e) after both banks have been assembled in memory, run the complete cross-bank canonical-disjointness check in item 8 BEFORE writing any authoritative bank file. A failure at item 8 aborts acceptance and writes no authoritative bank or oracle-output files.
 >
 > **3. Per-stratum construction procedures.** Record k means the kth record in generation order within its stratum. The strata run in order D1 through D8 for the diagnostic bank and H1 through H8 for the held-out bank. Within each stratum, records run in increasing k. A paired instance emits its original record followed immediately by its permutation.
 >
@@ -269,12 +269,16 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 >
 > The required witness is fixed in advance in each of H1–H4: H1 record 4, H2 record 5, H3 record 1, H4 record 3. The exact records and their oracle/N0 values are given in item 3. These witnesses are not generated by a post-generation replacement loop and consume no RNG beyond any explicitly stated draw (all four are fixed records). The generator must verify the predicate independently for each witness and abort if any fails. It must also log the predicate result for every record in H1–H4. No random search for a witness is permitted; this removes the previously unspecified stratum-regeneration rule.
 >
-> **4. RNG protocol.** Create exactly two independent streams: rng_diag = random.Random(11052026) and rng_hold = random.Random(20261101). Each stream is used only for its own bank. Within a bank, consume the stream in strata order D1→D8 or H1→H8, records in generation order, and fields in the order pinned in item 3. Rejected whole-record or whole-instance candidates consume all draws made by that candidate; the next attempt starts at the first draw of that same candidate construction. A duplicate coin-slot draw consumes only the draw calls for that slot. Use only random.Random.randrange and random.Random.shuffle (Fisher–Yates for D6/H6). No random module globals, sample, numpy, time-based seed, entropy source, external configuration, or additional RNG is permitted.
+>
+> **Exact rule_params values.** In H1, edge=true only for records 1–3 and repeated_use_witness=true only for record 4. In H2, forced_coin_1=true only for records 1–4, match_amount=true only for record 1, and repeated_use_witness=true only for record 5. In H3, repeated_use_witness=true only for record 1. In H4, match_amount=true only for records 1–2 and repeated_use_witness=true only for record 3. In H6, singleton=true only for records 1–6. In D5, the exemplar_id is D5-E1 for record 1 and D5-E2 for record 2; coin_1_fixed=true only for records 3–8. D4 mechanism values are exactly those stated in its row. H7 mechanism values are exactly min-coin for records 1–4 and gcd for records 5–8. In H8, anchor is 1-2-3 for records 1–6 and 1-3-4 for records 7–12; anchor_fixed=true for all H8 records. A Boolean key is present on every record in its declared stratum schema and takes the value specified here; keys not applicable to a record are omitted only where the row explicitly defines an alternative schema.
+>
+> > **4. RNG protocol.** Create exactly two independent streams: rng_diag = random.Random(11052026) and rng_hold = random.Random(20261101). Each stream is used only for its own bank. Within a bank, consume the stream in strata order D1→D8 or H1→H8, records in generation order, and fields in the order pinned in item 3. Rejected whole-record or whole-instance candidates consume all draws made by that candidate; the next attempt starts at the first draw of that same candidate construction. A duplicate coin-slot draw consumes only the draw calls for that slot. Use only random.Random.randrange and random.Random.shuffle (Fisher–Yates for D6/H6). No random module globals, sample, numpy, time-based seed, entropy source, external configuration, or additional RNG is permitted.
 >
 > **5. Identifiers, canonical identity, serialization and record hashes.**
 >
 > - input_id is the bank prefix followed by a three-digit, one-based global record ordinal in that bank: D001–D064 or H001–H080. Pair records receive consecutive ordinals in original-then-permutation order.
 > - rule_id is exactly the stratum identifier: D1–D8 or H1–H8. No other spelling or suffix is permitted.
+- stratum is exactly the same D1–D8 or H1–H8 string as rule_id; the two fields must agree.
 > - For D6/H6 pairs, pair_id is D6-P01 through D6-P04 or H6-P01 through H6-P02. ordering is exactly original or permutation. Both records carry the same pair_id and canonical_id.
 > - canonical identity is (amount, tuple(sorted(coins))). canonical_id is C- followed by the lowercase SHA-256 hex digest of the UTF-8 bytes of the canonical JSON payload {"amount": amount, "coins": sorted_coins}, serialized by json.dumps with sort_keys=True, separators=(",",":"), ensure_ascii=False and allow_nan=False. This identity is order-invariant and identical across banks for the same mathematical input.
 > - rule_params contains only the stratum-specific fields listed in item 3; all keys and allowed value types are fixed by the row. Empty rule_params is {}. No undeclared key is permitted.
@@ -285,7 +289,7 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 >
 > **7. Interpreter pin.** Bank generation does not start until the execution protocol names the exact Python interpreter version. Generation and regeneration cross-checks use that same interpreter version and the byte-identical frozen script.
 >
-> **8. Cross-bank disjointness (acceptance condition).** At file freeze, compute the full intersection of the two banks' canonical identities. It must be empty. Any collision aborts acceptance and is reported to the owner with the two input_ids, canonical_id, amount and sorted denomination list. No collision is silently redrawn at this final stage, no seed is changed, and no bank is patched. Any remedy requires an owner-reviewed version change and full regeneration from scratch under the new specification.
+> **8. Cross-bank disjointness (acceptance condition).** After both candidate banks pass all within-bank checks but BEFORE any authoritative bank file is written, compute the full intersection of the two banks' canonical identities. It must be empty. Any collision aborts acceptance and is reported to the owner with the two input_ids, canonical_id, amount and sorted denomination list; no authoritative bank or oracle-output file is written. No collision is silently redrawn at this final stage, no seed is changed, and no bank is patched. Any remedy requires an owner-reviewed version change and full regeneration from scratch under the new specification.
 >
 > **Justification.** This amendment removes the D5/H8 exemplar collision, removes the false D4 zero-answer claim for odd coins with odd amounts, resolves the conflict between the D4 row and the whole-record redraw rule, replaces the ambiguous H1–H4 repetition failsafe with four named oracle-checked witnesses, defines all identifier formats, bounds every retry loop, requires non-identity reorder pairs, and distinguishes the diagnostic harness from the production generator. It preserves the two independent bank seeds, the bank sizes, the stratum counts, the LC518 task contract and the requirement for a full cross-bank disjointness check. No bank has been generated by GPT in preparing this draft.
 ---
@@ -302,7 +306,7 @@ Also apply to the §3 family table (:64): change `O(nA + A²)` to `O(nA + A)`.
 | C6 order feature | ANALYSIS_SPEC (+BANK_DESIGN xref) | :131–134 | BANK_DESIGN :136–137 becomes consistent | ACCEPTED in principle + count/denominator addendum |
 | C7 coverage_diag | ANALYSIS_SPEC | :96–98, :130 | §7 rule 1 unchanged | ACCEPTED |
 | C8 E3 target | ANALYSIS_SPEC | §6 | §5 unchanged; item 9 machinery reused | OPEN — owner decides (GPT recommends Option 1) |
-| C9 bank pinning | BANK_DESIGN | :62–64 | §9 :168–170 satisfied earlier | REVISED in v1.2 (stratum algorithms, RNG, serialization) |
+| C9 bank pinning | BANK_DESIGN | :62–64 | §9 :168–170 satisfied earlier | REVISED in v1.2.2-draft (dry-run findings, witnesses, bounded retries, identifiers) |
 
 **Explicit non-authorizations (owner, 2026-11-01; current scope):** no solver bodies (0/150), no input-bank generation, no candidate-solver execution, and no opening or modification of the private mutation-design annex. The earlier v1.2 and v1.2.1 snapshots' statements that no commits or pushes were authorized record the then-current permission and are superseded for review artifacts only by the owner's later direct instruction to GPT. v1.0 documents remain byte-frozen as the historical reference; review-only updates must remain on dedicated branches and must not contain candidate solver packages.
 
