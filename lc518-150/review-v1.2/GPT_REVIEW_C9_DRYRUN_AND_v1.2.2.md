@@ -58,12 +58,12 @@ The D5 fixed exemplars were also checked against the minimum-coin objective:
 
 | Record | Amount; coins | Largest-first greedy | Minimum |
 |---|---|---:|---:|
-| D5 record 1 | 10; [1,5,7] | 4 | 2 |
-| D5 record 2 | 10; [1,3,4] | 4 | 3 |
+| D5 record 1 | 8; [1,4,5,6,9] | 3 | 2 |
+| D5 record 2 | 9; [1,2,4,5,6] | 3 | 2 |
 
 These are arithmetic checks only. GPT did not generate either bank.
 
-Claude reports that [1,5,7] at amount 10 did not collide with the realized held-out bank in its private dry run. The scratch records were deleted and are not in the repository, so GPT has not independently reproduced that realized-bank check. The full canonical intersection must still be checked as a hard acceptance condition when generation is explicitly authorized.
+GPT initially proposed [1,5,7] at amount 10, then replaced it with the two five-coin exemplars above because their n, amount and denomination structure excludes them from every held-out stratum and from D1–D4/D6–D8 by the pinned construction rules. The remaining random D5 candidates are still subject to within-bank collision rejection. The full canonical intersection must still be checked as a hard acceptance condition when generation is explicitly authorized.
 
 ## v1.2.2 draft changes
 
