@@ -199,6 +199,10 @@ class GeneratorProvenanceTests(unittest.TestCase):
         self.assertEqual(canonical, b"def solve(*args):\n    return -1\n")
 
 
+class _TransportReached(Exception):
+    """Sentinel proving a valid candidate reached the transport."""
+
+
 class _NoExecuteTransport:
     name = "attested-no-execute"
     requires_sandbox = True
@@ -212,7 +216,7 @@ class _NoExecuteTransport:
 
     def execute(self, *args, **kwargs):
         self.calls += 1
-        raise AssertionError("invalid provenance must be rejected before execution")
+        raise _TransportReached("valid provenance reached transport")
 
 
 class ControllerProvenanceTests(unittest.TestCase):
@@ -238,11 +242,11 @@ class ControllerProvenanceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
-            index = self.load_index(root, SECOND_HASH)
+            index = self.load_index(Path(td), SECOND_HASH)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
                 row = ctl.evaluate_authorized(FIXTURE, provenance_index=index)
         self.assertEqual(row["excluded"], "body_absent_from_attempts")
-        self.assertEqual(row["attempts_sha256"], "c" * 64)
+        self.assertEqual(row["attempts_sha256"], index.attempts_sha256)
         self.assertEqual(transport.calls, 0)
 
     def test_authorized_evaluation_with_valid_membership_reaches_transport(self):
@@ -250,12 +254,13 @@ class ControllerProvenanceTests(unittest.TestCase):
             transport = _NoExecuteTransport()
             ctl = controller.Controller(Path(td) / "work", transport=transport)
             body_hash = controller.protocol.sha256_bytes(FIXTURE.read_bytes())
-            index = self.load_index(root, body_hash)
+            index = self.load_index(Path(td), body_hash)
             with patch.object(controller.gates, "require_authorized", return_value={"ok": True}):
-                with self.assertRaises(AssertionError):
+                with self.assertRaises(_TransportReached):
                     ctl.evaluate_authorized(FIXTURE, provenance_index=index)
         self.assertEqual(transport.calls, 1)
 
+    @unittest.skipUnless(sys.platform == "win32", "HostLocalTransport requires Windows APIs")
     def test_host_local_development_scoring_remains_non_study(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
