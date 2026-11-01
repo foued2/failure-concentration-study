@@ -1,9 +1,9 @@
 # GPT v1.2.2 held-out-first collision-policy review manifest
 
-**Branch:** `gpt/lc518-150-v1.2.2-heldout-first-2026-11-01`  
-**Parent review branch:** `gpt/lc518-150-v1.2.2-atomic-acceptance-review-2026-11-01`  
-**Parent commit:** `4169f9b2f6ace5b5a2a7a6d330558d88db8080d1`  
-**Purpose:** implement the owner's selected held-out-first collision policy in the v1.2.2 C9 draft, with explicit conditional-sampling disclosure. Review-only. No bank generation or solver work.
+**Branch:** `gpt/lc518-150-v1.2.2-heldout-first-claude-fixes-2026-11-01`  
+**Parent review branch:** `gpt/lc518-150-v1.2.2-heldout-first-2026-11-01`  
+**Direct parent commit:** `d7267b4596ab7909a82838ec1f5e3fdc2b94432f`  
+**Purpose:** respond to Claude's independent review of the held-out-first collision policy by disclosing its diagnostic-support exclusions, requiring realized per-stratum collision counts, and clarifying fixed-record exclusion proofs. Review-only. No bank generation or solver work.
 
 **Status:** proposed specification revision, not yet accepted by Claude or authorized for generator execution. The owner's design choice is recorded separately from execution authorization.
 
@@ -11,7 +11,7 @@
 
 | Path | Git blob SHA |
 |---|---|
-| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `3d6f302d5381085e541c5617614fd6eb526d4f91` |
+| `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` | `46a9ae6314db17c55af3a2befb58541920d5d529` |
 | `lc518-150/review-v1.2/GPT_REVIEW_C9_DRYRUN_AND_v1.2.2.md` | `34605e2f404d357e2a69511338da802585663027` |
 
 The GPT independent-review note below is preserved unchanged from the parent branch. It documents the original v1.2.2 review and is not a substitute for review of the follow-up text.
@@ -40,3 +40,15 @@ No bank files are included. No solver bodies, candidate execution, private mutat
 
 
 **Hash notation:** The 40-character identifiers in this manifest are Git blob SHA-1 object IDs. They are not SHA-256 digests of the file bytes. Where the specification requires file-level SHA-256, it explicitly uses 64-character lowercase hexadecimal digests.
+
+## Review lineage
+
+The prior held-out-first review branch was created at base/comparison commit `4169f9b2f6ace5b5a2a7a6d330558d88db8080d1`; its commit ancestry is `4169f9b2` → `ac6a9290` → `c49241c3` → `d7267b45`. The current branch starts at `d7267b45` and adds the Claude-requested support/count/proof amendments. In particular, `c49241c3` is the direct parent of `d7267b45`; `4169f9b2` is the comparison base, not the immediate parent. No rebase occurred.
+
+## Additional review changes
+
+- A D1–D8 by H1–H8 structural support-overlap map records the possible canonical-key intersections for each diagnostic stratum.
+- The accepted diagnostic support is explicitly described as conditioned on avoiding the realized held-out set. Raw candidate rules and quotas are unchanged; accepted support is narrowed.
+- The final disjointness report now carries exact CROSS_BANK_COLLISION counts for D1–D8 and H1–H8, including zeros, reconciled against sidecar rows.
+- The fixed D5 exemplar exclusion proof explicitly lists the distinct reason each held-out stratum cannot contain either exemplar.
+- The worked probability for one D5/H8 fixed-key path is corrected to 1/2,184 ≈ 0.000458 per candidate attempt.
