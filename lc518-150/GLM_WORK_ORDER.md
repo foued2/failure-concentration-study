@@ -144,30 +144,40 @@ Defect interactions are UNKNOWN until all four matched versions have been dynami
 
 ## 10. Secondary analysis: baseline versus enriched prediction
 
-The secondary question is whether diagnostic failure information predicts held-out correctness better than the total diagnostic failure count and context.
+The secondary question is whether diagnostic failure information predicts held-out correctness better than the total diagnostic failure count and context. This is distinct from the primary matched mutation contrasts in Section 9.
 
-Target: the solver's mean correctness score Q on the fixed held-out bank, with unresolved held-out outcomes reported separately and accompanied by coverage/bounds. Do not silently count unresolved outcomes as wrong or discard them without reporting coverage.
+Target: the solver's mean correctness score Q on the fixed held-out bank. If any held-out outcome is unresolved, report the resolved-only score, coverage, and worst/best possible score bounds. Do not silently count unresolved outcomes as wrong or discard them without reporting coverage.
 
 Baseline predictors:
 
-- diagnostic failed-event count k, with unresolved diagnostic observations counted and reported separately rather than coerced into failure;
+- diagnostic failed-event count k_fail;
+- unresolved diagnostic count k_unresolved as a separate coverage variable;
 - parent algorithm family as the prespecified context variable Z.
 
 Enriched predictors:
 
 - all baseline predictors;
-- prespecified diagnostic status counts by the frozen input strata;
-- numerical deviation summaries for wrong integer outputs, where defined;
-- typed exception/invalid-return counts;
-- timeout features only if a later execution protocol has first fixed a resource budget.
+- counts of PASS, wrong-answer, invalid-return-type and exception outcomes within each predeclared diagnostic input stratum;
+- mean and maximum absolute numerical deviation among wrong integer outputs within each stratum, where defined;
+- timeout/resource features only if a later execution protocol has first fixed the runtime and memory budgets.
 
-Do not use source code, mutation labels, version roles, sealed-manifest fields, solver IDs, or raw output text as predictive features. Preserve raw outputs and traces separately as evidence.
+The exact diagnostic strata and feature columns must be listed in BANK_DESIGN.md and ANALYSIS_SPEC.md before any source mutation is constructed. No raw input IDs, raw output text, source code, mutation labels, version-role labels, sealed-manifest fields or solver IDs may be predictive features. Preserve raw outputs and traces separately as evidence. The parent-group identifier may be used only to form validation folds and cluster summaries.
 
-Use the same regularized linear prediction procedure for both arms. Standardization and any tuning must be conducted inside training data only. Outer validation must leave out one complete parent group at a time; all five versions of a parent stay in the same outer fold. Any inner tuning must also group by parent. No random row-level split is permitted.
+Freeze the following exploratory prediction procedure before source generation:
 
-Use held-out squared prediction error and report the paired out-of-group error difference between the two arms. Report group-level results and the overall descriptive difference. Because there are only 30 parent groups and no power calculation is authorized, label this predictive comparison EXPLORATORY. Do not apply an invented meaningful-effect threshold, claim adequate power, or declare confirmatory support.
+- Model class: ridge linear regression with an intercept.
+- Candidate ridge penalties: alpha in {0.1, 1, 10, 100}.
+- Numeric feature standardization and categorical encoding are fitted on training data only.
+- Outer validation: leave one complete parent group out per fold, giving 30 outer folds. All five bodies belonging to a parent remain together in the held-out fold.
+- Inner tuning: five-fold group-wise cross-validation over the remaining parent groups; choose alpha by lowest inner-fold mean squared prediction error. The baseline and enriched arms use the same fold definitions and the same alpha grid, with alpha selected separately inside each arm's training data.
+- No post-hoc feature selection, model switching, fold changes or feature engineering after outcomes are inspected.
+- Loss: squared prediction error for Q. For the overall result, first average squared prediction error within each held-out parent group, then average equally across the 30 parent groups. Also report all 30 group-level paired differences.
 
-The within-parent contrasts and the baseline-versus-enriched prediction comparison answer different questions. Do not merge their estimates or describe a predictive gain as a causal effect of a mutation.
+The paired group-level difference is baseline MSE minus enriched MSE; positive values favour the enriched arm. Because there are only 30 parent groups and no power calculation or meaningful-effect threshold is authorized, this comparison is EXPLORATORY only. Report the group-level results and descriptive overall difference. Do not apply an invented delta, lower-confidence-bound rule, p-value decision rule or claim of confirmatory support.
+
+Stop after one frozen analysis pass. If the data, coverage or unresolved outcomes make a fold or arm not estimable under the frozen procedure, report NOT_ESTIMABLE and the precise reason. Do not collect more data, change features or rerun with a replacement model automatically.
+
+The within-parent contrasts and the baseline-versus-enriched prediction comparison answer different questions. Do not merge their estimates or describe a predictive gain as a causal effect of a mutation. No fitting or prediction is authorized in the current construction phase; this section is a preregistered plan for a later, separately authorized analysis.
 
 ## 11. Algorithm diversity, duplicate checks and taxonomy limits
 
