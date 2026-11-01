@@ -12,7 +12,7 @@
 - v1.2.1 source document blob: `559c14c20f3fab554623712176382e2b856f2764`
 - Claude report blob: `e7228c89e4b9fd7f7aa4ac9fa11e140fdd5b9711`
 - Claude generator blob: `34e391ada87c39b00457adcc375cced9e1ded12a`
-- The master branch currently points to the stray-report commit `286157b94cf8f28726bb7f53a0063b3e647a9b08`. No deletion or history rewrite was performed by GPT.
+- Commit `286157b94cf8f28726bb7f53a0063b3e647a9b08` put the stray report on master. A subsequent master commit `b01b160e64190b27897e6461ed8226cafc3df67b` adds `reviews/AI_REVIEW_2026-11-01.md`, so 286157b is not the current master tip. GPT made no writes to master; no deletion or history rewrite was performed.
 
 ## Findings independently confirmed
 
