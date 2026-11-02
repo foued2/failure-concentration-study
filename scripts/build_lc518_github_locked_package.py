@@ -336,7 +336,7 @@ def main() -> int:
     for line in (PACKAGE / "SHA256SUMS").read_text(encoding="utf-8").splitlines():
         digest, name = line.split("  ", 1)
         manifest_rows[name] = digest
-    need(set(manifest_rows) == set(files), "Published manifest inventory differs from package inventory")
+    need(set(manifest_rows) == (set(files) - {"SHA256SUMS"}), "Published manifest inventory differs from package inventory")
     for name, expected in manifest_rows.items():
         need(hfile(PACKAGE / name) == expected, f"Published package checksum failed: {name}")
     need(not any("__pycache__" in path.parts for path in PACKAGE.rglob("*")),
