@@ -268,7 +268,9 @@ def main() -> int:
         launcher_state1, "BANK_GENERATION_AUTHORIZED = False",
         "BANK_GENERATION_AUTHORIZED = True", "launcher activation")
 
-    PACKAGE.mkdir(parents=True, exist_ok=True)
+    if PACKAGE.exists():
+        shutil.rmtree(PACKAGE)
+    PACKAGE.mkdir(parents=True)
     files = {
         "lc518_generator.py": (build_root / "lc518_generator.py").read_bytes(),
         "lc518_generator_state1.py": generator_state1.encode(),
@@ -329,6 +331,16 @@ def main() -> int:
 
     for name, data in files.items():
         (PACKAGE / name).write_bytes(data)
+
+    manifest_rows = {}
+    for line in (PACKAGE / "SHA256SUMS").read_text(encoding="utf-8").splitlines():
+        digest, name = line.split("  ", 1)
+        manifest_rows[name] = digest
+    need(set(manifest_rows) == set(files), "Published manifest inventory differs from package inventory")
+    for name, expected in manifest_rows.items():
+        need(hfile(PACKAGE / name) == expected, f"Published package checksum failed: {name}")
+    need(not any("__pycache__" in path.parts for path in PACKAGE.rglob("*")),
+         "Python bytecode cache must not be included in the locked source package")
 
     need((PACKAGE / "lc518_generator_state2.py").read_bytes() ==
          (PACKAGE / "lc518_generator_state1.py").read_bytes().replace(
