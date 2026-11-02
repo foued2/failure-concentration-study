@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-02  
 **Status:** Completed; artificial-fixture test only.  
-**Location:** disposable temporary directory under the runtime's temporary filesystem; it was automatically deleted. The script and report are retained separately under `/mnt/data/lc518_150_review_work/`, outside the repository and study package.
+**Location:** disposable temporary directory under the runtime's temporary filesystem; it was automatically deleted. The script and report are retained separately under /mnt/data/lc518_150_review_work/, outside the repository and study package.
 
 ## Scope
 
@@ -12,16 +12,16 @@ No diagnostic or held-out study bank was generated. No study records, oracle out
 
 ## Results
 
-<summary>All artificial-fixture checks passed.</summary>
+All artificial-fixture checks passed.
 
 | Check | Result | What was checked |
 |---|---|---|
-| `C_D` calculation | PASS | No-failure convention; one, two and three failures; values 1, 1/2, 2/3 and 1/3 as appropriate. |
-| `k_fail` basis | PASS after correction | Six-column basis has full row rank over k=0..4 and a one-to-one mapping to five low-count fitted values plus the linear tail slope. |
+| C_D calculation | PASS | No-failure convention; one, two and three failures; values 1, 1/2, 2/3 and 1/3 as appropriate. |
+| k_fail basis | PASS after correction | Six-column basis has full row rank over k=0..4 and a one-to-one mapping to five low-count fitted values plus the linear tail slope. |
 | Training-only standardization | PASS | Training means/scales are used for validation values; a zero-variance training column maps to zero in both training and held-out data. |
 | Unseen-family encoding | PASS | A family absent from training, including a singleton family when its parent is held out, receives all-zero family indicators and no family-specific adjustment. |
 | MSE weighting | PASS | Pooled 150-body MSE equals the unweighted mean of the 30 parent-group MSEs because each group contains exactly five bodies. |
-| Canonical identity | PASS | Coin-order permutations map to the same `(amount, sorted coins)` key. |
+| Canonical identity | PASS | Coin-order permutations map to the same (amount, sorted coins) key. |
 | Whole-candidate collision rejection | PASS | One colliding record rejects its entire multi-record diagnostic candidate, including its otherwise non-colliding companion. |
 | Within-bank permutation pair | PASS | A permutation pair with one canonical identity is allowed within a bank. |
 | Cross-bank disjointness | PASS | Accepted artificial diagnostic keys have no intersection with the frozen artificial held-out key set. |
@@ -29,6 +29,28 @@ No diagnostic or held-out study bank was generated. No study records, oracle out
 | Rejection counts / sidecar | PASS | Counts reconcile to sidecar rows for all 16 D1–D8 and H1–H8 stratum slots, including zeros. |
 | Separate PRNG streams | PASS | Variable diagnostic-side retries do not consume or alter the independent held-out RNG stream. |
 | Atomic PASS/FAIL publication | PASS | Failed validation creates no authoritative PASS file; successful validation publishes only after the predicate passes, via same-filesystem atomic replace. |
+
+### Mapping of 13 report rows to seven machine-readable test groups
+
+The JSON output contains seven top-level test groups. The 13 human-readable rows above map to those groups as follows:
+
+| Human-readable report row | JSON top-level test group |
+|---|---|
+| C_D calculation | cd_and_spline_math |
+| k_fail basis | cd_and_spline_math |
+| Training-only standardization | training_only_standardization |
+| Unseen-family encoding | unknown_family_encoding |
+| MSE weighting | mse_weighting |
+| Canonical identity | canonical_collision_and_rejection_accounting |
+| Whole-candidate collision rejection | canonical_collision_and_rejection_accounting |
+| Within-bank permutation pair | canonical_collision_and_rejection_accounting |
+| Cross-bank disjointness | canonical_collision_and_rejection_accounting |
+| Fixed D5 exclusion preflight | canonical_collision_and_rejection_accounting |
+| Rejection counts / sidecar | canonical_collision_and_rejection_accounting |
+| Separate PRNG streams | separate_rng_streams |
+| Atomic PASS/FAIL publication | atomic_pass_fail_publication |
+
+This mapping is a reporting clarification only. It does not change the script or the recorded result.
 
 ## Important mathematical correction found during testing
 
@@ -38,7 +60,7 @@ The earlier proposed basis with hinge terms only at 1, 2 and 4,
 (k, (k-1)_+, (k-2)_+, (k-4)_+, \mathbf{1}[k=0]),
 \]
 
-does **not** allow arbitrary fitted values at k=0,1,2,3,4. The term `(k-4)_+` is zero at k=4, so it cannot independently control the fitted value at k=4. A direct rank check of the 5-by-5 low-count design matrix for that earlier basis returns rank 4, not the required rank 5; the reproducible harness now checks and records that deficiency.
+does **not** allow arbitrary fitted values at k=0,1,2,3,4. The term (k-4)_+ is zero at k=4, so it cannot independently control the fitted value at k=4. A direct rank check of the 5-by-5 low-count design matrix for that earlier basis returns rank 4, not the required rank 5; the reproducible harness now checks and records that deficiency.
 
 The review draft therefore uses knots at **1, 2, 3 and 4**:
 
@@ -48,7 +70,7 @@ The review draft therefore uses knots at **1, 2, 3 and 4**:
 
 This provides arbitrary fitted values at k=0..4 and a linear continuation for k>4. The corrected mapping from the six coefficients to the five low-count fitted values plus the tail slope has rank six. The final artificial test passed and records both the old-basis rank deficiency and the corrected-basis full-rank transformation.
 
-This is a correction to the earlier GPT/Claude proposal and must be shown to Claude as a substantive math correction before anyone labels the specification frozen.
+This is a correction to the earlier GPT/Claude proposal and must remain visible in the review history. It is not an empirical finding about any solver.
 
 ## Limitations
 
@@ -60,4 +82,4 @@ This is a correction to the earlier GPT/Claude proposal and must be shown to Cla
 
 ## Overall disposition
 
-**Artificial mechanics: PASS (7/7 tests in the recorded run). Primary and extended basis algebra: separately checked on integer k values only. Actual generator: NOT TESTED. Ridge fitting, fold-specific support audit and predictive sensitivity fitting: NOT TESTED. Study generation and solver construction: NOT PERFORMED and remain unauthorized.**
+**Artificial mechanics: PASS (7/7 top-level test groups in the recorded run). Primary and extended basis algebra: separately checked on integer k values only. Actual generator: NOT TESTED. Ridge fitting, fold-specific support audit and predictive sensitivity fitting: NOT TESTED. Study generation and solver construction: NOT PERFORMED and remain unauthorized.**

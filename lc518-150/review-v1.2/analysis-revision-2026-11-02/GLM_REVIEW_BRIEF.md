@@ -1,139 +1,122 @@
-# GLM Independent Review Brief: LC518-150 Analysis Revision
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2
 
-**Review target branch:** `gpt/lc518-150-analysis-review-2026-11-02`  
-**Scope:** independent scientific, mathematical and specification review only.  
-**Status:** review material; not frozen and not authorization to modify the repository or generate study data.
+**Date:** 2026-11-02  
+**Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
+**Revision base:** 01494b75fa0d37c19737dc5534549eff99424807  
+**Requested review:** independent mathematical and specification review of the consolidated revision after GLM's prior findings and Claude's disposition.
 
-## 1. Purpose
+## 1. Scope and limits
 
-Independently challenge the revised LC518-150 analysis plan before it is treated as the design of record. Do not simply confirm GPT/Claude conclusions. Recalculate important claims, look for counterexamples, identify missing assumptions and report substantive disagreements.
+Review the public design/review documents listed below. Do not edit, commit, push or merge repository files. Do not access or request the private mutation annex or sealed ground-truth manifest. Do not generate study banks or LC518 study records. Do not construct, import or execute candidate solver bodies. Do not fit predictive models or run power simulations.
 
-The owner approved the research direction and analysis plan. The remaining task is to verify mathematical/statistical coherence and consistency with the frozen task, bank and parent designs.
+The artificial-fixture scripts and results are only mechanical checks. They are not evidence about the actual generator, actual bank feasibility, solver behaviour, or predictive performance.
 
-## 2. Files to inspect
+Under the owner's instruction, GPT is the only agent authorized to publish or modify repository contents. GLM and Claude are reviewers only.
 
-Review all files in this directory:
+## 2. Source files
 
-1. `ANALYSIS_SPEC_REVIEW_DRAFT.md` — primary review target.
-2. `WORK_ORDER_AMENDMENTS_REVIEW.md` — proposed changes to the historical work order; no official work-order file is replaced here.
-3. `MECHANICAL_DRY_RUN_REPORT.md` — scope and limits of the artificial mechanics test.
-4. `mechanical_dry_run.py` and `mechanical_dry_run_results.json` — artificial fixture test and recorded output.
-5. `spline_basis_check.py` and `spline_basis_check_results.json` — independent-style rank calculation for old, primary and proposed sensitivity count bases.
-6. `README.md` and `SHA256SUMS` — package index and integrity digests.
+Review these files on the target branch:
 
-Also inspect these unchanged public source documents on the same branch:
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/ANALYSIS_SPEC_REVIEW_DRAFT.md
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/WORK_ORDER_AMENDMENTS_REVIEW.md
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/MECHANICAL_DRY_RUN_REPORT.md
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/mechanical_dry_run.py
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/mechanical_dry_run_results.json
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/spline_basis_check.py
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/spline_basis_check_results.json
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/README.md
 
-- `lc518-150/LC518_TASK_CONTRACT.md` (blob `5ca6fc69b9382300a93318bee853232a409c158f`).
-- `lc518-150/glm-handoff/BANK_DESIGN.md` (blob `d91b8dcee05808926262c3636a891b776c03ab44`).
-- `lc518-150/glm-handoff/PARENT_DESIGN.md` (blob `fd15338bd511ba479e62efa50ada9d2d233e143a`).
-- `lc518-150/GLM_WORK_ORDER.md` v1.0 (blob `1322d82aeb8d4bd93b69cb01c43f728ae754f529`).
+Compare with the unchanged design sources:
 
-These four documents are context and constraints, not to be edited. The historical v1.0 work order contains a broad construction authorization in its header; the owner's later, narrower instruction supersedes that permission for current operations. The proposed amendments preserve the historical file and explain the intended authorization precedence.
+- lc518-150/LC518_TASK_CONTRACT.md
+- lc518-150/glm-handoff/BANK_DESIGN.md
+- lc518-150/glm-handoff/PARENT_DESIGN.md
+- lc518-150/GLM_WORK_ORDER.md
+- lc518-150/glm-handoff/ANALYSIS_SPEC.md (frozen v1.0)
+- lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md
 
-Read-only repository context: `master` was at `b01b160e64190b27897e6461ed8226cafc3df67b` when checked. Its recursive tree did not contain an `lc518-150/` subtree. The LC518 v1.0 work order and frozen design documents are on the LC518 development/review branch, not at that path on master.
+The historical v1.0 work order and analysis specification must remain unchanged.
 
-## 3. Source-design facts to verify
+## 3. Prior findings and the revision's dispositions
 
-- `BANK_DESIGN.md` defines 64 diagnostic records, eight strata D1–D8 with eight records each. Hence the design-implied maximum is `k_fail=64`, because each record contributes at most one definite FAIL.
-- D6 contains reorder pairs. Their records are separate rows but share the same canonical mathematical instance; dependence must be disclosed.
-- `PARENT_DESIGN.md` defines 30 parent groups across five algorithm families: K1=7, K2=8, K3=8, K4=5, K5=2. K5 is sparse at the parent-group level.
-- Each parent contributes five matched solver variants. The validation/interpretation grouping level is 30 parent groups, not 150 independent bodies.
-- The held-out target is the declared 80-record bank. Strict E3 requires all 150 × 80 = 12,000 outcomes resolved.
+### B1 — D6 order-invariance features
 
-Verify these facts directly against the source documents.
+Revision 2 restores all three accepted C6 features to Model C:
 
-## 4. Required independent checks
+- d_order_pairs_resolved;
+- d_order_pairs_comparable; and
+- d_order_inconsistent.
 
-### A. Concentration definition and support
+Both the inconsistency count and comparable-pair denominator enter Model C. The rate is descriptive only and null when the denominator is zero. Verify the definitions against BANK_DESIGN §6 and CORRECTIONS_RECORD C6.
 
-Verify `f_j` as the number of definite FAIL outcomes in diagnostic stratum D_j, `k_fail=sum(f_j)`, and `C_D=max(f_j)/k_fail` for k_fail>0, with the labelled NO OBSERVED FAILURES convention at k_fail=0.
+### B2 — frozen feature inventory
 
-Check that unresolved records are excluded from f_j and k_fail and counted separately. Verify possible values at k=1,2,3. Assess how D6 pair dependence affects support and interpretation. Confirm that C_D is not the old six-family statistic.
+Revision 2 restores d_unresolved_s, d_meandev_s_defined, d_maxdev_s_defined and the coverage_diag reporting obligation. It adds the accepted d_other_s feature and provides a row-by-row frozen-to-revised reconciliation table. Verify every row against frozen ANALYSIS_SPEC v1.0 and CORRECTIONS_RECORD C4, C5 and C7.
 
-### B. Primary spline and ridge
+coverage_diag = resolved diagnostic records / 64 = 1 - k_unresolved/64. It is reported but excluded from the predictor matrix.
 
-Independently derive the rank and coefficient mapping for:
+### B3 — future timeout/resource and other manifestations
 
-`B(k)=(k,(k-1)+,(k-2)+,(k-3)+,(k-4)+,I[k=0])`.
+Revision 2 restores d_timeout_s as a reserved per-stratum column. It is null and excluded from the design matrix until a separate execution protocol specifies runtime/memory budgets and timeout/resource classification, with the feature list frozen before any candidate runs. Null is not zero-filled. d_other_s is separate and counts another explicitly defined manifestation, excluding timeout/resource breach.
 
-Check:
-- rank 5 for k=0,1,2,3,4;
-- fitted-value mapping at those five levels and the extra tail-slope degree of freedom;
-- rank 4 for the earlier {1,2,4} basis;
-- why saturation applies only before standardization/regularization;
-- why I[k=0] is standardized, no longer a raw 0/1 column;
-- linear continuation above k=4 as a fixed assumption.
+### M1 — concentration support
 
-Check the objective: mean squared loss plus alpha times the sum of squares of every non-intercept coefficient. The intercept alone is unpenalized. Numeric predictors use training-only population means/SDs; family dummies remain binary and unstandardized. Alpha is separately selected for A, B and C from {0.1,1,10,100}. Assess whether the normalization and alpha scale are unambiguous and coherent with standardized features and Q in [0,1].
+Revision 2 adopts a fixed operational minimum: at least three distinct parent groups must each contain at least one exact (k_fail, k_unresolved) cell among their five versions with k_fail >= 2 and at least two distinct C_D values. This is stricter than merely observing a same-k difference somewhere in a group. The rule is presented as a minimal support floor, not as a power, precision or generalization guarantee.
 
-A-versus-B compares separately tuned regularized procedures. Shared baseline coefficients can receive different shrinkage in A and B. It is not an unrestricted conditional effect of C_D. Do not call it categorically conservative without proof.
+Independently assess whether this rule is coherent with the stated estimand, whether matching on k_unresolved is appropriate, whether three groups is too weak or too strict, and whether the interpretation for below-threshold support is correctly limited to INSUFFICIENT_WITHIN_PARENT_SUPPORT rather than a null-effect claim. Suggest any defect or unintended consequence, but do not use outcome data or invent a power claim.
 
-### C. Proposed sensitivity basis
+### M2 — public IDs, fixed buckets and K5
 
-The proposal adds knots {8,16,32,48} to {1,2,3,4}. This is a 10-column basis over the design-implied range k=0..64. The rationale is fixed before outcomes: 8,16,32 are doubling landmarks, and 48 is three-quarters of the upper bound, leaving 48..64 as the final segment. A knot at 64 adds no variation because (k-64)+ is zero over the whole allowed range.
+Revision 2 uses numeric G01–G30 ordering and pins these buckets:
 
-Assess whether this set is defensible, full-column-rank over integer k=0..64, and useful as a secondary A_sens-versus-B_sens check. Check that it remains secondary, separately reported, and cannot replace the primary result after seeing outcomes. The knot set is proposed for review, not frozen.
+- Bucket 0: G05, G10, G15, G20, G25, G30
+- Bucket 1: G01, G06, G11, G16, G21, G26
+- Bucket 2: G02, G07, G12, G17, G22, G27
+- Bucket 3: G03, G08, G13, G18, G23, G28
+- Bucket 4: G04, G09, G14, G19, G24, G29
 
-### D. Fold-specific support audit and preprocessing
+K5 comprises only G29 and G30. Verify that exactly two of the 150 inner split instances have no K5 group in inner training, and that the outer folds holding G29 or G30 train with only one K5 parent group. Assess the stated limitation on K5 family interpretation and common-alpha shrinkage.
 
-Check the training-only standardization and zero-variance rule. For every outer and inner training split, the specification requires:
-- observed k_fail values and range;
-- training variance, mean and scale for every spline column and numeric feature;
-- exact unseen/out-of-range validation k_fail and C_D values;
-- zero-variance columns whose held-out original values differ from the training constant;
-- affected body counts and distinct parent groups;
-- training-unseen families and all-zero UNKNOWN encoding.
+### M3 — inner alpha tuning
 
-Assess whether this audit is operational and sufficiently precise. A held-out value that differs from a training constant mapped to zero is unsupported by the fitted representation, not successfully adjusted.
+Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-training parent groups and computes one body-level MSE for each alpha/model. Since each group contributes five bodies, this equals the equally weighted mean of the 29 group MSEs. It expressly prohibits averaging the five fold-level MSEs. Verify this is unambiguous and consistent with the fixed buckets.
 
-### E. Parent-family encoding and nested folds
+### E1–E8 — corrections
 
-Check the all-training-family one-hot encoding with an intercept, unstandardized and penalized family indicators, and all-zero encoding for absent families. At finite alpha, an unseen family's prediction is intercept plus other predictor contributions. As alpha tends to infinity, all slopes tend to zero and the intercept tends to the training outcome mean.
+- E1: the brief now records the master/review-branch divergence. Master HEAD b01b160 contains lc518-150/review-v1.2/c9-dryrun/REPORT_C9_DRYRUN.md with blob 3ff9bf170bae0d28f3a74f30bc172ef6e996df32; the review-branch copy has blob e7228c89e4b9fd7f7aa4ac9fa11e140fdd5b9711 and includes the process note. The master copy is left untouched.
+- E2: the report now maps all 13 human-readable rows to seven JSON top-level test groups.
+- E3: the hypothetical incremental comparison is called B-versus-B+profile, not B-versus-D.
+- E4: G01–G30 are described as public IDs and numeric order is pinned.
+- E5: the general C_D support bound is stated.
+- E6: wrong integer outputs require exact Python type int; bool is excluded. Their absolute deviation is at least 1.
+- E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
+- E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-Inspect K1–K5 group counts and round-robin buckets. Determine exactly when K5 can be absent from an inner-training split because it has only two groups. Verify that such folds are reported and no K5 effect is claimed as learned without K5 training support.
+## 4. Additional independent checks
 
-### F. Features, outcomes and leakage
+1. Re-derive the C_D bound ceil(k/8)/k <= C_D <= 1 for positive k, and check the k=1,2,3 cases.
+2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64.
+3. Check the mean-squared-loss plus ridge objective, unpenalized intercept, training-only population standardization, zero-variance mapping and distinction between a zero-variance column and a reserved null column.
+4. Check that all three predictive arms use the same target and group folds, that alpha is separately tuned, and that the 145-body pooled inner criterion is explicit.
+5. Check that the 30 outer body-level prediction scores are summarized at the 30-parent level, that Delta_AB and Delta_AC share Model A and are correlated, and that neither is a causal contrast.
+6. Check strict E3: any unresolved one of 12,000 held-out outcomes makes E3 NOT_ESTIMABLE; no resolved-only subset fit is permitted.
+7. Check that Model C's full profile remains pre-registered and that the D6 features, unresolved counts, defined flags, other-status count and reserved timeout field reconcile to the frozen feature inventory.
+8. Inspect wording for any silent expansion of authorization. Review-only publication must not be read as authority for bank generation, solver construction, private-annex access, candidate execution, predictive fitting, power simulation or master merge.
 
-Check:
-- A = flexible k_fail basis + k_unresolved + Z;
-- B = A + C_D;
-- C = A + the pre-registered per-stratum outcome profile;
-- A-vs-B tests concentration relative to A;
-- A-vs-C tests the full profile relative to A, **not** incremental profile value beyond C_D;
-- sealed mutation identity, mutation details and version roles are excluded as predictors;
-- raw oracle answers are excluded, while oracle labels and registered derived diagnostic deviations are permitted.
+## 5. Master/review divergence
 
-Challenge whether Model C categories PASS, wrong answer, invalid return type and exception are mutually exclusive and exhaustive of all possible definite FAIL manifestations in the work-order schema. If not, identify the missing category. Also assess whether a zero deviation-summary convention can be confused with a measured zero.
+The previous brief incorrectly stated that master had no LC518 subtree. That was wrong. The only divergence addressed here is the C9 report at the path and blob hashes above. No deletion or revert is requested. Do not modify master.
 
-### G. Scoring and estimability
-
-Check the 30 outer leave-one-parent-group-out folds and five inner group-wise folds, deterministic assignment, no parent leakage, tuning and preprocessing boundaries. Confirm pooled body-level MSE equals the equally weighted mean of group MSEs because each group contributes five bodies. Ensure no inference treats 150 bodies as independent; the grouping level is 30 parents.
-
-Check strict E3: if any of 12,000 held-out outcomes is unresolved, E3 is NOT_ESTIMABLE, with coverage/bounds descriptive and no resolved-only model fit. The primary matched analysis retains its own separate unresolved rule.
-
-### H. Authorization and document consistency
-
-Compare the proposed amendments against v1.0. The old document must remain unchanged; later owner instruction narrows current permission to specification review and artificial-fixture testing. Production bank generation, solver construction, private-annex access, candidate execution and predictive fitting remain separately unauthorized. Review-only branch publication does not authorize production artifacts or merge.
-
-Check consistency with the task contract, BANK_DESIGN and PARENT_DESIGN.
-
-## 5. Required response format
+## 6. Required response format
 
 Return a written review with five headings:
+
 1. **BLOCKERS**
 2. **MAJOR CONCERNS**
 3. **MINOR/EDITORIAL**
 4. **CONFIRMED**
 5. **UNTESTED / NOT IDENTIFIABLE FROM DESIGN**
 
-For every finding, identify the exact file/section, explain why it matters, show the independent calculation or counterexample, and propose a correction where possible. Do not edit the repository.
+For each finding identify the exact file/section, explain why it matters, provide the calculation or counterexample, and propose a correction where possible. State what was actually checked and what remains untested.
 
-## 6. Review boundaries
-
-- Inspect only the public specifications, source design documents and artificial fixture files listed above.
-- Do not access or request the private mutation annex or sealed ground-truth manifest.
-- Do not generate study banks or any LC518 study records.
-- Do not construct, import or execute any candidate solver body.
-- Do not fit predictive models or run power simulations.
-- Do not treat a synthetic basis check or the 7/7 artificial mechanics pass as evidence about actual generator correctness, bank feasibility, solver behaviour or predictive performance.
-- Do not commit, push, merge or edit repository files.
+Do not edit the repository. Do not infer actual support, bank feasibility, solver behaviour, alpha choice or predictive performance from the artificial fixtures.
