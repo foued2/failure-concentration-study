@@ -1,0 +1,116 @@
+{
+  "overall_status": "PASS",
+  "predictive_model_fitted": false,
+  "private_annex_accessed": false,
+  "run_scope": "artificial fixtures only; not the study generator",
+  "solver_bodies_created_or_executed": false,
+  "study_banks_created": false,
+  "tests": {
+    "atomic_pass_fail_publication": {
+      "failed_validation_publishes_no_authoritative_pass": true,
+      "status": "PASS",
+      "successful_validation_publishes_after_check": true,
+      "temporary_directory_auto_deleted": true
+    },
+    "canonical_collision_and_rejection_accounting": {
+      "accepted_candidate_ids": [
+        "D_FIX_001",
+        "D_FIX_003",
+        "D_FIX_004"
+      ],
+      "accepted_diagnostic_keys_disjoint_from_heldout": true,
+      "all_sixteen_strata_present_in_counters": true,
+      "counter_sidecar_reconciliation": true,
+      "fixed_d5_preflight_collision_is_fatal": true,
+      "fixtures_outside_lc518_contract": true,
+      "heldout_key_count": 1,
+      "rejected_candidate_ids": [
+        "D_FIX_002"
+      ],
+      "rejection_counts": {
+        "D1_FIX": 0,
+        "D2_FIX": 1,
+        "D3_FIX": 0,
+        "D4_FIX": 0,
+        "D5_FIX": 0,
+        "D6_FIX": 0,
+        "D7_FIX": 0,
+        "D8_FIX": 0,
+        "H1_FIX": 0,
+        "H2_FIX": 0,
+        "H3_FIX": 0,
+        "H4_FIX": 0,
+        "H5_FIX": 0,
+        "H6_FIX": 0,
+        "H7_FIX": 0,
+        "H8_FIX": 0
+      },
+      "sidecar_rows": [
+        {
+          "candidate_id": "D_FIX_002",
+          "matched_key_count": 1,
+          "reason": "CROSS_BANK_COLLISION",
+          "stratum": "D2_FIX",
+          "whole_candidate_rejected": true
+        }
+      ],
+      "status": "PASS",
+      "whole_candidate_rejection_verified": true,
+      "within_bank_permutation_pair_permitted": true
+    },
+    "cd_and_spline_math": {
+      "cd_cases": {
+        "one_failure": 1,
+        "three_all_same_stratum": 1,
+        "three_split_1_1_1": 0.3333333333333333,
+        "three_split_2_1": 0.6666666666666666,
+        "two_all_same_stratum": 1,
+        "two_split_evenly": 0.5,
+        "zero_failures": 0
+      },
+      "low_count_values_plus_tail_slope_transform_rank": 6,
+      "spline_basis_column_count": 6,
+      "spline_basis_row_rank_at_k_0_to_4": 5,
+      "spline_is_linear_above_k_4": true,
+      "spline_is_saturated_on_k_0_to_4": true,
+      "spline_knots_are_fixed_conventions_not_data_optimized": true,
+      "status": "PASS",
+      "previous_1_2_4_knot_basis_low_count_rank": 4,
+      "previous_1_2_4_knot_basis_is_not_saturated": true
+    },
+    "mse_weighting": {
+      "bodies_per_group": 5,
+      "body_level_oof_mse_equals_equal_parent_group_mean": true,
+      "effective_group_count_for_uncertainty_interpretation": 30,
+      "parent_groups": 30,
+      "status": "PASS"
+    },
+    "separate_rng_streams": {
+      "disposable_diagnostic_seed": 51127,
+      "disposable_heldout_seed": 73019,
+      "heldout_stream_unchanged_by_diagnostic_retries": true,
+      "simulated_diagnostic_rejections": 6,
+      "status": "PASS"
+    },
+    "training_only_standardization": {
+      "constant_training_column_maps_to_zero_in_train_and_test": true,
+      "status": "PASS",
+      "training_only_statistics_used": true
+    },
+    "unknown_family_encoding": {
+      "known_family_encoding": {
+        "Z:FAMILY_A": 1,
+        "Z:FAMILY_B": 0
+      },
+      "singleton_family_leave_group_out_encoding": {
+        "Z:FAMILY_A": 0
+      },
+      "status": "PASS",
+      "unseen_family_effect_is_zero_not_average": true,
+      "unseen_family_encoding": {
+        "Z:FAMILY_A": 0,
+        "Z:FAMILY_B": 0
+      }
+    }
+  }
+}
