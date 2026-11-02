@@ -20,12 +20,13 @@ Use `ANALYSIS_SPEC_REVIEW_DRAFT.md` as the proposed replacement/referenced analy
 
 - three arms A/B/C and the two separate comparisons A-vs-B and A-vs-C;
 - the eight-stratum definition of `C_D`, including the no-observed-failures convention;
-- the corrected `k_fail` basis with knots 1, 2, 3 and 4, not the earlier incomplete 1, 2, 4 proposal;
-- training-fold-only population standardization, zero-variance handling, the explicitly mean-normalized ridge objective (unpenalized intercept; all other coefficients penalized), and the fixed alpha grid;
-- explicit unknown-family all-zero encoding for a family absent from training, with no family-specific adjustment and no averaging over known families;
+- the primary six-column `k_fail` basis with knots 1, 2, 3 and 4, distinguishing its pre-regularization rank/saturation property from the regularized fitted model; the standardized zero-failure indicator must be described as a standardized numeric feature;
+- training-fold-only population standardization, zero-variance handling, the explicitly mean-normalized ridge objective (unpenalized intercept; all other coefficients penalized), the fixed alpha grid, and the fact that alpha is selected separately for A, B and C;
+- the unseen-family all-zero encoding, including its penalized-intercept interpretation and training-mean limit as alpha tends to infinity;
 - 30 outer parent-group folds and five deterministic inner group folds;
 - pooled body-level MSE plus the equal-parent-group summary and the 30 paired group differences;
-- the concentration-support audit; and
+- the global, conditional, outer-fold and inner-fold concentration/support audit, including zero-variance validation differences and family-absence counts;
+- a secondary A_sens-versus-B_sens sensitivity comparison using the proposed fixed extended knot set 1, 2, 3, 4, 8, 16, 32 and 48; and
 - the distinction between raw oracle answer values (excluded predictors) and registered derived outcome features (permitted in Model C).
 
 ## 3. Correct the oracle wording
@@ -42,4 +43,12 @@ State that the held-out-first collision policy is the selected design direction,
 
 ## 6. Keep all remaining gates explicit
 
-No bank-generation or solver-construction authority follows from approval of the research question or analysis specification. The mechanical dry run is limited to disposable artificial fixtures outside the study package. No candidate solver source may be imported, constructed, or executed during that dry run. The owner separately authorized publication of this review package on a dedicated review branch only; this does not authorize modification of the design-of-record files, push of study artifacts, or merge to another branch.
+No bank-generation or solver-construction authority follows from approval of the research question or analysis specification. The mechanical dry run is limited to disposable artificial fixtures outside the study package. No candidate solver source may be imported, constructed, or executed during that dry run. The owner separately authorized publication of this review package on a dedicated review branch only. That review-only publication does not authorize modification of design-of-record files, push of production/study artifacts, or merge to another branch.
+
+## 7. Explicit interpretation language to add
+
+- The low-count spline is saturated only as an unstandardized, unpenalized basis representation. The fitted regularized model is not saturated.
+- Every numeric basis column, including the zero-failure indicator, is standardized from training-fold statistics. Family indicators remain unstandardized.
+- The A-versus-B result compares separately tuned regularized procedures. It is not an unrestricted conditional effect of `C_D`, and the term "conservative" must not be used without a separate derivation.
+- A-versus-C compares the full diagnostic profile with A. It does not test the incremental contribution of the profile after `C_D` has entered.
+- The secondary extended-knot sensitivity is proposed with knots 8, 16, 32 and 48 added to the primary set. It must be fixed before any outcome is observed and reported separately.

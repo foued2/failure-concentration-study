@@ -1,0 +1,26 @@
+{
+  "diagnostic_record_count": 64,
+  "maximum_possible_k_fail": 64,
+  "old_knots_1_2_4": {
+    "columns": 5,
+    "knots": [1, 2, 4],
+    "rank_on_k_0_to_4": 4,
+    "saturated_on_k_0_to_4": false
+  },
+  "primary_knots_1_2_3_4": {
+    "columns": 6,
+    "knots": [1, 2, 3, 4],
+    "rank_on_k_0_to_4": 5,
+    "low_values_plus_tail_slope_rank": 6,
+    "saturated_before_regularization": true
+  },
+  "proposed_sensitivity_knots_1_2_3_4_8_16_32_48": {
+    "columns": 10,
+    "full_column_rank_on_design_range": true,
+    "knots": [1, 2, 3, 4, 8, 16, 32, 48],
+    "rank_on_all_integer_k_0_to_64": 10,
+    "rank_on_selected_10_point_square_submatrix": 10,
+    "selected_rank_points": [0, 1, 2, 3, 4, 8, 16, 32, 48, 49]
+  },
+  "run_scope": "integer feature-basis algebra only; no study outcomes or solver data"
+}

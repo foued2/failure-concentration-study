@@ -54,10 +54,10 @@ This is a correction to the earlier GPT/Claude proposal and must be shown to Cla
 
 1. The actual generator source was not available to this run. The collision, RNG, accounting and publication checks test the artificial reimplementation only. They do not establish that any repository generator implements these rules correctly.
 2. No production seeds, production bank candidates, fixed study records, oracle outputs, or private annex content were used.
-3. This was not a bank-generation dry run and gives no evidence about expected rejection rates, quotas, support, or whether the real bank can be generated within its attempt caps.
-4. No statistical model was fitted. The script checks the spline feature basis, standardization convention and weighting identities; it does not fit or validate the ridge objective or any alpha choice. The run verifies selected feature arithmetic and specification mechanics only; it says nothing about predictive performance or identifiability in the eventual 150-body data.
+3. This was not a bank-generation dry run and gives no evidence about expected rejection rates, quotas, realized support, or whether the real bank can be generated within its attempt caps.
+4. No statistical model was fitted. The script checks the primary spline feature basis, standardization convention and weighting identities; it does not fit or validate the ridge objective or any alpha choice. It does not run the proposed fold-specific support audit or the A_sens-versus-B_sens comparison. A separate artificial-only rank-check script and JSON result are included for the proposed extended spline basis; they do not use study data.
 5. No test was made of real source-body construction, mutation validity, solver correctness, runtime limits, or candidate isolation.
 
 ## Overall disposition
 
-**Artificial mechanics: PASS. Actual generator: NOT TESTED. Ridge fitting: NOT TESTED. Study generation and solver construction: NOT PERFORMED and remain unauthorized.**
+**Artificial mechanics: PASS (7/7 tests in the recorded run). Primary and extended basis algebra: separately checked on integer k values only. Actual generator: NOT TESTED. Ridge fitting, fold-specific support audit and predictive sensitivity fitting: NOT TESTED. Study generation and solver construction: NOT PERFORMED and remain unauthorized.**
