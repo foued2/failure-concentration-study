@@ -1,7 +1,8 @@
 # LC518 150-Body Study: Revised Analysis Specification
 
-**Revision:** Consolidated review revision 2, 2026-11-02  
-**Status:** Review-only draft on a dedicated branch. Not frozen and not the design of record.  
+**Revision:** Consolidated review revision 2.1, 2026-11-02  
+**Status:** Review-only draft on a dedicated branch. Not frozen and not the design of record.
+**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The M1 minimum-support threshold and extended sensitivity-knot set remain proposals pending owner confirmation.  
 **Scope:** Analysis specification and pre-outcome support rules only. No study bank or candidate solver is created by this document.
 
 ## 1. Scientific scope and questions
@@ -237,13 +238,13 @@ Complete and report this audit before interpreting Delta_AB. The diagnostic bank
 5. For each parent group, report whether its five matched versions contain at least one exact (k_fail, k_unresolved) cell with k_fail >= 2 and at least two distinct C_D values. Report both this within-parent criterion and the less restrictive same-k variation count.
 6. Disclose dependence from D6 reorder pairs. Its two records are separate rows in the frozen diagnostic bank but are not independent mathematical inputs.
 
-### 5.2 Predeclared minimum within-parent support criterion
+### 5.2 Proposed minimum within-parent support criterion (pending owner confirmation)
 
-For a concentration-specific interpretation of Delta_AB, require at least **three distinct parent groups** to meet the within-parent criterion in §5.1 item 5. A qualifying parent group must contain, among its five versions, at least one pair of bodies with the same exact k_fail and the same exact k_unresolved, with k_fail >= 2, but different C_D values. Count distinct parent groups, not bodies or pairs.
+The current proposal is a minimum of **three distinct parent groups** meeting the within-parent criterion in §5.1 item 5. A qualifying parent group must contain, among its five versions, at least one pair of bodies with the same exact k_fail and the same exact k_unresolved, with k_fail >= 2, but different C_D values. Count distinct parent groups, not bodies or pairs.
 
-This is a deliberately modest, predeclared minimum support floor. It prevents a concentration-specific interpretation from resting on variation supplied by only one or two parent groups. It is **not** a power calculation, precision guarantee, effect-size threshold, confirmatory criterion or claim that three groups are sufficient for generalization.
+Both the numerical threshold of three and this exact matching rule are **pending owner confirmation**. They are not owner-approved and are not frozen. The rationale for proposing this floor is to prevent a concentration-specific interpretation from resting on variation supplied by only one or two parent groups. The number three is an operational support safeguard, not a statistically derived cutoff. It is **not** a power calculation, precision guarantee, effect-size threshold, confirmatory criterion or claim that three groups are sufficient for generalization.
 
-If fewer than three parent groups meet the criterion, still report the pre-registered model predictions and Delta_AB if E3 is otherwise estimable, but label the concentration-specific evidence **INSUFFICIENT_WITHIN_PARENT_SUPPORT**. Do not interpret the sign or magnitude of Delta_AB as evidence for or against a distinct concentration contribution. Do not change this threshold after outcomes are observed.
+If the owner confirms this proposed threshold and fewer than three parent groups meet the criterion, still report the pre-registered model predictions and Delta_AB if E3 is otherwise estimable, but label the concentration-specific evidence **INSUFFICIENT_WITHIN_PARENT_SUPPORT**. Do not interpret the sign or magnitude of Delta_AB as evidence for or against a distinct concentration contribution. If the owner chooses another threshold or criterion, revise this section before any outcomes are observed. Until the owner confirms or replaces it, do not treat the three-group rule as an approved pre-registration gate.
 
 ### 5.3 Fold-specific support and zero-variance audit
 
@@ -258,9 +259,9 @@ Run this audit for every outer training fold and every inner-CV training split, 
 
 A validation value outside the observed training support, or a value differing from a training constant that was mapped to zero, is reported as unsupported extrapolation/representation. It is not counted as successful adjustment. If there is no relevant within-baseline variation in C_D, do not interpret predictive improvement as evidence of an independent concentration contribution.
 
-### 5.4 Pre-registered secondary concentration sensitivity
+### 5.4 Proposed secondary concentration sensitivity (pending owner confirmation)
 
-Retain the following fixed secondary sensitivity basis, with knots {1,2,3,4,8,16,32,48}:
+The current proposal is a fixed secondary sensitivity basis with knots {1,2,3,4,8,16,32,48}:
 
 \[
 B_{\mathrm{sens}}(k)=
@@ -268,7 +269,7 @@ B_{\mathrm{sens}}(k)=
 (k-8)_+,(k-16)_+,(k-32)_+,(k-48)_+,\mathbf{1}[k=0]\right).
 \]
 
-This basis has ten columns: the linear term, eight hinge terms and the zero-failure indicator. The primary knots 1, 2, 3 and 4 are retained. Additional knots 8, 16 and 32 are fixed doubling landmarks in the larger count range; 48 is three-quarters of the design maximum and leaves the final 48–64 segment. A knot at 64 would add no variation on the permitted range because (k-64)_+ is zero for every possible input. These are fixed design conventions, not data-selected knots.
+This basis has ten columns: the linear term, eight hinge terms and the zero-failure indicator. The primary knots 1, 2, 3 and 4 are retained. Additional knots 8, 16 and 32 are fixed doubling landmarks in the larger count range; 48 is three-quarters of the design maximum and leaves the final 48–64 segment. A knot at 64 would add no variation on the permitted range because (k-64)_+ is zero for every possible input. These are proposed fixed design conventions, not data-selected knots. The knot set is pending owner confirmation and is not frozen. It may be treated as a pre-registered sensitivity only after the owner confirms it before any outcome is observed.
 
 Fit alternative Model A_sens with this basis and alternative Model B_sens with the same basis plus C_D. All other predictors, outer/inner folds, training-only standardization, zero-variance rules, ridge objective, alpha grid, separate alpha selection, pooled inner scoring and outer scoring are identical to the primary A/B comparison. Report:
 
@@ -276,9 +277,9 @@ Fit alternative Model A_sens with this basis and alternative Model B_sens with t
 \Delta_{AB,\mathrm{sens}}=MSE_{A,\mathrm{sens}}-MSE_{B,\mathrm{sens}}.
 \]
 
-Report this sensitivity separately; it does not replace primary Delta_AB and does not alter Model C or Delta_AC. It assesses sensitivity to the fixed count functional form. Do not select or modify knots after seeing any outcome.
+If the owner confirms this knot set before outcomes are observed, report this sensitivity separately; it does not replace primary Delta_AB and does not alter Model C or Delta_AC. It assesses sensitivity to the fixed count functional form. Do not select or modify knots after seeing any outcome.
 
-The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. The sensitivity remains pre-registered and is not dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
+The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. If the owner confirms this proposal, the sensitivity is pre-registered and must not be dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
 
 ## 6. Outcomes and oracle use
 

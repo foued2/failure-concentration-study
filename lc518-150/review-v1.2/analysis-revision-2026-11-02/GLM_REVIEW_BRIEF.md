@@ -1,9 +1,9 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.1
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
 **Revision base:** 01494b75fa0d37c19737dc5534549eff99424807  
-**Requested review:** independent mathematical and specification review of the consolidated revision after GLM's prior findings and Claude's disposition.
+**Requested review:** independent mathematical and specification review of the consolidated revision after GLM's prior findings and Claude's disposition. In particular, assess the two remaining proposals without treating them as owner-approved decisions.
 
 ## 1. Scope and limits
 
@@ -61,9 +61,9 @@ Revision 2 restores d_timeout_s as a reserved per-stratum column. It is null and
 
 ### M1 — concentration support
 
-Revision 2 adopts a fixed operational minimum: at least three distinct parent groups must each contain at least one exact (k_fail, k_unresolved) cell among their five versions with k_fail >= 2 and at least two distinct C_D values. This is stricter than merely observing a same-k difference somewhere in a group. The rule is presented as a minimal support floor, not as a power, precision or generalization guarantee.
+Revision 2.1 proposes, but does not adopt, a fixed operational minimum: at least three distinct parent groups must each contain at least one exact (k_fail, k_unresolved) cell among their five versions with k_fail >= 2 and at least two distinct C_D values. This is stricter than merely observing a same-k difference somewhere in a group. The numerical threshold and matching criterion are pending owner confirmation; do not describe them as pre-registered or owner-approved.
 
-Independently assess whether this rule is coherent with the stated estimand, whether matching on k_unresolved is appropriate, whether three groups is too weak or too strict, and whether the interpretation for below-threshold support is correctly limited to INSUFFICIENT_WITHIN_PARENT_SUPPORT rather than a null-effect claim. Suggest any defect or unintended consequence, but do not use outcome data or invent a power claim.
+Independently assess whether this proposed rule is coherent with the stated estimand, whether matching on k_unresolved is appropriate, whether three groups is too weak or too strict, and whether the proposed below-threshold interpretation is correctly limited to INSUFFICIENT_WITHIN_PARENT_SUPPORT rather than a null-effect claim. Suggest any defect or unintended consequence, but do not use outcome data or invent a power claim.
 
 ### M2 — public IDs, fixed buckets and K5
 
@@ -94,8 +94,10 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 
 ## 4. Additional independent checks
 
+Do not treat the M1 threshold or extended sensitivity-knot set as owner-approved. Report whether each is mathematically coherent and what trade-offs it creates. The owner retains the decision on whether to approve, revise or reject these two proposals.
+
 1. Re-derive the C_D bound ceil(k/8)/k <= C_D <= 1 for positive k, and check the k=1,2,3 cases.
-2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64.
+2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the candidate sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64. Assess its usefulness and limitations as a proposal; it is pending owner confirmation, not a frozen choice.
 3. Check the mean-squared-loss plus ridge objective, unpenalized intercept, training-only population standardization, zero-variance mapping and distinction between a zero-variance column and a reserved null column.
 4. Check that all three predictive arms use the same target and group folds, that alpha is separately tuned, and that the 145-body pooled inner criterion is explicit.
 5. Check that the 30 outer body-level prediction scores are summarized at the 30-parent level, that Delta_AB and Delta_AC share Model A and are correlated, and that neither is a causal contrast.
