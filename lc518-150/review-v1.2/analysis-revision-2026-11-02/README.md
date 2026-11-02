@@ -1,12 +1,12 @@
 # LC518-150 analysis review package (2026-11-02)
 
-**Status:** Review-only revision 2.2, prepared for publication on the dedicated analysis-review branch. It is not frozen or the design of record and does not authorize study generation or execution.
+**Status:** Review-only revision 2.3, published on the dedicated analysis-review branch. It is not frozen or the design of record and does not authorize study generation or execution.
 
 **Repository authorship:** Under the owner's 2026-11-02 instruction, GPT is the sole agent authorized to publish or otherwise modify repository contents under this delegation. Claude and GLM are reviewers only.
 
 ## Current contents
 
-- ANALYSIS_SPEC_REVIEW_DRAFT.md: consolidated analysis specification, including the restored C6/C7 features, closed pre-run manifestation taxonomy, owner-confirmed C8 provenance, C9 pending-review status, four carried-forward analysis protections, procedure-level reconciliation, proposed concentration-support floor and sensitivity knots pending owner confirmation, fold-level sensitivity support diagnostics, fixed folds, pooled inner alpha selection and K5 caveats.
+- ANALYSIS_SPEC_REVIEW_DRAFT.md: consolidated analysis specification, including the restored C6/C7 features, closed pre-run manifestation taxonomy, owner-confirmed C8 provenance, C9 pending-review status, four carried-forward v1.0 analysis/reporting protections, the new pre-run manifestation-taxonomy closure, procedure-level reconciliation, proposed concentration-support floor and sensitivity knots pending owner confirmation, fold-level sensitivity support diagnostics, fixed folds, pooled inner alpha selection and K5 caveats.
 - WORK_ORDER_AMENDMENTS_REVIEW.md: corresponding conditional-precedence, authorization, feature-inventory, closed-manifestation, oracle, unresolved-outcome, fold/scoring, future ridge-equivalence and interpretation amendments.
 - MECHANICAL_DRY_RUN_REPORT.md: artificial-fixture test scope, results, limitations and an explicit mapping from its 13 report rows to seven JSON test groups.
 - mechanical_dry_run.py and mechanical_dry_run_results.json: reproducible standard-library-only artificial-fixture checks. They are not the production/study generator.
@@ -14,17 +14,17 @@
 - GLM_REVIEW_BRIEF.md: updated independent-review request for the consolidated revision.
 - SHA256SUMS: SHA-256 content digests for the nine package files other than the checksum file itself.
 
-## Revision 2.2 status: recorded decisions and open proposals
+## Revision 2.3 status: recorded decisions and open proposals
 
 The revision restores the three D6 C6 order features; restores per-stratum unresolved counts, the deviation-defined indicators and coverage_diag reporting; restores d_other_s and the reserved d_timeout_s field; and specifies that a null reserved field is excluded from the matrix rather than zero-filled. These corrections are incorporated in the review draft.
 
 Two design choices remain open pending owner confirmation. First, the proposed concentration interpretation support floor is three distinct parent groups. A group qualifies only when at least two of its five versions differ in C_D within the same exact (k_fail, k_unresolved) cell with k_fail >= 2. This tests variation beyond both aggregate baseline counts. Three groups is proposed as a minimum support safeguard, not a power or precision guarantee. Second, the proposed sensitivity knots are {1,2,3,4,8,16,32,48}; they are not frozen. The sensitivity proposal also requires fold-level basis-rank, distinct-k support, zero-count presence and knot-coverage reporting. Both choices must be confirmed or changed before any outcomes are observed.
 
-The strict C8/E3 all-12,000-resolved gate is recorded as confirmed by the owner in chat on 2026-11-02. This provenance record does not freeze the whole specification or authorize execution. For C9, held-out-first generation with diagnostic-side whole-candidate collision rejection is the selected design direction, but the detailed C9 correction remains pending independent review and is not accepted or frozen.
+The strict C8/E3 all-12,000-resolved gate is recorded as confirmed by the owner in chat on 2026-11-02. The C8 status statements in `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` (dated 2026-11-01) predate that confirmation and are superseded for C8/E3 status only by revision 2.3; the historical corrections record remains unchanged. This provenance record does not freeze the whole specification or authorize execution. For C9, held-out-first generation with diagnostic-side whole-candidate collision rejection is the selected design direction, but the detailed C9 correction remains pending independent review and is not accepted or frozen.
 
-The v1.0 protections are carried forward: one frozen analysis pass only; an all-identical-Q ZERO_VARIANCE report rather than a prediction result; coverage and unresolved counts alongside failures in every results table; and preservation of successful executions as well as failures. The typed manifestation taxonomy must be closed before any run. The other allowlist may be empty; any non-exact-int return, including bool, is invalid-return-type; and any unmatched FAIL manifestation is a protocol error, not an implicit other.
+The v1.0 protections are carried forward: one frozen analysis pass only; an all-identical-Q ZERO_VARIANCE report rather than a prediction result; coverage and unresolved counts alongside failures in every results table; and preservation of successful executions as well as failures. The typed manifestation taxonomy is newly closed before any run. The other allowlist may be empty; any non-exact-int return, including bool, is invalid-return-type; and any unmatched FAIL manifestation is a protocol error, not an implicit other.
 
-Parent IDs are public. The numeric G01–G30 order and exact five inner buckets are pinned in the analysis specification. The alpha-tuning criterion is one pooled MSE over the 145 inner-validation bodies, not an average of five fold means. In two outer-by-inner splits, the five validation bodies from the other K5 parent are scored with the K5 indicator mapped to zero because no K5 parent is in inner training. K5's two-parent support limitation is explicitly documented.
+Parent IDs are public. The numeric G01–G30 order and exact five inner buckets are pinned in the analysis specification. The alpha-tuning criterion is one pooled MSE over the 145 inner-validation bodies, not an average of five fold means. In two outer-by-inner splits, the five validation bodies from the other K5 parent are scored with all-zero family indicators because K5 is unseen in inner training; include these bodies in the training-unseen-family validation count. K5's two-parent support limitation is explicitly documented.
 
 ## Master/review-branch divergence
 

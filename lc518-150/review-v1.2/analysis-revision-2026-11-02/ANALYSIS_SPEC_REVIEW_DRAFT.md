@@ -1,8 +1,8 @@
 # LC518 150-Body Study: Revised Analysis Specification
 
-**Revision:** Consolidated review revision 2.2, 2026-11-02  
+**Revision:** Consolidated review revision 2.3, 2026-11-02  
 **Status:** Review-only draft on a dedicated branch. Not frozen and not the design of record.
-**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. The C9 held-out-first direction is selected, but its detailed correction remains pending independent review. The four inherited analysis/reporting protections and the closed manifestation-classification rule are carried forward. The M1 minimum-support threshold and extended sensitivity-knot set remain proposals pending owner confirmation.  
+**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. The C9 held-out-first direction is selected, but its detailed correction remains pending independent review. The four inherited v1.0 analysis/reporting protections are carried forward; the manifestation taxonomy is newly closed by a pre-run allowlist and a protocol-abort rule. The M1 minimum-support threshold and extended sensitivity-knot set remain proposals pending owner confirmation.  
 **Scope:** Analysis specification and pre-outcome support rules only. No study bank or candidate solver is created by this document.
 
 ## 1. Scientific scope and questions
@@ -206,7 +206,7 @@ Do not compute five fold-level MSEs and average those five values. The folds con
 
 The same inner fold definitions and scoring rule are used for Models A, B and C. Select alpha separately for each model by the lowest pooled inner-validation MSE. Pre-processing is fitted only on each inner-training partition. After alpha selection, refit the model using the complete outer-training partition, with pre-processing fitted on that partition, and predict the five bodies in the outer-held-out parent group.
 
-In exactly two outer-by-inner split instances, an inner-validation bucket contains the other K5 parent while the inner-training partition contains no K5 parent: outer G29 with validation bucket 0 (which contains G30), and outer G30 with validation bucket 4 (which contains G29). The five validation bodies from that K5 parent are included in the 145-body pooled criterion, but the K5 indicator has zero variance in that inner-training partition and maps to zero for those validation rows. This fixed fold-geometry effect applies symmetrically to Models A, B and C and must be disclosed; it is not evidence that a K5 effect was learned.
+In exactly two outer-by-inner split instances, an inner-validation bucket contains the other K5 parent while the inner-training partition contains no K5 parent: outer G29 with validation bucket 0 (which contains G30), and outer G30 with validation bucket 4 (which contains G29). The five validation bodies from that K5 parent are included in the 145-body pooled criterion, but the K5 family is unseen in inner training and its family indicators are therefore all zero for those validation rows. Count these five bodies and their one parent group in the training-unseen-family validation counts required by §5.3 item 5. Do not confuse this categorical unseen-family case with a numeric zero-variance predictor. This fixed fold-geometry effect applies symmetrically to Models A, B and C and is not evidence that a K5 effect was learned.
 
 ### 4.5 Outer MSE aggregation and dependence
 
@@ -281,7 +281,7 @@ Fit alternative Model A_sens with this basis and alternative Model B_sens with t
 
 If the owner confirms this knot set before outcomes are observed, report this sensitivity separately; it does not replace primary Delta_AB and does not alter Model C or Delta_AC. It assesses sensitivity to the fixed count functional form. Do not select or modify knots after seeing any outcome.
 
-The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. In every inner and outer training partition, also report the rank of the unstandardized sensitivity-basis matrix over the distinct observed k_fail values (maximum 10), the number of distinct observed k_fail values, whether k_fail = 0 is present, and the support on each side of every proposed knot. Identify missing knots/segments and rank deficiency explicitly. This is a support diagnostic, not a requirement that the ridge fit be mathematically solvable: positive-alpha ridge remains uniquely defined, but unsupported basis directions do not provide empirical evidence about the corresponding curvature. If the owner confirms this proposal, the sensitivity is pre-registered and must not be dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
+The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. In every inner and outer training partition, also report the rank of the unstandardized sensitivity-basis matrix over the distinct observed k_fail values (maximum 10), the number of distinct observed k_fail values, whether k_fail = 0 is present, and the support on each side of every proposed knot, with the sides defined for each knot t as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active). Report both body counts and distinct observed k_fail-value counts on each side; the strict > t side is required for a positive hinge. Identify missing knots/segments and rank deficiency explicitly. This is a support diagnostic, not a requirement that the ridge fit be mathematically solvable: positive-alpha ridge remains uniquely defined, but unsupported basis directions do not provide empirical evidence about the corresponding curvature. If the owner confirms this proposal, the sensitivity is pre-registered and must not be dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
 
 ## 6. Outcomes and oracle use
 
@@ -291,6 +291,8 @@ The target Q is mean correctness on the fixed 80-record held-out bank. The stric
 
 - E3 is estimable only if all 150 bodies have resolved outcomes on all 80 held-out records.
 - If any of the 12,000 body-by-held-out-record outcomes is unresolved, E3 is NOT_ESTIMABLE; report unresolved coverage and worst/best possible correctness bounds descriptively. Do not fit A/B/C on a resolved-only subset or silently count unresolved outcomes as failures.
+
+The C8 status statements in `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-draft.md` (dated 2026-11-01) predate the owner's 2026-11-02 confirmation recorded here and are superseded for C8/E3 status only by this revision; the historical corrections record remains unchanged.
 
 This strict E3 rule governs the secondary predictive comparison. It does not silently rewrite the separate unresolved-outcome convention for the primary matched contrasts; that primary analysis retains its own pre-registered outcome-handling specification.
 
@@ -345,7 +347,7 @@ The accepted C4/C5/C6/C7 corrections are represented in the revised definitions 
 
 The feature reconciliation above is complemented by the following procedure-level changes. These are explicit proposed revisions, not silent edits to the frozen v1.0 source:
 
-| Frozen v1.0 provision | Revision 2.2 disposition |
+| Frozen v1.0 provision | Revision 2.3 disposition |
 |---|---|
 | Linear k_fail predictor in the E3 baseline | Replaced for E3 by the six-column primary basis with knots 1, 2, 3 and 4, subject to the proposed specification's ratification. |
 | Two E3 arms (baseline and enriched profile) | Replaced by Models A, B and C, with separate A-versus-B and A-versus-C exploratory comparisons. B+profile remains out of scope. |
@@ -353,7 +355,7 @@ The feature reconciliation above is complemented by the following procedure-leve
 | NaN for undefined deviation summaries | Replaced in the proposed E3 profile by a zero sentinel plus the corresponding _defined indicator. |
 | No explicit alpha tie rule | Larger alpha wins an exact tie. |
 
-Upon formal ratification only, revision 2.2 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1) or §§7–9, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
+Upon formal ratification only, revision 2.3 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
 
 ## 9. Freeze and authorization boundary
 

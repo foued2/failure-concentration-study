@@ -1,9 +1,9 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2.2
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.3
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
-**Revision base:** 8fd82566bab0eac51456081b8d97e926ab878c1e (revision 2.1); review the subsequent revision 2.2 tree on this branch.  
-**Requested review:** independent mathematical and specification review of revision 2.2 after GLM's revision 2.1 findings and Claude's disposition. Verify the new provenance, precedence, manifestation-taxonomy, reporting-protection and fold-support corrections. Continue to assess M1 and the extended sensitivity knots as proposals; do not treat either as owner-approved.
+**Revision base:** 9f1a10b3466656de55618fe42c82b93f5243ed0f (revision 2.2); review revision 2.3 at the branch head.  
+**Requested review:** independent mathematical and specification review of revision 2.3 after GLM's revision 2.2 review. Verify the C8 supersession pointer to the intentionally unchanged 2026-11-01 corrections record; the strict hinge-side convention; the completed precedence list; the K5 unseen-family audit cross-reference; and the provenance distinction between the four inherited v1.0 protections and the new closed manifestation taxonomy. Continue to assess M1 and the extended sensitivity knots as proposals; do not treat either as owner-approved.
 
 ## 1. Scope and limits
 
@@ -92,7 +92,7 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 - E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
 - E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-## 4. Additional independent checks for revision 2.2
+## 4. Additional independent checks for revision 2.3
 
 Do not treat the M1 threshold or extended sensitivity-knot set as owner-approved. Report whether each is mathematically coherent and what trade-offs it creates. The owner retains the decision on whether to approve, revise or reject these two proposals.
 
@@ -106,6 +106,14 @@ Also specifically attack the following revision 2.2 changes:
 - MC5 support: verify the requested fold-level rank, distinct-count, zero-count and knot-side coverage diagnostics. Check that the prose does not confuse rank-deficient support with an undefined ridge solution.
 - Ridge implementation hazard: verify the stated alpha_sklearn = n_train * alpha_spec scaling under the corresponding sum-loss versus mean-loss conventions, and the requirement for a future synthetic numerical-equivalence test. Do not implement or fit a model.
 - ME1–ME4: verify the deduplicated six-column basis description, K5 pooled-validation note, procedure-level reconciliation and per-stratum partition identity.
+
+Also verify these revision 2.3 corrections:
+
+- The C8 supersession pointer names the historical corrections record, states its 2026-11-01 date, supersedes only its C8/E3 status lines, and explicitly leaves that file unchanged.
+- For every sensitivity knot t, support sides are defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active); both body counts and distinct observed-value counts are reported.
+- Conditional precedence preserves §3 (E1), §5 (E2), and §§7–10; it remains ineffective until formal ratification.
+- The two K5 held-out parent cases are explicitly included in the training-unseen-family validation counts under analysis specification §5.3 item 5.
+- The header attributes only the four protections to v1.0 inheritance; the manifestation-taxonomy closure is identified as a new strengthening.
 
 1. Re-derive the C_D bound ceil(k/8)/k <= C_D <= 1 for positive k, and check the k=1,2,3 cases.
 2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the candidate sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64. Assess its usefulness and limitations as a proposal; it is pending owner confirmation, not a frozen choice.
