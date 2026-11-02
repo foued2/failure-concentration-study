@@ -1,8 +1,8 @@
 # LC518 150-Body Study: Revised Analysis Specification
 
-**Revision:** Consolidated review revision 2.5, 2026-11-02  
+**Revision:** Consolidated review revision 2.6, 2026-11-02  
 **Status:** Review-only draft on a dedicated branch. Not frozen and not the design of record.
-**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. M1 is fixed as a same-exact-cell support floor: at least three distinct parent groups must each contribute within-parent C_D variation in the same exact (k_fail, k_unresolved) cell. The sensitivity knots {1,2,3,4,8,16,32,48} are fixed pre-outcome design conventions. The corrected full C9 held-out-first protocol is pinned in C9_GENERATION_SPEC_REVIEW.md and remains pending focused independent review and owner ratification. The four inherited v1.0 analysis/reporting protections are carried forward; the manifestation taxonomy is newly closed by a pre-run allowlist and a protocol-abort rule.  
+**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. M1 is fixed as a same-exact-cell support floor: at least three distinct parent groups must each contribute within-parent C_D variation in the same exact (k_fail, k_unresolved) cell. The sensitivity knots {1,2,3,4,8,16,32,48} are fixed pre-outcome design conventions. The corrected full C9 held-out-first protocol is pinned in C9_GENERATION_SPEC_REVIEW.md revision 2.6 and remains pending focused independent review and owner ratification. The four inherited v1.0 analysis/reporting protections are carried forward; the manifestation taxonomy is newly closed by a pre-run allowlist and a protocol-abort rule.  
 **Scope:** Analysis specification and pre-outcome support rules only. No study bank or candidate solver is created by this document.
 
 ## 1. Scientific scope and questions
@@ -347,7 +347,7 @@ The accepted C4/C5/C6/C7 corrections are represented in the revised definitions 
 
 The feature reconciliation above is complemented by the following procedure-level changes. These are explicit proposed revisions, not silent edits to the frozen v1.0 source:
 
-| Frozen v1.0 provision | Revision 2.5 disposition |
+| Frozen v1.0 provision | Revision 2.6 disposition |
 |---|---|
 | Linear k_fail predictor in the E3 baseline | Replaced for E3 by the six-column primary basis with knots 1, 2, 3 and 4, subject to the proposed specification's ratification. |
 | Two E3 arms (baseline and enriched profile) | Replaced by Models A, B and C, with separate A-versus-B and A-versus-C exploratory comparisons. B+profile remains out of scope. |
@@ -355,7 +355,7 @@ The feature reconciliation above is complemented by the following procedure-leve
 | NaN for undefined deviation summaries | Replaced in the proposed E3 profile by a zero sentinel plus the corresponding _defined indicator. |
 | No explicit alpha tie rule | Larger alpha wins an exact tie. |
 
-Upon formal ratification only, revision 2.5 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
+Upon formal ratification only, revision 2.6 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
 
 ## 9. Freeze and authorization boundary
 

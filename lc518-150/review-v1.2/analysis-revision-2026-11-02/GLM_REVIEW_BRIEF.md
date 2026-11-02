@@ -1,9 +1,10 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2.5
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.6
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
-**Revision base:** 27f62310e0e60c51f78b062501fbdd45aba2155f (revision 2.4); review revision 2.5 at the branch head.  
-**Requested review:** focused, read-only follow-up review of the six clarifications ME-1 to ME-6 incorporated in C9_GENERATION_SPEC_REVIEW.md revision 2.5 after your completed full review of revision 2.4. Verify: (ME-1) fixed-knot wording in analysis §5.4; (ME-2) H1 amount-zero as an assertion and the closed rejection-reason mapping; (ME-3) shared int32_guard history for D6/H6 pairs; (ME-4) separation of the human-reviewed structural-exclusion proof from executable fixed-key and per-candidate checks; (ME-5) the stated randrange/slot-redraw implementation for exclusions; and (ME-6) cumulative attempt caps per record/pair slot. Confirm that no seed, range, count, witness, gate or authorization boundary changed. Do not reopen M1 or the sensitivity knots.
+**Revision base:** df0aa7a039d5e42b4ef4c62a1454c90a920b9c7d (revision 2.5); review revision 2.6 at the branch head.  
+**Completed prior review:** GLM's independent follow-up review of revision 2.5 found no blockers or major concerns. It confirmed ME-1 to ME-6 and raised two non-blocking observations, OBS-1 and OBS-2, which are addressed in revision 2.6.  
+**Requested review:** focused, read-only verification of the two revision 2.6 clarifications in C9_GENERATION_SPEC_REVIEW.md: (OBS-1) the coin-array-slot 1,000-randrange-attempt counter is scoped to one whole-record or whole-pair candidate attempt and resets when that candidate restarts; (OBS-2) the whole-record rejection list is explicitly a summary, includes the H8 mandate and diagnostic cross-bank collision, maps through the closed item-5 vocabulary, and separates D6/H6 identity-permutation rejection as a pair-instance rejection. Confirm that no seed, range, count, witness, gate or authorization boundary changed. Do not reopen ME-1 to ME-6, M1 or the sensitivity knots.
 
 ## 1. Scope and limits
 
@@ -93,7 +94,7 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 - E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
 - E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-## 4. Focused independent checks for revision 2.5
+## 4. Focused independent checks for revision 2.6
 
 M1 and the extended sensitivity-knot set are fixed pre-outcome design choices in this review revision. Check that they are described consistently and implemented unambiguously; do not reopen the design decision or infer power/precision guarantees.
 
@@ -108,7 +109,7 @@ Also specifically attack the following revision 2.2 changes:
 - Ridge implementation hazard: verify the stated alpha_sklearn = n_train * alpha_spec scaling under the corresponding sum-loss versus mean-loss conventions, and the requirement for a future synthetic numerical-equivalence test. Do not implement or fit a model.
 - ME1–ME4: verify the deduplicated six-column basis description, K5 pooled-validation note, procedure-level reconciliation and per-stratum partition identity.
 
-Also verify these revision 2.5 corrections:
+Also verify these revision 2.6 corrections:
 
 - The C8 supersession pointer names the historical corrections record, states its 2026-11-01 date, supersedes only its C8/E3 status lines, and explicitly leaves that file unchanged.
 - For every sensitivity knot t, support sides are defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active); both body counts and distinct observed-value counts are reported.
