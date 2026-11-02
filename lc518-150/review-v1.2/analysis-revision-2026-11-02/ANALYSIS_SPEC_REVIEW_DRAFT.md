@@ -1,8 +1,8 @@
 # LC518 150-Body Study: Revised Analysis Specification
 
-**Revision:** Consolidated review revision 2.3, 2026-11-02  
+**Revision:** Consolidated review revision 2.4, 2026-11-02  
 **Status:** Review-only draft on a dedicated branch. Not frozen and not the design of record.
-**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. The C9 held-out-first direction is selected, but its detailed correction remains pending independent review. The four inherited v1.0 analysis/reporting protections are carried forward; the manifestation taxonomy is newly closed by a pre-run allowlist and a protocol-abort rule. The M1 minimum-support threshold and extended sensitivity-knot set remain proposals pending owner confirmation.  
+**Decision status:** B1–B3, M2–M3 and E2–E8 corrections are consolidated. The strict C8/E3 gate is recorded as owner-confirmed in chat on 2026-11-02. M1 is fixed as a same-exact-cell support floor: at least three distinct parent groups must each contribute within-parent C_D variation in the same exact (k_fail, k_unresolved) cell. The sensitivity knots {1,2,3,4,8,16,32,48} are fixed pre-outcome design conventions. The corrected full C9 held-out-first protocol is pinned in C9_GENERATION_SPEC_REVIEW.md and remains pending focused independent review and owner ratification. The four inherited v1.0 analysis/reporting protections are carried forward; the manifestation taxonomy is newly closed by a pre-run allowlist and a protocol-abort rule.  
 **Scope:** Analysis specification and pre-outcome support rules only. No study bank or candidate solver is created by this document.
 
 ## 1. Scientific scope and questions
@@ -237,16 +237,16 @@ Complete and report this audit before interpreting Delta_AB. The diagnostic bank
 2. Restrict same-k concentration-variation claims to k_fail >= 2. At k_fail = 0 report NO OBSERVED FAILURES rather than a concentration value; at k_fail = 1 C_D is mechanically 1.
 3. Report the C_D distribution within exact (k_fail, k_unresolved, Z) cells wherever support exists. Include body and distinct-parent-group counts. Mark sparse or unsupported cells; do not pool or merge cells after looking at outcomes.
 4. Report the number of parent groups contributing to each (k_fail, C_D) combination. Five versions from one parent count as one parent group for this support assessment, not five independent groups.
-5. For each parent group, report whether its five matched versions contain at least one exact (k_fail, k_unresolved) cell with k_fail >= 2 and at least two distinct C_D values. Report both this within-parent criterion and the less restrictive same-k variation count.
+5. For each exact (k_fail, k_unresolved) cell with k_fail >= 2, report the number of distinct parent groups that contribute within-parent C_D variation in that same cell. A parent group contributes to that cell only if at least two of its five matched versions fall in the same exact cell and have different C_D values. Also report the less restrictive same-k variation count separately; it does not by itself satisfy the exact-cell support rule.
 6. Disclose dependence from D6 reorder pairs. Its two records are separate rows in the frozen diagnostic bank but are not independent mathematical inputs.
 
-### 5.2 Proposed minimum within-parent support criterion (pending owner confirmation)
+### 5.2 Fixed minimum within-parent support criterion
 
-The current proposal is a minimum of **three distinct parent groups** meeting the within-parent criterion in §5.1 item 5. A qualifying parent group must contain, among its five versions, at least one pair of bodies with the same exact k_fail and the same exact k_unresolved, with k_fail >= 2, but different C_D values. Count distinct parent groups, not bodies or pairs.
+For a particular exact (k_fail, k_unresolved) cell with k_fail >= 2, concentration-specific support is present only when **at least three distinct parent groups contribute within-parent C_D variation in that same cell**. A parent group contributes only if at least two of its five matched versions fall in that exact cell and have different C_D values. Count distinct parent groups, not bodies or pairs. Contributions from different exact cells must not be pooled to reach the three-parent floor. Report the less restrictive same-k variation count alongside the exact-cell parent-group counts so the less restrictive form of variation remains visible without being substituted for exact-cell support.
 
-Both the numerical threshold of three and this exact matching rule are **pending owner confirmation**. They are not owner-approved and are not frozen. The rationale for proposing this floor is to prevent a concentration-specific interpretation from resting on variation supplied by only one or two parent groups. The number three is an operational support safeguard, not a statistically derived cutoff. It is **not** a power calculation, precision guarantee, effect-size threshold, confirmatory criterion or claim that three groups are sufficient for generalization.
+The three-parent floor is a predeclared operational support convention, not a power or precision claim. It is not a statistically derived cutoff, effect-size threshold, confirmatory criterion, or claim that three groups are sufficient for generalization.
 
-If the owner confirms this proposed threshold and fewer than three parent groups meet the criterion, still report the pre-registered model predictions and Delta_AB if E3 is otherwise estimable, but label the concentration-specific evidence **INSUFFICIENT_WITHIN_PARENT_SUPPORT**. Do not interpret the sign or magnitude of Delta_AB as evidence for or against a distinct concentration contribution. If the owner chooses another threshold or criterion, revise this section before any outcomes are observed. Until the owner confirms or replaces it, do not treat the three-group rule as an approved pre-registration gate.
+If no exact (k_fail, k_unresolved) cell reaches the three-parent floor, still report the predeclared model predictions and Delta_AB if E3 is otherwise estimable, but label concentration-specific interpretation **INSUFFICIENT_WITHIN_PARENT_SUPPORT**. This is a support limitation, not a null effect: do not interpret the sign or magnitude of Delta_AB as evidence for or against a distinct concentration contribution. A cell supported by fewer than three parent groups remains explicitly unsupported.
 
 ### 5.3 Fold-specific support and zero-variance audit
 
@@ -261,7 +261,7 @@ Run this audit for every outer training fold and every inner-CV training split, 
 
 A validation value outside the observed training support, or a value differing from a training constant that was mapped to zero, is reported as unsupported extrapolation/representation. It is not counted as successful adjustment. If there is no relevant within-baseline variation in C_D, do not interpret predictive improvement as evidence of an independent concentration contribution.
 
-### 5.4 Proposed secondary concentration sensitivity (pending owner confirmation)
+### 5.4 Fixed secondary concentration sensitivity
 
 The current proposal is a fixed secondary sensitivity basis with knots {1,2,3,4,8,16,32,48}:
 
@@ -271,7 +271,7 @@ B_{\mathrm{sens}}(k)=
 (k-8)_+,(k-16)_+,(k-32)_+,(k-48)_+,\mathbf{1}[k=0]\right).
 \]
 
-This basis has ten columns: the linear term, eight hinge terms and the zero-failure indicator. The primary knots 1, 2, 3 and 4 are retained. Additional knots 8, 16 and 32 are fixed doubling landmarks in the larger count range; 48 is three-quarters of the design maximum and leaves the final 48–64 segment. A knot at 64 would add no variation on the permitted range because (k-64)_+ is zero for every possible input. These are proposed fixed design conventions, not data-selected knots. The knot set is pending owner confirmation and is not frozen. It may be treated as a pre-registered sensitivity only after the owner confirms it before any outcome is observed.
+This basis has ten columns: the linear term, eight hinge terms and the zero-failure indicator. The primary knots 1, 2, 3 and 4 are retained. Additional knots 8, 16 and 32 are fixed doubling landmarks in the larger count range; 48 is three-quarters of the design maximum and leaves the final 48–64 segment. A knot at 64 would add no variation on the permitted range because (k-64)_+ is zero for every possible input. The complete knot set is fixed before any outcomes are observed and must not be altered in response to results. Its additional hinges at 8, 16, 32 and 48 primarily test whether those higher-count segments have support; they do not guarantee estimable high-count curvature. The sensitivity is mainly informative about low-count functional form unless the high-count hinges have adequate support.
 
 Fit alternative Model A_sens with this basis and alternative Model B_sens with the same basis plus C_D. All other predictors, outer/inner folds, training-only standardization, zero-variance rules, ridge objective, alpha grid, separate alpha selection, pooled inner scoring and outer scoring are identical to the primary A/B comparison. Report:
 
@@ -279,9 +279,9 @@ Fit alternative Model A_sens with this basis and alternative Model B_sens with t
 \Delta_{AB,\mathrm{sens}}=MSE_{A,\mathrm{sens}}-MSE_{B,\mathrm{sens}}.
 \]
 
-If the owner confirms this knot set before outcomes are observed, report this sensitivity separately; it does not replace primary Delta_AB and does not alter Model C or Delta_AC. It assesses sensitivity to the fixed count functional form. Do not select or modify knots after seeing any outcome.
+Report this sensitivity separately; it does not replace primary Delta_AB and does not alter Model C or Delta_AC. It assesses sensitivity to the fixed count functional form. Do not select or modify knots after seeing any outcome.
 
-The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. In every inner and outer training partition, also report the rank of the unstandardized sensitivity-basis matrix over the distinct observed k_fail values (maximum 10), the number of distinct observed k_fail values, whether k_fail = 0 is present, and the support on each side of every proposed knot, with the sides defined for each knot t as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active). Report both body counts and distinct observed k_fail-value counts on each side; the strict > t side is required for a positive hinge. Identify missing knots/segments and rank deficiency explicitly. This is a support diagnostic, not a requirement that the ridge fit be mathematically solvable: positive-alpha ridge remains uniquely defined, but unsupported basis directions do not provide empirical evidence about the corresponding curvature. If the owner confirms this proposal, the sensitivity is pre-registered and must not be dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
+The additional hinges at 8, 16, 32 and 48 may have zero variance in many inner or outer training partitions, especially if few bodies have large k_fail. Report each fold's zero-variance columns and any validation values unsupported by the zero-variance mapping. In every inner and outer training partition, also report the rank of the unstandardized sensitivity-basis matrix over the distinct observed k_fail values (maximum 10), the number of distinct observed k_fail values, whether k_fail = 0 is present, and the support on each side of every proposed knot, with the sides defined for each knot t as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active). Report both body counts and distinct observed k_fail-value counts on each side; the strict > t side is required for a positive hinge. Mark knot t as STRADDLED only when the training partition contains at least one distinct observed k_fail value on each side; otherwise mark it NOT_STRADDLED. Identify missing knots/segments and rank deficiency explicitly. This is a support diagnostic, not a requirement that the ridge fit be mathematically solvable: positive-alpha ridge remains uniquely defined, but unsupported basis directions do not provide empirical evidence about the corresponding curvature. The sensitivity is pre-registered and must not be dropped or retuned after inspection. If its additional columns are unsupported in most folds, say so explicitly; do not describe the sensitivity as demonstrating robustness to high-count curvature.
 
 ## 6. Outcomes and oracle use
 
@@ -301,7 +301,7 @@ This strict E3 rule governs the secondary predictive comparison. It does not sil
 - The primary matched within-parent correctness contrasts and the secondary predictive comparisons answer different questions and must be reported separately.
 - The eight diagnostic strata are input categories, not verified mechanisms. C_D is not a defect-localization measure. The C8/E3 unresolved-outcome rule is owner-confirmed as recorded in §6; this provenance record does not itself freeze the full analysis specification or authorize execution.
 - Sealed mutation identities, mutation details and version-role labels are excluded from predictive features. Their use would leak construction ground truth.
-- The selected C9 design direction is held-out-first generation with diagnostic-side whole-candidate collision rejection. The detailed C9 correction remains a proposal pending independent review and is not accepted or frozen. Any accepted diagnostic bank would be conditional on the frozen held-out bank under that policy; the two banks must not be described as statistically independent samples. No bank has been generated under this review draft.
+- The selected C9 design direction is held-out-first generation with diagnostic-side whole-candidate collision rejection. Its complete, renumbered procedure is pinned in C9_GENERATION_SPEC_REVIEW.md; it remains pending focused independent GLM review and owner ratification, and is not yet frozen or incorporated into the historical BANK_DESIGN.md. Any diagnostic bank generated under that policy would be conditional on the frozen held-out bank; the accepted banks must not be described as statistically independent samples. No bank has been generated under this review draft.
 - Results are limited to the declared construction process, LC518 contract, execution protocol and fixed held-out distribution. They do not establish a universal law of solver correctness or transport to natural/independently generated solvers or other tasks.
 
 ---
@@ -347,7 +347,7 @@ The accepted C4/C5/C6/C7 corrections are represented in the revised definitions 
 
 The feature reconciliation above is complemented by the following procedure-level changes. These are explicit proposed revisions, not silent edits to the frozen v1.0 source:
 
-| Frozen v1.0 provision | Revision 2.3 disposition |
+| Frozen v1.0 provision | Revision 2.4 disposition |
 |---|---|
 | Linear k_fail predictor in the E3 baseline | Replaced for E3 by the six-column primary basis with knots 1, 2, 3 and 4, subject to the proposed specification's ratification. |
 | Two E3 arms (baseline and enriched profile) | Replaced by Models A, B and C, with separate A-versus-B and A-versus-C exploratory comparisons. B+profile remains out of scope. |
@@ -355,7 +355,7 @@ The feature reconciliation above is complemented by the following procedure-leve
 | NaN for undefined deviation summaries | Replaced in the proposed E3 profile by a zero sentinel plus the corresponding _defined indicator. |
 | No explicit alpha tie rule | Larger alpha wins an exact tie. |
 
-Upon formal ratification only, revision 2.3 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
+Upon formal ratification only, revision 2.4 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for the secondary E3 analysis. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. Until ratification, the historical v1.0 documents remain the design-of-record sources; this review draft does not currently supersede them.
 
 ## 9. Freeze and authorization boundary
 

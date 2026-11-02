@@ -1,9 +1,9 @@
 # Proposed Work-Order Amendments: LC518 150-Body Study
 
-**Revision:** Consolidated review revision 2.3, 2026-11-02  
+**Revision:** Consolidated review revision 2.4, 2026-11-02  
 **Status:** Review-only addendum proposal. It does not modify or replace historical GLM_WORK_ORDER.md v1.0. This copy is published on a dedicated review-only branch for independent reconciliation.
 
-This note identifies the amendments needed to reconcile the historical work order and frozen v1.0 analysis inventory with the revised research direction and ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3. It does not itself authorize study implementation.
+This note identifies the amendments needed to reconcile the historical work order and frozen v1.0 analysis inventory with the revised research direction and ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.4. It does not itself authorize study implementation.
 
 ## 1. Authorization precedence and repository authorship
 
@@ -17,7 +17,7 @@ Add a dated owner-authorized addendum stating:
 
 ## 2. Replace Work Order §10 with the revised analysis specification
 
-Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3 as the proposed replacement or referenced analysis specification. The revised §10 must include:
+Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.4 as the proposed replacement or referenced analysis specification. The revised §10 must include:
 
 - three arms A/B/C and the two separate comparisons A-versus-B and A-versus-C;
 - the eight-stratum definition of C_D, the NO OBSERVED FAILURES convention, and the general support bound;
@@ -29,7 +29,7 @@ Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3 as the proposed replacement or re
 - unseen-family all-zero encoding and the training-mean limit as alpha tends to infinity;
 - the public numeric G01–G30 ordering, exact five inner buckets, the K5 sparse-support consequences, and the pooled 145-body inner alpha-selection rule;
 - 30 outer leave-one-parent-group-out folds, pooled outer body-level MSE, equal parent-group summary and 30 paired group differences;
-- global, conditional, parent-group, outer-fold and inner-fold concentration/support audits, including the proposed minimum of three distinct parent groups with within-parent variation at identical (k_fail, k_unresolved) and k_fail >= 2; this numerical threshold and matching criterion remain pending owner confirmation;
+- global, conditional, parent-group, outer-fold and inner-fold concentration/support audits, including the fixed rule that an exact (k_fail, k_unresolved) cell with k_fail >= 2 is supported only when at least three distinct parent groups each contribute within-parent C_D variation in that same cell; report the less restrictive same-k variation count separately;
 - the fixed secondary A_sens-versus-B_sens basis with knots 1, 2, 3, 4, 8, 16, 32 and 48, and fold-specific reporting of unsupported or zero-variance high-k hinges;
 - the strict E3 all-12,000-resolved rule; and
 - the distinction between raw oracle answer values (excluded predictors) and registered derived diagnostic features (permitted in Model C);
@@ -37,11 +37,11 @@ Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3 as the proposed replacement or re
 
 The B-versus-B+profile comparison is not part of this design. Do not call that hypothetical comparison B-versus-D.
 
-**Conditional precedence (not effective before ratification):** Upon formal ratification of this addendum, revision 2.3 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for secondary E3 analysis only. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. The proposed revised §10 also replaces historical GLM_WORK_ORDER.md v1.0 §10 only for the secondary E3 plan; all other historical work-order provisions remain unchanged unless separately amended. Before ratification, the frozen v1.0 sources remain authoritative and revision 2.3 is review-only.
+**Conditional precedence (not effective before ratification):** Upon formal ratification of this addendum, revision 2.4 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for secondary E3 analysis only. It does not supersede §3 (E1), §5 (E2), or §§7–10, which remain in force. The revised §10 also replaces historical GLM_WORK_ORDER.md v1.0 §10 only for the secondary E3 plan; all other historical work-order provisions remain unchanged unless separately amended. Before ratification, the frozen v1.0 sources remain authoritative and revision 2.4 is review-only.
 
 ## 3. Reconciliation of the frozen feature inventory
 
-The following is the required frozen-to-revised mapping. It records the dispositions in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3 and prevents silent dropping or redefinition.
+The following is the required frozen-to-revised mapping. It records the dispositions in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.4 and prevents silent dropping or redefinition.
 
 | Frozen v1.0 item | Revision 2 disposition | Required treatment |
 |---|---|---|
@@ -85,14 +85,14 @@ The C8 status statements in `lc518-150/review-v1.2/CORRECTIONS_RECORD_v1.2.2-dra
 
 ## 6. Held-out-first disclosure
 
-State that held-out-first generation with diagnostic-side whole-candidate collision rejection is the selected C9 design direction, but the detailed C9 correction remains pending independent review and is not accepted or frozen. Any accepted diagnostic bank is conditional on the frozen held-out bank. The two accepted banks are not statistically independent samples. No bank has been generated by this review package. Realized rejection counts must be reported for all D1–D8 and H1–H8 strata, including zeros, with sidecar reconciliation and a final canonical-disjointness check.
+State that held-out-first generation with diagnostic-side whole-candidate collision rejection is the selected C9 design direction. The complete corrected, renumbered procedure is pinned in C9_GENERATION_SPEC_REVIEW.md and remains pending focused independent GLM review and owner ratification; this review package does not alter the historical BANK_DESIGN.md. Any accepted diagnostic bank is conditional on the frozen held-out bank. The two accepted banks are not statistically independent samples. No bank has been generated by this review package. Realized rejection counts must be reported for all D1–D8 and H1–H8 strata, including zeros, with sidecar reconciliation and a final canonical-disjointness check.
 
 ## 7. Fold, support and scoring clarifications
 
-- Sort the published IDs numerically as G01–G30 and use the exact five buckets in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.3. The IDs are public, not opaque.
+- Sort the published IDs numerically as G01–G30 and use the exact five buckets in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.4. The IDs are public, not opaque.
 - K5 comprises only G29 and G30. In exactly two of the 150 inner split instances, K5 is absent from the inner-training partition. In each, the other K5 parent is in the validation bucket, so its five validation bodies are scored with all-zero family indicators because K5 is unseen in inner training. Include those five bodies and the one affected parent group in the training-unseen-family validation counts required by analysis specification §5.3 item 5. In outer refits holding G29 or G30, only one K5 parent group remains in training. Do not claim a generalizable K5 family effect. Record the sparse-group and fixed-penalty shrinkage limitations.
 - Inner alpha selection pools all 145 inner-validation body predictions across the 29 outer-training groups and computes one body-level MSE. Because every parent contributes five bodies, this equals the unweighted mean of the 29 group MSEs. Do not average the five fold-level MSEs.
-- The proposed three-parent minimum support rule is an operational support floor, not a power or precision guarantee, and is pending owner confirmation. A parent qualifies only if its five versions contain at least two distinct C_D values in an exact (k_fail, k_unresolved) cell with k_fail >= 2. If the owner confirms this rule and fewer than three parent groups qualify, report Delta_AB descriptively and label concentration-specific interpretation INSUFFICIENT_WITHIN_PARENT_SUPPORT. If the owner chooses another threshold or matching criterion, update this rule before outcomes are observed.
+- The fixed three-parent exact-cell support rule is an operational floor, not a power or precision guarantee. A particular exact (k_fail, k_unresolved) cell with k_fail >= 2 is supported only when at least three distinct parent groups each contribute within-parent C_D variation in that same cell; a parent contributes only when at least two of its five versions fall in that cell with different C_D values. Do not pool contributions across different cells. Report the less restrictive same-k variation count separately. If no exact cell reaches the floor, report Delta_AB descriptively if E3 is estimable and label concentration-specific interpretation INSUFFICIENT_WITHIN_PARENT_SUPPORT, never a null effect.
 - The two outer deltas share Model A and are correlated comparisons, not independent replications.
 
 ## 8. Interpretation language
@@ -102,7 +102,7 @@ State that held-out-first generation with diagnostic-side whole-candidate collis
 - Zero-variance numeric columns map to zero in both training and validation rows and remain reported. Reserved null columns are excluded, not zero-filled.
 - A-versus-B compares separately tuned regularized procedures. It is not an unrestricted conditional effect of C_D, and "conservative" must not be used without a separate derivation.
 - A-versus-C compares the full diagnostic profile with A. It does not test the incremental contribution of the profile after C_D.
-- The extended-knot sensitivity with knots {1,2,3,4,8,16,32,48} remains a proposal pending owner confirmation. If confirmed before outcomes are observed, it is a fixed pre-outcome sensitivity. In every inner and outer training fold, report the unstandardized basis-matrix rank over distinct observed k_fail values, the number of distinct values, presence/absence of k_fail = 0, and support on both sides of each knot, defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active) for each knot t, alongside zero-variance columns and unsupported validation values. Report both body counts and distinct observed k_fail-value counts on the two sides; the strict > t side is required for a positive hinge. Rank deficiency limits what the fold supports but does not make positive-alpha ridge undefined. This must not prompt post-hoc knot changes.
+- The fixed extended-knot sensitivity basis is {1,2,3,4,8,16,32,48}. Treat it as a pre-outcome sensitivity and do not change it after outcomes are seen. In every inner and outer training fold, report the unstandardized basis-matrix rank over distinct observed k_fail values, the number of distinct values, presence/absence of k_fail = 0, and support on both sides of each knot, defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active) for each knot t, alongside zero-variance columns and unsupported validation values. Report both body counts and distinct observed k_fail-value counts on the two sides; the strict > t side is required for a positive hinge. Mark knot t as STRADDLED only when each side contains at least one distinct observed k_fail value; otherwise mark it NOT_STRADDLED. Rank deficiency limits what the fold supports but does not make positive-alpha ridge undefined. This sensitivity mainly evaluates low-count form; do not describe it as demonstrating robustness to high-count curvature when the high-count hinges lack support.
 - Model C count columns have exact collinearities with k_fail and k_unresolved. Ridge predictions remain uniquely defined under the specified penalty, but individual coefficients are not independently interpretable. Report predictions and deltas, not coefficient narratives.
 - The 150 body predictions are clustered within 30 parent groups. Do not treat them as 150 independent observations.
 

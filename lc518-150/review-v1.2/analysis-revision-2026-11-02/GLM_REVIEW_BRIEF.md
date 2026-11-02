@@ -1,9 +1,9 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2.3
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.4
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
-**Revision base:** 9f1a10b3466656de55618fe42c82b93f5243ed0f (revision 2.2); review revision 2.3 at the branch head.  
-**Requested review:** independent mathematical and specification review of revision 2.3 after GLM's revision 2.2 review. Verify the C8 supersession pointer to the intentionally unchanged 2026-11-01 corrections record; the strict hinge-side convention; the completed precedence list; the K5 unseen-family audit cross-reference; and the provenance distinction between the four inherited v1.0 protections and the new closed manifestation taxonomy. Continue to assess M1 and the extended sensitivity knots as proposals; do not treat either as owner-approved.
+**Revision base:** 0a09537abedbff24caf724c95c39d7a9cfb06285 (revision 2.3); review revision 2.4 at the branch head.  
+**Requested review:** one focused, read-only independent review of the corrected C9 procedure in C9_GENERATION_SPEC_REVIEW.md and a consistency check of M1, the sensitivity basis and the primary mathematical specification. Check C9 numbering and every internal reference, held-out/diagnostic information boundaries, fixed-key preflight, rejection accounting, attempt limits, atomic acceptance and disclosed conditional dependence. M1 and the sensitivity knots are fixed pre-outcome choices; do not reopen them as owner decisions. Identify only genuine mathematical, procedural or specification blockers.
 
 ## 1. Scope and limits
 
@@ -18,6 +18,7 @@ Under the owner's instruction, GPT is the only agent authorized to publish or mo
 Review these files on the target branch:
 
 - lc518-150/review-v1.2/analysis-revision-2026-11-02/ANALYSIS_SPEC_REVIEW_DRAFT.md
+- lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md
 - lc518-150/review-v1.2/analysis-revision-2026-11-02/WORK_ORDER_AMENDMENTS_REVIEW.md
 - lc518-150/review-v1.2/analysis-revision-2026-11-02/MECHANICAL_DRY_RUN_REPORT.md
 - lc518-150/review-v1.2/analysis-revision-2026-11-02/mechanical_dry_run.py
@@ -61,9 +62,9 @@ Revision 2 restores d_timeout_s as a reserved per-stratum column. It is null and
 
 ### M1 — concentration support
 
-Revision 2.1 proposes, but does not adopt, a fixed operational minimum: at least three distinct parent groups must each contain at least one exact (k_fail, k_unresolved) cell among their five versions with k_fail >= 2 and at least two distinct C_D values. This is stricter than merely observing a same-k difference somewhere in a group. The numerical threshold and matching criterion are pending owner confirmation; do not describe them as pre-registered or owner-approved.
+**Fixed rule to verify, not reopen:** for a particular exact (k_fail, k_unresolved) cell with k_fail >= 2, support requires at least three distinct parent groups, each contributing within-parent C_D variation in that same cell. A parent contributes only if at least two of its five matched versions fall in that cell and have different C_D values. Contributions across different cells cannot be pooled. The less restrictive same-k variation count remains reported separately. If no cell meets the floor, concentration-specific interpretation is INSUFFICIENT_WITHIN_PARENT_SUPPORT, not a null effect. The threshold is an operational support convention, not a power or precision claim.
 
-Independently assess whether this proposed rule is coherent with the stated estimand, whether matching on k_unresolved is appropriate, whether three groups is too weak or too strict, and whether the proposed below-threshold interpretation is correctly limited to INSUFFICIENT_WITHIN_PARENT_SUPPORT rather than a null-effect claim. Suggest any defect or unintended consequence, but do not use outcome data or invent a power claim.
+Check that this same-cell rule is stated consistently across the analysis specification, amendments and README. Identify any mathematical inconsistency or ambiguity, but do not propose a different threshold or use outcome data.
 
 ### M2 — public IDs, fixed buckets and K5
 
@@ -92,14 +93,14 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 - E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
 - E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-## 4. Additional independent checks for revision 2.3
+## 4. Focused independent checks for revision 2.4
 
-Do not treat the M1 threshold or extended sensitivity-knot set as owner-approved. Report whether each is mathematically coherent and what trade-offs it creates. The owner retains the decision on whether to approve, revise or reject these two proposals.
+M1 and the extended sensitivity-knot set are fixed pre-outcome design choices in this review revision. Check that they are described consistently and implemented unambiguously; do not reopen the design decision or infer power/precision guarantees.
 
 Also specifically attack the following revision 2.2 changes:
 
 - C8 provenance: verify that the wording says only that the strict all-12,000-resolved rule was owner-confirmed in chat on 2026-11-02. It must not imply that the whole specification was frozen or that execution was authorized.
-- C9 status: verify the distinction between held-out-first as the selected design direction and the detailed C9 correction remaining pending independent review, not accepted or frozen.
+- C9: verify the complete corrected text in C9_GENERATION_SPEC_REVIEW.md. Confirm that headings are uniquely numbered (3, 3a, 3b, 3c, 3d), every cross-reference resolves to the intended procedure, and the text preserves held-out-first/no-held-out-outcome-leakage. Confirm that the text remains pending ratification and does not modify historical BANK_DESIGN.md.
 - MC2 carry-over: verify the one-pass stop, all-identical-Q ZERO_VARIANCE rule, coverage/unresolved reporting in every table, and preservation of successful executions. Check that the conditional precedence clause does not supersede E1 or unaffected v1.0 provisions and has no present effect before formal ratification.
 - MC3 taxonomy: verify that the pre-run other allowlist is closed and may be empty, that unmatched FAIL manifestations cause protocol abort, bool/non-exact-int returns are invalid-return-type, and timeout/resource remains outside other while its reserved column is null.
 - ME2 K5: verify that the two inner splits with no K5 in training score the five validation bodies from the other K5 parent under the all-zero unseen-family representation.
@@ -107,7 +108,7 @@ Also specifically attack the following revision 2.2 changes:
 - Ridge implementation hazard: verify the stated alpha_sklearn = n_train * alpha_spec scaling under the corresponding sum-loss versus mean-loss conventions, and the requirement for a future synthetic numerical-equivalence test. Do not implement or fit a model.
 - ME1–ME4: verify the deduplicated six-column basis description, K5 pooled-validation note, procedure-level reconciliation and per-stratum partition identity.
 
-Also verify these revision 2.3 corrections:
+Also verify these revision 2.4 corrections:
 
 - The C8 supersession pointer names the historical corrections record, states its 2026-11-01 date, supersedes only its C8/E3 status lines, and explicitly leaves that file unchanged.
 - For every sensitivity knot t, support sides are defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active); both body counts and distinct observed-value counts are reported.
@@ -116,7 +117,7 @@ Also verify these revision 2.3 corrections:
 - The header attributes only the four protections to v1.0 inheritance; the manifestation-taxonomy closure is identified as a new strengthening.
 
 1. Re-derive the C_D bound ceil(k/8)/k <= C_D <= 1 for positive k, and check the k=1,2,3 cases.
-2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the candidate sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64. Assess its usefulness and limitations as a proposal; it is pending owner confirmation, not a frozen choice.
+2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the fixed sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64. Check fold-level support reporting and the stated low-count emphasis; do not claim high-count curvature is established where hinges are unsupported.
 3. Check the mean-squared-loss plus ridge objective, unpenalized intercept, training-only population standardization, zero-variance mapping and distinction between a zero-variance column and a reserved null column.
 4. Check that all three predictive arms use the same target and group folds, that alpha is separately tuned, and that the 145-body pooled inner criterion is explicit.
 5. Check that the 30 outer body-level prediction scores are summarized at the 30-parent level, that Delta_AB and Delta_AC share Model A and are correlated, and that neither is a causal contrast.
