@@ -1,9 +1,9 @@
 # Proposed Work-Order Amendments: LC518 150-Body Study
 
-**Revision:** Consolidated review revision 2.1, 2026-11-02  
+**Revision:** Consolidated review revision 2.2, 2026-11-02  
 **Status:** Review-only addendum proposal. It does not modify or replace historical GLM_WORK_ORDER.md v1.0. This copy is published on a dedicated review-only branch for independent reconciliation.
 
-This note identifies the amendments needed to reconcile the historical work order and frozen v1.0 analysis inventory with the revised research direction and ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.1. It does not itself authorize study implementation.
+This note identifies the amendments needed to reconcile the historical work order and frozen v1.0 analysis inventory with the revised research direction and ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.2. It does not itself authorize study implementation.
 
 ## 1. Authorization precedence and repository authorship
 
@@ -17,7 +17,7 @@ Add a dated owner-authorized addendum stating:
 
 ## 2. Replace Work Order §10 with the revised analysis specification
 
-Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.1 as the proposed replacement or referenced analysis specification. The revised §10 must include:
+Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.2 as the proposed replacement or referenced analysis specification. The revised §10 must include:
 
 - three arms A/B/C and the two separate comparisons A-versus-B and A-versus-C;
 - the eight-stratum definition of C_D, the NO OBSERVED FAILURES convention, and the general support bound;
@@ -32,13 +32,16 @@ Use ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.1 as the proposed replacement or re
 - global, conditional, parent-group, outer-fold and inner-fold concentration/support audits, including the proposed minimum of three distinct parent groups with within-parent variation at identical (k_fail, k_unresolved) and k_fail >= 2; this numerical threshold and matching criterion remain pending owner confirmation;
 - the fixed secondary A_sens-versus-B_sens basis with knots 1, 2, 3, 4, 8, 16, 32 and 48, and fold-specific reporting of unsupported or zero-variance high-k hinges;
 - the strict E3 all-12,000-resolved rule; and
-- the distinction between raw oracle answer values (excluded predictors) and registered derived diagnostic features (permitted in Model C).
+- the distinction between raw oracle answer values (excluded predictors) and registered derived diagnostic features (permitted in Model C);
+- the four carried-forward analysis/reporting protections: stop after one frozen pass, report ZERO_VARIANCE rather than a prediction result if every Q is identical, report coverage and unresolved counts alongside failures in every table, and preserve successful executions as well as failures.
 
 The B-versus-B+profile comparison is not part of this design. Do not call that hypothetical comparison B-versus-D.
 
+**Conditional precedence (not effective before ratification):** Upon formal ratification of this addendum, revision 2.2 supersedes frozen ANALYSIS_SPEC.md v1.0 §§4 and 6 for secondary E3 analysis only. It does not supersede §3 (E1) or §§7–9, which remain in force. The proposed revised §10 also replaces historical GLM_WORK_ORDER.md v1.0 §10 only for the secondary E3 plan; all other historical work-order provisions remain unchanged unless separately amended. Before ratification, the frozen v1.0 sources remain authoritative and revision 2.2 is review-only.
+
 ## 3. Reconciliation of the frozen feature inventory
 
-The following is the required frozen-to-revised mapping. It records the dispositions in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.1 and prevents silent dropping or redefinition.
+The following is the required frozen-to-revised mapping. It records the dispositions in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.2 and prevents silent dropping or redefinition.
 
 | Frozen v1.0 item | Revision 2 disposition | Required treatment |
 |---|---|---|
@@ -51,7 +54,7 @@ The following is the required frozen-to-revised mapping. It records the disposit
 | d_meandev_s_defined | Restored | Model C predictor indicating that a wrong exact-int output exists in the stratum. |
 | d_maxdev_s | Retained with C4 convention | Zero when undefined, accompanied by d_maxdev_s_defined. |
 | d_maxdev_s_defined | Restored | Model C predictor indicating that a wrong exact-int output exists in the stratum. |
-| d_other_s | Added under accepted C5 | Other explicitly defined FAIL manifestations, excluding timeout/resource breach. |
+| d_other_s | Added under accepted C5 | Counts only FAIL manifestations from a closed, explicitly named pre-run other-manifestation allowlist; the allowlist may be empty and excludes timeout/resource breach. No unmatched manifestation is implicitly assigned to other. |
 | d_timeout_s | Restored as reserved | Null and excluded from the matrix until a separately authorized protocol defines runtime/memory limits and timeout/resource classification, with the feature list frozen before candidate runs. |
 | d_order_pairs_resolved | Restored under accepted C6 | D6 pair count; both orderings resolved PASS/FAIL, any manifestation. |
 | d_order_pairs_comparable | Restored under accepted C6 | D6 pair count with both outcomes resolved and both returned values exact-int; denominator for descriptive rate. |
@@ -62,7 +65,7 @@ The following is the required frozen-to-revised mapping. It records the disposit
 | coverage_diag | Restored as report-only | Resolved diagnostic records / 64 = 1 - k_unresolved/64; exclude from predictors. |
 | Reserved timeout/resource per-stratum count obligation | Restored explicitly as d_timeout_s | Null now; never zero-filled while reserved. |
 
-For a null reserved column, exclusion from the current design matrix is mandatory; null must not be converted to zero. A zero-variance numeric column that is actually present is different: after training-only preprocessing it maps to zero in both training and validation rows and remains in the declared feature schema and support audit.
+For a null reserved column, exclusion from the current design matrix is mandatory; null must not be converted to zero. A zero-variance numeric column that is actually present is different: after training-only preprocessing it maps to zero in both training and validation rows and remains in the declared feature schema and support audit. While d_timeout_s is reserved null, each stratum's outcome partition must satisfy d_pass_s + d_wrong_answer_s + d_invalid_return_s + d_exception_s + d_other_s + d_unresolved_s = 8. If an authorized protocol later populates d_timeout_s, include it in this partition identity.
 
 The accepted C4, C5, C6 and C7 corrections are represented. The D6 order-pair rate is descriptive only and is null when its denominator is zero; it is never imputed as zero. coverage_diag is reported but excluded from every predictive design matrix because it duplicates k_unresolved affinely.
 
@@ -70,22 +73,22 @@ The accepted C4, C5, C6 and C7 corrections are represented. The D6 order-pair ra
 
 No oracle prohibition is being replaced. Preserve the v1.0 distinction: oracle implementations may be used to establish expected outputs; candidate solvers remain outside oracle-only checks; raw expected-answer values and raw oracle outputs are not predictive columns. The registered derived outcomes and deviation summaries may be used exactly as predeclared.
 
-The typed manifestation record remains authoritative. Current registered manifestations include wrong answer, invalid return type, exception, and other explicitly defined status. Timeout/resource breach cannot be classified until a separate execution protocol fixes budgets and rules. The reserved d_timeout_s column remains null and outside the matrix until that gate is satisfied. All definite FAIL manifestations must contribute to k_fail and the corresponding stratum f_j.
+The typed manifestation record remains authoritative. Before any run, freeze a closed list of typed failure manifestations: wrong answer, invalid return type, exception, and an explicitly named other-manifestation allowlist that may be empty. The label other is not a catch-all. Each allowed other status must be named in the pre-run feature freeze, and any definite FAIL that does not match one of the registered categories is a protocol error requiring an abort; it must not be silently reclassified, dropped or categorized after outcomes are observed. Timeout/resource breach is excluded from other and cannot be classified until a separate execution protocol fixes budgets and rules. The reserved d_timeout_s column remains null and outside the matrix until that gate is satisfied. All definite FAIL manifestations must contribute to k_fail and the corresponding stratum f_j.
 
-A wrong numerical answer eligible for deviation summaries must have exact Python type int and differ from the expected value. bool does not qualify. Its absolute deviation is at least 1, making the accepted zero sentinel for undefined mean/max deviation unambiguous when accompanied by the defined indicators.
+Every return whose exact Python type is not int, including bool, is classified as invalid-return-type, not wrong-answer. A wrong numerical answer eligible for deviation summaries must have exact Python type int and differ from the expected value. Its absolute deviation is at least 1, making the accepted zero sentinel for undefined mean/max deviation unambiguous when accompanied by the defined indicators.
 
 ## 5. Unresolved held-out outcomes
 
-Record the strict C8/E3 rule: E3 is estimable only if every body has a resolved outcome on every held-out record. If any of the 12,000 body-by-held-out-record outcomes is unresolved, E3 is NOT_ESTIMABLE, with coverage and worst/best correctness bounds reported descriptively. Do not fit on a resolved-only subset. Preserve the primary matched analysis's separate unresolved-outcome rule.
+Record the strict C8/E3 rule, confirmed by the owner in chat on 2026-11-02: E3 is estimable only if every body has a resolved outcome on every held-out record. If any of the 12,000 body-by-held-out-record outcomes is unresolved, E3 is NOT_ESTIMABLE, with coverage and worst/best correctness bounds reported descriptively. Do not fit on a resolved-only subset. Preserve the primary matched analysis's separate unresolved-outcome rule.
 
 ## 6. Held-out-first disclosure
 
-State that the held-out-first collision policy is the selected design direction, subject to review/freeze of the complete protocol. The accepted diagnostic bank is conditional on the frozen held-out bank. The two accepted banks are not statistically independent samples. Realized rejection counts must be reported for all D1–D8 and H1–H8 strata, including zeros, with sidecar reconciliation and a final canonical-disjointness check.
+State that held-out-first generation with diagnostic-side whole-candidate collision rejection is the selected C9 design direction, but the detailed C9 correction remains pending independent review and is not accepted or frozen. Any accepted diagnostic bank is conditional on the frozen held-out bank. The two accepted banks are not statistically independent samples. No bank has been generated by this review package. Realized rejection counts must be reported for all D1–D8 and H1–H8 strata, including zeros, with sidecar reconciliation and a final canonical-disjointness check.
 
 ## 7. Fold, support and scoring clarifications
 
-- Sort the published IDs numerically as G01–G30 and use the exact five buckets in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.1. The IDs are public, not opaque.
-- K5 comprises only G29 and G30. In exactly two of the 150 inner split instances, K5 is absent from the inner-training partition; in outer refits holding G29 or G30, only one K5 parent group remains in training. Do not claim a generalizable K5 family effect. Record the sparse-group and fixed-penalty shrinkage limitations.
+- Sort the published IDs numerically as G01–G30 and use the exact five buckets in ANALYSIS_SPEC_REVIEW_DRAFT.md revision 2.2. The IDs are public, not opaque.
+- K5 comprises only G29 and G30. In exactly two of the 150 inner split instances, K5 is absent from the inner-training partition. In each, the other K5 parent is in the validation bucket, so its five validation bodies are scored with the K5 indicator mapped to zero because the indicator has zero variance in inner training. In outer refits holding G29 or G30, only one K5 parent group remains in training. Do not claim a generalizable K5 family effect. Record the sparse-group and fixed-penalty shrinkage limitations.
 - Inner alpha selection pools all 145 inner-validation body predictions across the 29 outer-training groups and computes one body-level MSE. Because every parent contributes five bodies, this equals the unweighted mean of the 29 group MSEs. Do not average the five fold-level MSEs.
 - The proposed three-parent minimum support rule is an operational support floor, not a power or precision guarantee, and is pending owner confirmation. A parent qualifies only if its five versions contain at least two distinct C_D values in an exact (k_fail, k_unresolved) cell with k_fail >= 2. If the owner confirms this rule and fewer than three parent groups qualify, report Delta_AB descriptively and label concentration-specific interpretation INSUFFICIENT_WITHIN_PARENT_SUPPORT. If the owner chooses another threshold or matching criterion, update this rule before outcomes are observed.
 - The two outer deltas share Model A and are correlated comparisons, not independent replications.
@@ -97,7 +100,7 @@ State that the held-out-first collision policy is the selected design direction,
 - Zero-variance numeric columns map to zero in both training and validation rows and remain reported. Reserved null columns are excluded, not zero-filled.
 - A-versus-B compares separately tuned regularized procedures. It is not an unrestricted conditional effect of C_D, and "conservative" must not be used without a separate derivation.
 - A-versus-C compares the full diagnostic profile with A. It does not test the incremental contribution of the profile after C_D.
-- The extended-knot sensitivity with knots {1,2,3,4,8,16,32,48} remains a proposal pending owner confirmation. If confirmed before outcomes are observed, it is a fixed pre-outcome sensitivity. Its additional high-k hinges may have zero variance in many folds; this must be reported and must not prompt post-hoc knot changes.
+- The extended-knot sensitivity with knots {1,2,3,4,8,16,32,48} remains a proposal pending owner confirmation. If confirmed before outcomes are observed, it is a fixed pre-outcome sensitivity. In every inner and outer training fold, report the unstandardized basis-matrix rank over distinct observed k_fail values, the number of distinct values, presence/absence of k_fail = 0, and support on both sides of each knot, alongside zero-variance columns and unsupported validation values. Rank deficiency limits what the fold supports but does not make positive-alpha ridge undefined. This must not prompt post-hoc knot changes.
 - Model C count columns have exact collinearities with k_fail and k_unresolved. Ridge predictions remain uniquely defined under the specified penalty, but individual coefficients are not independently interpretable. Report predictions and deltas, not coefficient narratives.
 - The 150 body predictions are clustered within 30 parent groups. Do not treat them as 150 independent observations.
 
@@ -123,11 +126,21 @@ The mechanical dry-run report has 13 human-readable check rows, while the machin
 
 This is a presentation mapping only. It does not change the test script or turn artificial-fixture results into evidence about the actual study generator.
 
-## 10. Repository divergence record
+## 10. Future ridge implementation equivalence check
+
+No predictive fitting is authorized by this review package. Before any separately authorized real fit, the implementation must nevertheless pass a numerical equivalence check on fixed synthetic X/y data.
+
+The specified ridge objective uses mean squared loss plus the stated penalty. A library implementation whose objective uses an unnormalized sum of squared errors requires rescaling its penalty to preserve the same minimizer. For scikit-learn's Ridge convention, the corresponding value is:
+
+    alpha_sklearn = n_train * alpha_spec
+
+where n_train is the number of rows in that specific training partition. An unrescaled port would change effective regularization when fold sizes differ. Add an artificial-data test comparing the implemented coefficients and predictions against a direct solution of the specified mean-loss objective for each relevant training size and alpha. Also test separate per-arm alpha selection and the larger-alpha tie rule. This is an implementation validation requirement for a future analysis phase, not permission to implement or fit a model now.
+
+## 11. Repository divergence record
 
 The prior GLM review brief stated that master had no LC518 subtree. That statement was incorrect. At master HEAD b01b160, the file lc518-150/review-v1.2/c9-dryrun/REPORT_C9_DRYRUN.md exists with blob SHA 3ff9bf170bae0d28f3a74f30bc172ef6e996df32. The review-branch copy of that path has blob SHA e7228c89e4b9fd7f7aa4ac9fa11e140fdd5b9711 and includes a process note about the earlier accidental master write. The master copy is intentionally left untouched in this revision; no revert or deletion is performed.
 
-## 11. Remaining gates
+## 12. Remaining gates
 
 No bank-generation or solver-construction authority follows from approval of the research question or analysis specification. The artificial mechanical dry run is limited to disposable fixtures outside the study package. No candidate solver source may be imported, constructed or executed during that dry run. Review-only publication does not authorize modification of design-of-record files, study/production artifact publication, private-annex access, candidate execution, predictive fitting, a power study or merge to another branch.
 

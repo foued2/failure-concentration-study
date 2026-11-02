@@ -1,9 +1,9 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2.1
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.2
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
-**Revision base:** 01494b75fa0d37c19737dc5534549eff99424807  
-**Requested review:** independent mathematical and specification review of the consolidated revision after GLM's prior findings and Claude's disposition. In particular, assess the two remaining proposals without treating them as owner-approved decisions.
+**Revision base:** 8fd82566bab0eac51456081b8d97e926ab878c1e (revision 2.1); review the subsequent revision 2.2 tree on this branch.  
+**Requested review:** independent mathematical and specification review of revision 2.2 after GLM's revision 2.1 findings and Claude's disposition. Verify the new provenance, precedence, manifestation-taxonomy, reporting-protection and fold-support corrections. Continue to assess M1 and the extended sensitivity knots as proposals; do not treat either as owner-approved.
 
 ## 1. Scope and limits
 
@@ -92,9 +92,20 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 - E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
 - E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-## 4. Additional independent checks
+## 4. Additional independent checks for revision 2.2
 
 Do not treat the M1 threshold or extended sensitivity-knot set as owner-approved. Report whether each is mathematically coherent and what trade-offs it creates. The owner retains the decision on whether to approve, revise or reject these two proposals.
+
+Also specifically attack the following revision 2.2 changes:
+
+- C8 provenance: verify that the wording says only that the strict all-12,000-resolved rule was owner-confirmed in chat on 2026-11-02. It must not imply that the whole specification was frozen or that execution was authorized.
+- C9 status: verify the distinction between held-out-first as the selected design direction and the detailed C9 correction remaining pending independent review, not accepted or frozen.
+- MC2 carry-over: verify the one-pass stop, all-identical-Q ZERO_VARIANCE rule, coverage/unresolved reporting in every table, and preservation of successful executions. Check that the conditional precedence clause does not supersede E1 or unaffected v1.0 provisions and has no present effect before formal ratification.
+- MC3 taxonomy: verify that the pre-run other allowlist is closed and may be empty, that unmatched FAIL manifestations cause protocol abort, bool/non-exact-int returns are invalid-return-type, and timeout/resource remains outside other while its reserved column is null.
+- ME2 K5: verify that the two inner splits with no K5 in training score the five validation bodies from the other K5 parent under the all-zero unseen-family representation.
+- MC5 support: verify the requested fold-level rank, distinct-count, zero-count and knot-side coverage diagnostics. Check that the prose does not confuse rank-deficient support with an undefined ridge solution.
+- Ridge implementation hazard: verify the stated alpha_sklearn = n_train * alpha_spec scaling under the corresponding sum-loss versus mean-loss conventions, and the requirement for a future synthetic numerical-equivalence test. Do not implement or fit a model.
+- ME1–ME4: verify the deduplicated six-column basis description, K5 pooled-validation note, procedure-level reconciliation and per-stratum partition identity.
 
 1. Re-derive the C_D bound ceil(k/8)/k <= C_D <= 1 for positive k, and check the k=1,2,3 cases.
 2. Re-derive the primary six-column spline rank and coefficient mapping; check the former {1,2,4} basis rank 4; verify the candidate sensitivity basis with knots {1,2,3,4,8,16,32,48} over k=0..64. Assess its usefulness and limitations as a proposal; it is pending owner confirmation, not a frozen choice.
