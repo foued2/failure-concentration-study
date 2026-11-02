@@ -5,13 +5,15 @@ on:
     branches:
       - gpt/lc518-github-recovery-2026-11-02
       - master
+    paths-ignore:
+      - lc518-150/c9-github-execution/**
   pull_request:
     branches:
       - master
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: lc518-github-recovery-${{ github.ref }}
@@ -19,9 +21,9 @@ concurrency:
 
 jobs:
   recovery-preflight:
-    name: Verify package on GitHub-hosted Ubuntu 24.04
+    name: Verify and build locked LC518 GitHub package
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout exact pushed commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -33,13 +35,56 @@ jobs:
         with:
           python-version: "3.13.5"
 
-      - name: Verify archive, package hash chain, and synthetic tests
+      - name: Verify original source archive and recovery package
         run: python scripts/lc518_github_recovery_introspect.py
 
-      - name: Audit launcher configuration without executing it
+      - name: Audit original launcher without executing it
         run: python scripts/lc518_launcher_static_audit.py
 
-      - name: Upload immutable run evidence and audited source files
+      - name: Build deterministic GitHub-specific locked package
+        run: python scripts/build_lc518_github_locked_package.py
+
+      - name: Compile state candidates without importing or executing them
+        working-directory: lc518-150/c9-github-execution
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ("lc518_generator_state1.py", "lc518_generator_state2.py",
+                       "lc518_launcher.py", "lc518_launcher_state2.py"):
+              compile(Path(name).read_text(encoding="utf-8"), name, "exec")
+              print(f"COMPILE_ONLY_PASS {name}")
+          PY
+
+      - name: Run all synthetic acceptance tests
+        working-directory: lc518-150/c9-github-execution
+        run: python -m unittest -v test_lc518_generator test_lc518_launcher
+
+      - name: Confirm configured launcher refuses before creating RUN_ROOT
+        working-directory: lc518-150/c9-github-execution
+        run: |
+          python - <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          package = Path.cwd()
+          protocol = json.loads((package / "execution_protocol_github_v1.json").read_text())
+          run_root = Path(protocol["paths"]["run_root_absolute"])
+          if run_root.exists():
+              raise SystemExit(f"Unexpected pre-existing run root: {run_root}")
+          result = subprocess.run([sys.executable, "-u", "lc518_launcher.py"],
+                                  cwd=package, text=True, capture_output=True, check=False)
+          print(result.stderr, end="")
+          if result.returncode != 3:
+              raise SystemExit(f"Expected locked launcher exit 3, got {result.returncode}")
+          if "separate owner GO for bank generation is absent" not in result.stderr:
+              raise SystemExit("Launcher did not stop at the owner-GO authorization gate")
+          if run_root.exists():
+              raise SystemExit("Locked launcher created RUN_ROOT")
+          print("LOCKED_LAUNCHER_REFUSAL_PASS")
+          print("RUN_ROOT_CREATED: NO")
+          print("GENERATOR_INVOKED: NO")
+          PY
+
+      - name: Upload immutable recovery and locked-package evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
@@ -50,9 +95,21 @@ jobs:
             lc518-github-recovery-report.json
             lc518-github-recovery-report.txt
             lc518-launcher-static-audit.txt
-            ${{ runner.temp }}/lc518-recovery-work-*/RECOVERY_TEST_RERUN.txt
-            ${{ runner.temp }}/lc518-recovery-work-*/lc518_launcher.py
-            ${{ runner.temp }}/lc518-recovery-work-*/execution_protocol_v1.json
-            ${{ runner.temp }}/lc518-recovery-work-*/lc518_generator.py
-            ${{ runner.temp }}/lc518-recovery-work-*/test_lc518_generator.py
-            ${{ runner.temp }}/lc518-recovery-work-*/test_lc518_launcher.py
+            lc518-150/c9-github-execution/**
+
+      - name: Commit generated locked package to recovery branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/gpt/lc518-github-recovery-2026-11-02'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lc518-150/c9-github-execution
+          if ! git diff --cached --quiet; then
+            git commit -m "Add verified GitHub-specific locked LC518 package"
+            git remote set-url origin "https://x-access-token:\${GITHUB_TOKEN}@github.com/\${GITHUB_REPOSITORY}.git"
+            git push origin HEAD:refs/heads/gpt/lc518-github-recovery-2026-11-02
+          else
+            echo "Locked package already matches generated bytes."
+          fi
