@@ -1,9 +1,9 @@
-# GLM Independent Review Brief — LC518-150 Analysis Revision 2.4
+# GLM Independent Review Brief — LC518-150 Analysis Revision 2.5
 
 **Date:** 2026-11-02  
 **Review target branch:** gpt/lc518-150-analysis-review-2026-11-02  
-**Revision base:** 0a09537abedbff24caf724c95c39d7a9cfb06285 (revision 2.3); review revision 2.4 at the branch head.  
-**Requested review:** one focused, read-only independent review of the corrected C9 procedure in C9_GENERATION_SPEC_REVIEW.md and a consistency check of M1, the sensitivity basis and the primary mathematical specification. Check C9 numbering and every internal reference, held-out/diagnostic information boundaries, fixed-key preflight, rejection accounting, attempt limits, atomic acceptance and disclosed conditional dependence. M1 and the sensitivity knots are fixed pre-outcome choices; do not reopen them as owner decisions. Identify only genuine mathematical, procedural or specification blockers.
+**Revision base:** 27f62310e0e60c51f78b062501fbdd45aba2155f (revision 2.4); review revision 2.5 at the branch head.  
+**Requested review:** focused, read-only follow-up review of the six clarifications ME-1 to ME-6 incorporated in C9_GENERATION_SPEC_REVIEW.md revision 2.5 after your completed full review of revision 2.4. Verify: (ME-1) fixed-knot wording in analysis §5.4; (ME-2) H1 amount-zero as an assertion and the closed rejection-reason mapping; (ME-3) shared int32_guard history for D6/H6 pairs; (ME-4) separation of the human-reviewed structural-exclusion proof from executable fixed-key and per-candidate checks; (ME-5) the stated randrange/slot-redraw implementation for exclusions; and (ME-6) cumulative attempt caps per record/pair slot. Confirm that no seed, range, count, witness, gate or authorization boundary changed. Do not reopen M1 or the sensitivity knots.
 
 ## 1. Scope and limits
 
@@ -93,7 +93,7 @@ Revision 2 pools the validation predictions for all 145 bodies in the 29 outer-t
 - E7: no oracle-wording replacement is proposed because the cited sentence did not exist. The existing correct oracle distinction is restated.
 - E8: count-column collinearities and coefficient-interpretation limits are disclosed.
 
-## 4. Focused independent checks for revision 2.4
+## 4. Focused independent checks for revision 2.5
 
 M1 and the extended sensitivity-knot set are fixed pre-outcome design choices in this review revision. Check that they are described consistently and implemented unambiguously; do not reopen the design decision or infer power/precision guarantees.
 
@@ -108,7 +108,7 @@ Also specifically attack the following revision 2.2 changes:
 - Ridge implementation hazard: verify the stated alpha_sklearn = n_train * alpha_spec scaling under the corresponding sum-loss versus mean-loss conventions, and the requirement for a future synthetic numerical-equivalence test. Do not implement or fit a model.
 - ME1–ME4: verify the deduplicated six-column basis description, K5 pooled-validation note, procedure-level reconciliation and per-stratum partition identity.
 
-Also verify these revision 2.4 corrections:
+Also verify these revision 2.5 corrections:
 
 - The C8 supersession pointer names the historical corrections record, states its 2026-11-01 date, supersedes only its C8/E3 status lines, and explicitly leaves that file unchanged.
 - For every sensitivity knot t, support sides are defined as k_fail ≤ t (hinge inactive) and k_fail > t (hinge active); both body counts and distinct observed-value counts are reported.
