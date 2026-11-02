@@ -9,7 +9,7 @@ This note identifies the edits needed to reconcile the existing `GLM_WORK_ORDER.
 Add an owner-authorized addendum stating:
 
 - The broad construction permission in `GLM_WORK_ORDER.md` v1.0 is historical and is superseded for current operations by the owner's later, narrower instruction.
-- Current permission covers drafting/review of the revised specification and the narrowly scoped artificial-fixture mechanical dry run only.
+- Current permission covers drafting/review of the revised specification, the narrowly scoped artificial-fixture mechanical dry run, and publication of review artifacts on the specifically designated review-only branch.
 - Current permission does not cover generating either study bank, constructing any of the 150 solver bodies, accessing the private mutation annex, executing candidates, dynamically validating mutations, fitting predictive models, running a power study, or pushing/committing study artifacts.
 - Each of those operations requires its own later explicit owner authorization.
 - The v1.0 document itself remains preserved unchanged. The precedence note is a separate dated addendum; do not silently rewrite the historical authorization statement.

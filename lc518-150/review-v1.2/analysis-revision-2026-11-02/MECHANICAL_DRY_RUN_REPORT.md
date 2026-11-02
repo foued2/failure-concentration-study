@@ -8,7 +8,7 @@
 
 The owner authorized a mechanical dry run using disposable artificial fixtures only. This run tested a fresh, small reimplementation of selected mechanics. It did **not** execute or validate the actual study generator. The fixtures deliberately use amounts and denominations outside the LC518 contract (greater than 5,000), so they cannot be mistaken for study-bank records. Only disposable test seeds were used.
 
-No diagnostic or held-out study bank was generated. No study records, oracle outputs, solver bodies, mutation assignments, or candidate execution results were created. No candidate code was imported or executed. The private mutation annex was not accessed. No predictive model was fitted. No GitHub file was changed, committed, pushed, or merged.
+No diagnostic or held-out study bank was generated. No study records, oracle outputs, solver bodies, mutation assignments, or candidate execution results were created. No candidate code was imported or executed. The private mutation annex was not accessed. No predictive model was fitted. The dry-run process itself changed no GitHub files and performed no commit, push or merge. The report and review materials were subsequently published by a separate owner-authorized action on the dedicated review-only branch; that later publication did not change the dry-run scope.
 
 ## Results
 
