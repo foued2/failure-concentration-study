@@ -1,0 +1,11 @@
+--- lc518_launcher.py
++++ lc518_launcher_state2.py
+@@ -44,7 +44,7 @@
+     "launcher": "ab8d95124a19bf3fdf9f9b0a87b3f7d1bb4165acdc1b268edb3ca3e9f45aa58d",
+ }
+ TEST_SUITE_PASS_COUNT: int | None = 52
+-BANK_GENERATION_AUTHORIZED = False
++BANK_GENERATION_AUTHORIZED = True
+ 
+ SOURCE_DIR = Path(__file__).resolve().parent
+ GENERATOR_SOURCE = SOURCE_DIR / "lc518_generator_state2.py"

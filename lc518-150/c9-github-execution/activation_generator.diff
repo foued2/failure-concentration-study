@@ -1,0 +1,11 @@
+--- lc518_generator_state1.py
++++ lc518_generator_state2.py
+@@ -33,7 +33,7 @@
+ # variables, command-line arguments, or configuration files.
+ EXPECTED_PYTHON_VERSION = (3, 13, 5)
+ OUTPUT_DIR: str | None = "/home/runner/work/failure-concentration-study/failure-concentration-study/lc518_run/bank"
+-BANK_GENERATION_AUTHORIZED = False
++BANK_GENERATION_AUTHORIZED = True
+ 
+ JSON_KW = dict(sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+ 
