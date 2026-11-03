@@ -1,0 +1,128 @@
+name: LC518 C9 bank generation (separate owner GO required)
+
+on:
+  workflow_dispatch:
+    inputs:
+      protocol_sha256:
+        description: SHA-256 of execution_protocol_github_v2.json
+        type: string
+        required: true
+      generator_activation_diff_sha256:
+        description: Exact SHA-256 of activation_generator.diff
+        type: string
+        required: true
+      launcher_activation_diff_sha256:
+        description: Exact SHA-256 of activation_launcher.diff
+        type: string
+        required: true
+      owner_go_identifier:
+        description: Exact identifier from the separate owner GO
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lc518-generation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-lc518-bank:
+    name: Verify authorization, generate, and preserve complete run
+    runs-on: ubuntu-24.04
+    environment:
+      name: lc518-bank-generation
+    timeout-minutes: 360
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONHASHSEED: "0"
+
+    steps:
+      - name: Checkout exact dispatched commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install pinned CPython 3.13.5
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13.5"
+
+      - name: Reassemble, verify, and unpack hash-pinned generation package
+        run: |
+          set -euo pipefail
+          cat \
+            lc518-150/c9-github-generation-package-parts/part-00.b64 \
+            lc518-150/c9-github-generation-package-parts/part-01.b64 \
+            lc518-150/c9-github-generation-package-parts/part-02.b64 \
+            lc518-150/c9-github-generation-package-parts/part-03.b64 \
+            lc518-150/c9-github-generation-package-parts/part-04.b64 \
+            > "$RUNNER_TEMP/lc518-generation-package.tar.xz.b64"
+          base64 --decode "$RUNNER_TEMP/lc518-generation-package.tar.xz.b64" > "$RUNNER_TEMP/lc518-generation-package.tar.xz"
+          echo "e0be3f2a91e8d71fc0ecfd6cc8eb4621ddb7e9b3a094ad08152423677c1e0ac5  $RUNNER_TEMP/lc518-generation-package.tar.xz" | sha256sum --check -
+          tar -xJf "$RUNNER_TEMP/lc518-generation-package.tar.xz" -C .
+
+      - name: Verify all pinned package source hashes
+        working-directory: lc518-150/c9-github-generation
+        run: sha256sum --check SHA256SUMS
+
+      - name: Run full generator, launcher, and dispatch-gate suite
+        working-directory: lc518-150/c9-github-generation
+        run: python -m unittest -v test_lc518_generator test_lc518_launcher test_lc518_generation_gate
+
+      - name: Compile activation candidates without importing or executing them
+        working-directory: lc518-150/c9-github-generation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ("lc518_generator_state1.py", "lc518_generator_state2.py",
+                       "lc518_launcher.py", "lc518_launcher_state2.py"):
+              compile(Path(name).read_text(encoding="utf-8"), name, "exec")
+              print(f"COMPILE_ONLY_PASS {name}")
+          PY
+
+      - name: Verify protocol, activation hashes, owner GO, run-root absence, and interpreter
+        id: dispatch-gate
+        working-directory: lc518-150/c9-github-generation
+        env:
+          LC518_PROTOCOL_SHA256: ${{ inputs.protocol_sha256 }}
+          LC518_GENERATOR_ACTIVATION_DIFF_SHA256: ${{ inputs.generator_activation_diff_sha256 }}
+          LC518_LAUNCHER_ACTIVATION_DIFF_SHA256: ${{ inputs.launcher_activation_diff_sha256 }}
+          LC518_OWNER_GO_IDENTIFIER: ${{ inputs.owner_go_identifier }}
+        run: python -u lc518_generation_gate.py
+
+      - name: Invoke the exact pinned launcher with generation authorization
+        id: generate
+        if: steps.dispatch-gate.outcome == 'success'
+        working-directory: lc518-150/c9-github-generation
+        env:
+          LC518_PYTHON_EXECUTABLE: ${{ steps.dispatch-gate.outputs.python_executable }}
+        run: |
+          set -euo pipefail
+          test -n "$LC518_PYTHON_EXECUTABLE"
+          "$LC518_PYTHON_EXECUTABLE" -u lc518_launcher_state2.py
+
+      - name: Verify complete run evidence exists
+        if: always() && steps.generate.outcome != 'skipped'
+        env:
+          LC518_RUN_ROOT: ${{ steps.dispatch-gate.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          test -n "$LC518_RUN_ROOT"
+          test -d "$LC518_RUN_ROOT"
+          test -f "$LC518_RUN_ROOT/logs/stderr.log"
+          test -f "$LC518_RUN_ROOT/logs/stdout.log"
+          test -f "$LC518_RUN_ROOT/logs/run_manifest.json"
+          echo "RUN_ROOT=$LC518_RUN_ROOT"
+          echo "EXCLUSIVE_STDERR_LOG_PRESENT=yes"
+          echo "RUN_MANIFEST_PRESENT=yes"
+
+      - name: Upload the entire LC518 run directory
+        if: always() && steps.generate.outcome != 'skipped'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: lc518-bank-run-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.dispatch-gate.outputs.run_root }}/
+          if-no-files-found: error
+          retention-days: 90
