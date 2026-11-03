@@ -1,5 +1,15 @@
 # LC518 C9 execution-recovery package
 
+> **2026-11-03 containment update.** Bank generation was later executed under owner GO
+> `LC518-GO-2026-11-03-01` (GitHub Actions run `41591572358`, recorded final bank status
+> `ACCEPTED`; run artifact `13210063805`). That GO is consumed and no further generation is
+> authorized. In the containment commit, `lc518_generator_state2.py` and `activation_diff.txt`
+> were removed from this directory, and the generation workflows, reconstructible package
+> parts and package builder were removed from the repository. The owner-GO record and the run
+> protocol are preserved as non-executable provenance in `../provenance/`. See
+> `LC518_GENERATION_HOLD.md` at the repository root. The text below is the historical record
+> of the pre-generation configuration.
+
 This directory preserves the six files uploaded on 2026-11-02. They are copied into this isolated recovery branch and retained unchanged. The original uploaded files on `master` were not modified by this recovery work.
 
 ## Contents

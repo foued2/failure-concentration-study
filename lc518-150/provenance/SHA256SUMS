@@ -1,0 +1,10 @@
+# LC518 provenance, preserved 2026-11-03 by the security containment.
+# Exact bytes extracted from the generation-package tar
+# (SHA-256 e0be3f2a91e8d71fc0ecfd6cc8eb4621ddb7e9b3a094ad08152423677c1e0ac5)
+# immediately before the base64 package parts were removed from the repository.
+# These are non-executable records: the protocol JSON is a historical configuration
+# record and OWNER_GO_RECORD.md is a decision log. Neither is part of any
+# executable path, and neither re-arms anything by itself: the state-2 sources,
+# activation diffs, package parts, builder and workflows are removed from this tip.
+9c54ffc2143eef807dad51ee5ba92e494e4588fa4655bd5772f613cec2f343a9  execution_protocol_github_v2.json
+5c4cd6eb81d99cbb67217999a46a7af6aee1ff5f368250f601e7759521ae54c1  OWNER_GO_RECORD.md

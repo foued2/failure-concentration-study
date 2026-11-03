@@ -1,5 +1,14 @@
 # LC518 C9 GitHub execution configuration
 
+> **2026-11-03 containment update.** Bank generation was later executed under owner GO
+> `LC518-GO-2026-11-03-01` (GitHub Actions run `41591572358`, recorded final bank status
+> `ACCEPTED`; run artifact `13210063805`). That GO is consumed and no further generation is
+> authorized. In the containment commit, `lc518_generator_state2.py`,
+> `lc518_launcher_state2.py`, `activation_generator.diff` and `activation_launcher.diff`
+> were removed from this directory and `SHA256SUMS` was updated accordingly. See
+> `LC518_GENERATION_HOLD.md` at the repository root. The text below is the historical record
+> of the pre-generation configuration.
+
 **Status: CONFIGURED_LOCKED_NOT_AUTHORIZED.**
 
 - Runner: ubuntu-24.04, image ubuntu24 / 20261026.354.1
