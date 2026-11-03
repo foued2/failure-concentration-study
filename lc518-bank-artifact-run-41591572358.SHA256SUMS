@@ -1,0 +1,24 @@
+# Bank artifact of LC518 C9 GitHub Actions run 41591572358 (run artifact 13210063805,
+# recorded final bank status ACCEPTED). Containment repack, 2026-11-03.
+#
+# Source publication set lc518-publish-set-12-files-run-41591572358.zip
+#   SHA-256  16ce5a6a841496aac0f89f2a0c5de906a9177d69f62a61cad478d6338ff42eb2
+#   Git blob 301e8e16ac2922ea4fbe7fa3cb051c79af4ba13c  (commit e22da84)
+# embedded activated state-2 source copies under neutral names
+#   lc518_generator.py = 848984cac427547955a04b2e5c379762149ad94a37711a6483008fd55f2c161b
+#   lc518_launcher.py  = 014e45c259771b187a0a2323ad4efdf8ab4343a5f62cc8d9b53f59879409b2f9
+# Those two members are the only difference between the original publication set and
+# this repack. Every retained member below is byte-for-byte identical to the original.
+# The original ZIP remains recoverable from Git history (no history rewrite).
+839014e078580016c644667d41b9d83ab4bb8b3e888828c9cac67e952db5520c  bank/canonical_disjointness_report.json
+13f2e435552b2aa1e0ba88104300b0a1dbc4bb5f8c5061d78a01fe90fc52bc92  bank/diagnostic_bank.json
+259a2d076c9e533d3f808d1197d90deae920918f03e99e7fefcb0a22c67fde7a  bank/diagnostic_bank.rejections.jsonl
+93eb393c0f56a7ed13a8ef4f1a29286c3aadcc6e5dc76fa59378bb0c1358214e  bank/diagnostic_oracle_outputs.json
+b273c053e874f212f060ff23791f9be445a48203cbbde0ca1b285192093d26d6  bank/heldout_bank.json
+ef420f4e56bf15f15bc3f1d9c17838fbbee48c344dbab9e2068efe70260a7d92  bank/heldout_bank.rejections.jsonl
+eaae81040424881cc9939e7415a8a5a0328fa870bd2a790d0b4409babd03e244  bank/heldout_oracle_outputs.json
+9c54ffc2143eef807dad51ee5ba92e494e4588fa4655bd5772f613cec2f343a9  execution_protocol_github_v2.json
+149df9f41bb3165626afda88a297196fde6d5ae5e259d43f38252454e34e6c41  test_lc518_generator.py
+e11a1238a0c08d86ea7f7ec26de0baeadda7a925f5a42567273cf5262468c2a4  test_lc518_launcher.py
+# Repacked archive:
+71f1e76b03161d91a443a891ce0a1821b2bdd7ff70cc97115c6c1a0448bc2df1  lc518-bank-artifact-run-41591572358.zip
