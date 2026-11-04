@@ -1,5 +1,7 @@
 # LC518 C9 bank-generation execution protocol
 
+> **CONTAINMENT NOTICE — 2026-11-04 (Task 03).** This is a historical protocol document. The §13 activation procedure (the one-line `BANK_GENERATION_AUTHORIZED` change) is **VOID and PROHIBITED**. The configured state-1 generator it references has been removed from this branch tip; its bytes exist only in Git history. Any future bank generation must be authorized by controls external to every package constant, per `LC518_GENERATION_HOLD.md`. The text below is preserved unmodified for provenance.
+
 **Revision:** v1.0 (final execution protocol; completes and supersedes draft v1.2)  
 **Status:** complete execution-configuration protocol, configuration-frozen 2026-11-02 (UTC). This is not a bank-generation GO and authorizes no generation. A separate owner GO naming this file's external SHA-256 and the activation diff in §13 is required before bank generation.  
 **Design of record:** C9 revision 2.6 at `511bc2099ecff74b4f850b169ceef7f853c334a0`  
@@ -166,6 +168,8 @@ Embedding the exact `OUTPUT_DIR` changed the generator source hash; the pre-decl
 1. **Configured-but-locked generator** (`lc518_generator_state1.py`): the exact absolute `OUTPUT_DIR` `/home/z/lc518_run/bank` embedded, `BANK_GENERATION_AUTHORIZED` still `False`. SHA-256 `276b9f49f5a3a975c530cc4eca02b0a0f3407ab824d12031f43175a72feb14fe`. Executed on 2026-11-02 (UTC) only to confirm refusal: exit status 1, `REFUSED: separate owner authorization for study-bank generation is absent.`; no run root was created.
 2. **Authorized execution generator** (`lc518_generator_state2.py`): results only from the pre-declared authorization-literal change to `True`, with no other source edits. SHA-256 `1335a42d06d64cf7e847981fc68eee07945655128e82e7f08bc43e774d1cb41c`. The launcher must pin this hash for the run.
 3. **Activation diff** (`activation_diff.txt`, SHA-256 `578d17163701d549d17c19e5e1a785709fd1d08bf3572b77ac7058fbc13c8a64`), exactly one changed line:
+
+> **VOID (Task 03, 2026-11-04):** the activation change below is prohibited and must not be applied to any file. Shown for historical provenance only; see the containment notice at the top of this document.
 
 ```text
 --- lc518_generator_state1.py

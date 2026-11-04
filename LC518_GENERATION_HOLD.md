@@ -24,7 +24,7 @@
 
 ## 3. Preserved
 
-- `lc518_generator_state1.py` — locked (`BANK_GENERATION_AUTHORIZED = False`), SHA-256 `276b9f49f5a3a975c530cc4eca02b0a0f3407ab824d12031f43175a72feb14fe`.
+- ~~`lc518_generator_state1.py`~~ — **removed from this tip by the Task-03 addendum below** (the 2026-11-03 revision retained it as locked; retention proved insufficient — see addendum).
 - `execution_protocol_v1.md`, `VERIFICATION_LOG.md`, the locked review ZIP, and all unrelated research material and local untracked files.
 - The completed generation run (`41591572358`, artifact `13210063805`) and the bank it produced remain the scientific record. The bank artifact is retained on the `foued2-patch-1` containment as a bank-only repack; see that branch's `LC518_GENERATION_HOLD.md`.
 
@@ -38,3 +38,15 @@
 ## 5. Scope
 
 Historical commits retain previously published files by design; this hold applies to current branch tips only. Prepared by the local execution agent for GPT/Claude/GLM review. Not pushed, not merged, not dispatched.
+
+## 6. Task-03 addendum — 2026-11-04: reactivation-route correction (GPT NO-GO, Claude-verified)
+
+GPT's review of the Task-02 containment package found, and Claude independently verified, that the retained "state-1" generator was **fully configured** (`OUTPUT_DIR = "/home/z/lc518_run/bank"` embedded; CPython 3.13.5 interpreter pin; direct `main()` entry), so a single one-line edit — `BANK_GENERATION_AUTHORIZED = False` → `True` — reproduces the exact activated state-2 bytes. Retention therefore violated §4's requirement that authorization controls not depend on in-package constants. Corrected on this tip:
+
+| File removed (Task 03) | Git blob (recoverable in history) | Content SHA-256 (as committed) | One-line flag flip yields |
+|---|---|---|---|
+| `lc518_generator_state1.py` | `60725f8aa4300a4f7b3dd10c3bc568eba2b0a9a5` | `276b9f49f5a3a975c530cc4eca02b0a0f3407ab824d12031f43175a72feb14fe` | `1335a42d06d64cf7e847981fc68eee07945655128e82e7f08bc43e774d1cb41c` (the activated generator; verified by GPT and Claude, reproduced locally) |
+
+`execution_protocol_v1.md` §13 (the activation procedure) is superseded on this tip by a containment notice; the historical text remains for provenance. `SHA256SUMS` updated accordingly. This tip now contains **no configured production generator and no configured launcher**.
+
+Residual risk, stated plainly: historical commits remain recoverable by anyone with repository read access, so tip containment is hygiene, not a security boundary. The only currently external gate is GitHub environment reviewer approval on the generation workflow, which does not cover source-level constants. A durable design (owner-controlled secret/variable, dispatch-time GO and protocol-hash checks, no in-package authorization constant) requires separate panel review before implementation. No bank generation is authorized: GO `LC518-GO-2026-11-03-01` remains consumed by run `41591572358` and authorizes nothing further.
