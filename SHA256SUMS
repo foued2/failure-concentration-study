@@ -3,5 +3,9 @@
 # and activation_diff.txt (578d17163701d549d17c19e5e1a785709fd1d08bf3572b77ac7058fbc13c8a64)
 # were removed by the LC518 security containment. Original values are recorded in
 # LC518_GENERATION_HOLD.md and preserved in Git history (no history rewrite).
-276b9f49f5a3a975c530cc4eca02b0a0f3407ab824d12031f43175a72feb14fe  lc518_generator_state1.py
-64e7f5033eac5dec3d7278bd48695ffe42b19fc047bd79f14145c49f3a45e293  execution_protocol_v1.md
+# Row for lc518_generator_state1.py (276b9f49f5a3a975c530cc4eca02b0a0f3407ab824d12031f43175a72feb14fe,
+# blob 60725f8aa4300a4f7b3dd10c3bc568eba2b0a9a5) removed by containment Task 03, 2026-11-04: the file
+# was fully configured (OUTPUT_DIR embedded) and a one-line flag edit reproduced the activated
+# state-2 bytes (1335a42d06d64cf7e847981fc68eee07945655128e82e7f08bc43e774d1cb41c).
+# See LC518_GENERATION_HOLD.md, Task-03 addendum.
+178bb762867031021e2c7e71c2fdbcd8e0f3e65010ec9472cc4e99a94265be29  execution_protocol_v1.md
