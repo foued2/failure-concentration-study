@@ -129,9 +129,9 @@ The existing review branch is:
 
 `gpt/lc518-claim-b1-primary-2026-11-05`
 
-Its verified current head before this proposed revision is:
+The branch head immediately before the chronology update in this file was:
 
-`6ca0ed491497f13fe1b83c6c22c89260c6b56a9a`
+`46189b42a72f6c9c8398c69d704c62a3e469d136`
 
 The verified decision-file commit lineage, from the recorded base
 `511bc2099ecff74b4f850b169ceef7f853c334a0`, is:
@@ -156,7 +156,7 @@ The verified decision-file commit lineage, from the recorded base
 
 6. `46189b42a72f6c9c8398c69d704c62a3e469d136` (20:04:26 UTC)
    Updated the same decision file, including the corrected full-length
-   branch-head SHA. It is the current branch head. Its parent is
+   branch-head SHA. It was the branch head before the chronology update. Its parent is
    `cecdf75aa539434b176ad1d3e0151c68ab7a9888`.
 
 ### Chronology and consent status
