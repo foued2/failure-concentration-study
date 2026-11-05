@@ -133,25 +133,48 @@ Its verified current head before this proposed revision is:
 
 `6ca0ed491497f13fe1b83c6c22c89260c6b56a9a`
 
-The verified commit lineage is:
+The verified decision-file commit lineage, from the recorded base
+`511bc2099ecff74b4f850b169ceef7f853c334a0`, is:
 
-1. `a19653abb08d4b83b494887e291269d216251416` — initial B1 decision record.
-2. `7e47c21b28fb6a408bde48f5d7e15394931b0cf3` — clarification of the separate unblinded B1 analysis lane and existing work-order authorization.
-3. `f2303adefdef367480a1cf89d15360311881ae07` — delegated-decision wording and within-mechanism × family × exact-cell support rule.
-4. `6ca0ed491497f13fe1b83c6c22c89260c6b56a9a` — explicit K5 inferential limitation.
+1. `a19653abb08d4b83b494887e291269d216251416` (19:21:34 UTC)
+   Initial B1 decision record.
 
-The lineage contains four commits. All four are to be preserved; no history rewrite is proposed.
+2. `7e47c21b28fb6a408bde48f5d7e15394931b0cf3` (19:22:18 UTC)
+   Clarified the B1 analysis lane and existing construction authorization.
 
-### Chronology and approval status of the existing commits
+3. `f2303adefdef367480a1cf89d15360311881ae07` (19:43:35 UTC)
+   Added delegated-decision wording and tightened the within-mechanism,
+   within-family support rule.
 
-Commits `a19653a` and `7e47c21` were created before GPT and Claude reached joint agreement on B1. They were made under GPT's then-understanding of the owner's delegation and repository instruction. They must not be represented as jointly approved at the time they were created.
+4. `6ca0ed491497f13fe1b83c6c22c89260c6b56a9a` (19:44:03 UTC)
+   Added the K5 inferential limitation.
 
-Commits `f2303ad` and `6ca0ed4` were also created before Claude reviewed and accepted the exact replacement text recorded here. Their existence and content are part of the repository lineage; the subsequent agreement does not change their creation chronology or retroactively make them approvals of this exact text.
+5. `cecdf75aa539434b176ad1d3e0151c68ab7a9888` (20:03:46 UTC)
+   Rewrote the decision record. This was an intermediate commit made
+   before Claude consented to the exact replacement text. It remains
+   in the history and must not be hidden or removed.
 
-This replacement is being submitted to Claude for review. A further commit updating the decision record will be made only after Claude has reviewed and explicitly consented to this exact revised text.
+6. `46189b42a72f6c9c8398c69d704c62a3e469d136` (20:04:26 UTC)
+   Updated the same decision file, including the corrected full-length
+   branch-head SHA. It is the current branch head. Its parent is
+   `cecdf75aa539434b176ad1d3e0151c68ab7a9888`.
 
-The recorded base is `511bc2099ecff74b4f850b169ceef7f853c334a0`, an analysis-review branch tip, not `master`. The verified `master` snapshot remains at `b3e98740716bd79ecc99346241d633fd405d49d8`. The decision branch is separate from `master`. The branch record contains no private mutation annex or per-solver mutation assignments.
+### Chronology and consent status
 
+Commits 1–5 predate Claude's consent to the exact replacement text. The
+timestamp of the joint agreement between GPT and Claude is not recorded
+in the repository. The commit timestamps above record repository
+chronology only; they do not establish the time at which that agreement
+was reached.
+
+Commit 6 is the follow-up update after Claude's consent. The existence
+of the earlier commits and their chronology are retained transparently.
+No commit is deleted, rewritten, or squashed.
+
+The current branch head before this update was
+`46189b42a72f6c9c8398c69d704c62a3e469d136`. This update is a single
+new commit that changes only this decision file.
+ 
 ### Separate unresolved local write set
 
 GLM previously reported a separate local working-tree write set consisting of:
