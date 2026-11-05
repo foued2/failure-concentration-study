@@ -75,7 +75,7 @@ The frozen v1.0 E3 analysis remains unchanged and does not test concentration. R
 
 A revised analysis specification is required before execution. It must define the B1 conditional comparison and the scoring/validation procedure in advance.
 
-The separately predeclared B1 robustness stage may use the sealed mechanism identities **only to define mechanism strata and conduct within-mechanism scientific diagnostics**. It must not add mutation labels, version-role labels, or other construction ground-truth fields as predictors in the blind E3 model. It must not alter the frozen blind pass or trigger post-result model revision. The B1 stage and its analyst/access rules must be authorized and frozen before candidate outcomes are observed.
+The separately predeclared B1 robustness stage may use sealed individual-mechanism identities to define strata and, if the predeclared method requires it, as nuisance terms in a separate unblinded conditional analysis. It must not add mutation labels, version-role labels, or other construction ground-truth fields to the blind E3 model. The B1 stage is not the blind E3 pass: it has a separately appointed analyst, declared access, a frozen estimand and analysis, and its own reporting. It must not alter the frozen blind pass or trigger post-result model revision. The B1 stage and its analyst/access rules must be authorized and frozen before candidate outcomes are observed.
 
 The fixed held-out bank is publicly exposed. It can support a fixed-bank developmental evaluation, but not a sealed confirmatory claim. No power or minimum-effect claim is authorized by the current specifications.
 
@@ -86,7 +86,7 @@ The fixed held-out bank is publicly exposed. It can support a fixed-bank develop
 3. **A3-dynamic — Realized diagnostic support.** Requires separate authorization and completion of the v1.0 §9 execution protocol, including interpreter pinning, runtime and memory budgets, timeout rule, and resolution of the reserved `d_timeout_s` column. Only execution can establish observed (f_j), (k_{fail}), (k_{unresolved}), and (C_D).
 4. **B1 robustness and prediction assessment.** Requires a predeclared analysis specification and authorized analyst/access plan. The blind E3 pass remains separate and unchanged.
 
-No stage in this record authorizes source construction, solver execution, held-out evaluation, fitting, or publication.
+This decision grants no new authorization. The existing v1.0 work order authorizes construction of the 150 source bodies but requires the private mutation annex before mutation assignments proceed; that stop condition remains binding. Candidate execution, diagnostic evaluation, held-out evaluation, fitting, and publication are not authorized by this decision.
 
 ## 7. Failure and redesign rules
 
