@@ -1,7 +1,7 @@
 # LC518 scientific decision: Claim B1 as the first-stage target
 
 **Date:** 2026-11-05  
-**Status:** Agent decision under the owner's explicit delegation in this conversation. Review-branch record only. This document does not freeze or amend the v1.0 design, adopt review revision 2.6, or authorize construction or execution.
+**Decision authority:** Effective delegated agent decision under the owner's explicit instruction in this conversation. The owner instructed GPT and Claude to decide upon agreement and authorized GPT to act on the repository after consulting Claude. No separate owner ratification is required for this target selection. **Repository status:** Review-branch record only. This document does not freeze or amend the v1.0 design, adopt review revision 2.6, or authorize execution.
 
 ## 1. Decision
 
@@ -22,7 +22,7 @@ The following are outside the primary B1 estimand:
 
 This is an explicit scope restriction, not a silent downgrade to Claim A. It gives the current design a potentially identifiable first question while refusing to claim that the 28+2 schedule supports broad pair-interaction identification.
 
-**Claim B1 question:** among singly mutated solver versions, does the observable concentration of definite diagnostic failures across the eight input strata carry information about held-out correctness beyond total definite failures, unresolved diagnostic outcomes, parent algorithm family/context, and the identity of the one individual mutation mechanism?
+**Claim B1 question:** among singly mutated solver versions, does the observable concentration of definite diagnostic failures across the eight input strata carry information about held-out correctness beyond total definite failures and unresolved diagnostic outcomes, conditional on both parent algorithm family and the identity of the one individual mutation mechanism? Parent-group IDs define grouped validation folds; they are not predictive covariates. The mechanism-conditional comparison is a separate, unblinded analysis, not the frozen blind E3 model.
 
 A positive B1 result applies only to this constructed single-mutation population and the fixed LC518 task/bank. It does not establish the same result for natural solver submissions, arbitrary programmes, or combinations of multiple defects.
 
@@ -57,17 +57,22 @@ The B1 question is not answered merely because the individual mechanisms recur i
 
 Before any candidate execution, the annex-dependent A2-static review must map each singly mutated version to its individual mechanism, parent group, and parent family. It must determine whether the schedule provides plausible same-mechanism comparisons across parent contexts. Static review may assess assignments and compatibility; it cannot establish that a mutation triggers or produces a particular failure profile.
 
-After separately authorized diagnostic execution, the B1 support audit must examine, without pooling across mechanisms or exact failure-count cells:
+After separately authorized diagnostic execution, the B1 support audit must assess variation conditional on **both** individual mechanism identity and parent algorithm family. The exact support cell is:
 
-- (k_{fail}\geq 2);
-- exact ((k_{fail},k_{unresolved})) cells within each individual mechanism;
-- at least three distinct parent groups in a supported mechanism-cell;
-- at least two distinct observed (C_D) values within that mechanism-cell;
-- representation across at least two parent algorithm families.
+`(individual mechanism, parent family Z, k_fail, k_unresolved)`.
 
-This is a proposed minimum *identification-support screen*, not a power calculation, precision guarantee, or effect-size threshold. It must be frozen in the revised analysis specification before execution. The existing revision 2.6 §5.2 support rule is a separate within-parent rule; it does not by itself establish within-mechanism support.
+Within a support cell:
 
-For an aggregate claim across all eight mechanisms, each mechanism must have at least one supported cell under the frozen rule. If only a subset has support, report results only for that subset and do not generalize to all eight mechanisms. If the required support is absent, report **NON-IDENTIFICATION / INSUFFICIENT WITHIN-MECHANISM SUPPORT**, not a null concentration effect.
+- k_fail must be at least 2;
+- at least three distinct parent groups must contribute singly mutated versions to that exact cell;
+- at least two distinct observed C_D values must occur among those groups;
+- no pooling is allowed across mechanisms, parent families, or exact (k_fail, k_unresolved) cells.
+
+This same-family requirement is essential. Variation that appears only between parent families could be explained by family, even if the mechanism identity is held fixed. A mechanism-family-cell with fewer than three parent groups or no C_D variation is unsupported for the proposed minimum screen. The audit must report the complete mechanism × family × exact-cell support table, including unsupported cells and zero-variance cases.
+
+This is a proposed minimum *identification-support screen*, not a power calculation, precision guarantee, or effect-size threshold. The three-parent floor is an operational support convention only. It must be frozen in the revised analysis specification before execution. The existing revision 2.6 §5.2 support rule is a separate within-parent rule; it does not by itself establish within-mechanism-and-within-family support.
+
+For an aggregate B1 claim, every individual mechanism included in that claim must have at least one supported cell, and the supported cells must cover the parent-family contexts to which the claim is generalized. Report unsupported mechanisms and families separately; do not extrapolate the concentration interpretation into unsupported cells. If only a subset is supported, limit the claim to that subset. If the required support is absent, report **NON-IDENTIFICATION / INSUFFICIENT WITHIN-MECHANISM-AND-WITHIN-FAMILY SUPPORT**, not a null concentration effect.
 
 ## 5. Analysis architecture and blinding
 
@@ -75,7 +80,7 @@ The frozen v1.0 E3 analysis remains unchanged and does not test concentration. R
 
 A revised analysis specification is required before execution. It must define the B1 conditional comparison and the scoring/validation procedure in advance.
 
-The separately predeclared B1 robustness stage may use sealed individual-mechanism identities to define strata and, if the predeclared method requires it, as nuisance terms in a separate unblinded conditional analysis. It must not add mutation labels, version-role labels, or other construction ground-truth fields to the blind E3 model. The B1 stage is not the blind E3 pass: it has a separately appointed analyst, declared access, a frozen estimand and analysis, and its own reporting. It must not alter the frozen blind pass or trigger post-result model revision. The B1 stage and its analyst/access rules must be authorized and frozen before candidate outcomes are observed.
+The separately predeclared B1 robustness stage may use sealed individual-mechanism identities as conditioning strata and, if specified before outcomes, as nuisance terms in a separate unblinded conditional predictive comparison. The natural model contrast is a baseline containing the fixed flexible k_fail basis, k_unresolved, parent-family Z, and individual-mechanism identity, versus the same model plus C_D. Parent-group IDs remain fold/grouping variables, not predictors. This is a new analysis lane and does not amend the frozen blind E3 model. It requires a separately appointed analyst, declared access, a frozen estimand, support rule, preprocessing, validation and scoring procedure, and its own reporting. It must not alter the frozen blind pass or trigger post-result model revision. The B1 stage and its analyst/access rules must be authorized and frozen before candidate outcomes are observed.
 
 The fixed held-out bank is publicly exposed. It can support a fixed-bank developmental evaluation, but not a sealed confirmatory claim. No power or minimum-effect claim is authorized by the current specifications.
 
@@ -107,3 +112,22 @@ This decision is bounded by the following design records on the base branch:
 - `lc518-150/review-v1.2/analysis-revision-2026-11-02/ANALYSIS_SPEC_REVIEW_DRAFT.md` revision 2.6, review-only, especially §§2, 5, 7.
 
 **Repository effect:** this file is added on a dedicated review branch. No frozen design document, `master`, bank, solver source, or execution artifact is modified.
+
+## 9. Delegation, consultation, and repository lineage
+
+The owner explicitly instructed GPT and Claude to decide on the scientific target once they reached agreement, and instructed GPT to act on the repository after consulting Claude. This is an explicit delegation of the target decision and repository action within the scope of that instruction. It is not described as the owner personally authoring the scientific conclusion. The delegated decision is effective; it is not awaiting a second ratification.
+
+The consultation record is: Claude selected Claim B as the programme target; GPT narrowed the current LC518 implementation to B1 and deferred B2 on the basis of the pair-composition support; Claude's subsequent review described B1 as the primary single-mutation question and B2 as deferred; GLM verified the committed content and the support framework. The B1 scope is therefore the joint direction under the owner's delegation.
+
+The first B1 branch commit was made before Claude's B1-specific review of the resulting document. That sequence was premature relative to the owner's instruction to consult Claude before repository action. Claude and GLM have now reviewed the branch content. This revision records the post-review corrections; future substantive repository changes will follow review before write.
+
+Repository lineage:
+
+- Base commit: `511bc2099ecff74b4f850b169ceef7f853c334a0` (analysis-review branch tip, not master).
+- Initial decision commit: `a19653abb08d4b83b494887e291269d216251416` (adds this decision record).
+- Clarification commit: `7e47c21b28fb6a408bde48f5d7e15394931b0cf3` (+2/−2 clarification).
+- Current branch: `gpt/lc518-claim-b1-primary-2026-11-05`.
+- The branch is separate from `master`; `master` remains at `b3e98740716bd79ecc99346241d633fd405d49d8` in the verified remote snapshot.
+- The branch is public, but this decision record contains no private mutation annex or per-solver mutation assignments.
+
+The earlier local working-tree write reported by GLM (the root-level estimand review file and the inventory bullet) is a separate local-state issue. Those paths were not found on the checked remote refs. This GitHub branch update neither removes nor purports to revert local Windows working-tree changes.
