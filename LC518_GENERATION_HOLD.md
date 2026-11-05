@@ -49,4 +49,20 @@ GPT's review of the Task-02 containment package found, and Claude independently 
 
 `execution_protocol_v1.md` §13 (the activation procedure) is superseded on this tip by a containment notice; the historical text remains for provenance. `SHA256SUMS` updated accordingly. This tip now contains **no configured production generator and no configured launcher**.
 
-Residual risk, stated plainly: historical commits remain recoverable by anyone with repository read access, so tip containment is hygiene, not a security boundary. Scope of this containment: it exists only in these proposed post-containment trees, not on the live GitHub branch tips — `master` `b3e9874`, `foued2-patch-1` `e22da84`, recovery `a4ec114`, and ZIP-upload branch `foued2-patch-2` `ef69089` — none of which has received the containment patches. The live generation workflow references the `lc518-bank-generation` GitHub Environment; its required-reviewer configuration and reviewer independence were not independently verified and are not asserted here. Because these proposed containment trees remove the generation workflow, that environment gate is not invoked by them. A durable design (owner-controlled secret/variable, dispatch-time GO and protocol-hash checks, no in-package authorization constant) requires separate panel review before implementation. No bank generation is authorized: GO `LC518-GO-2026-11-03-01` remains consumed by run `41591572358` and authorizes nothing further.
+Residual risk, stated plainly: historical commits remain recoverable by anyone with repository read access, so tip containment is hygiene, not a security boundary. Scope of this containment: it exists only in these proposed post-containment trees, not on the live GitHub branch tips — `master` `b3e9874`, `foued2-patch-1` `e22da84`, recovery `a4ec114`, and ZIP-upload branch `foued2-patch-2` `ef69089` — none of which has received the containment patches. The live generation workflow references the `lc518-bank-generation` GitHub Environment; its verified reviewer configuration is recorded in §7 below. Because these proposed containment trees remove the generation workflow, that environment gate is not invoked by them. A durable design (owner-controlled secret/variable, dispatch-time GO and protocol-hash checks, no in-package authorization constant) requires separate panel review before implementation. No bank generation is authorized: GO `LC518-GO-2026-11-03-01` remains consumed by run `41591572358` and authorizes nothing further.
+
+## 7. Task-05 addendum — 2026-11-05: verified Environment configuration (r5)
+
+The 0003 revision of this document stated that the live Environment's required-reviewer configuration and reviewer independence "were not independently verified and are not asserted here." That statement is superseded by the verified values below and remains only in Git history.
+
+| Setting | Verified value |
+|---|---|
+| Environment | `lc518-bank-generation` |
+| Required reviewer | `foued2`, sole reviewer |
+| `prevent_self_review` | `false` |
+| `can_admins_bypass` | `true` |
+| Branch policy | custom branch policies enabled |
+
+This configuration does **not** provide an independent review boundary: the only required reviewer is the repository owner, self-review prevention is disabled, and administrators can bypass the rule. It is **not** a verified security control. The GitHub integration used for the query was authenticated as `foued2`; that establishes the identity of that query only and does not establish the GitHub identity used by any local agent or tool. Because these proposed containment trees remove the generation workflow, that environment gate is not invoked by them.
+
+This addendum is a forward-only correction (0004). No other content of this hold document is changed.
