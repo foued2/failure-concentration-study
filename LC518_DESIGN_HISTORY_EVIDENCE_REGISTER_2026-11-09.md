@@ -18,12 +18,19 @@ summary; (ii) the owner-channel claim narrowed — conversation history is the p
 transparent (full hashes where available). Rev 1 hash
 `2d9ddecca004fef78787355fcf090b7f95e5025a14daadfb68afebe3cffb2533` (16,224 bytes) is
 superseded; no finding was removed or weakened by these corrections.
-**Revision 3 (2026-11-09):** committed to branch `research/concentration-math-spec` and
-pushed to `origin` on the owner's direct instruction ("push it"), following the
-owner-relayed review round that produced Rev 2. This is a preservation action; the
-evidentiary content is unchanged from Rev 2. The "untracked / not committed on any ref"
-statement above was true when written and is superseded by this note. No ratification
-beyond the owner's own review is claimed by this record.
+**Revision 3 (2026-11-09):** committed locally as `594f1ab` on branch
+`research/concentration-math-spec` on the owner's direct instruction ("push it"),
+following the owner-relayed review round that produced Rev 2. The push attempt failed
+because this environment had no GitHub credentials (no `gh` CLI, no configured
+credential helper, no stored HTTPS credential, no SSH key). **Remote publication
+remains pending.** The "untracked / not committed on any ref" statement above was true
+when written and is superseded by this note. No ratification beyond the owner's own
+review is claimed by this record.
+**Revision 4 (2026-11-09):** correction commit per owner-relayed review: Rev 3 as
+committed in `594f1ab` stated that the record had been pushed to `origin`; that was
+false at commit time — the push had failed. An audit record must describe the actual
+state, not the intended outcome. Rev 3's text above has been corrected accordingly in
+this revision; evidentiary content (§§ 1–7) is unchanged.
 **Governing interpretation:** audit record §30 reclassification (2026-11-07): the
 mutation allocation is a required design input whose completion as a standalone annex
 has not been established; not a lost artifact.
