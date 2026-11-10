@@ -1,7 +1,7 @@
 # GPT supplemental review: expanded search of the November 6 mutation-design conversations
 
 **Date:** 2026-11-10  
-**Revision:** Rev 3.1, incorporating Claude's review and a source-cropping qualification for Part 5 p. 25.  
+**Revision:** Rev 3.2, incorporating text-layer verification of Part 5 p. 25.  
 **Status:** Supplemental evidence report for independent Claude review. This report does not alter the A2 protocol, establish an allocation, authorize construction, or ratify any earlier audit record.
 
 ## 1. Purpose and scope
@@ -153,7 +153,7 @@ This screen finds no named mutation mechanism, no partial pair identity, and no 
 
 ### 3.5 Close read requested: Part 5, PDF p. 25
 
-Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The recoverable quoted wording says that the two replications “add +1 SA/SB into each of their 4 mechanisms” and concludes: “that assumption cannot be made annex-free.” The intervening line describes the two replicated pairs as sharing no mechanism, but the supplied PDF export is clipped at the right edge after “share no mech...”; that connecting clause is therefore summarized here, not presented as a complete verbatim quotation. The page also gives `r_m ∈ {0, 1, 2}` and `Σ_m r_m = 4`.
+Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. I re-extracted PDF p. 25 using both `pdftotext -f 25 -l 25 -layout` and PyMuPDF's `page.get_text()`; both return the same text at the relevant lines. The source has the quoted phrase split at the line boundary as `"add +1 SA/SB in` / `to each of their 4 mechanisms"`. Joined across that line break, the exact wording is: “add +1 SA/SB into each of their 4 mechanisms.” The next portion is not fully recoverable: line 864 ends at `share no mech`, and line 865 begins `that assumption cannot be made annex-free.` Neither extraction method recovers the missing continuation or punctuation between those fragments. Accordingly, the source supports the exact quoted insertion and the final conclusion, but the intervening clause remains a contextual reading, not a full verbatim quotation. **Correction to Rev 2:** its wording “add SA/SB slots” was not verbatim and is superseded by the source-checked wording in this revision. The page also gives `r_m ∈ {0, 1, 2}` and `Σ_m r_m = 4`.
 
 **Structural implication:** the incidence statement and `Σ_m r_m = 4` treat the two replicated pairs as accounting for four mechanism incidences. That calculation presupposes an underlying mechanism set against which pair membership is defined. The page does not name that set or any of its members. This dependency does not supply E1's taxonomy and does not identify the two repeated pairs for E4.
 
