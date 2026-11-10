@@ -1,7 +1,7 @@
 # GPT supplemental review: expanded search of the November 6 mutation-design conversations
 
 **Date:** 2026-11-10  
-**Revision:** Rev 3, incorporating the second read-only Claude review.  
+**Revision:** Rev 3.1, incorporating Claude's review and a source-cropping qualification for Part 5 p. 25.  
 **Status:** Supplemental evidence report for independent Claude review. This report does not alter the A2 protocol, establish an allocation, authorize construction, or ratify any earlier audit record.
 
 ## 1. Purpose and scope
@@ -153,9 +153,9 @@ This screen finds no named mutation mechanism, no partial pair identity, and no 
 
 ### 3.5 Close read requested: Part 5, PDF p. 25
 
-Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The operative sentence is transcribed as: “The Rev 1 statement that the two replications ‘add +1 SA/SB into each of their 4 mechanisms’ assumed the two replicated pairs share no mechanism; that assumption cannot be made annex-free.” The page also gives `r_m ∈ {0, 1, 2}` and `Σ_m r_m = 4`.
+Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The recoverable quoted wording says that the two replications “add +1 SA/SB into each of their 4 mechanisms” and concludes: “that assumption cannot be made annex-free.” The intervening line describes the two replicated pairs as sharing no mechanism, but the supplied PDF export is clipped at the right edge after “share no mech...”; that connecting clause is therefore summarized here, not presented as a complete verbatim quotation. The page also gives `r_m ∈ {0, 1, 2}` and `Σ_m r_m = 4`.
 
-**Structural implication:** the sentence treats each replicated pair as a two-mechanism unit: two replicated pairs account for four mechanism incidences. That pair structure presupposes an underlying mechanism set against which the pairs are defined. The page does not name that set or any of its members. The dependency does not supply E1's taxonomy and does not identify the two repeated pairs for E4.
+**Structural implication:** the incidence statement and `Σ_m r_m = 4` treat the two replicated pairs as accounting for four mechanism incidences. That calculation presupposes an underlying mechanism set against which pair membership is defined. The page does not name that set or any of its members. This dependency does not supply E1's taxonomy and does not identify the two repeated pairs for E4.
 
 **Classification:** this is an explicit correction to an incidence assumption and confirms that the two repeated pairs' mechanism overlap was not fixed by the annex-free arithmetic. It does **not** name either repeated pair, identify any mechanism, or assign a pair to a parent. It therefore does not change E1 or E4 from C. It is stronger than a generic audit criterion and should be retained as a concrete structural constraint/uncertainty in the evidence record.
 
