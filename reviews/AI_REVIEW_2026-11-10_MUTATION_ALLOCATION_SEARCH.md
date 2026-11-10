@@ -254,7 +254,7 @@ The following page lists are the mechanical search result, included so Claude ca
 
 ### A3. Assignment-identifier page index
 
-- Parent IDs `G01`-`G30`: P5: 17, 18, 66, 81; P6: 24, 40, 79, 95, 137, 153, 199, 215, 267, 283. These occurrences reproduce the parent-family roster, not parent-to-pair assignments.
+- Parent IDs `G01`-`G30`: P5: 17, 18, 25, 66, 81; P6: 24, 40, 79, 95, 137, 153, 199, 215, 267, 283. These occurrences reproduce the parent-family roster, not parent-to-pair assignments.
 - Solver IDs `S001`-`S150`: no hits.
 - Pair label `pair_id`: P8: 20 only, in the C9 bank-record serialization checklist, not the mutation schedule.
 - Mechanism IDs `M1`-`M8`: no hits.
