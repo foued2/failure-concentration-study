@@ -1,6 +1,7 @@
 # GPT supplemental review: expanded search of the November 6 mutation-design conversations
 
 **Date:** 2026-11-10  
+**Revision:** Rev 3, incorporating the second read-only Claude review.  
 **Status:** Supplemental evidence report for independent Claude review. This report does not alter the A2 protocol, establish an allocation, authorize construction, or ratify any earlier audit record.
 
 ## 1. Purpose and scope
@@ -20,6 +21,8 @@ The scope is exactly these five uploaded source files:
 | 8 | `Audit Recovery Steps (8).pdf` | 21 | `589cd90daec893d2dec403e81da17daf914f9dcc7ea6fabf509381fa3469b1ac` |
 
 Total: **463 pages**. Page references below are PDF page numbers, not printed conversation timestamps.
+
+**Scope boundary for reported searches:** the five PDFs sometimes reproduce statements about searches previously performed on a local machine. Those statements are treated here only as content of the supplied conversation PDFs. This review did not perform or independently verify those historical machine searches, did not inspect any candidate local files, and does not use those statements to enlarge the five-PDF source set. The Part 8 search narrative is described with that limitation in §3.4a.
 
 ## 2. Extraction quality and OCR disclosure
 
@@ -58,7 +61,7 @@ Every page in Parts 4-8 was searched for these terms and their listed inflection
 - `taxonomy`, `taxonomies`
 - `mutant`, `mutants`
 - Additional identifiers/phrases: `eight-mechanism`, `eight mechanisms`, `M01`-`M08`, and `M1`-`M8`
-- Additional Claude-requested terms: `mutation/mutations`, `eight` (word), standalone numeral `8`, `operator`, `perturbation`, `injection`, `variant`, `transformation`, `bug`, `error`, and `flaw` (with regular plurals where applicable). The standalone numeral search is deliberately broad and produces many incidental hits; it is not treated as evidence without contextual screening.
+- Additional Claude-requested terms: `mutation/mutations`, `eight` (word), standalone numeral `8`, `operator`, `perturbation`, `injection`, `variant`, `transformation`, `bug`, `error`, and `flaw` (with regular plurals where applicable). The standalone numeral search is deliberately broad and produces many incidental hits. Its 243-page hit list is not contextually screened in this report and is not used as evidence for E1.
 
 The term `mechanism` produced many generic references to the B1 estimand, support cells, audit criteria and structural arithmetic. It was not treated as evidence of a named mechanism. The candidate-screen ledger below identifies the substantive page groups that could plausibly be confused with taxonomy or fault definitions.
 
@@ -89,7 +92,7 @@ Every page in Parts 4-8 was searched for the additional terms below. Counts are 
 |---|---:|---:|---|
 | `mutation/mutations` | 347 | 204 | Broad and expected in the design discussion; occurrences include generic mutation slots, roles and protocol criteria. Candidate contexts are screened below. |
 | `eight (word)` | 108 | 79 | Mostly references to eight mechanisms, strata, families or other counts; no named taxonomy supplied. |
-| `8 (numeral token)` | 535 | 243 | Highly nonspecific numeric hit; includes dates, version numbers, section numbers, counts and eight-mechanism references. Not independently probative. |
+| `8 (numeral token)` | 535 | 243 | Highly nonspecific numeric hit; includes dates, version numbers, section numbers, counts and eight-mechanism references. The 243 hit pages are unscreened and are not used as E1 evidence. |
 | `operator/operators` | 0 | 0 | No hit. |
 | `perturbation(s)` | 0 | 0 | No hit. |
 | `injection(s)` | 0 | 0 | No hit. |
@@ -132,7 +135,9 @@ No B-level candidate mechanism was identified in the five PDFs. A mention would 
 
 ### 3.4a Mutation-term candidate screen
 
-The new `mutation/mutations` search returned 347 occurrences on 204 pages. Most are repeated audit/protocol text, slot arithmetic, references to the unavailable annex, or generic descriptions of the design. The following non-routine contexts were checked separately:
+The new `mutation/mutations` search returned 347 occurrences on 204 pages. The page index records the full lexical footprint; it does not mean that every occurrence is an allocation candidate. The closer screen was **passage-based, not page-based**. A passage was retained for disposition when it was a non-quoted, non-copy-forward passage that (a) named or described a possible defect/mechanism; (b) gave a concrete relationship or assignment involving a mechanism, pair, parent, SA/SB role or orientation, S-extra, or parent-family compatibility; (c) asserted that one of those design decisions had already been made; or (d) reported search/provenance information bearing on where the actual allocation might be. Routine hits were not separately tabled when they only repeated protocol/audit criteria, generic role or control-variable language, or aggregate arithmetic without identifying any member or assignment. A page could contain both routine and candidate passages. This is a candidate-triage rule, not 347 independent allocation findings; the table groups the passages that met the screen and records their disposition.
+
+The following contexts met that screen or were retained as close-call passages:
 
 | Source | Context | E1/E2 disposition |
 |---|---|---|
@@ -141,14 +146,16 @@ The new `mutation/mutations` search returned 347 occurrences on 204 pages. Most 
 | Part 5, p. 51 | C8 describes an “ambiguous mutation assignment” as a condition that must remain unresolved. | Audit rule, not an assignment. |
 | Part 5, pp. 63, 65, 83 | Availability/provenance record says the annex or assignment manifest was not located in searched sources and the inspected artifact was an input-bank generator, not a mutation constructor. | Absence/provenance statements; no allocation content. |
 | Part 6, pp. 19, 22, 74, 76, 78, 116, 134, 136, 151, 196, 198, 262, 265 | Repeated protocol and audit-record passages, including C8 and the corrected replicated-pair incidence arithmetic. | Repeated criteria, absence statements and arithmetic; no named taxonomy entry or pair assignment. |
-| Part 8, pp. 10, 14 | Search of unrelated local files and retrospective statement that taxonomy, pair assignment and S-extra “were actually decided” in the November 6 conversation. | The retrospective assertion on p. 14 is not accompanied by any names or assignment rows and is expressly challenged immediately afterward; see Part 8 pp. 15-16 for the superseding correction to unknown status. |
+| Part 8, pp. 10, 14 | These pages reproduce an earlier local-machine search narrative. Part 8 p. 10 reports that a filename-level search found `doctor-workspace-recovered/` and LC518-adjacent filenames; pair/schedule/assign hits were initially `node_modules` noise. After filtering 260 matches, the transcript says the non-library matches were in that project and study-repository branch logs. It names `PROV-001/mutation_manifest_original.json` and `generator_assignment_v1.json`; it says their metadata dates were June 2026 and that candidate contents were not read. Part 8 p. 14 summarizes the claimed search locations as the study repository and its refs/history, the bank artifact, Downloads/Desktop/Documents/OneDrive, PyCharmProjects, Temp, and committed archives. It then identifies chat/e-mail, the November 6 conversation, and other machines/backups as places not searched. | This is a report of a prior search contained in the PDF, not a search performed or independently verified by this review. Filename and metadata observations are not allocation content and do not establish that an annex existed or did not exist. The retrospective assertion on p. 14 that the design decisions “were actually decided” is not accompanied by names or assignment rows and is challenged immediately afterward; Part 8 pp. 15-16 supersede the missing-annex premise and state that standalone-annex existence and allocation completeness remain unknown. |
 | Part 8, p. 20 | C9 bank serialization checklist includes `pair_id` and references to the private mutation annex. | Diagnostic-bank schema and authorization boundary, not the mutation allocation. |
 
-This screen finds no named mutation mechanism, no partial pair identity, and no parent assignment. The Part 8 p. 14 assertion is retained as a superseded claim, not treated as proof.
+This screen finds no named mutation mechanism, no partial pair identity, and no parent assignment. The Part 8 p. 14 assertion is retained as a superseded claim, not treated as proof. The historical local-machine search report is not evidence that a standalone annex existed; its file-search conclusions are not independently verified here, and the Part 8 p. 15 correction controls the conversation's stated status.
 
 ### 3.5 Close read requested: Part 5, PDF p. 25
 
-Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The page states that the Rev 1 statement that the two replications add SA/SB slots “into each of their 4 mechanisms” **assumed the two replicated pairs share no mechanism**, and concludes: “that assumption cannot be made annex-free.” It then notes that the number of repeated-pair incidences per mechanism can be 0, 1 or 2, with the sum equal to 4.
+Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The operative sentence is transcribed as: “The Rev 1 statement that the two replications ‘add +1 SA/SB into each of their 4 mechanisms’ assumed the two replicated pairs share no mechanism; that assumption cannot be made annex-free.” The page also gives `r_m ∈ {0, 1, 2}` and `Σ_m r_m = 4`.
+
+**Structural implication:** the sentence treats each replicated pair as a two-mechanism unit: two replicated pairs account for four mechanism incidences. That pair structure presupposes an underlying mechanism set against which the pairs are defined. The page does not name that set or any of its members. The dependency does not supply E1's taxonomy and does not identify the two repeated pairs for E4.
 
 **Classification:** this is an explicit correction to an incidence assumption and confirms that the two repeated pairs' mechanism overlap was not fixed by the annex-free arithmetic. It does **not** name either repeated pair, identify any mechanism, or assign a pair to a parent. It therefore does not change E1 or E4 from C. It is stronger than a generic audit criterion and should be retained as a concrete structural constraint/uncertainty in the evidence record.
 
