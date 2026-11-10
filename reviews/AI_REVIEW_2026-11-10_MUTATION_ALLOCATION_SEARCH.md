@@ -130,6 +130,22 @@ No B-level candidate mechanism was identified in the five PDFs. A mention would 
 
 **E1 remains C for the concrete taxonomy content, with a search-scope qualification.** The expanded term search materially reduces the concern that an obvious candidate was missed because it was described as a “class,” “type,” “kind,” “category,” “defect,” or “failure mode.” It does not prove that no named mechanism was discussed in an earlier or separate conversation outside Parts 4-8. It also cannot provide name-by-name verification against a canonical list because no such list is present in these source PDFs.
 
+### 3.4a Mutation-term candidate screen
+
+The new `mutation/mutations` search returned 347 occurrences on 204 pages. Most are repeated audit/protocol text, slot arithmetic, references to the unavailable annex, or generic descriptions of the design. The following non-routine contexts were checked separately:
+
+| Source | Context | E1/E2 disposition |
+|---|---|---|
+| Part 4, p. 13 | Conversation describes searching for the annex, then inspecting the input-bank generator; it explicitly distinguishes that generator from the solver constructor and says it contains no mutation schedule. | Search narrative, not taxonomy or allocation content. The early “missing” language is later corrected in Part 8. |
+| Part 5, p. 46 | Auditor-independence rule says the auditor must not have helped define the taxonomy, assign pairs to parents, design S-extra, or decide retained assignments. | Identifies categories of prior design work that would create a conflict; supplies no names or assignments. |
+| Part 5, p. 51 | C8 describes an “ambiguous mutation assignment” as a condition that must remain unresolved. | Audit rule, not an assignment. |
+| Part 5, pp. 63, 65, 83 | Availability/provenance record says the annex or assignment manifest was not located in searched sources and the inspected artifact was an input-bank generator, not a mutation constructor. | Absence/provenance statements; no allocation content. |
+| Part 6, pp. 19, 22, 74, 76, 78, 116, 134, 136, 151, 196, 198, 262, 265 | Repeated protocol and audit-record passages, including C8 and the corrected replicated-pair incidence arithmetic. | Repeated criteria, absence statements and arithmetic; no named taxonomy entry or pair assignment. |
+| Part 8, pp. 10, 14 | Search of unrelated local files and retrospective statement that taxonomy, pair assignment and S-extra “were actually decided” in the November 6 conversation. | The retrospective assertion on p. 14 is not accompanied by any names or assignment rows and is expressly challenged immediately afterward; see Part 8 pp. 15-16 for the superseding correction to unknown status. |
+| Part 8, p. 20 | C9 bank serialization checklist includes `pair_id` and references to the private mutation annex. | Diagnostic-bank schema and authorization boundary, not the mutation allocation. |
+
+This screen finds no named mutation mechanism, no partial pair identity, and no parent assignment. The Part 8 p. 14 assertion is retained as a superseded claim, not treated as proof.
+
 ### 3.5 Close read requested: Part 5, PDF p. 25
 
 Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The page states that the Rev 1 statement that the two replications add SA/SB slots “into each of their 4 mechanisms” **assumed the two replicated pairs share no mechanism**, and concludes: “that assumption cannot be made annex-free.” It then notes that the number of repeated-pair incidences per mechanism can be 0, 1 or 2, with the sum equal to 4.
