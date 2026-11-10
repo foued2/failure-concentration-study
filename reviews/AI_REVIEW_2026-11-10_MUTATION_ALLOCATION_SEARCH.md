@@ -37,6 +37,10 @@ All 463 pages returned extractable text. No page returned fewer than 100 non-whi
 
 The lowest-text page in each PDF was rendered and visually checked. These pages contained visible text; none was a scanned, image-only page requiring OCR. Part 5 page 42 contains code/output as well as conversation text, and its extracted text is present. The extraction therefore supports a text search across the supplied PDFs, while not claiming that text extraction can recover information that was never present in the PDF itself.
 
+### 2.1 Source-file hash verification
+
+I recomputed SHA-256 from the five original PDF files currently attached in the working session. All five values match the hashes recorded in §1 exactly: Part 4 `306c3a3e546fae308f0f0972db97268ba6fd8546690c83a973c999f0b0b9c010`; Part 5 `63cec5431b417de671515917d8581f131ccd1650006a8c3c26dbff62fe3c3c12`; Part 6 `711c0794e851b6d1d1f14495b4e0aae5ca43abd723756c84d7d071442c140d8c`; Part 7 `5a283729f9afc418bd40d9a73633b7c34efaa646209c5e96442a6e4298642443`; Part 8 `589cd90daec893d2dec403e81da17daf914f9dcc7ea6fabf509381fa3469b1ac`. This verifies the current attached source bytes against the report's stated hashes; it does not establish provenance before upload.
+
 ## 3. E1 expanded search
 
 ### 3.1 Search vocabulary
@@ -54,6 +58,7 @@ Every page in Parts 4-8 was searched for these terms and their listed inflection
 - `taxonomy`, `taxonomies`
 - `mutant`, `mutants`
 - Additional identifiers/phrases: `eight-mechanism`, `eight mechanisms`, `M01`-`M08`, and `M1`-`M8`
+- Additional Claude-requested terms: `mutation/mutations`, `eight` (word), standalone numeral `8`, `operator`, `perturbation`, `injection`, `variant`, `transformation`, `bug`, `error`, and `flaw` (with regular plurals where applicable). The standalone numeral search is deliberately broad and produces many incidental hits; it is not treated as evidence without contextual screening.
 
 The term `mechanism` produced many generic references to the B1 estimand, support cells, audit criteria and structural arithmetic. It was not treated as evidence of a named mechanism. The candidate-screen ledger below identifies the substantive page groups that could plausibly be confused with taxonomy or fault definitions.
 
@@ -76,6 +81,26 @@ Counts below are occurrences and pages containing at least one occurrence, acros
 
 No `M01`-`M08` or `M1`-`M8` mechanism identifiers were found. No list of eight candidate names was found.
 
+### 3.2a Additional vocabulary requested by Claude
+
+Every page in Parts 4-8 was searched for the additional terms below. Counts are lexical occurrences and pages with at least one hit.
+
+| Term | Occurrences | Pages | Initial relevance assessment |
+|---|---:|---:|---|
+| `mutation/mutations` | 347 | 204 | Broad and expected in the design discussion; occurrences include generic mutation slots, roles and protocol criteria. Candidate contexts are screened below. |
+| `eight (word)` | 108 | 79 | Mostly references to eight mechanisms, strata, families or other counts; no named taxonomy supplied. |
+| `8 (numeral token)` | 535 | 243 | Highly nonspecific numeric hit; includes dates, version numbers, section numbers, counts and eight-mechanism references. Not independently probative. |
+| `operator/operators` | 0 | 0 | No hit. |
+| `perturbation(s)` | 0 | 0 | No hit. |
+| `injection(s)` | 0 | 0 | No hit. |
+| `variant(s)` | 15 | 15 | Mostly solver-variant and protocol/version language; no named mutation taxonomy entry. |
+| `transformation(s)` | 1 | 1 | One generic transformation mention; no named mechanism or allocation. |
+| `bug(s)` | 0 | 0 | No hit. |
+| `error(s)` | 14 | 14 | General reasoning, process or diagnostic-bank error references; no taxonomy entry. |
+| `flaw(s)` | 0 | 0 | No hit. |
+
+The complete page index for these terms appears in Appendix A5.
+
 ### 3.3 Page-indexed screened mentions and dispositions
 
 This is the candidate-screen list, not a claim that every generic use of the word “mechanism” is separately meaningful. Entries are grouped where the same protocol passage is repeated in later revisions.
@@ -88,7 +113,7 @@ This is the candidate-screen list, not a claim that every generic use of the wor
 | Part 5, pp. 17-18 | Parent-family roster G01-G30, 28+2 pair arithmetic, “each mechanism appears in exactly seven base pairs,” and S-extra slot totals. | Structural arithmetic only. It gives no mechanism names and no pair-to-parent assignments. G01-G30 occur as family roster ranges, not as rows mapped to a mechanism pair. |
 | Part 5, pp. 30, 39 | “Written defect definition” and examples such as `f=(2,0,0,...)` versus `f=(1,1,0,...)`. | C6 audit standard and hypothetical diagnostic distributions. These examples are not definitions of actual mutation mechanisms and do not assign a mechanism to a parent. |
 | Part 5, pp. 38-39, 47 | C1 says exactly eight mechanisms must be defined, each with a written defect definition; C2/C3 define pair and orientation checks; C6 defines the required evidence. | Audit criteria describing what a supplied taxonomy/allocation must contain. The required definitions and assignments are not present in these passages. |
-| Part 5, pp. 24, 32, 36, 41, 43, 54, 62-63, 70, 80 | “Defective,” “defect,” verdict categories, and “different in kind.” | Verdict or methodological language. No named mutation candidate. Part 5 p. 43 explains that C6 depends on declared defect definitions; it supplies no such definition. |
+| Part 5, pp. 24, 32, 36, 41, 43, 54, 62-63, 80 | “Defective,” “defect,” and verdict/methodological language. | Verdict or methodological language. No named mutation candidate. Part 5 p. 43 explains that C6 depends on declared defect definitions; it supplies no such definition. Part 5 p. 70 is excluded from this defect-hit group: it is a `kind` hit (“different in kind”), not a `defect/defective` lexical hit. |
 | Part 6, pp. 3, 55, 75, 110, 133, 170, 237, 263 | Repeated C1 wording: exactly eight mechanisms, each with a written defect definition that indicates intended diagnostic-stratum reach. | Repeated audit criterion. None of these pages supplies the eight definitions or names. |
 | Part 6, pp. 10, 16, 48, 50, 63, 71, 103, 118-120, 128, 161, 179-181, 187, 190, 223, 230, 233-234, 246-248, 255, 259, 291, 299, 302, 304 | “Evidence classes,” verdict categories, and “incident/fidelity failure classes.” | These refer to evidence/reporting populations, verdict labels, or document-transport/composition incidents. They are not mutation classes. In particular, Part 6 p. 168 discusses a paste-fidelity failure class, not a candidate mutation. |
 | Part 6, pp. 20, 22, 38, 47, 64, 77, 93, 101, 120, 134, 151, 160, 181, 195-196, 213, 221, 248, 265, 281, 290 | “Defect/defective” in the repeated audit record and protocol review. | These say absence of evidence is not evidence that the allocation is defective, or refer to review defects in the record. They do not define mutation mechanisms. |
@@ -104,6 +129,12 @@ This is the candidate-screen list, not a claim that every generic use of the wor
 No B-level candidate mechanism was identified in the five PDFs. A mention would count as B only if it identifies a named fault/mechanism as a proposed member of the intended eight-mechanism mutation taxonomy, even if the definition or approval remained incomplete. The screened hits above do not do that.
 
 **E1 remains C for the concrete taxonomy content, with a search-scope qualification.** The expanded term search materially reduces the concern that an obvious candidate was missed because it was described as a “class,” “type,” “kind,” “category,” “defect,” or “failure mode.” It does not prove that no named mechanism was discussed in an earlier or separate conversation outside Parts 4-8. It also cannot provide name-by-name verification against a canonical list because no such list is present in these source PDFs.
+
+### 3.5 Close read requested: Part 5, PDF p. 25
+
+Part 5 p. 25 is not merely a generic mention. It corrects a specific earlier assumption about the incidence of the two repeated pairs. The page states that the Rev 1 statement that the two replications add SA/SB slots “into each of their 4 mechanisms” **assumed the two replicated pairs share no mechanism**, and concludes: “that assumption cannot be made annex-free.” It then notes that the number of repeated-pair incidences per mechanism can be 0, 1 or 2, with the sum equal to 4.
+
+**Classification:** this is an explicit correction to an incidence assumption and confirms that the two repeated pairs' mechanism overlap was not fixed by the annex-free arithmetic. It does **not** name either repeated pair, identify any mechanism, or assign a pair to a parent. It therefore does not change E1 or E4 from C. It is stronger than a generic audit criterion and should be retained as a concrete structural constraint/uncertainty in the evidence record.
 
 ## 4. E4 expanded repetition search
 
@@ -268,3 +299,28 @@ Because `mechanism` is by far the most frequent E1 term, the complete hit-page i
 - P6: 1, 3, 4, 5, 6, 7, 9, 10, 12, 13, 14, 15, 16, 18, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 32, 39, 40, 41, 45, 46, 47, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58, 59, 60, 62, 63, 65, 66, 67, 69, 70, 73, 75, 77, 79, 80, 81, 83, 84, 85, 87, 93, 94, 95, 96, 100, 101, 102, 103, 104, 105, 107, 108, 109, 110, 111, 112, 113, 114, 115, 117, 119, 120, 121, 122, 123, 124, 126, 127, 128, 131, 132, 133, 135, 137, 138, 139, 141, 142, 143, 145, 152, 153, 154, 158, 159, 160, 161, 162, 163, 166, 170, 171, 172, 173, 174, 175, 176, 178, 179, 180, 181, 182, 183, 184, 185, 188, 189, 190, 193, 194, 195, 197, 199, 200, 201, 203, 204, 205, 207, 213, 214, 215, 216, 220, 221, 222, 223, 224, 225, 228, 232, 233, 237, 238, 239, 240, 241, 242, 243, 245, 247, 248, 249, 250, 251, 252, 256, 257, 258, 259, 261, 263, 266, 267, 268, 269, 270, 271, 272, 273, 275, 282, 283, 284, 288, 290, 291, 292, 293, 296, 297, 301, 303.
 - P7: 1, 2.
 - P8: 11, 15.
+### A5. Complete page index for Claude-requested additional terms
+
+The page lists below are direct lexical hits from the current PDF text extraction. The numeral `8` index is intentionally broad and should not be interpreted semantically without context.
+
+**mutation/mutations:** 347 occurrences on 204 pages. P4: 2, 4, 10, 11, 12, 13, 14; P5: 17, 18, 20, 21, 23, 24, 25, 26, 28, 29, 30, 33, 35, 37, 38, 39, 43, 46, 47, 48, 51, 56, 61, 63, 64, 65, 66, 68, 71, 72, 73, 75, 78, 80, 81, 82, 83, 84; P6: 3, 4, 5, 8, 14, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30, 31, 34, 37, 38, 39, 40, 41, 42, 47, 50, 54, 55, 56, 57, 58, 60, 67, 69, 74, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 88, 92, 93, 94, 95, 96, 97, 102, 105, 106, 109, 110, 111, 112, 114, 116, 124, 127, 132, 134, 135, 136, 137, 139, 142, 143, 144, 146, 150, 151, 152, 153, 154, 155, 160, 163, 164, 167, 170, 171, 172, 174, 176, 185, 189, 194, 196, 198, 199, 201, 204, 205, 206, 208, 212, 213, 214, 215, 216, 217, 222, 225, 226, 229, 232, 237, 238, 240, 241, 243, 252, 257, 258, 262, 264, 265, 266, 267, 268, 269, 270, 272, 274, 275, 277, 280, 282, 283, 284, 285, 286, 290, 293, 294, 295, 297, 301, 304, 306; P7: 1, 2, 29, 30; P8: 2, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 20
+
+**eight (word):** 108 occurrences on 79 pages. P4: 11, 14; P5: 2, 30, 33, 38, 39, 47, 51, 55, 56, 64, 68, 71, 85; P6: 3, 5, 8, 13, 14, 22, 23, 26, 30, 43, 51, 52, 55, 57, 60, 61, 66, 67, 69, 77, 81, 85, 98, 105, 110, 112, 116, 117, 123, 124, 127, 135, 139, 143, 156, 163, 170, 172, 176, 177, 184, 185, 189, 197, 201, 205, 218, 225, 237, 239, 244, 251, 252, 257, 265, 266, 270, 273, 286, 293; P7: 1; P8: 11, 13, 15
+
+**8 (numeral token):** 535 occurrences on 243 pages. P4: 4, 5, 8, 12, 13; P5: 1, 6, 8, 9, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 30, 32, 33, 36, 39, 41, 42, 43, 47, 48, 51, 53, 55, 60, 62, 66, 68, 69, 70, 71, 72, 73, 76, 77, 79, 80, 81, 82, 84, 85; P6: 3, 5, 8, 11, 12, 13, 18, 19, 20, 24, 25, 27, 28, 29, 30, 31, 32, 34, 35, 37, 38, 39, 40, 43, 50, 51, 52, 53, 55, 56, 57, 60, 64, 66, 68, 69, 70, 73, 75, 79, 80, 82, 83, 84, 85, 86, 89, 90, 92, 93, 94, 95, 98, 103, 104, 105, 106, 107, 108, 110, 111, 112, 116, 120, 122, 123, 125, 126, 127, 128, 130, 131, 133, 137, 138, 140, 141, 142, 143, 144, 145, 147, 148, 150, 151, 152, 153, 156, 162, 163, 164, 165, 166, 167, 168, 170, 172, 176, 177, 181, 184, 187, 188, 189, 190, 192, 193, 195, 199, 200, 202, 203, 204, 205, 206, 209, 210, 212, 213, 214, 215, 218, 223, 224, 225, 226, 227, 228, 229, 230, 231, 235, 238, 239, 244, 248, 251, 254, 256, 257, 258, 261, 263, 267, 268, 270, 271, 272, 273, 274, 275, 277, 278, 279, 280, 281, 282, 283, 286, 292, 293, 294, 295, 296, 297, 298, 299, 302; P7: 3, 5, 7, 8, 9; P8: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+
+**operator/operators:** 0 occurrences on 0 pages. No hits
+
+**perturbation(s):** 0 occurrences on 0 pages. No hits
+
+**injection(s):** 0 occurrences on 0 pages. No hits
+
+**variant(s):** 15 occurrences on 15 pages. P5: 13, 35, 38, 48, 61; P6: 4, 19, 55, 74, 110, 132, 171, 194, 238, 262
+
+**transformation(s):** 1 occurrences on 1 pages. P8: 3
+
+**bug(s):** 0 occurrences on 0 pages. No hits
+
+**error(s):** 14 occurrences on 14 pages. P4: 7; P5: 3, 8, 76; P6: 34, 89, 147, 168, 209, 230, 278, 298; P8: 15, 20
+
+**flaw(s):** 0 occurrences on 0 pages. No hits
