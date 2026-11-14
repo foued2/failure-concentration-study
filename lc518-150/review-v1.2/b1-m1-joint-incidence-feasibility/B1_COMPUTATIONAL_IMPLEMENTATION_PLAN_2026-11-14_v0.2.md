@@ -65,7 +65,7 @@ The row order is a canonical sort by stable version identifier, then record iden
 
 The baseline design must be full column rank. Under the declared complete crossing, every included version contributes one row for each of the 78 canonical records; cell indicators are therefore orthogonal to the sum-zero record-contrast columns, and the full-rank Helmert basis removes record-effect aliasing.
 
-The enriched C_D column must be linearly independent of all baseline columns. For each scored training fold-cell, v1.7 requires W_C,c_train > 0. Since every training version contributes all 78 records, centring C_D within a cell gives a positive residual sum of squares proportional to 78 times W_C,c_train. That residual is orthogonal to the record contrasts because each version contains the complete record set and every contrast sums to zero. Thus the exact within-cell variation gate supplies the required independence from both cell indicators and record contrasts. The implementation must verify this structural condition and record the numerical rank check; a failed check makes the dataset unavailable. It must never respond by dropping rows, cells, columns, or records.
+The enriched C_D column must be linearly independent of all baseline columns. For each scored training fold-cell, v1.7 requires W_C,c_train > 0. Since every training version contributes all 78 records, centring C_D within a cell gives a positive residual sum of squares proportional to 78 times W_C,c_train. That residual is orthogonal to the record contrasts because each version contains the complete record set and every contrast sums to zero. Thus the exact within-cell variation gate supplies the required independence from both cell indicators and record contrasts. The implementation must compute each W_C,c_train positivity decision from exact reduced-rational C_D values, not rounded floating-point values. It must verify this structural condition and record the numerical rank check; a failed check makes the dataset unavailable. It must never respond by dropping rows, cells, columns, or records.
 
 ### 2.3 Exact representation of concentration
 
@@ -77,7 +77,7 @@ This preserves exact permutation combinatorics and prevents two distinct rationa
 
 ### 3.1 Ordinary maximum-likelihood fits and the v1.7 convergence criterion
 
-Use deterministic Fisher-scoring / iteratively reweighted least squares (IRLS) for both models. For the current design matrix X, fitted probabilities pi, and diagonal weight matrix W with entries w_i = pi_i(1-pi_i), define the expected Fisher information I = X-transpose W X and the ordinary score U = X-transpose(y-pi). The ordinary Fisher-scoring direction d solves I d = U. No explicit matrix inverse is formed.
+Use deterministic Fisher-scoring / iteratively reweighted least squares (IRLS) for both models. Compute the linear predictor z = X gamma, probabilities with a numerically stable logistic function, and the log-likelihood as the sum over rows of y_i z_i minus logaddexp(0,z_i), avoiding direct evaluation of log(pi_i) or log(1-pi_i). For the current design matrix X, fitted probabilities pi, and diagonal weight matrix W with entries w_i = pi_i(1-pi_i), define the expected Fisher information I = X-transpose W X and the ordinary score U = X-transpose(y-pi). The ordinary Fisher-scoring direction d solves I d = U. No explicit matrix inverse is formed.
 
 The v1.7 convergence threshold is 10^-8 and its componentwise scaling is retained. To operationalise it without making the decision depend on the arbitrary Helmert coordinate basis, evaluate it in the original constrained coefficient representation:
 - alpha components: use the ordinary gradient component g_alpha,c and denominator max(1, abs(alpha_c));
@@ -102,7 +102,7 @@ When the v1.7 enriched-model trigger fires, refit both models using the exact ob
 F(gamma) = ell(gamma) + 0.5 log det I(gamma),
 where I(gamma) is the expected Fisher information X-transpose W X in the same constrained parameterization and W has entries pi_i(1-pi_i). Do not substitute the observed Hessian for expected information.
 
-For the current design matrix X, define the leverage h_i = w_i times x_i-transpose I-inverse x_i. The Firth adjusted score, which is the gradient of the full penalized objective, is:
+For the current design matrix X, define the leverage h_i = w_i times x_i-transpose I-inverse x_i. Compute it without forming I-inverse: if I = L L-transpose is the Cholesky factorization, solve L q_i = x_i and set h_i = w_i times q_i-transpose q_i. The Firth adjusted score, which is the gradient of the full penalized objective, is:
 U_star = X-transpose [ y - pi + h elementwise-multiplied by (1/2 - pi) ].
 
 The derivative identity underlying this score is:
@@ -162,7 +162,7 @@ The exact numerical-library version and platform build are not frozen in v0.2 be
 
 ### 5.1 Generator and fixed stream hierarchy
 
-Candidate generator: NumPy PCG64DXSM, initialized from the v1.7 root seed 20261114 through NumPy SeedSequence. The exact NumPy version and bit-generator implementation must be pinned before software validation. NumPy documents PCG64DXSM as an upgraded PCG64 generator and documents SeedSequence spawning as producing independent and very probably non-overlapping initial states; this is an engineering stream-construction guarantee, not a proof of mathematical independence. References: https://numpy.org/doc/stable/reference/random/bit_generators/ and https://numpy.org/doc/stable/reference/random/parallel.html. The inferential guarantee remains the v1.7 guarantee with respect to the ideal independent-uniform sampling model, not conditional on a deterministic seed.
+Candidate generator: NumPy PCG64DXSM, initialized from the v1.7 root seed 20261114 through NumPy SeedSequence. The generator is instantiated explicitly as Generator(PCG64DXSM(child_seed_sequence)); do not use default_rng or rely on its default bit generator. The exact NumPy version and bit-generator implementation must be pinned before software validation. NumPy documents PCG64DXSM as an upgraded PCG64 generator and documents SeedSequence spawning as producing independent and very probably non-overlapping initial states; this is an engineering stream-construction guarantee, not a proof of mathematical independence. References: https://numpy.org/doc/stable/reference/random/bit_generators/ and https://numpy.org/doc/stable/reference/random/parallel.html. The inferential guarantee remains the v1.7 guarantee with respect to the ideal independent-uniform sampling model, not conditional on a deterministic seed.
 
 Use exactly one proposal stream per dataset. Do not create per-cell streams and do not offer alternative stream-allocation schemes. Within each dataset, visit eligible cells in lexicographic order of the exact cell key (q, Z, k, ell), and versions within a cell in ascending stable version-identifier order. Use the dataset's single proposal stream sequentially for the within-cell Fisher-Yates shuffles. Every proposal consumes the stream in this canonical traversal order.
 
@@ -170,7 +170,7 @@ For N4-a, establish the fixed task order as lambda-major then replication-minor:
 
 ### 5.2 Uniform proposals on Omega
 
-For each cell, use an unbiased Fisher-Yates shuffle of its version positions, drawing each integer index uniformly from the inclusive range 0 through the current upper index using the designated NumPy Generator. Assign the observed multiset of reduced-rational C_D values to the shuffled positions. Each distinct arrangement has the same number of raw permutations, so a uniform position shuffle induces the uniform proposal over that cell's distinct arrangements. Canonical cell traversal with one dataset stream yields the product-uniform proposal over Omega under the stated sampling model.
+For each cell, use an unbiased Fisher-Yates shuffle of its version positions. At current upper index i, draw j using Generator.integers(low=0, high=i+1), whose half-open range is exactly the integers 0 through i, then swap positions i and j. Assign the observed multiset of reduced-rational C_D values to the shuffled positions. Each distinct arrangement has the same number of raw permutations, so a uniform position shuffle induces the uniform proposal over that cell's distinct arrangements. Canonical cell traversal with one dataset stream yields the product-uniform proposal over Omega under the stated sampling model.
 
 For every proposal, compute the complete audit-equality key and accept if and only if it exactly equals the observed key. Rejected proposals consume one design check and no model fit. Continue until 9,999 accepted assignments or the hard 10^8 design-check cap is reached.
 
