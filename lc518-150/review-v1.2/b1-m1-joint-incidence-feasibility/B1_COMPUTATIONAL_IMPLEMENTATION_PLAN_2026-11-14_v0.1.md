@@ -32,7 +32,7 @@ Any implementation choice below is subordinate to these rules. A computational c
 
 ### 2.1 Record-effect constraint
 
-Use a fixed, full-column-rank contrast basis for the 78 record effects. The recommended construction is an orthonormal Helmert contrast matrix (Hinmathbb R^{78	imes77}), fixed by record identifier order. Write (omega=Heta). This enforces (sum_romega_r=0) by construction and avoids a redundant 78th record coefficient.
+Use a fixed, full-column-rank contrast basis for the 78 record effects. The recommended construction is an orthonormal Helmert contrast matrix H with 78 rows and 77 columns, fixed by record identifier order. Write omega = H eta. This enforces sum over r of omega_r = 0 by construction and avoids a redundant 78th record coefficient.
 
 The canonical record order must be read from the frozen bank manifest and stored in the run manifest. No order may be inferred from incidental file-system order.
 
