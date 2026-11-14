@@ -48,7 +48,7 @@ Before optimization, verify dimensions, finite inputs, binary outcomes, unique r
 
 ### 2.3 Exact representation of concentration
 
-Store each concentration as its exact rational definition (m/k), where (m=max_j f_j) and (k=k_{fail}), alongside its displayed decimal representation. Equality, distinct-value counts, multiplicities and permutation enumeration use the rational pair in reduced form, never rounded floating-point values. Conversion to IEEE-754 binary64 occurs only when building the numerical predictor column for model fitting.
+Store each concentration as its exact rational definition (m/k), where (m=max_j f_j) and (k=k_{fail}), alongside its displayed decimal representation. Equality, distinct-value counts, multiplicities and permutation enumeration use the reduced integer numerator/denominator pair, never rounded floating-point values. Conversion to IEEE-754 binary64 occurs only when building the numerical predictor column for model fitting.
 
 This preserves exact permutation combinatorics and prevents two distinct rational concentrations from being merged by display rounding.
 
@@ -89,8 +89,8 @@ If the trigger fires, refit both models with the Firth objective. If the baselin
 
 **Candidate routine:** IEEE-754 binary64 arithmetic with the LAPACK symmetric positive-definite Cholesky factorization (lower-triangular form, corresponding to `DPOTRF`), called through the pinned numerical-library interface selected in the environment lock.
 
-- Solve systems by forward/back substitution using the Cholesky factor. Never compute (I^{-1}) explicitly.
-- Compute (logdet I=2sum_ilog L_{ii}) from the Cholesky diagonal.
+- Solve systems by forward/back substitution using the Cholesky factor. Never compute the inverse of the information matrix explicitly.
+- Compute the log determinant as twice the sum of the natural logarithms of the Cholesky diagonal entries.
 - A non-positive-definite matrix, factorization error, non-finite factor, or non-finite log-determinant is a hard fit failure under v1.7.
 - No diagonal perturbation, eigenvalue clipping, pseudo-determinant, generalized inverse, or fallback factorization is permitted.
 - Record the library name/version, linked LAPACK implementation, binary64 platform details, factorization status and any reported numerical error code.
@@ -114,7 +114,7 @@ The statistical guarantee remains the v1.7 sampling-model guarantee, not a claim
 
 ### 5.2 Uniform proposals on Ω
 
-For each cell, randomly permute the cell's version positions with an unbiased Fisher–Yates shuffle driven by the designated generator stream, then assign the observed multiset of rational (C_D) values to those positions. Because every distinct arrangement has the same number of underlying position permutations, the induced proposal is uniform over that cell's distinct assignments. Independent cell streams or a fixed sequential stream consumption rule produce the product-uniform proposal on Ω.
+For each cell, randomly permute the cell's version positions with an unbiased Fisher–Yates shuffle driven by the designated generator stream, then assign the observed multiset of rational C_D values to those positions. Because every distinct arrangement has the same number of underlying position permutations, the induced proposal is uniform over that cell's distinct assignments. Independent cell streams or a fixed sequential stream consumption rule produce the product-uniform proposal on Ω.
 
 For every proposal, compute the complete audit-equality key and accept if and only if it exactly equals the observed key. Rejected proposals consume one design check and no model fit. Continue until 9,999 accepted assignments or the hard 10^8 design-check cap is reached. Never change the cap or accepted-sample target after observing the acceptance rate.
 
@@ -149,7 +149,7 @@ The report must include:
 2. exact or bounded (|\Omega|), with arbitrary-precision integer arithmetic;
 3. the audit-key components that can vary under assignments and the reason each component is invariant or assignment-sensitive;
 4. an exact count of (|\Omega_{adm}|) only if it can be obtained by design-only combinatorial enumeration within the declared cap; otherwise a mathematically justified bound or a clearly labelled unknown;
-5. the implied expected proposal count (9,999/a) only when (a) is known, plus a conservative cap-attainment assessment;
+5. the implied expected proposal count (9,999 divided by a) only when a is known, plus a conservative cap-attainment assessment;
 6. a predeclared feasibility decision: exact enumeration, Monte Carlo potentially feasible, or computationally infeasible/unresolved.
 
 Do not substitute an estimated acceptance rate based on outcome-dependent trial runs. Do not run a pilot sampler against the project bank. If the audit-key selectivity cannot be bounded adequately without inspecting or reusing protected project data, mark the feasibility assessment unresolved and stop. The 10^8 cap is binding; no relaxation is permitted.
