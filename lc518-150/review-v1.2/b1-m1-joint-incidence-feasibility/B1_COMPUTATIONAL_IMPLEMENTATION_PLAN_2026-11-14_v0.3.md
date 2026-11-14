@@ -162,13 +162,13 @@ The implementation must independently verify the adjusted-score formula against 
 
 The enriched ordinary model is fitted first. If it does not converge, trigger (i) in v1.7 fires and both models are refitted using the Firth objective. For this computational plan, enriched ordinary nonconvergence includes:
 - reaching 200 accepted updates without satisfying the convergence criterion;
-- failure to find an Armijo-acceptable step within the declared line-search sequence;
+- an Armijo line-search stall: no candidate satisfies the direct-increment inequality before alpha underflows to zero or the candidate vector becomes identical to the current vector;
 - non-finite objective, score, information or parameter values before convergence;
 - Cholesky failure when factorization is required to compute an ordinary enriched-model update.
 
-If the enriched ordinary fit converges with finite parameters, first check whether abs(beta_C) > 50. If so, trigger (ii) fires and both models are refitted with Firth. Otherwise, compute the Wald standard error from the inverse expected information at the final accepted ordinary enriched-model iterate:
+If the enriched ordinary fit converges with finite parameters, first check whether abs(beta_C) > 50. If so, trigger (ii) fires and both models are refitted with Firth. Otherwise, at the final accepted ordinary enriched-model parameter vector, recompute the expected information from that vector's fitted probabilities and weights and factorize this final-iterate matrix once. Use this same final-iterate Cholesky factorization for the Wald standard error:
 SE(beta_C) = square root of e_beta-transpose I-inverse e_beta,
-where e_beta selects the beta_C coordinate in the enriched parameter vector. Compute this quantity by Cholesky factorization and triangular solves; do not explicitly form I-inverse. The orthonormal Helmert transformation affects only nuisance coordinates and leaves this beta_C variance unchanged. If the finite SE exceeds 10^3, trigger (iii) fires and both models are refitted with Firth.
+where e_beta selects the beta_C coordinate in the enriched parameter vector. Compute the selected inverse-information quadratic form by triangular solves; do not explicitly form I-inverse. Do not reuse an information factorization from the preceding iterate. The orthonormal Helmert transformation affects only nuisance coordinates and leaves this beta_C variance unchanged. If the final-iterate factorization fails or the resulting SE is non-finite, the SE trigger cannot be evaluated and the fold/test is unavailable; this is not re-labelled as SE > 10^3. If the finite SE exceeds 10^3, trigger (iii) fires and both models are refitted with Firth.
 
 If the enriched fit has apparently converged but the final expected information cannot be factorized to compute the Wald SE, or the SE is non-finite, trigger (iii) cannot be evaluated. This is not re-labelled as an SE exceeding 10^3 and does not create a new Firth trigger: the fold/test is unavailable under v1.7's no-silent-fallback rule.
 
@@ -176,15 +176,15 @@ If none of the three enriched-model triggers fires, fit the baseline ordinary mo
 
 | Ordinary-fit outcome | Required action |
 |---|---|
-| Enriched ordinary fit does not converge for any reason listed above | Trigger (i); jointly Firth-refit baseline and enriched models |
+| Enriched ordinary fit does not converge, including an Armijo line-search stall or a representability-limited stall | Trigger (i); jointly Firth-refit baseline and enriched models |
 | Enriched ordinary fit converges and abs(beta_C) > 50 | Trigger (ii); jointly Firth-refit both models |
-| Enriched ordinary fit converges, abs(beta_C) <= 50, final expected information is factorable, and Wald SE > 10^3 | Trigger (iii); jointly Firth-refit both models |
-| Enriched ordinary fit converges but final information cannot be factorized for SE, or SE is non-finite | Unavailable; do not invent an SE threshold or an extra trigger |
+| Enriched ordinary fit converges, abs(beta_C) <= 50, final-iterate expected information is factorable, and Wald SE > 10^3 | Trigger (iii); jointly Firth-refit both models |
+| Enriched ordinary fit converges but the separately computed final-iterate information cannot be factorized for SE, or SE is non-finite | Unavailable; do not invent an SE threshold or an extra trigger |
 | Enriched ordinary fit converges with abs(beta_C) <= 50 and finite Wald SE <= 10^3; baseline ordinary fit succeeds | Use the ordinary fits; no Firth refit |
-| No enriched trigger fires but baseline ordinary fit fails | Unavailable; no baseline-only trigger exists |
-| Either Firth refit fails under the declared convergence, Armijo, or information-matrix rules | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
+| No enriched trigger fires but baseline ordinary fitting fails, including an Armijo line-search stall | Unavailable; no baseline-only trigger exists |
+| Either Firth refit fails to converge, including an Armijo line-search stall, or violates the declared information-matrix rules | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
 
-For every fold, record the enriched ordinary-fit status, all triggers that could be evaluated, whether the baseline ordinary fit was attempted, whether the Firth pair was attempted, both final model statuses, and the reason for any unavailability. If abs(beta_C) > 50 already triggers Firth, a Wald SE is not needed to establish the trigger and may be marked not evaluated. The v1.7 rule is otherwise unchanged.
+For every fold, record the enriched ordinary-fit status, all triggers that could be evaluated, whether the baseline ordinary fit was attempted, whether the Firth pair was attempted, both final model statuses, and the reason for any unavailability. Also record accepted updates, backtracking halvings and the Armijo termination reason, including precision/representability stalls. If abs(beta_C) > 50 already triggers Firth, a Wald SE is not needed to establish the trigger and may be marked not evaluated. The v1.7 rule is otherwise unchanged.
 
 ## 4. Linear algebra
 
@@ -262,7 +262,7 @@ Per dataset, count:
 - Monte Carlo branch: 1 + 9,999 comparison-set members, with the observed evaluation reused and not repeated;
 - per assignment: two model fits per LOPO fold, plus both Firth refits on folds where the trigger fires.
 
-The implementation must reconcile these counts against v1.7 §8(iii) and the binding v1.7 acceptance-record note before any run. Report, per evaluated assignment, the enriched ordinary-fit outcome, trigger status, baseline ordinary-fit status when applicable, Firth-refit status, accepted updates, line-search halvings, and final availability classification. This allows the v1.7 evaluated-assignment accounting to be audited without using fit status to filter assignments.
+The implementation must reconcile these counts against v1.7 §8(iii) and the binding v1.7 acceptance-record note before any run. Report, per evaluated assignment, the enriched ordinary-fit outcome, trigger status, baseline ordinary-fit status when applicable, Firth-refit status, accepted updates, line-search halvings, Armijo termination reason (including precision/representability stall), and final availability classification. This allows the v1.7 evaluated-assignment accounting to be audited without using fit status to filter assignments.
 
 ## 8. Software validation required before execution GO
 
@@ -275,26 +275,26 @@ Required tests:
 4. enumerator: exact unique arrangement count and deterministic order on hand-checkable fixtures;
 5. sampler: Fisher–Yates implementation and uniformity proof at the algorithm level; any empirical frequency experiment is deferred until a separate execution GO;
 6. audit key: exact equality, all scored and excluded fold-cell decisions, and no outcome/fit/score fields;
-7. likelihood: stable probability/log-likelihood/score calculations on hand-computable fixtures;
+7. likelihood increments: verify the rowwise log1p/expm1 and logaddexp identities against high-precision references on hand-computable fixtures; include large absolute log-likelihoods with tiny trial increments and confirm no subtraction of large objective totals;
 8. Firth: adjusted-score formula, expected-information identity, analytic adjusted score against an independently differentiated objective and finite-difference gradient on fixed software fixtures; verify that the Fisher direction uses U-star and has positive penalized directional derivative;
-9. Cholesky: SPD success, singular/non-SPD failure, log-determinant identity and triangular-solve correctness;
-10. optimizer: convergence, Armijo sufficient-increase, initial-point convergence check, line-search candidate sequence, iteration-limit and deterministic failure-routing behavior on fixed fixtures;
-11. assignment accounting: observed statistic reused exactly once; no duplicate observed fit;
-12. availability: any unresolved fit failure invalidates the applicable test; no silent filtering or replacement;
-13. RNG: deterministic regeneration from the root seed and stable stream identifiers;
-14. cap: synthetic acceptance-rate fixtures verify stop-at-cap behavior and unavailable-on-partial-sample rule without touching project data;
-15. failure routing: enriched ordinary nonconvergence triggers joint Firth; converged-fit unavailable SE does not invent a trigger; baseline-only ordinary failure is unavailable; any unresolved Firth failure is unavailable;
-16. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing.
-
-The test suite, expected outputs, tolerances, software versions and hashes must be frozen before any project-data evaluation. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
+9. Firth objective increment: verify the Cholesky-diagonal log-determinant increment against a high-precision log-determinant difference on fixed software fixtures;
+10. Cholesky: SPD success, singular/non-SPD failure, log-determinant identity and triangular-solve correctness;
+11. optimizer: convergence, direct-increment Armijo sufficient-increase, initial-point convergence check, dynamic halving and binary64 representability stop, iteration-limit and deterministic failure-routing behavior on fixed fixtures; include near-optimum cases whose absolute objective is large but whose predicted increment is small;
+12. stall routing: an enriched ordinary stall triggers joint Firth; a Firth stall makes the test unavailable; a baseline-only ordinary stall makes the test unavailable; none is called convergence;
+13. assignment accounting: observed statistic reused exactly once; no duplicate observed fit;
+14. availability: any unresolved fit failure invalidates the applicable test; no silent filtering or replacement;
+15. RNG: deterministic regeneration from the root seed and stable stream identifiers;
+16. cap: synthetic acceptance-rate fixtures verify stop-at-cap behavior and unavailable-on-partial-sample rule without touching project data;
+17. failure routing: enriched ordinary nonconvergence triggers joint Firth; converged-fit unavailable SE does not invent a trigger; baseline-only ordinary failure is unavailable; any unresolved Firth failure is unavailable;
+18. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing; verify the algebraic proof and exact W_C,c gate, and confirm that no floating-point rank tolerance silently changes eligibility. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
 
 ## 9. Unresolved decisions and blockers
 
 | Item | Current disposition | Required closure |
 |---|---|---|
 | Numerical stack and pinned versions | Open; no root dependency manifest found | Inspect the intended isolated environment; pin Python, NumPy, SciPy and linked LAPACK before software validation |
-| IRLS and Firth update details | Proposed above; not independently validated | Independent mathematical/code review of adjusted-score implementation and deterministic line search |
-| Linear algebra | Candidate LAPACK Cholesky / DPOTRF | Pin actual implementation and record binary64/platform details |
+| IRLS and Firth update details | Proposed above; not independently validated | Independent mathematical/code review of adjusted-score implementation, direct objective-increment evaluation and deterministic line search |
+| Linear algebra and objective-increment arithmetic | Candidate LAPACK Cholesky / DPOTRF; fixed-order compensated summation via Python math.fsum; binary64 halving/representability stop | Pin Python, NumPy, SciPy, linked LAPACK, binary64 platform details and summation implementation before software validation |
 | PRNG | Candidate PCG64DXSM + SeedSequence | Pin NumPy version and verify stream mapping; no project sampling |
 | Exact rational encoding | Proposed and required for combinatorics | Review canonical serialization and equality implementation |
 | Audit-key feasibility | Not assessed | Requires approved design inventory; no bank reuse or outcome access in this phase |
@@ -308,8 +308,11 @@ The test suite, expected outputs, tolerances, software versions and hashes must 
 This v0.2 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the orthonormal Helmert parameterization and projected original-coordinate gradient criterion are a faithful operationalization of v1.7's constrained componentwise gradient rule;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
-- whether the 50-halving Armijo sequence and zero initialization are acceptable deterministic implementation choices;
+- whether the direct-increment Armijo evaluator is algebraically correct and numerically stable, including the Firth Cholesky-diagonal log-determinant increment, and whether the representability-based stopping rule is deterministic and adequate;
 - whether PCG64DXSM and the fixed SeedSequence stream hierarchy adequately implement the independent-uniform sampling model, with the limits of pseudorandom independence stated honestly;
+- whether a line-search stall has been routed consistently with v1.7 in all three positions (enriched ordinary, baseline ordinary, Firth refit);
+- whether the final-iterate information factorization for the Wald SE is specified without reusing a preceding-iterate factorization;
+- whether the exact structural-rank argument, rather than an unspecified floating-point rank tolerance, is the appropriate design gate;
 - whether the exact-enumeration and Monte Carlo accounting correctly reuses (T(b_{obs})) once;
 - whether any proposed feasibility calculation would improperly reuse the exposed bank or inspect outcomes.
 
