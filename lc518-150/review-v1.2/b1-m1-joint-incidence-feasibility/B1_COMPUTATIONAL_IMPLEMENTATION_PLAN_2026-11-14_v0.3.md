@@ -78,9 +78,11 @@ For each LOPO fold, construct both models from the exact same training-row ident
 
 The row order is a canonical sort by stable version identifier, then record identifier. The column order is fixed as cell indicators, record contrasts, then C_D. Test rows are never used to fit parameters. The scoring rows and fold membership are those frozen by the v1.7 design-only audit.
 
-The baseline design must be full column rank. Under the declared complete crossing, every included version contributes one row for each of the 78 canonical records; cell indicators are therefore orthogonal to the sum-zero record-contrast columns, and the full-rank Helmert basis removes record-effect aliasing.
+The baseline design is full column rank under the declared complete crossing. To see this, suppose a linear combination of the cell-indicator columns and the record-contrast columns is zero on every training row. Within any nonempty cell, the cell coefficient plus H gamma must equal zero for every record. Therefore H gamma is constant across the 78 records. But H gamma is in the sum-zero subspace, so a constant H gamma must be the zero vector. Since H has full column rank, gamma is zero; the cell coefficients must then also be zero. Thus neither the cell indicators nor the 77 record contrasts are aliased.
 
-The enriched C_D column must be linearly independent of all baseline columns. For each scored training fold-cell, v1.7 requires W_C,c_train > 0. Since every training version contributes all 78 records, centring C_D within a cell gives a positive residual sum of squares proportional to 78 times W_C,c_train. That residual is orthogonal to the record contrasts because each version contains the complete record set and every contrast sums to zero. Thus the exact within-cell variation gate supplies the required independence from both cell indicators and record contrasts. The implementation must compute each W_C,c_train positivity decision from exact reduced-rational C_D values, not rounded floating-point values. It must verify this structural condition and record the numerical rank check; a failed check makes the dataset unavailable. It must never respond by dropping rows, cells, columns, or records.
+The enriched C_D column is independent of the baseline columns when the v1.7 within-cell variation gate holds. In each training cell c, let Cbar_c be the mean C_D over its training versions. Subtract Cbar_c from C_D(v) for every row belonging to version v in cell c. The resulting residual is orthogonal to the cell indicators by within-cell centring. It is orthogonal to every record-contrast column because each version contributes all 78 records and each Helmert contrast sums to zero over those records. Its squared norm is 78 times the sum, over training cells and versions, of (C_D(v) - Cbar_c)^2. This is positive exactly when there is within-cell C_D variation; v1.7 requires the corresponding W_C,c_train positivity for every scored training fold-cell. The exact reduced-rational C_D values determine each positivity decision.
+
+These structural arguments, together with the exact W_C,c_train checks, are the rank decision. A floating-point numerical-rank tolerance must not independently override that exact structural decision. A numerical condition/rank diagnostic may be recorded for transparency, but it is diagnostic only; it is not a new exclusion rule. If the actual model information matrix cannot be factorized under the pinned linear-algebra routine, the fitting failure is handled under §3.3 and v1.7. The implementation must never respond by dropping rows, cells, columns, or records.
 
 ### 2.3 Exact representation of concentration
 
@@ -103,11 +105,24 @@ The fit is converged when the maximum of all applicable scaled component magnitu
 
 Check convergence at the initial point and immediately after each accepted update, before attempting another line search. If the criterion is met, terminate successfully. Otherwise, compute the Fisher-scoring direction. Initialization is the all-zero vector in the constrained parameterization. There is no random initialization, warm start, data-dependent alternative initialization, or parameter carry-over between folds or assignments.
 
-Use the Armijo sufficient-increase rule for the ordinary log-likelihood. With ascent direction d and current score U, the directional derivative is U-transpose d. Require:
-- U-transpose d is finite and strictly positive;
-- for a trial step length alpha, loglik(gamma + alpha d) is at least loglik(gamma) + 10^-4 times alpha times U-transpose d.
+Use the Armijo sufficient-increase rule for the ordinary log-likelihood, but evaluate the objective increment directly rather than subtracting two absolute log-likelihood totals. At the current iterate let z = X gamma, let t = alpha X d for a trial step, let pi_i = logistic(z_i), and let q_i = logistic(-z_i), with pi_i and q_i evaluated separately by a numerically stable logistic routine. The rowwise log-likelihood increment is:
 
-Try alpha = 1 first, then halve it successively, allowing at most 50 halvings after the initial trial (trial lengths 1, 1/2, ..., 1/2^50). Accept the first trial satisfying the Armijo inequality and all finite-value checks. If no trial is accepted, the ordinary fit fails. No objective-decrease-only acceptance rule is used.
+- if y_i = 0: delta_i = -log1p(pi_i * expm1(t_i));
+- if y_i = 1: delta_i = -log1p(q_i * expm1(-t_i)).
+
+These identities are used when abs(t_i) <= 0.5. For abs(t_i) > 0.5, evaluate the algebraically equivalent forms without exponentiating a potentially large t_i:
+- if y_i = 0: delta_i = -logaddexp(log(q_i), log(pi_i) + t_i);
+- if y_i = 1: delta_i = -logaddexp(log(pi_i), log(q_i) - t_i).
+
+Here log(pi_i) and log(q_i) are evaluated as -logaddexp(0, -z_i) and -logaddexp(0, z_i), respectively. Sum the rowwise increments in the canonical row order using fixed-order compensated summation (Python math.fsum, with the Python version pinned before GO). This gives delta_ell = ell(gamma + alpha d) - ell(gamma) without subtracting two large, nearly equal absolute log-likelihood totals.
+
+Compute U-transpose d with the same fixed-order compensated summation in canonical parameter order. Require it to be finite and strictly positive, and require:
+
+delta_ell >= 10^-4 * alpha * (U-transpose d).
+
+Do not subtract an estimated epsilon/noise floor from the right-hand side and do not accept a weaker inequality. If a positive Armijo bound or objective increment underflows so that the comparison cannot be resolved, record an Armijo line-search stall; do not call it convergence.
+
+Try alpha = 1 first and halve successively. There is no arbitrary fixed 50-halving limit. After each halving, form the candidate parameter vector in binary64. Stop the search if alpha underflows to zero or if every candidate parameter is bitwise identical to the current parameter vector; reducing alpha further cannot produce a representable update. Otherwise evaluate the candidate and accept the first satisfying the direct-increment Armijo inequality and all finite-value checks. A line-search stall is a fitting failure/nonconvergence, routed by §3.3. No objective-decrease-only acceptance rule is used.
 
 The fit may take at most 200 accepted updates. After the 200th update, evaluate the convergence criterion once more; if it is not met, the fit is nonconverged. Any non-finite objective, score, information matrix, or update, or an information factorization failure needed to compute an update, is a numerical fitting failure. The enriched-fit and baseline-fit consequences are specified in §3.3.
 
@@ -125,9 +140,19 @@ partial [0.5 log det I] / partial gamma_j = 0.5 trace( I-inverse times partial I
 
 The Fisher-scoring direction for the Firth objective must use the full penalized gradient U_star, not the ordinary score U. Solve I d = U_star. If I is positive definite, then U_star-transpose d = U_star-transpose I-inverse U_star is strictly positive whenever U_star is nonzero; this is the ascent direction for the penalized objective. The implementation must verify this positivity numerically at every non-converged iterate.
 
-Apply the Armijo sufficient-increase rule to the penalized objective, with c = 10^-4:
-F(gamma + alpha d) >= F(gamma) + 10^-4 times alpha times U_star-transpose d.
-Use the same candidate sequence as §3.1: alpha = 1 and at most 50 halvings. Check the convergence criterion before each line search. The criterion uses the gradient of the active penalized objective, mapped to the original constrained omega representation as specified in §3.1. At an accepted iterate, the expected information must be useably positive definite and its log determinant finite.
+Apply Armijo to the penalized objective using a directly evaluated increment:
+
+delta_F = delta_ell + 0.5 * delta_logdet_I,
+
+where delta_ell is computed by the stable rowwise method in §3.1. Let L be the Cholesky factor of the current expected information and L_new the Cholesky factor at a positive-definite trial point. Since logdet(I) = 2 times the sum of log diagonal entries of L, compute the log-determinant increment as:
+
+delta_logdet_I = 2 * sum_j log1p((L_new[j,j] - L[j,j]) / L[j,j]).
+
+Use fixed-order compensated summation for the diagonal terms and for the combined delta_F. This avoids subtracting two large absolute log determinants. Compute U_star-transpose d with fixed-order compensated summation. Require a finite, strictly positive directional derivative and:
+
+delta_F >= 10^-4 * alpha * (U_star-transpose d).
+
+Use the same unbounded-by-arbitrary-cap halving schedule as §3.1: begin at alpha = 1 and halve until a candidate is accepted, alpha underflows to zero, or the candidate parameter vector is bitwise identical to the current vector. A trial candidate whose information cannot be factorized or whose log determinant is non-finite is rejected, and a shorter representable candidate may be tried. If no candidate satisfies the direct-increment Armijo inequality, record a line-search stall. Check the convergence criterion before each line search. The criterion uses the gradient of the active penalized objective, mapped to the original constrained omega representation as specified in §3.1. At every accepted iterate, the expected information must be useably positive definite and its log determinant finite.
 
 A trial point that cannot be evaluated because its information matrix is not positive definite or its log determinant is non-finite is rejected as a line-search candidate; a shorter candidate may be tried. Such a trial point is not an accepted iterate. If no candidate is accepted within the declared sequence, the fit fails. If an accepted iterate has a non-positive-definite information matrix, factorization failure, or non-finite log determinant, the Firth fit fails immediately. This does not authorize jitter, pseudo-inverse, ridge fallback, alternate optimizer, or silent model simplification.
 
