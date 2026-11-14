@@ -146,7 +146,7 @@ delta_F = delta_ell + 0.5 * delta_logdet_I,
 
 where delta_ell is computed by the stable rowwise method in §3.1. Let L be the Cholesky factor of the current expected information and L_new the Cholesky factor at a positive-definite trial point. Since logdet(I) = 2 times the sum of log diagonal entries of L, compute the log-determinant increment as:
 
-delta_logdet_I = 2 * sum_j log1p((L_new[j,j] - L[j,j]) / L[j,j]).
+delta_logdet_I = 2 * sum_j r_j, where d_j = L_new[j,j] - L[j,j], r_j = log1p(d_j / L[j,j]) when abs(d_j) <= 0.5 * L[j,j], and r_j = log(L_new[j,j]) - log(L[j,j]) otherwise.
 
 Use fixed-order compensated summation for the diagonal terms and for the combined delta_F. This avoids subtracting two large absolute log determinants. Compute U_star-transpose d with fixed-order compensated summation. Require a finite, strictly positive directional derivative and:
 
@@ -154,7 +154,7 @@ delta_F >= 10^-4 * alpha * (U_star-transpose d).
 
 Use the same unbounded-by-arbitrary-cap halving schedule as §3.1: begin at alpha = 1 and halve until a candidate is accepted, alpha underflows to zero, or the candidate parameter vector is bitwise identical to the current vector. A trial candidate whose information cannot be factorized or whose log determinant is non-finite is rejected, and a shorter representable candidate may be tried. If no candidate satisfies the direct-increment Armijo inequality, record a line-search stall. Check the convergence criterion before each line search. The criterion uses the gradient of the active penalized objective, mapped to the original constrained omega representation as specified in §3.1. At every accepted iterate, the expected information must be useably positive definite and its log determinant finite.
 
-A trial point that cannot be evaluated because its information matrix is not positive definite or its log determinant is non-finite is rejected as a line-search candidate; a shorter candidate may be tried. Such a trial point is not an accepted iterate. If no candidate is accepted within the declared sequence, the fit fails. If an accepted iterate has a non-positive-definite information matrix, factorization failure, or non-finite log determinant, the Firth fit fails immediately. This does not authorize jitter, pseudo-inverse, ridge fallback, alternate optimizer, or silent model simplification.
+Every accepted Firth iterate must have finite objective, useably positive-definite expected information and finite log determinant. If any of these conditions fails at an accepted iterate, the Firth fit fails immediately. This does not authorize jitter, pseudo-inverse, ridge fallback, alternate optimizer, or silent model simplification.
 
 The implementation must independently verify the adjusted-score formula against the analytic derivative of the stated penalized objective and against a finite-difference gradient on fixed software fixtures. The fixture set, finite-difference scheme, tolerance and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis.
 
@@ -170,7 +170,7 @@ If the enriched ordinary fit converges with finite parameters, first check wheth
 SE(beta_C) = square root of e_beta-transpose I-inverse e_beta,
 where e_beta selects the beta_C coordinate in the enriched parameter vector. Compute the selected inverse-information quadratic form by triangular solves; do not explicitly form I-inverse. Do not reuse an information factorization from the preceding iterate. The orthonormal Helmert transformation affects only nuisance coordinates and leaves this beta_C variance unchanged. If the final-iterate factorization fails or the resulting SE is non-finite, the SE trigger cannot be evaluated and the fold/test is unavailable; this is not re-labelled as SE > 10^3. If the finite SE exceeds 10^3, trigger (iii) fires and both models are refitted with Firth.
 
-If the enriched fit has apparently converged but the final expected information cannot be factorized to compute the Wald SE, or the SE is non-finite, trigger (iii) cannot be evaluated. This is not re-labelled as an SE exceeding 10^3 and does not create a new Firth trigger: the fold/test is unavailable under v1.7's no-silent-fallback rule.
+If the final-iterate information factorization or Wald SE is unavailable, this is not re-labelled as an SE exceeding 10^3 and does not create a new Firth trigger: the fold/test is unavailable under v1.7's no-silent-fallback rule.
 
 If none of the three enriched-model triggers fires, fit the baseline ordinary model. Any unresolved baseline ordinary fitting failure makes the applicable test unavailable. Baseline failure alone does not create a new Firth trigger. If an enriched-model trigger has already fired, fit both models with Firth and do not run an unnecessary baseline ordinary fit first.
 
@@ -286,7 +286,9 @@ Required tests:
 15. RNG: deterministic regeneration from the root seed and stable stream identifiers;
 16. cap: synthetic acceptance-rate fixtures verify stop-at-cap behavior and unavailable-on-partial-sample rule without touching project data;
 17. failure routing: enriched ordinary nonconvergence triggers joint Firth; converged-fit unavailable SE does not invent a trigger; baseline-only ordinary failure is unavailable; any unresolved Firth failure is unavailable;
-18. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing; verify the algebraic proof and exact W_C,c gate, and confirm that no floating-point rank tolerance silently changes eligibility. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
+18. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing; verify the algebraic proof and exact W_C,c gate, and confirm that no floating-point rank tolerance silently changes eligibility.
+
+The test suite, expected outputs, tolerances, software versions and hashes must be frozen before any project-data evaluation. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
 
 ## 9. Unresolved decisions and blockers
 
@@ -305,7 +307,7 @@ Required tests:
 
 ## 10. Phase gate
 
-This v0.2 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
+This v0.3 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the orthonormal Helmert parameterization and projected original-coordinate gradient criterion are a faithful operationalization of v1.7's constrained componentwise gradient rule;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
 - whether the direct-increment Armijo evaluator is algebraically correct and numerically stable, including the Firth Cholesky-diagonal log-determinant increment, and whether the representability-based stopping rule is deterministic and adequate;
