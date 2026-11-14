@@ -120,7 +120,7 @@ Compute U-transpose d with the same fixed-order compensated summation in canonic
 
 delta_ell >= 10^-4 * alpha * (U-transpose d).
 
-Do not subtract an estimated epsilon/noise floor from the right-hand side and do not accept a weaker inequality. If a positive Armijo bound or objective increment underflows so that the comparison cannot be resolved, record an Armijo line-search stall; do not call it convergence.
+Do not subtract an estimated epsilon/noise floor from the right-hand side and do not accept a weaker inequality. If the direct objective increment and positive Armijo bound are not numerically distinguishable because one or both underflow to zero, record an Armijo line-search stall; do not call it convergence.
 
 Try alpha = 1 first and halve successively. There is no arbitrary fixed 50-halving limit. After each halving, form the candidate parameter vector in binary64. Stop the search if alpha underflows to zero or if every candidate parameter is bitwise identical to the current parameter vector; reducing alpha further cannot produce a representable update. Otherwise evaluate the candidate and accept the first satisfying the direct-increment Armijo inequality and all finite-value checks. A line-search stall is a fitting failure/nonconvergence, routed by §3.3. No objective-decrease-only acceptance rule is used.
 
@@ -162,7 +162,8 @@ The implementation must independently verify the adjusted-score formula against 
 
 The enriched ordinary model is fitted first. If it does not converge, trigger (i) in v1.7 fires and both models are refitted using the Firth objective. For this computational plan, enriched ordinary nonconvergence includes:
 - reaching 200 accepted updates without satisfying the convergence criterion;
-- an Armijo line-search stall: no candidate satisfies the direct-increment inequality before alpha underflows to zero or the candidate vector becomes identical to the current vector;
+- failure to obtain a finite, strictly positive numerically representable Fisher directional derivative;
+- an Armijo line-search stall: no candidate satisfies the direct-increment inequality, the direct comparison becomes unresolved through underflow, or alpha underflows to zero or the candidate vector becomes identical to the current vector;
 - non-finite objective, score, information or parameter values before convergence;
 - Cholesky failure when factorization is required to compute an ordinary enriched-model update.
 
