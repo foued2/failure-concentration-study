@@ -162,7 +162,7 @@ The exact numerical-library version and platform build are not frozen in v0.2 be
 
 ### 5.1 Generator and fixed stream hierarchy
 
-Candidate generator: NumPy PCG64DXSM, initialized from the v1.7 root seed 20261114 through NumPy SeedSequence. The exact NumPy version and bit-generator implementation must be pinned before software validation. NumPy documents PCG64DXSM as an upgraded PCG64 generator and documents SeedSequence spawning as producing independent and very probably non-overlapping initial states; this is an engineering stream-construction guarantee, not a proof of mathematical independence. The inferential guarantee remains the v1.7 guarantee with respect to the ideal independent-uniform sampling model, not conditional on a deterministic seed.
+Candidate generator: NumPy PCG64DXSM, initialized from the v1.7 root seed 20261114 through NumPy SeedSequence. The exact NumPy version and bit-generator implementation must be pinned before software validation. NumPy documents PCG64DXSM as an upgraded PCG64 generator and documents SeedSequence spawning as producing independent and very probably non-overlapping initial states; this is an engineering stream-construction guarantee, not a proof of mathematical independence. References: https://numpy.org/doc/stable/reference/random/bit_generators/ and https://numpy.org/doc/stable/reference/random/parallel.html. The inferential guarantee remains the v1.7 guarantee with respect to the ideal independent-uniform sampling model, not conditional on a deterministic seed.
 
 Use exactly one proposal stream per dataset. Do not create per-cell streams and do not offer alternative stream-allocation schemes. Within each dataset, visit eligible cells in lexicographic order of the exact cell key (q, Z, k, ell), and versions within a cell in ascending stable version-identifier order. Use the dataset's single proposal stream sequentially for the within-cell Fisher-Yates shuffles. Every proposal consumes the stream in this canonical traversal order.
 
@@ -265,7 +265,7 @@ The test suite, expected outputs, tolerances, software versions and hashes must 
 
 ## 10. Phase gate
 
-This v0.1 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
+This v0.2 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the orthonormal Helmert parameterization and projected original-coordinate gradient criterion are a faithful operationalization of v1.7's constrained componentwise gradient rule;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
 - whether the 50-halving Armijo sequence and zero initialization are acceptable deterministic implementation choices;
