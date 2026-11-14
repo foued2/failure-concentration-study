@@ -49,7 +49,7 @@ Any implementation choice below is subordinate to these rules. A computational c
 
 ### 2.1 Record-effect constraint
 
-Use a fixed, full-column-rank orthonormal Helmert contrast matrix H with 78 rows and 77 columns, fixed by canonical record identifier order. The record-effect vector is omega = H eta. Thus H-transpose H is the 77-by-77 identity and H-transpose times the 78-vector of ones is zero. Consequently, the represented record effects satisfy sum_r omega_r = 0 exactly, without a redundant 78th coefficient.
+Use the following fixed, full-column-rank orthonormal Helmert contrast matrix H with 78 rows and 77 columns, in canonical record identifier order. For column k = 1,...,77 (one-based), set H[r,k] = 1/sqrt(k(k+1)) for rows r = 1,...,k; set H[k+1,k] = -k/sqrt(k(k+1)); set all rows r > k+1 to zero. This fixes the column signs and order. The record-effect vector is omega = H eta. Thus H-transpose H is the 77-by-77 identity and H-transpose times the 78-vector of ones is zero. Consequently, the represented record effects satisfy sum_r omega_r = 0 exactly, without a redundant 78th coefficient.
 
 The convergence test is not evaluated as a componentwise norm in eta coordinates. The operational definition in §3.1 maps the reduced-coordinate gradient back to the original 78-dimensional constrained omega representation. This distinction is necessary because a componentwise scaled sup-norm is not invariant under a change of basis.
 
