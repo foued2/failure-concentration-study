@@ -98,7 +98,6 @@ Claude's independent review of v0.6 identified a separation-routing gap, request
 
 **Binding v0.7 draft decisions:** no edit is made to v1.7 or its acceptance record. A gradient-threshold PASS is not enough to claim a finite ordinary MLE when an exact separating direction proves that no finite maximizer exists. The proposed classifier sends that case to trigger (i), not trigger (ii). The separator certificate is a fit-level trigger only; it never changes the admissible assignment set, audit key, scoring population, or assignment accounting. The exact LP solver, its certificates, deterministic settings, and resource behaviour remain unvalidated. No software was installed or run, and no project data, bank, solver, fit, permutation, or sampling was used.
 
-## 0. Authorization boundary
 ## Revision log v0.7 → v0.8
 
 Claude's independent review of v0.7 verified the primal separating-direction proof, the Farkas alternative, the normalization, and the decision not to call generic separation trigger (ii). GPT accepts those mathematical findings and resolves the two additional questions as follows:
