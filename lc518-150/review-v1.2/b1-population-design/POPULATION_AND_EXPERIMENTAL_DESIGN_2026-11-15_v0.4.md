@@ -343,7 +343,7 @@ That review draft states a floor of at least three distinct parent groups, each 
 
 Accordingly, the historical five-version M1 rule is **not binding on this new study by inheritance**. This v0.4 specification instead makes a new, explicit design choice: adopt the stronger **M1-si** requirement in §3.4, matched on the full B1 cell \((q,Z,k,\ell)\). This is deliberately stricter than the old \((k,\ell)\)-only wording because current B1 conditions on individual identity \(q\) and family \(Z\). It adopts the scientific rationale of within-parent variation without inheriting the historical five-version count or the old 30-parent/150-body architecture.
 
-The source-provenance question is therefore closed for this v0.3 adjudication: the historical wording exists in the cited review-draft blob; it is not treated as binding authority for the new population. The adopted rule is the new study's own proposed design requirement and remains subject to Claude's review and GPT's final freeze.
+The source-provenance question is therefore closed for this v0.4 adjudication: the historical wording exists in the cited review-draft blob; it is not treated as binding authority for the new population. The adopted rule is the new study's own proposed design requirement and remains subject to Claude's review and GPT's final freeze.
 
 ### 3.6 Additional structural checks
 
