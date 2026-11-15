@@ -171,9 +171,11 @@ In each such case, construct the exact-rational Arb expected information \(I_{\m
 \[
 I_{\mathbb Q}d_{\mathbb Q}=U_{\mathbb Q}
 \]
-using the verified arb_mat.solve() path at the same precision ladder. This is an interval solve of the exact-model system, not an approximate solve. For Firth, replace \(U_{\mathbb Q}\) by the exact adjusted score \(U^*_{\mathbb Q}\) from §3.2. Treat every solution component as an Arb interval. A binary64 direction component may be created only if the entire Arb interval lies inside one and the same IEEE-754 round-to-nearest, ties-to-even rounding cell. That proves a unique correctly rounded binary64 value. If any component spans more than one rounding cell or touches a boundary in a way that does not establish a unique ties-to-even result, increase precision. Never substitute the interval midpoint or an unverified binary64 solve. If the full direction vector is not uniquely rounded at 4096 bits, the exact-model direction cannot be certified and the fit records an exact-direction stall.
+using the verified arb_mat.solve() path at the same precision ladder. This is an interval solve of the exact-model system, not an approximate solve. For Firth, replace \(U_{\mathbb Q}\) by the exact adjusted score \(U^*_{\mathbb Q}\) from §3.2. Retain the resulting Arb interval vector \(d_{\mathbb Q}\); do not round the unscaled direction.
 
-Run the same actual-stored-candidate construction and exact-rational Armijo check on this uniquely rounded fallback direction. If it yields an accepted candidate, continue the fit. If its line search also reaches the representability stop without an accepted candidate, the exact-model fit is nonconverged. For an enriched ordinary fit this exact-model nonconvergence fires v1.7 trigger (i); for a baseline ordinary fit it makes the applicable test unavailable; for either Firth refit it makes the test unavailable. Binary64 proposal failure alone has none of those outcomes.
+For each trial step size \(\alpha\), form the Arb interval vector \(v_{\mathbb Q}=\alpha d_{\mathbb Q}\), with the binary64 \(\alpha\) inserted as its exact dyadic value. A binary64 step component \(v_i\) may be created only if the entire interval for \(v_{\mathbb Q,i}\) lies inside one and the same IEEE-754 round-to-nearest, ties-to-even rounding cell. That proves a unique correctly rounded stored step component. If any component spans more than one rounding cell or touches a boundary in a way that does not establish a unique ties-to-even result, increase precision; if it remains unresolved at the current precision cap, reject that candidate size and try the next smaller \(\alpha\). Never substitute the interval midpoint or an unverified binary64 solve. Then construct \(\gamma_{\mathrm{cand}}=\operatorname{round64}(\gamma+v)\) exactly as in the ordinary candidate rule, define the stored displacement \(s=\gamma_{\mathrm{cand}}-\gamma\), and run the exact-rational Armijo certificate. Thus the fallback tests the actual point it stores, without requiring the unscaled exact direction itself to round uniquely.
+
+If the exact-model fallback line search reaches the representability stop without an accepted candidate, the exact-model fit is nonconverged. For an enriched ordinary fit this exact-model nonconvergence fires v1.7 trigger (i); for a baseline ordinary fit it makes the applicable test unavailable; for either Firth refit it makes the test unavailable. Binary64 proposal failure alone has none of those outcomes.
 
 #### Actual-candidate construction and certified Armijo evaluation
 
@@ -236,7 +238,7 @@ The implementation must independently verify the adjusted-score formula against 
 
 The enriched ordinary model is fitted first. Trigger (i) is evaluated only from the exact-model fitting path specified in §3.1. For this computational plan, an enriched ordinary fit is nonconverged when:
 - it reaches 200 accepted updates without satisfying the exact-model Arb convergence criterion;
-- the exact-model direction fallback cannot be certified/uniquely rounded at the 4096-bit cap;
+- the exact-model fallback cannot certify any scaled trial displacement as uniquely roundable, or cannot certify an accepted Armijo step, before the representability stop;
 - the exact-model Armijo line search, after the binary64 proposal and the exact-model fallback have both been tried, reaches the representability stop without a certified accepted candidate;
 - the exact-model objective, score, gradient or information cannot be enclosed under the declared Arb procedure at the precision cap, or the exact-model numerical state becomes non-finite in a way that prevents the convergence test/update.
 
@@ -250,7 +252,7 @@ Let \(\gamma_0\) be the final stored enriched ordinary parameter vector, \(F(\ga
 \[
 r_j^{(0)}=2^{-20}\max(1,|\gamma_{0,j}|).
 \]
-At each radius and each precision in the declared ladder, form a nonsingular fixed preconditioner \(C_0\) from the midpoint of an approximate inverse of \(I_{\mathbb Q}(\gamma_0)\). Treat the entries of \(C_0\) as exact dyadic values in Arb and certify \(\det(C_0)\ne0\); this preconditioner is only an ingredient of the inclusion proof and is never treated as an estimate of the root.
+At each radius and each precision in the declared ladder, form a nonsingular fixed preconditioner \(C_0\) from the midpoint of an approximate inverse of the Hessian \(J(\gamma_0)=-I_{\mathbb Q}(\gamma_0)\), equivalently the negative of an approximate inverse of \(I_{\mathbb Q}(\gamma_0)\). Treat the entries of \(C_0\) as exact dyadic values in Arb and certify \(\det(C_0)\ne0\); this preconditioner is only an ingredient of the inclusion proof and is never treated as an estimate of the root.
 
 Compute the Krawczyk enclosure
 \[
