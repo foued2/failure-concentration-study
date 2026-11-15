@@ -220,7 +220,7 @@ For every fold, record the enriched ordinary-fit status, all triggers that could
 
 References for the proposed API and its guarantees: `https://python-flint.readthedocs.io/en/stable/arb.html` (Arb real balls and correctly enclosed elementary functions); `https://python-flint.readthedocs.io/en/latest/arb_mat.html` (matrix determinant and inverse enclosures); `https://flintlib.org/doc/arb_mat.html` (verified ball-matrix determinant and Cholesky/inverse routines).
 
-The exact numerical-library versions and platform build are not frozen in v0.4. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step., requirements.txt, environment.yml or setup.cfg was found at the inspected review-branch root. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step.
+The exact numerical-library versions and platform build are not frozen in v0.4. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step.
 
 ## 5. Random-number generation and assignment sampling
 
