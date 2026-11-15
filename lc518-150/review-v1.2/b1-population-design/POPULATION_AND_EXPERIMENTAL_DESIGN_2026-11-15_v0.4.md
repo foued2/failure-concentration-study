@@ -341,7 +341,7 @@ That review draft states a floor of at least three distinct parent groups, each 
 
 **Authority is separate from textual existence.** The file is a review draft, not an accepted B1 analysis plan. The contemporaneous GLM review labelled M1 a “proposal, pending owner”. The later \`B1_M1_JOINT_INCIDENCE_FEASIBILITY_SPEC_2026-11-12_v1.1.md\` explicitly records that the historical five-version M1 wording came from a review-only analysis specification and was **not ratified for a new symbolic population**; its generalized M1-gen form was a proposed operational change pending authority. Accepted B1 v1.7 does not itself add a within-parent M1 requirement.
 
-Accordingly, the historical five-version M1 rule is **not binding on this new study by inheritance**. This v0.3 specification instead makes a new, explicit design choice: adopt the stronger **M1-si** requirement in §3.4, matched on the full B1 cell \((q,Z,k,\ell)\). This is deliberately stricter than the old \((k,\ell)\)-only wording because current B1 conditions on individual identity \(q\) and family \(Z\). It adopts the scientific rationale of within-parent variation without inheriting the historical five-version count or the old 30-parent/150-body architecture.
+Accordingly, the historical five-version M1 rule is **not binding on this new study by inheritance**. This v0.4 specification instead makes a new, explicit design choice: adopt the stronger **M1-si** requirement in §3.4, matched on the full B1 cell \((q,Z,k,\ell)\). This is deliberately stricter than the old \((k,\ell)\)-only wording because current B1 conditions on individual identity \(q\) and family \(Z\). It adopts the scientific rationale of within-parent variation without inheriting the historical five-version count or the old 30-parent/150-body architecture.
 
 The source-provenance question is therefore closed for this v0.3 adjudication: the historical wording exists in the cited review-draft blob; it is not treated as binding authority for the new population. The adopted rule is the new study's own proposed design requirement and remains subject to Claude's review and GPT's final freeze.
 
@@ -362,7 +362,7 @@ No fitted-model result may be used to define cell eligibility or alter the desig
 
 ## 4. Mutation mechanisms and variant construction rules
 
-No mutation mechanism is selected in v0.3. Mechanism selection follows, rather than precedes, acceptance of the support requirements in §3.
+No mutation mechanism is selected in v0.4. Mechanism selection follows, rather than precedes, acceptance of the support requirements in §3.
 
 ### 4.1 Required operator-class fingerprint and within-class realization record
 
@@ -455,7 +455,7 @@ The retired eight-mechanism catalogue is not automatically revived. Its contents
 
 ## 5. New protected evaluation-set specification
 
-The confirmatory claim requires a new protected evaluation set. No records are generated or accessed in v0.3.
+The confirmatory claim requires a new protected evaluation set. No records are generated or accessed in v0.4.
 
 ### 5.1 Target domain and record-generation procedure
 
@@ -492,7 +492,7 @@ The proposed custody procedure is:
 6. Do not reveal record-level labels, input files, or oracle traces during iterative mutation or model tuning.
 7. Record every access, export, failed execution, and authorized disclosure.
 
-**Current gate status: NOT SATISFIED. No independent custodian has been identified or appointed, and no access mechanism has been demonstrated.** No person or institution is named in v0.3 because none has been evidenced in the project record. The project owner, mutation designers, solver constructors, outcome analysts, and AI reviewers cannot be relabelled as an independent custodian merely by assigning them a different project role.
+**Current gate status: NOT SATISFIED. No independent custodian has been identified or appointed, and no access mechanism has been demonstrated.** No person or institution is named in v0.4 because none has been evidenced in the project record. The project owner, mutation designers, solver constructors, outcome analysts, and AI reviewers cannot be relabelled as an independent custodian merely by assigning them a different project role.
 
 Before this population-and-design specification can be frozen for a protected-confirmatory study, the project must identify an actual human custodian or institution outside the variant-construction and outcome-analysis team and record:
 
