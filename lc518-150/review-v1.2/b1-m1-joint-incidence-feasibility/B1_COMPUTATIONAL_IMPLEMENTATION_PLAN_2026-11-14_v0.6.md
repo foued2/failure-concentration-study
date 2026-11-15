@@ -508,27 +508,34 @@ The test suite, expected outputs, tolerances, software versions and hashes must 
 | Item | Current disposition | Required closure |
 |---|---|---|
 | Numerical stack and pinned versions | Open | Inventory the intended isolated environment; pin Python, NumPy, SciPy, LAPACK, python-flint and FLINT build/version before software validation |
-| Arb interval implementation | Proposed; not implemented or validated | Independently review exact dyadic parameter conversion, exact-rational C_D conversion, interval row increments, convergence-gradient certification, exact-model determinant/inverse/SE certification, precision ladder and interval-bound comparisons |
-| Convergence decision | Arb certificate specified; not yet tested | Validate the B(B-transpose B)^-1 projection and every scaled-component interval; an unresolved component cannot pass; test against independent high-precision references |
+| Arb interval implementation and exact direction fallback | Proposed; not implemented or validated | Independently review exact dyadic/rational conversion, verified arb_mat.solve() fallback, per-trial unique-rounding rule, interval row increments, convergence-gradient certification, exact-model determinant/inverse/Krawczyk/SE certification, precision ladder and interval-bound comparisons |
+| Convergence and fitted-root decisions | Arb convergence certificate specified; Krawczyk root/threshold certificate proposed but not implemented | Validate the B(B-transpose B)^-1 projection, Krawczyk operator/sign/preconditioner/inclusion theorem, root-box contraction and all threshold comparisons; unresolved components/roots cannot pass; test against independent high-precision references |
 | Maximum training-row count N_max and parameter count p_max | Unknown; exact frozen version/cell inventory has not been established in this computational step | Derive N_max = 78 × max training versions and p_max = max(C_f+78) across real-data folds and all 300 N4-a datasets; validate the optimizer, interval and runtime grids at (N_max,p_max) before GO |
-| Armijo/SE resolution under conditioning | Conservative exact-rational certification rule specified; not tested | Record interval radii and diagnostic condition numbers; exercise first resolution at 1024/2048/4096-bit levels, unresolved-at-4096 cases, and singular/near-singular information matrices; confirm every unresolved case fails closed |
+| 4096-bit ceiling | Provisional fail-closed resource cap, not mathematically justified as universally sufficient | Establish N_max/p_max; run synthetic decision-gap and conditioning grids through every precision level; measure root-isolation, direction-fallback, Armijo, Firth determinant/inverse and SE costs; if intended design fixtures are unresolved at 4096 bits, revise the cap or mark the corresponding computation unavailable before GO |
 | IRLS and Firth update details | Proposed above; not independently validated | Independent mathematical/code review of adjusted-score implementation, actual-candidate displacement and certified Armijo logic |
-| Linear algebra | Candidate LAPACK Cholesky / DPOTRF for binary64 proposal directions; Arb verified determinant/inverse/SE enclosures for the exact-rational model | Pin actual library implementations and record binary64/Arb precision and platform details |
+| Linear algebra | Candidate LAPACK Cholesky / DPOTRF for binary64 proposals; verified Arb solve/determinant/inverse/Krawczyk/SE enclosures for exact-model calculations | Pin actual library implementations and record binary64/Arb precision, Arb solve method, and platform details |
 | PRNG | Candidate PCG64DXSM + SeedSequence | Pin NumPy version and verify stream mapping; no project sampling |
-| Exact rational encoding/model predictor | Proposed and required for the fitting model as well as combinatorics | Review canonical rational construction, exact rational-string to Arb enclosure, deterministic X_64 proposal conversion, and proof that no rounded predictor enters any certified quantity |
+| Exact rational encoding/model predictor | Proposed and required for the fitting model as well as combinatorics | Review canonical rational construction, exact rational-string to Arb enclosure, deterministic X_64 proposal conversion, and proof that no rounded predictor enters any certified quantity | 
+| Exact fitted-root and trigger certification | Proposed; not implemented or validated | Independently review Krawczyk/interval-Newton enclosure of the ordinary score root, Hessian preconditioner sign, unique-root proof, root-box Wald-SE interval, and all threshold-straddling unavailable cases |
 | Audit-key feasibility | Not assessed | Requires approved design inventory; no bank reuse or outcome access in this phase |
 | 10^8 cap feasibility | Unknown | Derive design-only bound or mark Monte Carlo unavailable |
 | Consent provenance | Open | Must be resolved separately; computational readiness does not cure it |
 | Parent-population uncertainty | Not provided by v1.7 | No parent-population claim; any change requires a new statistical plan |
-| Runtime model and benchmark | Symbolic workload model specified; no design inventory or benchmark available | Establish assignment/fold/fit counts and (N_max,p_max); benchmark only synthetic fixtures in the isolated pinned environment; report zero-, observed-synthetic- and worst-case-escalation scenarios without presenting them as a project runtime forecast |
+| Runtime model and benchmark | Symbolic workload model specified; no design inventory or benchmark available | Establish assignment/fold/fit counts, (N_max,p_max), exact-solve fallback counts, root-pass counts and per-operation escalation; benchmark only synthetic fixtures in the isolated pinned environment; report no-escalation, measured-synthetic and all-to-4096-bit scenarios without presenting them as project runtime forecasts |
 | Execution authorization | Not granted | Separate explicit GO after computational plan, software validation, isolation and data-access scope are accepted |
 
-This v0.5 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
+This v0.6 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the exact integer reference-contrast matrix B enforces the v1.7 sum-to-zero constraint and whether its fixed logdet shift and mapped tangent-gradient formula are correct;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
 - whether the actual stored-candidate displacement and Arb ball enclosure fully certify ordinary and Firth Armijo inequalities and the 10^-8 convergence test, including exact dyadic conversion and the 4096-bit precision cap;
 - whether the Arb determinant/inverse/SE enclosures adequately capture the exact-rational model and conditioning, and whether the N_max/p_max resolution and escalation fixtures are sufficient;
 - whether the exact-rational rational-to-Arb conversion avoids every binary64 intermediate in all certified quantities, while X_64 is confined to proposal-direction generation;
+- whether every binary64 proposal failure/non-ascent/Cholesky failure invokes the exact-model Arb direction fallback and cannot itself fire trigger (i);
+- whether the per-trial scaled exact-direction interval is rounded uniquely before candidate storage, without midpoint substitution;
+- whether the Krawczyk preconditioner is the inverse-Hessian sign, the inclusion formula certifies the root, and the root interval correctly resolves trigger (ii);
+- whether the root-box expected-information and Wald-SE enclosure correctly resolves trigger (iii) and fails closed at threshold straddles;
+- whether the 4096-bit endpoint is treated honestly as a fail-closed resource cap, with conditional precision-gap relations and measured escalation cost rather than a universal guarantee;
+- whether k_fail=0 sentinel versions are excluded from every primary-sample, fit and assignment row;
 - whether the symbolic runtime model and synthetic escalation profile are auditable without presenting them as data-dependent project estimates;
 - whether PCG64DXSM and the fixed SeedSequence stream hierarchy adequately implement the independent-uniform sampling model, with the limits of pseudorandom independence stated honestly;
 - whether a line-search stall has been routed consistently with v1.7 in all three positions (enriched ordinary, baseline ordinary, Firth refit);
@@ -541,4 +548,4 @@ No item in this document is approved merely by appearing here. No code is implem
 
 ---
 
-**End of B1 computational implementation plan v0.5 — design draft only.**
+**End of B1 computational implementation plan v0.6 — design draft only.**
