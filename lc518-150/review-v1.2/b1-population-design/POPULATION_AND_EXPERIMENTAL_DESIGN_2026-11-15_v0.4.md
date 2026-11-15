@@ -279,7 +279,7 @@ Conversely, three parents with one version each and only two \(C_D\) values can 
 
 These examples are structural illustrations of the frozen rules, not proposed variant allocations.
 
-### 3.4 Adopted M1-si design requirement: same parent, same identity, same exact B1 cell
+### 3.4 Adopted M1-si design requirement: same parent, same operator class, same exact B1 cell
 
 The study's stated scientific rationale for choosing an engineered population is to make matched comparisons within parent possible. This specification therefore **adopts a matched-within-parent requirement** as a new design rule. It is not a theorem implied by the B1 cell thresholds, and it is not inherited as binding authority from the old Rev 2.6 review draft.
 
@@ -385,7 +385,9 @@ The operator-class specification must identify a **closed set of permitted varia
 
 Permitted fields may include, where justified by the operator class, (i) selection among pre-enumerated sites with the same AST node type, operand roles/types, and control-flow signature; and/or (ii) literal, threshold, extent, or other parameter values from a predeclared finite set or bounded domain. These are examples, not automatic permissions. The actual permitted field list is specific to each \(q\) and must be frozen in its specification.
 
-The following are **not** permissible within-class changes unless expressly listed in \(\mathcal W_q\) and justified before any variant is built: changing the operation token or transformation semantics; changing AST node or operand types; changing operand roles; changing the control-flow form or affected edges; changing the read/write footprint; changing the number or order of operations; or changing the precondition/postcondition class. Any such unlisted difference yields a different \(q\), not a broader interpretation of the old one.
+The following are **invariant parts of \(q\) and may never be included in \(\mathcal W_q\)**: the operation token and transformation semantics; AST node types; operand roles and operand types; data-type constraints; control-flow form and affected edges; read/write or state-transition footprint; number and order of transformation operations; and the precondition/postcondition class. A change to any invariant creates a different operator class \(q\), even if the changed field was mistakenly listed as a realization setting. No reviewer may waive this rule.
+
+The permitted realization fields \(\mathcal W_q\) are restricted to values or positions that leave every invariant above unchanged. Examples, only when the canonical structural check confirms equivalence, are: selecting among pre-enumerated sites with identical AST node type, operand roles/types, and control-flow signature; or changing a literal, threshold, or extent within a predeclared finite set or bounded domain while preserving the operation and semantic class. A field not explicitly included in \(\mathcal W_q\) is fixed. A field in \(\mathcal W_q\) must still pass the canonical fingerprint check.
 
 #### 4.1.2 Deterministic conformance check
 
@@ -642,7 +644,7 @@ This population specification is a new design layer. It does not rewrite or supe
 
 1. **B1 v1.7:** remains accepted and frozen as the symbolic plan for the exposed 78-record development bank. It does not automatically govern a new protected evaluation set.
 2. **Computational plan v1.0:** remains an unreviewed computational draft. It cannot be treated as validated for a new record count, new parent/variant incidence, or changed design-matrix dimensions without an explicit update and review.
-3. **M1-si:** the same-identity, same-full-cell matched-support requirement in §3.4 is a new design choice in this specification. It is not represented as a requirement of B1 v1.7 itself and does not inherit the old five-version count.
+3. **M1-si:** the same-operator-class, same-full-cell matched-support requirement in §3.4 is a new design choice in this specification. It is not represented as a requirement of B1 v1.7 itself and does not inherit the old five-version count.
 4. **Protected custodian:** no independent custodian has been identified or appointed. This is a current blocker to freezing and implementing the protected-confirmatory route, not a routine execution detail.
 5. **q and realization coding:** the new B1 amendment must explicitly adopt or reject the proposed operator-class coding of \(q\) and the closed \(q/\mathbf a\) boundary in §4.1. It must not silently alter v1.7's frozen coding.
 6. **Option B target:** the future B1 amendment must retain the exact-cell primary baseline without \(\mathbf a(v)\), state the proxy limitation, and include N5 plus the adjusted sensitivity required by §5.7.
