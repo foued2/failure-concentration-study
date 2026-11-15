@@ -208,7 +208,7 @@ F_Q(gamma) = ell_Q(gamma) + 0.5 log det I_Q(gamma),
 where I_Q(gamma) = X_Q-transpose W_Q X_Q is the exact-model expected Fisher information and W_Q has entries pi_Q,i(1-pi_Q,i). The predictor column in X_Q is the exact rational C_D from §2.3. Do not substitute the observed Hessian, X_64 or a rounded C_D column for the objective or expected information.
 
 For the binary64 Firth proposal direction only, use the approximate matrix X_64 and its binary64 expected information I_64 = X_64-transpose W_64 X_64. Define its proposal leverage h_64,i = w_64,i times x_64,i-transpose I_64-inverse x_64,i. Compute it without forming the inverse: if I_64 = L L-transpose is the Cholesky factorization, solve L q_i = x_64,i and set h_64,i = w_64,i times q_i-transpose q_i. The binary64 proposal adjusted score is:
-U_star,64 = X_64-transpose [ y - pi_64 + h_64 elementwise-multiplied by (1/2 - pi_64) ].
+U_star,64 = X_64-transpose [ y - pi_64 + h_64 elementwise-multiplied by (1/2 - pi_64) ]. A failure of this proposal factorization or score calculation invokes the exact-model Firth direction fallback in §3.1; it does not by itself make the Firth refit unavailable.
 
 This binary64 score and its Fisher-scoring direction are proposal machinery only. The exact Firth objective and adjusted score are defined using X_Q, and the exact-rational Arb derivative U_star,Q-transpose s is the only directional derivative that can authorize a candidate. A proposal that is not an ascent direction for the exact model cannot pass the Arb Armijo test.
 
@@ -228,7 +228,7 @@ Compute the current Firth adjusted gradient in Arb for the Armijo directional de
 
 A Firth candidate is certified for acceptance only if the determinant enclosures for both matrices are positive, lower(D)>0, and lower(delta_F) >= 10^-4*upper(D). It is definitely rejected if upper(delta_F)<10^-4*lower(D) or upper(D)<=0. Otherwise increase precision. If the comparison or determinant sign remains unresolved at 4096 bits, do not accept that candidate; record it as interval-inconclusive and try the next smaller representable candidate. The same no-epsilon, no-weakened-inequality rule applies.
 
-If the determinant or inverse enclosure for the current accepted Firth iterate cannot be certified after 4096 bits, the Firth fit is numerically unavailable. If a trial candidate cannot be certified, it is rejected as a candidate, not accepted as an iterate. If no candidate is certified before the representability stop, record a line-search stall. Every accepted Firth iterate must have finite binary64 proposal quantities, a useably positive-definite I_64 under the declared LAPACK factorization for the next proposal update, and a positive Arb determinant enclosure for the exact-rational I_Q. No jitter, pseudo-inverse, ridge fallback, alternate optimizer or silent model simplification is permitted.
+If the determinant or inverse enclosure for the current accepted Firth iterate cannot be certified after 4096 bits, the Firth fit is numerically unavailable. If a trial candidate cannot be certified, it is rejected as a candidate, not accepted as an iterate. If no candidate is certified before the representability stop, record a line-search stall. Every accepted Firth iterate must have finite exact-model Arb quantities and a positive Arb determinant enclosure for the exact-rational I_Q. A binary64 proposal factorization is not a criterion for Firth availability; when it fails, the exact-model Arb direction fallback in §3.1 is required. If the exact expected-information determinant/inverse cannot be certified, or the exact-model fallback cannot produce an accepted step before its representability stop, the Firth refit is unavailable under v1.7. No jitter, pseudo-inverse, ridge fallback, alternate optimizer or silent model simplification is permitted.
 
 The implementation must independently verify the adjusted-score formula against the analytic derivative of the stated penalized objective and against finite-difference gradients on fixed software fixtures. It must also verify Arb determinant/log enclosures against high-precision references and confirm enclosure containment for ill-conditioned fixtures. Fixture set, finite-difference scheme, precision ladder, tolerances and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis.
 
@@ -307,10 +307,34 @@ For every fold, record the enriched ordinary-fit status; the binary64 proposal f
 - A determinant may be logged only when its Arb enclosure has a strictly positive lower bound. If the sign, inverse, SE threshold, or Armijo comparison cannot be certified at 4096 bits, follow the candidate/current-iterate failure rules in §§3.1–3.3; never substitute a midpoint or a binary64 estimate.
 - Arb real balls enclose rounding and propagated error for the exact-rational model. Record the radius of every objective, derivative, gradient, determinant/log-determinant, inverse-dependent SE and Armijo-margin interval, plus a binary64 2-norm condition-number diagnostic for information matrices. The condition estimate is diagnostic only; it is not used to accept/reject a step or trigger separation handling.
 
-References for the proposed API and its guarantees: https://python-flint.readthedocs.io/en/latest/fmpq.html (fmpq(m,k) exact rational construction and canonical numerator/denominator access); https://python-flint.readthedocs.io/en/stable/arb.html (Arb balls and rational-string input); https://python-flint.readthedocs.io/en/latest/arb_mat.html (arb_mat.det() and arb_mat.inv()).
+References for the proposed API and its guarantees: https://python-flint.readthedocs.io/en/latest/fmpq.html (fmpq exact rational construction); https://python-flint.readthedocs.io/en/stable/arb.html (exact rational-string input and Arb ball enclosures); https://python-flint.readthedocs.io/en/latest/arb_mat.html (arb_mat.solve(), arb_mat.det() and arb_mat.inv()).
 
-The exact numerical-library versions and platform build are not frozen in v0.5. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. Do not install dependencies into the user's working environment as part of this design step. Pin the exact Python-FLINT, FLINT, Python, platform and wheel/build identities before relying on the proposed APIs.
+The exact numerical-library versions and platform build are not frozen in v0.6. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. Do not install dependencies into the user's working environment as part of this design step. Pin the exact Python-FLINT, FLINT, Python, platform and wheel/build identities before relying on the proposed APIs.
 
+
+### 4.1 Precision requirement, 4096-bit resource ceiling, and escalation cost
+
+The precision ladder is \(L=\{128,256,512,1024,2048,4096\}\) bits. For any certified decision \(D\), define its decision gap \(\Delta_D\) as the distance of the exact decision quantity from the relevant boundary (zero for an Armijo margin, \(10^{-8}\) for a scaled convergence component, \(50\) in absolute value for the fitted slope, and \(10^3\) for the Wald SE). At precision \(b\), Arb supplies an interval enclosure with an actual radius \(r_D(b)\). The decision is certified only when the complete interval lies on one side of its boundary. For workload planning, a local error model is
+\[
+r_D(b)\ \lesssim\ A_D(N,p,\kappa,\Gamma)\,2^{-b},
+\qquad
+b_{\mathrm{req}}\ \gtrsim\
+\left\lceil\log_2\!\frac{A_D(N,p,\kappa,\Gamma)}{\Delta_D}\right\rceil+g,
+\]
+where \(A_D\) is the operation-graph/conditioning factor, \(\kappa\) characterizes the relevant information matrix, \(\Gamma\) is the current parameter/root box, and \(g\) is a guard-bit allowance fixed in the environment lock and validation record. This expression is a **conditional precision-planning relation**, not a substitute for the Arb enclosure. The actual Arb lower and upper bounds are the proof of every accepted decision; the measured \(r_D(b)\) values determine the actual escalation level.
+
+There is no finite universal bit bound that can be derived from \(N\), \(p\), and the \(10^{-8}\) convergence threshold alone. At fixed \(N,p\), an Armijo margin or a fitted coefficient/SE can lie arbitrarily close to its threshold, so \(\Delta_D\) has no positive lower bound fixed by those quantities. The exact within-cell variation gate requires only strict positivity, not a positive lower bound away from zero; logistic weights can also be arbitrarily small at large finite logits. Consequently the information condition number \(\kappa\) has no finite design-only upper bound. A formula depending only on \(N,p,10^{-8}\) would therefore be an unjustified guarantee. This is a mathematical limitation, not a missing arithmetic trick.
+
+The 4096-bit endpoint is retained **only as a provisional, hard resource ceiling** for deterministic accounting. It is not claimed to guarantee resolution for all designs, all fits, or all near-threshold cases. If an Armijo, convergence, root-inclusion, beta-threshold, determinant/inverse, or SE decision remains unresolved at 4096 bits, the candidate/fold/test follows the fail-closed outcome in §§3.1–3.3. No midpoint, tolerance relaxation, or trigger guess is permitted. The ceiling may be raised or the design may be declared computationally unavailable only through a separately reviewed revision; it must not be changed ad hoc during a run.
+
+Before any execution GO, the frozen design inventory must establish \(N_{\max}\) and \(p_{\max}\). The synthetic fixture/benchmark suite must then report, by \(N,p,\kappa\), decision gap and operation class:
+- the first precision level at which each certified decision resolves;
+- the interval radius \(r_D(b)\) at every attempted precision;
+- the number and fraction of candidates/solves/root boxes reaching each level \(b\);
+- the number that remain unresolved at 4096 bits and their fail-closed routing;
+- elapsed time and peak memory for ordinary Armijo, Firth Armijo/determinant/inverse, exact direction fallback, Krawczyk root enclosure and root-box SE certification.
+
+For each operation class, report timing distributions and the incremental cost of escalating from each precision level to the next. The 4096-bit cost must be measured at the design-derived \(N_{\max},p_{\max}\), including ill-conditioned and near-threshold fixtures. A generic \(2^b\) runtime multiplier is not assumed; actual library timings and operation dimensions determine the cost model. The existing runtime section's scenario estimates must include the exact-direction fallback and the extra root-enclosure/SE pass on every converged enriched ordinary fit.
 
 ## 5. Random-number generation and assignment sampling
 
