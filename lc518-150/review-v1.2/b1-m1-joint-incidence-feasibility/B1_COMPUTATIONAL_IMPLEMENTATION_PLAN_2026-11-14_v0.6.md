@@ -232,37 +232,64 @@ If the determinant or inverse enclosure for the current accepted Firth iterate c
 
 The implementation must independently verify the adjusted-score formula against the analytic derivative of the stated penalized objective and against finite-difference gradients on fixed software fixtures. It must also verify Arb determinant/log enclosures against high-precision references and confirm enclosure containment for ill-conditioned fixtures. Fixture set, finite-difference scheme, precision ladder, tolerances and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis.
 
-### 3.3 Standard error, separation trigger, and failure routing
+### 3.3 Fitted-root certification, standard error, separation trigger, and failure routing
 
-The enriched ordinary model is fitted first. If it does not converge, trigger (i) in v1.7 fires and both models are refitted using the Firth objective. For this computational plan, enriched ordinary nonconvergence includes:
-- reaching 200 accepted updates without satisfying the convergence criterion;
-- failure to obtain a finite, strictly positive binary64 Fisher-scoring directional derivative;
-- an Armijo line-search stall: no candidate is certified by the Arb interval comparison, including candidates that remain inconclusive at the 4096-bit precision cap, before alpha underflows to zero or the candidate vector becomes bitwise identical to the current vector;
-- non-finite objective, score, information or parameter values before convergence;
-- Cholesky failure when factorization is required to compute an ordinary enriched-model update.
+The enriched ordinary model is fitted first. Trigger (i) is evaluated only from the exact-model fitting path specified in §3.1. For this computational plan, an enriched ordinary fit is nonconverged when:
+- it reaches 200 accepted updates without satisfying the exact-model Arb convergence criterion;
+- the exact-model direction fallback cannot be certified/uniquely rounded at the 4096-bit cap;
+- the exact-model Armijo line search, after the binary64 proposal and the exact-model fallback have both been tried, reaches the representability stop without a certified accepted candidate;
+- the exact-model objective, score, gradient or information cannot be enclosed under the declared Arb procedure at the precision cap, or the exact-model numerical state becomes non-finite in a way that prevents the convergence test/update.
 
-If the enriched ordinary fit converges with finite parameters, first check whether abs(beta_C) > 50 using the stored binary64 coefficient (the threshold comparison is exact for this representable value). If so, trigger (ii) fires and both models are refitted with Firth. Otherwise, compute the final-iterate expected information from the exact-rational model:
-I_Q = X_Q-transpose W_Q X_Q,
-at the final accepted ordinary enriched-model parameter vector. Use Arb matrix inversion/solves to enclose the exact-model Wald variance
-V_beta = e_beta-transpose I_Q-inverse e_beta
-and its square root SE(beta_C). No binary64 predictor matrix may determine this standard error. If the information inverse or the variance cannot be certified at 4096 bits, or if the SE interval straddles 10^3 at the precision cap, the SE trigger cannot be evaluated and the fold/test is unavailable; this is not re-labelled as SE > 10^3. If the lower bound of the certified SE interval exceeds 10^3, trigger (iii) fires and both models are refitted with Firth. If its upper bound is at most 10^3, trigger (iii) does not fire. The exact reference-contrast reparameterization affects only nuisance coordinates and leaves this beta_C variance unchanged.
+The following are **not** trigger-(i) events by themselves: binary64 proposal Cholesky failure, non-finite binary64 proposal direction, binary64 non-ascent, or exhaustion of the binary64 proposal line search. Each first invokes the exact-model direction fallback. A fitting trigger can result only if the exact-model fallback also fails to produce the required accepted step/convergence.
 
-If the final-iterate exact-rational information inverse or Wald-SE interval is unavailable, this is not re-labelled as an SE exceeding 10^3 and does not create a new Firth trigger: the fold/test is unavailable under v1.7's no-silent-fallback rule.
+#### Exact fitted-root enclosure for trigger (ii) and the Wald standard error
 
+The v1.7 quantities \(\widehat\beta_C\) and its Wald standard error refer to the fitted enriched-model coefficient. The final binary64 iterate is an exact stored number, but it is not by itself a certified enclosure of the exact-model fitted root when the convergence gradient is merely within \(10^{-8}\). Therefore, after the enriched ordinary fit satisfies the v1.7 convergence criterion, certify a local enclosure of the unique ordinary-score root before evaluating triggers (ii) and (iii).
 
-If none of the three enriched-model triggers fires, fit the baseline ordinary model. Any unresolved baseline ordinary fitting failure makes the applicable test unavailable. Baseline failure alone does not create a new Firth trigger. If an enriched-model trigger has already fired, fit both models with Firth and do not run an unnecessary baseline ordinary fit first.
+Let \(\gamma_0\) be the final stored enriched ordinary parameter vector, \(F(\gamma)=U_{\mathbb Q}(\gamma)=\nabla\ell_{\mathbb Q}(\gamma)\), and \(J(\Gamma)=-I_{\mathbb Q}(\Gamma)\) be the interval Jacobian/Hessian over a parameter box \(\Gamma\). The design-rank condition and positive finite logistic weights imply strict concavity at finite parameters, so there is at most one finite score root. Construct a deterministic box centred at \(\gamma_0\), with initial half-width
+\[
+r_j^{(0)}=2^{-20}\max(1,|\gamma_{0,j}|).
+\]
+At each radius and each precision in the declared ladder, form a nonsingular fixed preconditioner \(C_0\) from the midpoint of an approximate inverse of \(I_{\mathbb Q}(\gamma_0)\). Treat the entries of \(C_0\) as exact dyadic values in Arb and certify \(\det(C_0)\ne0\); this preconditioner is only an ingredient of the inclusion proof and is never treated as an estimate of the root.
+
+Compute the Krawczyk enclosure
+\[
+K(\gamma_0,\Gamma)
+=\gamma_0-C_0F(\gamma_0)
++\bigl(I-C_0J(\Gamma)\bigr)(\Gamma-\gamma_0).
+\]
+If \(K(\gamma_0,\Gamma)\) is strictly contained in the interior of \(\Gamma\), the Krawczyk test certifies existence and uniqueness of a score root in \(\Gamma\). Contract the root box by intersecting it with the Krawczyk enclosure and repeat until the beta-coordinate interval gives an unambiguous trigger decision. If inclusion fails, double every box half-width and retry, up to 64 radius expansions. If contraction does not resolve the beta threshold within 64 contraction steps and the 4096-bit ceiling, the root coefficient is not certified and the fold/test is unavailable. If the score root does not exist finitely (for example, a separated ordinary likelihood with no finite maximizer), this procedure cannot certify it; do not replace the missing root by the last stored iterate.
+
+Let \(B_\beta=[\beta_-,\beta_+]\) be the certified root interval after Krawczyk contraction:
+- Trigger (ii) fires only if \(\beta_->50\) or \(\beta_+<-50\), so the entire root interval is outside [-50,50].
+- Trigger (ii) does not fire only if \(-50\le\beta_-\le\beta_+\le50\).
+- If \(B_\beta\) intersects either threshold boundary and neither condition holds at the precision/radius cap, the trigger cannot be evaluated and the fold/test is unavailable. No midpoint or stored-coefficient comparison is substituted.
+
+Using the same certified root box \(\Gamma_*\), construct the exact-model expected-information enclosure
+\[
+I_{\mathbb Q}(\Gamma_*)=X_{\mathbb Q}^{T}W_{\mathbb Q}(\Gamma_*)X_{\mathbb Q}
+\]
+and enclose the Wald variance \(V_\beta=e_\beta^TI_{\mathbb Q}(\Gamma_*)^{-1}e_\beta\) and its square root \(SE(\widehat\beta_C)\) with Arb. This interval contains the Wald standard error at the exact fitted root. Trigger (iii) fires only when the lower bound of this SE interval exceeds \(10^3\); it does not fire only when the upper bound is at most \(10^3\). If the matrix inverse/variance is not certified or the interval straddles \(10^3\) at 4096 bits, the fold/test is unavailable, never relabelled as an SE trigger or a no-trigger result.
+
+#### Remaining model fits and failure routing
+
+If the enriched exact-model fit does not converge, trigger (i) fires and both models are refitted using the Firth objective. If it converges, trigger (ii) is evaluated from the certified root interval and trigger (iii) from the root-box Wald-SE interval. If either trigger fires, refit both models using Firth. If no enriched trigger fires, fit the baseline ordinary model. Any exact-model baseline ordinary fitting failure makes the applicable test unavailable; baseline failure alone does not create a new Firth trigger. If an enriched-model trigger has already fired, fit both models with Firth and do not run an unnecessary baseline ordinary fit first.
 
 | Ordinary-fit outcome | Required action |
 |---|---|
-| Enriched ordinary fit does not converge, including an Arb interval-inconclusive Armijo stall or a representability-limited stall | Trigger (i); jointly Firth-refit baseline and enriched models |
-| Enriched ordinary fit converges and abs(beta_C) > 50 | Trigger (ii); jointly Firth-refit both models |
-| Enriched ordinary fit converges, abs(beta_C) <= 50, and the lower bound of the certified exact-rational Wald-SE interval exceeds 10^3 | Trigger (iii); jointly Firth-refit both models |
-| Enriched ordinary fit converges but the exact-rational final-iterate information inverse/SE interval cannot be certified at 4096 bits, or the SE interval straddles 10^3 at the cap | Unavailable; do not invent an SE threshold or an extra trigger |
-| Enriched ordinary fit converges with abs(beta_C) <= 50 and the upper bound of the certified exact-rational Wald-SE interval is at most 10^3; baseline ordinary fit succeeds | Use the ordinary fits; no Firth refit |
-| No enriched trigger fires but baseline ordinary fitting fails, including an Arb interval-inconclusive Armijo stall | Unavailable; no baseline-only trigger exists |
-| Either Firth refit fails to converge, including an Arb interval-inconclusive Armijo stall, or violates the declared information-matrix rules | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
+| Enriched ordinary exact-model fit does not converge, including exact-direction or exact-model Armijo stall | Trigger (i); jointly Firth-refit baseline and enriched models |
+| A binary64 proposal solve, Cholesky factorization, direction or line search fails, but exact-model fallback succeeds | Continue the same ordinary fit; no trigger is fired |
+| Exact fitted-root interval lies wholly above 50 or wholly below -50 | Trigger (ii); jointly Firth-refit both models |
+| Exact fitted-root interval lies wholly within [-50,50], and root-box Wald-SE lower bound exceeds 10^3 | Trigger (iii); jointly Firth-refit both models |
+| Exact fitted-root interval cannot be certified or straddles either ±50 boundary at the cap | Unavailable; no trigger is invented from the stored iterate |
+| Root-box Wald-SE interval cannot be certified or straddles 10^3 at the cap | Unavailable; no trigger is invented |
+| Both intervals are certified with no trigger; baseline ordinary exact-model fit succeeds | Use the ordinary fits; no Firth refit |
+| No enriched trigger fires but baseline exact-model ordinary fitting fails | Unavailable; no baseline-only trigger exists |
+| Either Firth refit cannot converge under its exact-model Arb procedure, its exact expected-information determinant/inverse cannot be certified, or its exact direction fallback cannot produce an accepted step | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
 
-For every fold, record the enriched ordinary-fit status, all triggers that could be evaluated, whether the baseline ordinary fit was attempted, whether the Firth pair was attempted, both final model statuses, and the reason for any unavailability. Also record accepted updates, backtracking halvings, the Arb convergence-gradient enclosures at each checked iterate, the Armijo termination reason, and interval-inconclusive, precision-cap and representability stalls. If abs(beta_C) > 50 already triggers Firth, a Wald SE is not needed to establish the trigger and may be marked not evaluated. A certified SE interval is recorded with its precision and lower/upper bounds whenever trigger (ii) has not already fired. The v1.7 rule is otherwise unchanged.
+For every fold, record the enriched ordinary-fit status; the binary64 proposal failure/recovery diagnostics; exact-fallback solve precision and unique-rounding status; accepted updates; backtracking halvings; convergence-gradient intervals; Krawczyk radius expansions and contractions; the certified root interval; the root-box Wald-SE interval; every trigger that could be evaluated; whether the baseline ordinary fit was attempted; whether the Firth pair was attempted; both final model statuses; and the reason for any unavailability. The v1.7 statistical thresholds and joint-Firth rule are unchanged.
+
+
 
 ## 4. Linear algebra and exact-rational interval arithmetic
 
