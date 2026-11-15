@@ -204,15 +204,23 @@ For every fold, record the enriched ordinary-fit status, all triggers that could
 
 ## 4. Linear algebra
 
-**Candidate routine:** IEEE-754 binary64 arithmetic with the LAPACK symmetric positive-definite Cholesky factorization, lower-triangular form (DPOTRF), through the numerical-library interface fixed in the environment lock.
+**Binary64 update/factorization path:** IEEE-754 binary64 arithmetic with the LAPACK symmetric positive-definite Cholesky factorization, lower-triangular form (DPOTRF), through the numerical-library interface fixed in the environment lock.
 
-- Solve systems by forward/back substitution using the Cholesky factor. Never form the information-matrix inverse.
-- Compute log det I as twice the sum of the natural logarithms of the Cholesky diagonal entries.
-- A non-positive-definite matrix, factorization error, non-finite factor, or non-finite log determinant at an accepted Firth iterate is a hard fitting failure under v1.7.
+- Solve Fisher-scoring systems by forward/back substitution using the Cholesky factor. Never form the binary64 information-matrix inverse.
+- The binary64 Cholesky log determinant may be calculated as twice the sum of the natural logarithms of the Cholesky diagonal entries for fitting diagnostics. It must not be used to certify an Armijo comparison or a Firth objective increment; those decisions use the Arb enclosures in §§3.1–3.2.
 - No diagonal perturbation, eigenvalue clipping, pseudo-determinant, generalized inverse, or fallback factorization is permitted.
 - Record the library name/version, linked LAPACK implementation, binary64 platform details, factorization status and any reported numerical error code.
 
-The exact numerical-library version and platform build are not frozen in v0.2 because no root-level pyproject.toml, requirements.txt, environment.yml or setup.cfg was found at the inspected review-branch root. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step.
+**Certified objective/derivative path:** candidate library `python-flint` 0.9.0, using Arb real balls and Arb ball matrices. This is a proposed dependency, not yet installed or locked. The package version, wheel/build hash, bundled FLINT version, Python ABI and platform must be pinned before software validation.
+
+- Convert every finite binary64 input x exactly: obtain its exact `x.as_integer_ratio() = (p, 2^k)` and construct the Arb point corresponding to `p*2^-k` (the python-flint Arb constructor accepts exact `(a,b)` data representing `a*2^b`). Integer outcomes and exact rational data are likewise inserted exactly.
+- Use Arb balls for the rowwise log-likelihood increment, the actual-displacement directional derivative, and the Firth expected-information matrix. Use `arb_mat.det()` to enclose each determinant and `arb_mat.inv()` to enclose the inverse needed for the Firth leverage/adjusted score. Increase context precision only along the fixed ladder declared in §3.1.
+- A determinant may be logged only when its Arb enclosure has a strictly positive lower bound. If the sign, inverse or Armijo comparison cannot be certified at 4096 bits, follow the candidate/current-iterate failure rules in §3.1–§3.2; never substitute a midpoint or a binary64 estimate.
+- Arb real balls carry explicit enclosures for rounding and propagated error. The radius of the determinant/log-determinant increment is the run-specific certified absolute error bound, including the effect of the actual matrix conditioning. Record both the ball radius and a binary64 2-norm condition-number estimate as a diagnostic. The condition estimate is not used to accept or reject a step.
+
+References for the proposed API and its guarantees: `https://python-flint.readthedocs.io/en/stable/arb.html` (Arb real balls and correctly enclosed elementary functions); `https://python-flint.readthedocs.io/en/latest/arb_mat.html` (matrix determinant and inverse enclosures); `https://flintlib.org/doc/arb_mat.html` (verified ball-matrix determinant and Cholesky/inverse routines).
+
+The exact numerical-library versions and platform build are not frozen in v0.4. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step., requirements.txt, environment.yml or setup.cfg was found at the inspected review-branch root. The implementation environment must first be inventoried and then pinned in a lock artifact before software validation. No dependency is to be installed into the user's working environment as part of this design step.
 
 ## 5. Random-number generation and assignment sampling
 
@@ -278,7 +286,7 @@ Per dataset, count:
 - Monte Carlo branch: 1 + 9,999 comparison-set members, with the observed evaluation reused and not repeated;
 - per assignment: two model fits per LOPO fold, plus both Firth refits on folds where the trigger fires.
 
-The implementation must reconcile these counts against v1.7 §8(iii) and the binding v1.7 acceptance-record note before any run. Report, per evaluated assignment, the enriched ordinary-fit outcome, trigger status, baseline ordinary-fit status when applicable, Firth-refit status, accepted updates, line-search halvings, Armijo termination reason (including precision/representability stall), and final availability classification. This allows the v1.7 evaluated-assignment accounting to be audited without using fit status to filter assignments.
+The implementation must reconcile these counts against v1.7 §8(iii) and the binding v1.7 acceptance-record note before any run. Report, per evaluated assignment, the enriched ordinary-fit outcome, trigger status, baseline ordinary-fit status when applicable, Firth-refit status, accepted updates, line-search halvings, Armijo termination reason (including interval-inconclusive and precision/representability stall), and final availability classification. For each accepted or rejected line-search candidate, retain N, precision used, objective-increment interval, directional-derivative interval, Armijo margin interval, and Firth determinant/log-determinant interval radii and condition diagnostics when applicable. This allows the v1.7 evaluated-assignment accounting to be audited without using fit status to filter assignments.
 
 ## 8. Software validation required before execution GO
 
@@ -291,28 +299,33 @@ Required tests:
 4. enumerator: exact unique arrangement count and deterministic order on hand-checkable fixtures;
 5. sampler: Fisher–Yates implementation and uniformity proof at the algorithm level; any empirical frequency experiment is deferred until a separate execution GO;
 6. audit key: exact equality, all scored and excluded fold-cell decisions, and no outcome/fit/score fields;
-7. likelihood increments: verify the rowwise log1p/expm1 and logaddexp identities against high-precision references on hand-computable fixtures; include large absolute log-likelihoods with tiny trial increments and confirm no subtraction of large objective totals;
-8. Firth: adjusted-score formula, expected-information identity, analytic adjusted score against an independently differentiated objective and finite-difference gradient on fixed software fixtures; verify that the Fisher direction uses U-star and has positive penalized directional derivative;
-9. Firth objective increment: verify the Cholesky-diagonal log-determinant increment against a high-precision log-determinant difference on fixed software fixtures;
-10. Cholesky: SPD success, singular/non-SPD failure, log-determinant identity and triangular-solve correctness;
-11. optimizer: convergence, direct-increment Armijo sufficient-increase, initial-point convergence check, dynamic halving and binary64 representability stop, iteration-limit and deterministic failure-routing behavior on fixed fixtures; include near-optimum cases whose absolute objective is large but whose predicted increment is small;
-12. stall routing: an enriched ordinary stall triggers joint Firth; a Firth stall makes the test unavailable; a baseline-only ordinary stall makes the test unavailable; none is called convergence;
-13. assignment accounting: observed statistic reused exactly once; no duplicate observed fit;
-14. availability: any unresolved fit failure invalidates the applicable test; no silent filtering or replacement;
-15. RNG: deterministic regeneration from the root seed and stable stream identifiers;
-16. cap: synthetic acceptance-rate fixtures verify stop-at-cap behavior and unavailable-on-partial-sample rule without touching project data;
-17. failure routing: enriched ordinary nonconvergence triggers joint Firth; converged-fit unavailable SE does not invent a trigger; baseline-only ordinary failure is unavailable; any unresolved Firth failure is unavailable;
-18. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing; verify the algebraic proof and exact W_C,c gate, and confirm that no floating-point rank tolerance silently changes eligibility.
-
-The test suite, expected outputs, tolerances, software versions and hashes must be frozen before any project-data evaluation. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
+7. exact-candidate displacement: prove that the Arb displacement s is the exact difference of the current and candidate binary64 vectors; verify t = Xs matches the evaluated stored candidate, including halfway rounding, cancellation and sub-ULP candidate cases;
+8. likelihood increment: verify the Arb log1p/expm1 and logaddexp identities against exact/high-precision references; confirm interval containment for large absolute likelihoods with tiny increments and for rowwise sums at increasing N;
+9. directional derivative: verify Arb enclosures of U-transpose s for ordinary fits and U_star-transpose s for Firth, including positivity, inconclusive and non-ascent cases;
+10. Firth: adjusted-score formula, expected-information identity, analytic adjusted score against an independently differentiated objective and finite-difference gradient; verify the binary64 Fisher direction uses U-star;
+11. Arb determinant/inverse: verify arb_mat.det() and arb_mat.inv() enclosures against known matrices and high-precision references; include matrices with controlled condition numbers, near-singular SPD matrices, and cases where 4096-bit certification correctly fails;
+12. Firth objective increment: verify Arb log(det(I_candidate))-log(det(I_current)) interval containment against independent high-precision references; record determinant and log-determinant radii and condition diagnostics;
+13. Cholesky: SPD success, singular/non-SPD failure, and triangular-solve correctness for the binary64 update path;
+14. optimizer: convergence, certified Armijo lower/upper-bound comparison, initial-point convergence check, dynamic halving, actual stored-candidate evaluation, 4096-bit interval-inconclusive handling, binary64 representability stop, iteration-limit and deterministic failure-routing;
+15. resolution grid: synthetic software-only fixtures over gradient magnitudes 10^-4, 10^-6, 10^-8 and 10^-10; row counts 78, 780, 7,800 and the exact design-derived N_max (remove duplicate sizes); and controlled information condition-number strata 10^2, 10^6, 10^10 and 10^14 where constructible. Record certified decisions, inconclusive candidate counts, interval radii, and stall rates. The N_max fixture is mandatory; the numerical design gate remains blocked until N_max is established from the frozen exact inventory;
+16. stall routing: an enriched ordinary stall triggers joint Firth; a Firth stall makes the test unavailable; a baseline-only ordinary stall makes the test unavailable; none is called convergence;
+17. assignment accounting: observed statistic reused exactly once; no duplicate observed fit;
+18. availability: any unresolved fit failure invalidates the applicable test; no silent filtering or replacement;
+19. RNG: deterministic regeneration from the root seed and stable stream identifiers;
+20. cap: synthetic acceptance-rate fixtures verify stop-at-cap behavior and unavailable-on-partial-sample rule without touching project data;
+21. failure routing: enriched ordinary nonconvergence triggers joint Firth; converged-fit unavailable SE does not invent a trigger; baseline-only ordinary failure is unavailable; any unresolved Firth failure is unavailable;
+22. rank: full baseline rank and C_D independence from all baseline columns under the complete 78-record crossing; verify the algebraic proof and exact W_C,c gate, and confirm that no floating-point rank tolerance silently changes eligibility. Passing software tests demonstrates implementation consistency, not scientific validity, exchangeability, consent, bank integrity or predictive evidence.
 
 ## 9. Unresolved decisions and blockers
 
 | Item | Current disposition | Required closure |
 |---|---|---|
-| Numerical stack and pinned versions | Open; no root dependency manifest found | Inspect the intended isolated environment; pin Python, NumPy, SciPy and linked LAPACK before software validation |
-| IRLS and Firth update details | Proposed above; not independently validated | Independent mathematical/code review of adjusted-score implementation, direct objective-increment evaluation and deterministic line search |
-| Linear algebra and objective-increment arithmetic | Candidate LAPACK Cholesky / DPOTRF; fixed-order compensated summation via Python math.fsum; binary64 halving/representability stop | Pin Python, NumPy, SciPy, linked LAPACK, binary64 platform details and summation implementation before software validation |
+| Numerical stack and pinned versions | Open | Inventory the intended isolated environment; pin Python, NumPy, SciPy, LAPACK, python-flint and FLINT build/version before software validation |
+| Arb interval implementation | Proposed; not implemented or validated | Independently review exact dyadic conversion, interval row increments, determinant/inverse certification, precision ladder and interval-bound comparisons |
+| Maximum training-row count N_max | Unknown; v1.7 fixes 78 records per version but the exact frozen version inventory has not been established in this computational step | Derive N_max = 78 × max training versions across real-data folds and all N4-a datasets from the frozen design inventory; validate the resolution grid at N_max before GO |
+| Armijo resolution under conditioning | Conservative certification rule specified; not tested | Record interval radii and diagnostic condition numbers; confirm all required fixtures resolve or are explicitly stalled at the 4096-bit cap |
+| IRLS and Firth update details | Proposed above; not independently validated | Independent mathematical/code review of adjusted-score implementation, actual-candidate displacement and certified Armijo logic |
+| Linear algebra | Candidate LAPACK Cholesky / DPOTRF for binary64 updates; Arb verified determinant/inverse enclosures for Armijo certification | Pin actual library implementations and record binary64/Arb precision and platform details |
 | PRNG | Candidate PCG64DXSM + SeedSequence | Pin NumPy version and verify stream mapping; no project sampling |
 | Exact rational encoding | Proposed and required for combinatorics | Review canonical serialization and equality implementation |
 | Audit-key feasibility | Not assessed | Requires approved design inventory; no bank reuse or outcome access in this phase |
@@ -321,12 +334,11 @@ The test suite, expected outputs, tolerances, software versions and hashes must 
 | Parent-population uncertainty | Not provided by v1.7 | No parent-population claim; any change requires a new statistical plan |
 | Execution authorization | Not granted | Separate explicit GO after computational plan, software validation, isolation and data-access scope are accepted |
 
-## 10. Phase gate
-
-This v0.3 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
+This v0.4 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the orthonormal Helmert parameterization and projected original-coordinate gradient criterion are a faithful operationalization of v1.7's constrained componentwise gradient rule;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
-- whether the direct-increment Armijo evaluator is algebraically correct and numerically stable, including the Firth Cholesky-diagonal log-determinant increment, and whether the representability-based stopping rule is deterministic and adequate;
+- whether the actual stored-candidate displacement and Arb ball enclosure fully certify the ordinary and Firth Armijo inequalities, including exact dyadic conversion and the 4096-bit precision cap;
+- whether the Arb determinant/inverse enclosures adequately capture conditioning, and whether the N_max resolution grid is sufficient;
 - whether PCG64DXSM and the fixed SeedSequence stream hierarchy adequately implement the independent-uniform sampling model, with the limits of pseudorandom independence stated honestly;
 - whether a line-search stall has been routed consistently with v1.7 in all three positions (enriched ordinary, baseline ordinary, Firth refit);
 - whether the final-iterate information factorization for the Wald SE is specified without reusing a preceding-iterate factorization;
