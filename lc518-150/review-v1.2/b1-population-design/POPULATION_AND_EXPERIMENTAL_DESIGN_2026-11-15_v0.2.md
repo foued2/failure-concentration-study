@@ -163,7 +163,7 @@ This is not an acceptable default operating sample size for a confirmatory study
 
 ## 3. B1 support derivation before mechanism selection
 
-This section is the design constraint that must be resolved before mutation mechanisms are selected. The rules below distinguish the frozen B1 conditions from a stronger proposed matched-within-parent design target.
+This section states the frozen B1 support constraints and the additional M1-si matched-within-parent design requirement adopted for this study. The additional requirement is a design choice, not a consequence of the B1 thresholds.
 
 ### 3.1 Exact B1 cell and full-population eligibility
 
@@ -268,7 +268,7 @@ This adopted rule is stricter than the full-population B1 thresholds \(G_c\ge3\)
 
 If the condition holds for at least three parents, then after holding out any one of those qualifying parents, at least two other qualifying parents remain in the training set. Each remaining parent contributes at least two distinct \(C_D\) values to the same exact cell. This supplies the LOPO training support conditions in §3.2 for that cell, subject to the other B1 audit and model-rank requirements.
 
-The structural lower bound is
+Let (V_c) denote the total number of variant instances in cell (c), so (V_c=sum_g|mathcal V_{g,c}|). The structural lower bound is
 
 \[
 V_c\ge2G_c^{\mathrm{M1-si}},\qquad
@@ -442,7 +442,7 @@ No final parent count, per-parent variant count, or total variant count is adopt
 
 The accepted B1 cell rule gives a mathematical minimum of three distinct parent groups in a qualifying cell. The adopted M1-si design requirement in §3.4 adds that each of at least three parents must contribute at least two of its own variants to one common exact \((q,Z,k,\ell)\) cell, with different within-parent \(C_D\) values. The minimum for that cell is therefore six variants across three parents.
 
-For \(P\) qualifying parents under that proposed target:
+For \(P\) qualifying parents under the adopted M1-si requirement:
 
 \[
 P\ge3,\qquad V_c\ge2P.
