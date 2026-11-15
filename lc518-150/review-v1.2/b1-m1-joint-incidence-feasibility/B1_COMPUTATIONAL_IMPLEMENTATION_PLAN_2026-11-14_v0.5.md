@@ -143,7 +143,7 @@ The v1.7 convergence threshold is 10^-8 and its componentwise scaling is retaine
 
 The fit is converged when the maximum of all applicable scaled component magnitudes is at most 10^-8. The mapping B(B-transpose B)^-1 g_theta is the orthogonal projection of any ambient record-effect gradient onto the sum-zero subspace. It is invariant under any invertible change of coordinates B-prime=BQ, because the reduced gradient transforms as Q-transpose g_theta and the mapped 78-vector remains unchanged. This is the declared operational interpretation of v1.7's constrained-parameter criterion; it does not use a coordinate-dependent componentwise norm in theta.
 
-The convergence decision itself is certified with Arb balls, not a binary64 gradient comparison. At each iterate, compute the active objective gradient as an Arb vector from the exact dyadic stored coefficients and the exact-rational design matrix entries: for ordinary maximum likelihood, g = X-transpose(y-pi); for the Firth objective, g = U_star using the Arb inverse and leverage calculation specified in §3.2. Extract the alpha, theta and (where present) beta components. Compute g_omega_tan = B(B-transpose B)^-1 g_theta in Arb, using the exact rational entries of (B-transpose B)^-1 = I_77 - (1/78)11-transpose-ones. Compute each denominator max(1,abs(parameter)) from the exact stored parameter values; omega = B theta is an exact dyadic sum for the stored binary64 theta vector. Form Arb enclosures for every scaled absolute component and evaluate them at the same 128, 256, 512, 1024, 2048 and 4096-bit precision ladder.
+The convergence decision itself is certified with Arb balls, not a binary64 gradient comparison. At each iterate, compute the active objective gradient as an Arb vector from the exact dyadic stored coefficients and the exact-rational design matrix entries: for ordinary maximum likelihood, g = U_Q = X_Q-transpose(y-pi_Q); for the Firth objective, g = U_star,Q using the Arb inverse and leverage calculation specified in §3.2. Extract the alpha, theta and (where present) beta components. Compute g_omega_tan = B(B-transpose B)^-1 g_theta in Arb, using the exact rational entries of (B-transpose B)^-1 = I_77 - (1/78)11-transpose-ones. Compute each denominator max(1,abs(parameter)) from the exact stored parameter values; omega = B theta is an exact dyadic sum for the stored binary64 theta vector. Form Arb enclosures for every scaled absolute component and evaluate them at the same 128, 256, 512, 1024, 2048 and 4096-bit precision ladder.
 
 A convergence PASS is allowed only when the upper bound of every scaled component is at most 10^-8. If any component's lower bound exceeds 10^-8, the iterate is definitely not converged and the Fisher-scoring update may proceed. If the intervals straddle the threshold, increase precision. If any component remains unresolved at 4096 bits, convergence is not certified: record the interval and continue as nonconverged, never as converged. If the current Firth gradient or inverse cannot be enclosed at the precision cap, the Firth fit is unavailable. This conservative certificate does not change v1.7's 10^-8 threshold; it prevents rounding uncertainty from being treated as evidence that the threshold has been met.
 
@@ -177,9 +177,9 @@ The fit may take at most 200 accepted updates. After the 200th update, evaluate 
 
 ### 3.2 Firth / Jeffreys-penalized refits
 
-When the v1.7 enriched-model trigger fires, refit both models using the exact objective:
-F(gamma) = ell(gamma) + 0.5 log det I(gamma),
-where I(gamma) is the expected Fisher information X-transpose W X in the same constrained parameterization and W has entries pi_i(1-pi_i). Do not substitute the observed Hessian for expected information.
+When the v1.7 enriched-model trigger fires, refit both models using the exact-rational objective:
+F_Q(gamma) = ell_Q(gamma) + 0.5 log det I_Q(gamma),
+where I_Q(gamma) = X_Q-transpose W_Q X_Q is the exact-model expected Fisher information and W_Q has entries pi_Q,i(1-pi_Q,i). The predictor column in X_Q is the exact rational C_D from §2.3. Do not substitute the observed Hessian, X_64 or a rounded C_D column for the objective or expected information.
 
 For the binary64 Firth proposal direction only, use the approximate matrix X_64 and its binary64 expected information I_64 = X_64-transpose W_64 X_64. Define its proposal leverage h_64,i = w_64,i times x_64,i-transpose I_64-inverse x_64,i. Compute it without forming the inverse: if I_64 = L L-transpose is the Cholesky factorization, solve L q_i = x_64,i and set h_64,i = w_64,i times q_i-transpose q_i. The binary64 proposal adjusted score is:
 U_star,64 = X_64-transpose [ y - pi_64 + h_64 elementwise-multiplied by (1/2 - pi_64) ].
@@ -190,7 +190,7 @@ This binary64 score and its Fisher-scoring direction are proposal machinery only
 The derivative identity underlying this score is:
 partial [0.5 log det I] / partial gamma_j = 0.5 trace( I-inverse times partial I / partial gamma_j ).
 
-The Fisher-scoring direction for the Firth objective uses the full penalized adjusted score U_star, not the ordinary score U. Solve I d = U_star in binary64. At non-converged iterates, verify that the binary64 directional derivative is finite and strictly positive before forming candidates. The Arb-certified derivative used for candidate acceptance is independently computed as U_star-transpose s, as specified below.
+The binary64 Firth proposal direction uses the approximate penalized adjusted score U_star,64, not the ordinary proposal score U_64. Solve I_64 d = U_star,64 in binary64. At non-converged iterates, verify that the binary64 proposal directional derivative is finite and strictly positive before forming candidates. This check only screens the proposal. For each actual stored candidate, the exact-model Arb derivative U_star,Q-transpose s is independently computed; it is the only Firth directional derivative that can authorize candidate acceptance.
 
 #### Certified Firth objective increment and directional derivative
 
@@ -344,6 +344,24 @@ For a fit of dimension p and N rows, record separately: accepted IRLS updates (a
 
 The runtime benchmark is software-only and uses synthetic matrices/fixtures at the design-derived (N,p) grid, including (N_max,p_max), the required condition-number strata and every precision level. It records wall-clock time, peak memory, fit class, iteration count, candidate count, and escalation counts E_b, where E_b is the number of candidate certificates that required precision b or higher. Report the benchmark mean, median, 95th percentile and maximum by workload class. Include synthetic cases first resolving at 1024, 2048 and 4096 bits, and cases unresolved at 4096 bits. A separate scenario table reports estimated runtime under (i) no precision escalation, (ii) the synthetic benchmark's observed escalation profile, and (iii) the all-candidates-to-4096-bit conservative scenario.
 
+
+
+For a synthetic runtime scenario \(s\), let \(\widehat t_{ord}(N,p,s)\) and \(\widehat t_{Firth}(N,p,s)\) be measured synthetic-benchmark times for one ordinary or Firth fit at the matching shape and precision-escalation scenario. The scenario runtime expression is
+\[
+\widehat T_s=\sum_d\sum_{a=1}^{A_d}\sum_{f=1}^{G_d}
+\left[
+\mathbf{1}\{\text{no trigger}_{daf}\}
+\left(\widehat t_{ord}(N_{df},p^E_{df},s)+\widehat t_{ord}(N_{df},p^B_{df},s)\right)
++\mathbf{1}\{\text{trigger}_{daf}\}
+\left(
+\widehat t_{ord}(N_{df},p^E_{df},s)
++\widehat t_{Firth}(N_{df},p^B_{df},s)
++\widehat t_{Firth}(N_{df},p^E_{df},s)
+\right)
+\right].
+\]
+The no-trigger/trigger indicators are unknown before fitting and must not be guessed. Report separate transparent workloads: all folds no-trigger, all folds trigger, and any intermediate mix only as an explicitly hypothetical sensitivity scenario. For every synthetic workload class, report candidate counts and the distribution of candidates reaching each precision level. Do not present synthetic trigger or escalation rates as project estimates. The all-candidates-to-4096-bit case is a computational upper-workload scenario, not a guarantee on wall-clock time or a mathematical bound on all implementation overhead.
+
 The synthetic benchmark's E_b profile is a software workload diagnostic only. It is not an estimate of the project's data-dependent escalation distribution, trigger frequency, or total runtime. Those quantities cannot be known from design inventory alone. Therefore, no single expected project runtime or execution-feasibility claim may be reported until the exact inventory, design-only assignment counts, isolated benchmark results and a transparent conservative workload bound are available. No timing pilot, candidate-fit experiment, or benchmark against the LC518 bank is allowed in this phase.
 
 ## 7. Determinism, parallelism and evaluation accounting
@@ -414,7 +432,7 @@ The test suite, expected outputs, tolerances, software versions and hashes must 
 | Runtime model and benchmark | Symbolic workload model specified; no design inventory or benchmark available | Establish assignment/fold/fit counts and (N_max,p_max); benchmark only synthetic fixtures in the isolated pinned environment; report zero-, observed-synthetic- and worst-case-escalation scenarios without presenting them as a project runtime forecast |
 | Execution authorization | Not granted | Separate explicit GO after computational plan, software validation, isolation and data-access scope are accepted |
 
-This v0.4 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
+This v0.5 document is a proposal for review, not a final implementation contract. The next review must challenge, at minimum:
 - whether the exact integer reference-contrast matrix B enforces the v1.7 sum-to-zero constraint and whether its fixed logdet shift and mapped tangent-gradient formula are correct;
 - whether the explicit Firth adjusted score, expected-information Fisher direction, Armijo sufficient-increase rule and derivative identity implement the stated Jeffreys objective correctly;
 - whether the actual stored-candidate displacement and Arb ball enclosure fully certify ordinary and Firth Armijo inequalities and the 10^-8 convergence test, including exact dyadic conversion and the 4096-bit precision cap;
