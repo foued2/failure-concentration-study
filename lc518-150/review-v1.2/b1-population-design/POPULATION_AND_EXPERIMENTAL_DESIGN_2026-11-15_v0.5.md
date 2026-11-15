@@ -224,7 +224,7 @@ Use the exact cell definition in B1 v1.7:
 c(v)=(q,Z,k,\ell),
 \]
 
-where \(k=k_{\mathrm{fail}}\) and \(\ell=k_{\mathrm{unresolved}}\). The symbol \(q\) retains its role as the mutation-identity coordinate in the accepted B1 cell. For the new engineered population, v0.4 proposes to operationalize that coordinate as a stable mutation-operator class, with concrete within-class realizations recorded separately by \(\mathbf a(v)\). This is a proposed coding for the new population only; it does not retroactively redefine B1 v1.7. The new B1 amendment must explicitly adopt and define this coding before confirmatory analysis. If the amendment retains a finer-grained \(q\) definition under which different realization settings are different mutation identities, they cannot be pooled into one \(q\) cell and the current M1-si construction must be redesigned.
+where \(k=k_{\mathrm{fail}}\) and \(\ell=k_{\mathrm{unresolved}}\). The symbol \(q\) retains its role as the mutation-identity coordinate in the accepted B1 cell. For the new engineered population, v0.5 proposes to operationalize that coordinate as a stable mutation-operator class, with concrete within-class realizations recorded separately by \(\mathbf a(v)\). This is a proposed coding for the new population only; it does not retroactively redefine B1 v1.7. The new B1 amendment must explicitly adopt and define this coding before confirmatory analysis. If the amendment retains a finer-grained \(q\) definition under which different realization settings are different mutation identities, they cannot be pooled into one \(q\) cell and the current M1-si construction must be redesigned.
 
 For a cell \(c\):
 
