@@ -425,9 +425,9 @@ The runtime benchmark is software-only and uses synthetic matrices/fixtures at t
 
 
 
-For a synthetic runtime scenario \(s\), let \(\widehat t_{ord}(N,p,s)\) and \(\widehat t_{Firth}(N,p,s)\) be measured synthetic-benchmark times for one ordinary or Firth fit at the matching shape and precision-escalation scenario. The scenario runtime expression is
+For a synthetic runtime scenario \(s\), let \(\widehat t_{ord}(N,p,s)\), \(\widehat t_{Firth}(N,p,s)\), \(\widehat t_{root}(N,p,s)\), and \(\widehat t_{fallback}(N,p,s)\) be measured synthetic-benchmark times for one ordinary fit, Firth fit, Krawczyk root-box plus root-SE pass, and exact-direction fallback solve at the matching shape and precision-escalation scenario. Let \(R_{daf}=1\) when the enriched ordinary fit converges and therefore requires the root-box pass, and let \(Q_{daf}\) be the number of exact-direction fallback solves attempted for all fits in that assignment/fold. The fit-path part of the runtime is
 \[
-\widehat T_s=\sum_d\sum_{a=1}^{A_d}\sum_{f=1}^{G_d}
+\widehat T_{\mathrm{fit},s}=\sum_d\sum_{a=1}^{A_d}\sum_{f=1}^{G_d}
 \left[
 \mathbf{1}\{\text{no trigger}_{daf}\}
 \left(\widehat t_{ord}(N_{df},p^E_{df},s)+\widehat t_{ord}(N_{df},p^B_{df},s)\right)
@@ -439,7 +439,18 @@ For a synthetic runtime scenario \(s\), let \(\widehat t_{ord}(N,p,s)\) and \(\w
 \right)
 \right].
 \]
-The no-trigger/trigger indicators are unknown before fitting and must not be guessed. Report separate transparent workloads: all folds no-trigger, all folds trigger, and any intermediate mix only as an explicitly hypothetical sensitivity scenario. For every synthetic workload class, report candidate counts and the distribution of candidates reaching each precision level. Do not present synthetic trigger or escalation rates as project estimates. The all-candidates-to-4096-bit case is a computational upper-workload scenario, not a guarantee on wall-clock time or a mathematical bound on all implementation overhead.
+Add the extra verification workload
+\[
+\widehat T_{\mathrm{verify},s}
+=\sum_d\sum_{a=1}^{A_d}\sum_{f=1}^{G_d}
+\left[
+R_{daf}\widehat t_{root}(N_{df},p^E_{df},s)
++Q_{daf}\widehat t_{fallback}(N_{df},p^E_{df},s)
+\right],
+\qquad
+\widehat T_s=\widehat T_{\mathrm{fit},s}+\widehat T_{\mathrm{verify},s}.
+\]
+The no-trigger/trigger indicators, \(R_{daf}\), and \(Q_{daf}\) are unknown before fitting and must not be guessed. A trigger-(ii)/(iii) scenario includes a root pass; a trigger-(i) nonconvergence scenario does not. Report separate transparent workloads: all folds no-trigger, all folds trigger-(ii)/(iii), all folds trigger-(i), and any intermediate mix only as an explicitly hypothetical sensitivity scenario. For every synthetic workload class, report candidate counts and the distribution of candidates/solves/root boxes reaching each precision level. Do not present synthetic trigger or escalation rates as project estimates. The all-candidates-to-4096-bit case is a computational upper-workload scenario, not a guarantee on wall-clock time or a mathematical bound on all implementation overhead.
 
 The synthetic benchmark's E_b profile is a software workload diagnostic only. It is not an estimate of the project's data-dependent escalation distribution, trigger frequency, or total runtime. Those quantities cannot be known from design inventory alone. Therefore, no single expected project runtime or execution-feasibility claim may be reported until the exact inventory, design-only assignment counts, isolated benchmark results and a transparent conservative workload bound are available. No timing pilot, candidate-fit experiment, or benchmark against the LC518 bank is allowed in this phase.
 
