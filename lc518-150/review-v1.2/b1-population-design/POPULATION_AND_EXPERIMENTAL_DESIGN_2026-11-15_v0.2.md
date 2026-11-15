@@ -268,7 +268,11 @@ This adopted rule is stricter than the full-population B1 thresholds \(G_c\ge3\)
 
 If the condition holds for at least three parents, then after holding out any one of those qualifying parents, at least two other qualifying parents remain in the training set. Each remaining parent contributes at least two distinct \(C_D\) values to the same exact cell. This supplies the LOPO training support conditions in §3.2 for that cell, subject to the other B1 audit and model-rank requirements.
 
-Let (V_c) denote the total number of variant instances in cell (c), so (V_c=sum_g|mathcal V_{g,c}|). The structural lower bound is
+Define \(V_c\) as the total number of variant instances in cell \(c\):
+\[
+V_c=\sum_g|\mathcal V_{g,c}|.
+\]
+The structural lower bound is
 
 \[
 V_c\ge2G_c^{\mathrm{M1-si}},\qquad
