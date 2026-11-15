@@ -1,6 +1,6 @@
 # B1 computational implementation plan — v0.4 design draft
 
-**Date:** 2026-11-14  
+**Date:** 2026-11-15  
 **Status:** DESIGN DRAFT — NOT ACCEPTED, NOT FROZEN, NOT AN EXECUTION GO  
 **Branch:** `gpt/b1-computational-plan-2026-11-14`  
 **Binding statistical predecessor:** B1 analysis plan v1.7, accepted and frozen by the separate GPT acceptance record dated 2026-11-14.  
