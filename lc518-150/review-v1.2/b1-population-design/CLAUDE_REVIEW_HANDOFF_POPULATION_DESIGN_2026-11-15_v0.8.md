@@ -11,7 +11,7 @@ Please review the complete v0.8 specification, not only this handoff:
 - **Path:** `lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-15_v0.8.md`
 - **Branch:** `gpt/b1-computational-plan-2026-11-14`
 - **Git blob SHA-1:** `8e2ddd2cf4316c1cd68d60edd2dd6c167af29825`
-- **Dimensions at preparation:** 127,194 UTF-8 characters as returned by the repository fetch; final newline present.
+- **Dimensions at preparation:** 969 lines; final newline present. (No UTF-8 byte count is asserted here.)
 
 The immediate predecessor v0.7 remains unchanged:
 - **Path:** `lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-15_v0.7.md`
