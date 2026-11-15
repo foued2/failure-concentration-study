@@ -260,7 +260,44 @@ The following are **not** trigger-(i) events by themselves: binary64 proposal Ch
 
 #### Exact fitted-root enclosure for trigger (ii) and the Wald standard error
 
-The v1.7 quantities \(\widehat\beta_C\) and its Wald standard error refer to the fitted enriched-model coefficient. The final binary64 iterate is an exact stored number, but it is not by itself a certified enclosure of the exact-model fitted root when the convergence gradient is merely within \(10^{-8}\). Therefore, after the enriched ordinary fit satisfies the v1.7 convergence criterion, certify a local enclosure of the unique ordinary-score root before evaluating triggers (ii) and (iii).
+The v1.7 quantities \(\widehat\beta_C\) and its Wald standard error refer to the fitted enriched-model coefficient. The final binary64 iterate is an exact stored number, but it is not by itself a certified enclosure of the exact-model fitted root when the convergence gradient is merely within \(10^{-8}\). Therefore, after the enriched ordinary fit satisfies the v1.7 numerical convergence criterion, determine whether a finite ordinary-score root exists before evaluating triggers (ii) and (iii). A small score at a finite iterate is not, by itself, proof that a finite maximum-likelihood estimate exists: along a separating sequence the score can become arbitrarily small while the likelihood continues increasing toward a supremum that is not attained. The exact-rational separation test below is a proposed clarification of trigger (i); it must be ratified as a v1.7 statistical addendum before this computational plan can be accepted.
+
+#### Exact-rational separation certificate and proposed trigger-(i) routing
+
+Run this check on the enriched model's training rows only, after its exact-model gradient has passed the numerical \(10^{-8}\) criterion and before attempting the Krawczyk root enclosure. It is a fit-level diagnostic for the already-required enriched ordinary fit. It is **not** part of the design audit, \(\Omega_{\mathrm{adm}}\), fold eligibility, scoring-set construction, or assignment sampling. Every assignment remains in the reference calculation; no assignment, fold, row, or parent is discarded because it is separated.
+
+Let \(X_{\mathbb Q}\) be the exact-rational enriched design matrix for the training rows and \(y_i\in\{0,1\}\) their outcomes. Define the signed design matrix \(Z\) rowwise by
+\[
+Z_{i\cdot}=(2y_i-1)X_{\mathbb Q,i\cdot}.
+\]
+A complete- or quasi-complete-separation certificate is a rational vector \(d\in\mathbb Q^p\) satisfying
+\[
+Z d\ge 0\quad\text{componentwise},\qquad
+\mathbf 1^T Z d\ge 1.
+\]
+The second inequality is a scale normalization. Together, these conditions mean that every signed margin is nonnegative and at least one is strictly positive. All checks are performed exactly with rational arithmetic, not by a floating-point tolerance.
+
+The feasibility problem is the rational linear system \(A d\ge b\), where
+\[
+A=\begin{bmatrix}Z\\ \mathbf 1^TZ\end{bmatrix},
+\qquad
+b=(0,\ldots,0,1)^T.
+\]
+The deterministic exact-rational feasibility routine must return one of the following:
+- **Primal feasible certificate:** a rational \(d\) for which every component of \(Zd\) is exactly nonnegative and \(\mathbf 1^TZd\ge1\). The implementation independently rechecks every inequality exactly before accepting the certificate.
+- **Farkas infeasibility certificate:** a rational vector \(\lambda\ge0\) for which \(\lambda^TA=0\) exactly and \(\lambda^Tb>0\). The implementation independently rechecks nonnegativity, the zero product, and strict positivity exactly. This certifies that no separating direction of the declared form exists.
+- **Unresolved:** no valid primal or Farkas certificate is returned within the pinned deterministic solver/resource rules. Unresolved is not equivalent to overlap and is not equivalent to separation.
+
+For a valid primal certificate, the ordinary logistic log-likelihood strictly increases along \(\gamma+t d\) for every finite \(\gamma\) as \(t\) increases, with at least one observation contributing strict increase and no observation contributing a decrease. Hence there is no finite maximizer and no finite ordinary-score root. This includes complete and quasi-complete separation. Strict concavity at finite parameters does not rescue existence: it only establishes at most one finite root if one exists.
+
+**Proposed v1.7 routing interpretation:** a verified primal separation certificate means the enriched ordinary maximum-likelihood fit has no finite solution. Despite an apparent finite-iterate gradient PASS, classify the ordinary enriched fit as nonconverged at the estimator level and fire existing trigger (i); then refit both baseline and enriched models under the v1.7 Firth correction. This is not a new fourth trigger. It is not trigger (ii): a separating direction may have \(d_{\beta_C}=0\), so generic nonexistence does not establish that the concentration coefficient itself is unbounded. Do not assign \(|\widehat\beta_C|=\infty\) or claim trigger (ii) unless a separate beta-specific proof supports that claim. The numerical \(10^{-8}\) gradient threshold is unchanged.
+
+A valid Farkas infeasibility certificate rules out the declared separation direction; proceed to the Krawczyk root enclosure. If the feasibility routine is unresolved, the Krawczyk procedure may still establish a finite root. A certified Krawczyk inclusion is sufficient to proceed to the beta and Wald-SE interval decisions. If neither a valid separation certificate nor a certified finite-root enclosure is obtained, the fold/test is unavailable. Never infer overlap from LP timeout, an unverified infeasibility status, failed Krawczyk inclusion, or a failed root-box expansion.
+
+The solver must be deterministic for fixed exact inputs, with canonical row/column order and pinned pivot/tie-breaking rules. A floating-point LP may at most propose a candidate \(d\) or \(\lambda\); it cannot declare feasible or infeasible. All certificates must be rational and independently checked. No approximate solver status, tolerance-based sign, or unverified rounded vector may determine the route. A fixed solver resource cap must be established in synthetic design-shaped validation; reaching it yields **unresolved**, never an inferred answer. Record the solver/version/build, exact input hash, result class, certificate hash, pivot/resource counts, and elapsed time.
+
+This proposed interpretation is a substantive clarification to the frozen v1.7 trigger semantics. The v1.7 source file and acceptance record are not edited by v0.7. No computational-plan acceptance or execution GO is possible until the statistical chain separately ratifies the trigger-(i) interpretation and its exact certificate protocol.
+
 
 Let \(\gamma_0\) be the final stored enriched ordinary parameter vector, \(F(\gamma)=U_{\mathbb Q}(\gamma)=\nabla\ell_{\mathbb Q}(\gamma)\), and \(J(\Gamma)=-I_{\mathbb Q}(\Gamma)\) be the interval Jacobian/Hessian over a parameter box \(\Gamma\). The design-rank condition and positive finite logistic weights imply strict concavity at finite parameters, so there is at most one finite score root. Construct a deterministic box centred at \(\gamma_0\), with initial half-width
 \[
@@ -289,11 +326,12 @@ and enclose the Wald variance \(V_\beta=e_\beta^TI_{\mathbb Q}(\Gamma_*)^{-1}e_\
 
 #### Remaining model fits and failure routing
 
-If the enriched exact-model fit does not converge, trigger (i) fires and both models are refitted using the Firth objective. If it converges, trigger (ii) is evaluated from the certified root interval and trigger (iii) from the root-box Wald-SE interval. If either trigger fires, refit both models using Firth. If no enriched trigger fires, fit the baseline ordinary model. Any exact-model baseline ordinary fitting failure makes the applicable test unavailable; baseline failure alone does not create a new Firth trigger. If an enriched-model trigger has already fired, fit both models with Firth and do not run an unnecessary baseline ordinary fit first.
+If the enriched exact-model fit does not converge, or the exact-rational separation routine returns a verified primal separating-direction certificate, trigger (i) fires and both models are refitted using the Firth objective. The latter is the proposed estimator-level interpretation described above; it is not yet part of the accepted v1.7 text. If it converges, trigger (ii) is evaluated from the certified root interval and trigger (iii) from the root-box Wald-SE interval. If either trigger fires, refit both models using Firth. If no enriched trigger fires, fit the baseline ordinary model. Any exact-model baseline ordinary fitting failure makes the applicable test unavailable; baseline failure alone does not create a new Firth trigger. If an enriched-model trigger has already fired, fit both models with Firth and do not run an unnecessary baseline ordinary fit first.
 
 | Ordinary-fit outcome | Required action |
 |---|---|
 | Enriched ordinary exact-model fit does not converge, including exact-direction or exact-model Armijo stall | Trigger (i); jointly Firth-refit baseline and enriched models |
+| The gradient criterion passes, but an exact-rational primal certificate proves complete or quasi-complete separation and no finite enriched ordinary MLE exists | Proposed trigger (i) under the required v1.7 addendum; jointly Firth-refit baseline and enriched models. Do not call this trigger (ii) merely because some model coefficient may diverge |
 | A binary64 proposal solve, Cholesky factorization, direction or line search fails, but exact-model fallback succeeds | Continue the same ordinary fit; no trigger is fired |
 | Exact fitted-root interval lies wholly above 50 or wholly below -50 | Trigger (ii); jointly Firth-refit both models |
 | Exact fitted-root interval lies wholly within [-50,50], and root-box Wald-SE lower bound exceeds 10^3 | Trigger (iii); jointly Firth-refit both models |
@@ -303,7 +341,7 @@ If the enriched exact-model fit does not converge, trigger (i) fires and both mo
 | No enriched trigger fires but baseline exact-model ordinary fitting fails | Unavailable; no baseline-only trigger exists |
 | Either Firth refit cannot converge under its exact-model Arb procedure, its exact expected-information determinant/inverse cannot be certified, or its exact direction fallback cannot produce an accepted step | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
 
-For every fold, record the enriched ordinary-fit status; the binary64 proposal failure/recovery diagnostics; exact-fallback solve precision and unique-rounding status; accepted updates; backtracking halvings; convergence-gradient intervals; Krawczyk radius expansions and contractions; the certified root interval; the root-box Wald-SE interval; every trigger that could be evaluated; whether the baseline ordinary fit was attempted; whether the Firth pair was attempted; both final model statuses; and the reason for any unavailability. The v1.7 statistical thresholds and joint-Firth rule are unchanged.
+For every fold, record the enriched ordinary-fit status; the exact-rational separation-LP result class and primal/Farkas certificate hashes when returned; the binary64 proposal failure/recovery diagnostics; exact-fallback solve precision and unique-rounding status; accepted updates; backtracking halvings; convergence-gradient intervals; Krawczyk radius expansions and contractions; the certified root interval; the root-box Wald-SE interval; every trigger that could be evaluated; whether the baseline ordinary fit was attempted; whether the Firth pair was attempted; both final model statuses; and the reason for any unavailability. The v1.7 statistical thresholds and joint-Firth rule are unchanged.
 
 
 
