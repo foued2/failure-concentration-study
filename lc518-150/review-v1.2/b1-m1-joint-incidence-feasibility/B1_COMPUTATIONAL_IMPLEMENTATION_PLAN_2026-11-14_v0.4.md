@@ -172,14 +172,14 @@ A Firth candidate is certified for acceptance only if the determinant enclosures
 
 If the determinant or inverse enclosure for the current accepted Firth iterate cannot be certified after 4096 bits, the Firth fit is numerically unavailable. If a trial candidate cannot be certified, it is rejected as a candidate, not accepted as an iterate. If no candidate is certified before the representability stop, record a line-search stall. Every accepted Firth iterate must have finite binary64 fitting quantities, useably positive-definite binary64 expected information under the declared LAPACK factorization, and a positive Arb determinant enclosure. No jitter, pseudo-inverse, ridge fallback, alternate optimizer or silent model simplification is permitted.
 
-The implementation must independently verify the adjusted-score formula against the analytic derivative of the stated penalized objective and against finite-difference gradients on fixed software fixtures. It must also verify Arb determinant/log enclosures against high-precision references and confirm enclosure containment for ill-conditioned fixtures. Fixture set, finite-difference scheme, precision ladder, tolerances and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis. against the analytic derivative of the stated penalized objective and against a finite-difference gradient on fixed software fixtures. The fixture set, finite-difference scheme, tolerance and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis.
+The implementation must independently verify the adjusted-score formula against the analytic derivative of the stated penalized objective and against finite-difference gradients on fixed software fixtures. It must also verify Arb determinant/log enclosures against high-precision references and confirm enclosure containment for ill-conditioned fixtures. Fixture set, finite-difference scheme, precision ladder, tolerances and expected outputs must be frozen before any execution GO. This is software validation, not project-data analysis.
 
 ### 3.3 Standard error, separation trigger, and failure routing
 
 The enriched ordinary model is fitted first. If it does not converge, trigger (i) in v1.7 fires and both models are refitted using the Firth objective. For this computational plan, enriched ordinary nonconvergence includes:
 - reaching 200 accepted updates without satisfying the convergence criterion;
-- failure to obtain a finite, strictly positive numerically representable Fisher directional derivative;
-- an Armijo line-search stall: no candidate satisfies the direct-increment inequality, the direct comparison becomes unresolved through underflow, or alpha underflows to zero or the candidate vector becomes identical to the current vector;
+- failure to obtain a finite, strictly positive binary64 Fisher-scoring directional derivative;
+- an Armijo line-search stall: no candidate is certified by the Arb interval comparison, including cases that remain inconclusive at the 4096-bit precision cap, before alpha underflows to zero or the candidate vector becomes bitwise identical to the current vector;
 - non-finite objective, score, information or parameter values before convergence;
 - Cholesky failure when factorization is required to compute an ordinary enriched-model update.
 
@@ -193,15 +193,15 @@ If none of the three enriched-model triggers fires, fit the baseline ordinary mo
 
 | Ordinary-fit outcome | Required action |
 |---|---|
-| Enriched ordinary fit does not converge, including an Armijo line-search stall or a representability-limited stall | Trigger (i); jointly Firth-refit baseline and enriched models |
+| Enriched ordinary fit does not converge, including an Arb interval-inconclusive Armijo stall or a representability-limited stall | Trigger (i); jointly Firth-refit baseline and enriched models |
 | Enriched ordinary fit converges and abs(beta_C) > 50 | Trigger (ii); jointly Firth-refit both models |
 | Enriched ordinary fit converges, abs(beta_C) <= 50, final-iterate expected information is factorable, and Wald SE > 10^3 | Trigger (iii); jointly Firth-refit both models |
 | Enriched ordinary fit converges but the separately computed final-iterate information cannot be factorized for SE, or SE is non-finite | Unavailable; do not invent an SE threshold or an extra trigger |
 | Enriched ordinary fit converges with abs(beta_C) <= 50 and finite Wald SE <= 10^3; baseline ordinary fit succeeds | Use the ordinary fits; no Firth refit |
-| No enriched trigger fires but baseline ordinary fitting fails, including an Armijo line-search stall | Unavailable; no baseline-only trigger exists |
-| Either Firth refit fails to converge, including an Armijo line-search stall, or violates the declared information-matrix rules | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
+| No enriched trigger fires but baseline ordinary fitting fails, including an Arb interval-inconclusive Armijo stall | Unavailable; no baseline-only trigger exists |
+| Either Firth refit fails to converge, including an Arb interval-inconclusive Armijo stall, or violates the declared information-matrix rules | Unavailable under v1.7 V5(b); no assignment is discarded or replaced |
 
-For every fold, record the enriched ordinary-fit status, all triggers that could be evaluated, whether the baseline ordinary fit was attempted, whether the Firth pair was attempted, both final model statuses, and the reason for any unavailability. Also record accepted updates, backtracking halvings and the Armijo termination reason, including precision/representability stalls. If abs(beta_C) > 50 already triggers Firth, a Wald SE is not needed to establish the trigger and may be marked not evaluated. The v1.7 rule is otherwise unchanged.
+For every fold, record the enriched ordinary-fit status, all triggers that could be evaluated, whether the baseline ordinary fit was attempted, whether the Firth pair was attempted, both final model statuses, and the reason for any unavailability. Also record accepted updates, backtracking halvings and the Armijo termination reason, including interval-inconclusive, precision-cap and representability stalls. If abs(beta_C) > 50 already triggers Firth, a Wald SE is not needed to establish the trigger and may be marked not evaluated. The v1.7 rule is otherwise unchanged.
 
 ## 4. Linear algebra
 
