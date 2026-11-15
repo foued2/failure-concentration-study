@@ -772,20 +772,24 @@ This population specification is a new design layer. It does not rewrite or supe
 
 ## 8. Open decisions for independent review
 
-Claude's review should address the following points against the complete accepted B1 v1.7 text:
+Claude's review should address the following points against the complete accepted B1 v1.7 and controlling Rev 1.4 Amendment E texts:
 
-1. **Option B estimand.** Verify that §1.2 and §5.7 state one consistent target: prediction beyond \((q,Z,k,\ell)\), while \(\mathbf a(v)\) is outside the primary baseline and may act as a predictive proxy.
-2. **Interpretation.** Confirm that a positive result through the realization-setting pathway is meaningful for the broad conditional predictive claim but cannot be called a direct or parameter-independent concentration effect.
-3. **N5 classification.** Verify that N5 is correctly labelled as a proxy-pathway operating-characteristic scenario, not a null-calibration scenario for the broad permutation null.
-4. **Adjusted sensitivity.** Check that the \(\mathbf a(v)\)-adjusted sensitivity has a clear non-identifiability outcome and does not silently replace the primary target.
-5. **q definition.** Review whether the proposed operator-class meaning of \(q\) is compatible with the B1 identity coordinate, and verify that the new B1 amendment is required to adopt it rather than silently changing v1.7.
-6. **Site-context equivalence.** Challenge whether §4.1.5 adequately constrains site selection within each parent across enclosing function, call-graph context, control-flow region, reachability, data-flow, alias/effect and transformation-interaction context. Check that local AST similarity cannot override any context mismatch, and that unresolved static context excludes site selection.
-7. **Operator-class fingerprint and blinded review.** Check the AST fingerprint and non-waivable operator invariants, then verify that the diagnostic-blind classification covers both AST and site-context evidence, preserves disagreement, and cannot be influenced by \(C_D\), failures, correctness, dynamic hot-path frequency, or support.
-8. **M1-si realization.** Verify the relation between the q/a boundary, distinct realization settings, source-distinct variants, and the exact-cell M1-si condition.
-9. **Realized-cell shortfall.** Verify the deterministic no-repair rule and the separation of B1 support, M1-si realization, LOPO estimability, and outcome-side informativeness.
-10. **Parent count.** Review the prospective precision/stability checklist in §2.5 without implying a sample-size claim absent defensible assumptions.
-11. **Custodian.** Confirm that the protected-confirmatory route remains blocked until an independent human or institutional custodian and functioning access mechanism are documented.
-12. **Remaining governance.** Check the protected evaluation procedure, consent-provenance gap, trigger-(i) ratification, isolation and execution gates.
+1. **Option B estimand.** Verify that §§1.2 and 5.7 state one consistent target: prediction beyond \((q,Z,k,\ell)\), while \(\mathbf a(v)\) is outside the primary baseline and may act as a predictive proxy.
+2. **Interpretation.** Confirm that a positive result through the realization-setting pathway is meaningful for the broad conditional predictive claim but cannot be called a direct, causal, or parameter-independent concentration effect.
+3. **N5 classification.** Verify that N5 is correctly labelled as a proxy-pathway operating-characteristic scenario, not null calibration for the broad permutation null.
+4. **q definition and B1 compatibility.** Review whether the proposed operator-class meaning of \(q\) can be adopted consistently with the frozen B1 identity coordinate, and confirm that the future B1 amendment must explicitly adopt the coding rather than silently changing v1.7.
+5. **Canonical representation and equivalence.** Verify that §4.1.1a pins the analysis profile, canonical serialization, graph-labelling method/version and full content bundle; that exact byte equality is reproducible and transitive; and that a hash is not used as a substitute for canonical-byte comparison. Identify any remaining unspecified normalization that could let independent implementers obtain different results.
+6. **Control-flow position.** Challenge whether the target-marked rooted CFG, normal/exceptional exits, loop anchors, branch/edge labels, dominance/frontiers and distance descriptors reliably distinguish materially different positions. Confirm that the canonical graph, not a subset of summary metrics, is decisive.
+7. **Value-level context.** Verify that the abstract-interpretation domain is adequate for each operator's semantics; that all relevant operand values, path predicates, alias/effect information and transfer profiles are represented; and that TOP/unknown or unresolved values fail closed for site selection. Check the distinction between equivalent site relocation and deliberately varied literal/threshold settings. Assess whether the rule is so strict that no plausible site can pass, and whether that is an acceptable fail-closed consequence rather than a reason to weaken it post hoc.
+8. **Call-graph and analysis configuration.** Check that the call-graph component has a distinct resolution-integrity purpose despite same-enclosing-function matching, and that compiler/front-end/parser, build/preprocessing configuration, call-graph mode, points-to/alias options, CFG/exception modelling and abstract-domain settings are all included in the profile digest.
+9. **Candidate-site inventory.** Verify that the site-search frame is explicit, every candidate satisfying the syntactic rule is enumerated, accepted and rejected sites/reasons are retained, and the inventory/profile are hashed and frozen before construction or diagnostic access.
+10. **One operator invocation per variant.** Challenge the adopted single-operator-per-version restriction against the controlling B1/M1 specification. Distinguish one atomic operator invocation that emits coordinated edit hunks from a composition of independent operators. Confirm that §4.1.5's interaction check matches that scope.
+11. **Diagnostic-blind review.** Confirm that the two reviewers inspect the complete operator, canonical graph, value-range, analysis-profile and candidate-pool evidence before diagnostics, with disagreements preserved and no outcome, support, dynamic-profile or \(C_D\)-based waiver.
+12. **M1-si realization.** Verify the relation among \(q\), distinct \(\mathbf a\) settings, same-parent pairs, the exact B1 cell and distinct realized \(C_D\) values.
+13. **Realized-cell shortfall.** Verify the deterministic no-repair rule and separation of B1 support, M1-si realization, LOPO estimability and outcome-side informativeness.
+14. **Parent count.** Review the prospective precision/stability checklist in §2.5 without implying a sample-size or power claim absent defensible assumptions.
+15. **Custodian.** Confirm that the protected-confirmatory route remains blocked until an independent human or institutional custodian and functioning access mechanism are documented.
+16. **Remaining governance.** Check the protected evaluation procedure, consent-provenance gap, trigger-(i) ratification, isolation and execution gates.
 
 GPT will adjudicate Claude's findings. Any substantive change after review must be a new version with its own identity and review; v0.6 is not frozen by publication.
 
