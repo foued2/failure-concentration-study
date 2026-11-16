@@ -2,9 +2,9 @@
 
 **Date:** 2026-11-16  
 **Version:** 0.18  
-**Status:** GLM v0.17 REVIEW ADJUDICATED; AUTHENTIC CLAUDE REVIEW PENDING; DESIGN-ONLY DRAFT  
+**Status:** GLM v0.17 REVIEW ADJUDICATED; CLAUDE v0.18 REVIEW PENDING; DESIGN-ONLY DRAFT  
 **Prepared by:** GPT  
-**Review sequence:** Separate GLM and Claude review streams; GPT adjudicates each independently  
+**Review status:** GLM full review of v0.17 adjudicated; authentic Claude full review of v0.18 pending; GPT adjudicates the separate review streams  
 **Repository branch:** gpt/b1-computational-plan-2026-11-14  
 **Predecessor:** v0.17, content-changing commit ed4432e3df837aaf7569680a2ebc3615e9b86d80, blob f756e9923849072be5de3cd95677fe1bee36ad92 (retained unchanged).
 ---
@@ -97,7 +97,7 @@ This revision addresses the v0.4 review findings. Reviewer identity is not authe
 1. It closes the site-selection context gap. A matching AST fingerprint alone is insufficient to treat different source locations as permitted realizations of the same \(q\). Within each parent, candidate sites must also have matching, predeclared static execution-context signatures under §4.1.5.
 2. The context test is parent-relative. It does not require different parent implementations to contain the same function names or identical call graphs. It requires the alternative sites used for a within-parent M1-si comparison to occupy the same normalized context class within that parent.
 3. Site selection cannot be justified by dynamic hot-path frequency, diagnostic results, \(C_D\), correctness, or protected outcomes. When the static context cannot be resolved, site selection is not an admissible realization field for that \(q\); the site must be fixed or the design must be amended before construction.
-4. **Decision-history correction:** GLM's v0.3 review recommended Option A (directly attested by GLM), conditioning the primary analysis on \(\mathbf a(v)\), while stating that Option B was acceptable if the claim explicitly named the realization-setting limitation. GPT independently selected Option B for v0.4. This revision preserves that disagreement. It does not describe Option B as Claude's preferred choice or as a joint GPT/Claude consensus.
+4. **Decision-history correction:** GLM's v0.3 review recommended Option A (directly attested by GLM), conditioning the primary analysis on \(\mathbf a(v)\), while stating that Option B was acceptable if the claim explicitly named the realization-setting limitation. GPT independently selected Option B for v0.4. This revision preserves that disagreement. It does not describe Option B as GLM's preferred choice or as a joint GPT/GLM consensus.
 5. A separate review handoff addressed to Claude carries the domain clarification that LC518 terminology refers to source-code transformations and engineered software variants, not biology. The clarification does not alter the scientific design.
 
 The Option B predictive target, N5 proxy-pathway control, operator-class invariants, and other v0.4 provisions are retained except where expressly amended below. No parent, operator class, site, realization setting, variant, or parameter value has been selected. No solver, diagnostic, evaluation, bank, or outcome has been accessed or constructed.
@@ -228,10 +228,10 @@ This revision adjudicates the targeted v0.12 review event recorded in the histor
 4. **Calibration-unit floors (review finding X4 (reviewer identity unverified)):** accepted. Independent lineage units, disjoint calibration/validation identities, predeclared per-category floors and confidence-interval precision gates remain unchanged. The v0.13 text additionally defines the false-group and missed-lineage quantities as triage-flag rates with explicit denominators, and separates the high-threshold priority-flag rate. These quantities do not assign lineage labels.
 5. **Serial analysis and counter scope (review finding X5 (reviewer identity unverified)–X6):** accepted. Serial single-worker semantic analysis and profile-relative counter reproducibility remain unchanged.
 6. **Bounded uniform retry protocol (review finding X7 (reviewer identity unverified), blocking):** accepted and resolved by §4.1.1b. \(A_{\max}\) is set in the Stage 2 profile before candidate enumeration and applies uniformly to every candidate site. Every site requires two independent, complete analysis executions whose canonical semantic-result envelopes are byte-identical. Each attempt is logged. A deterministic work-cap hit is terminal under that profile; an operational interruption may be retried only within the frozen attempt budget and the exact same environment manifest; fewer than two complete attempts by the cap remain unresolved; differing complete outputs remain unresolved as nondeterministic analysis. No candidate receives extra or selective attempts, and no result is selected by majority vote.
-7. **Full-specification review:** GPT independently inspected all of §§0–9 in v0.12, including the portions Claude left unread. No additional blocking defect was identified beyond X7. The calibration-rate definitions were clarified as a recommended precision improvement in v0.13; they do not change the substantive lineage decision rules.
+7. **Full-specification review:** GPT independently inspected all of §§0–9 in v0.12, including sections not covered in the earlier review according to the historical review summary (reviewer identity unverified). No additional blocking defect was identified beyond X7. The calibration-rate definitions were clarified as a recommended precision improvement in v0.13; they do not change the substantive lineage decision rules.
 8. **Scientific and authorization boundaries retained:** the Option B exact-cell target, realization-proxy limitation, N5 classification, M1-si design choice, discrete (C_D) support arithmetic, rank-increment gate, shortfall rules, independent-custodian blocker, joint-consent gap, trigger-(i) ratification gap, isolation requirements and separate execution GO remain unchanged.
 
-v0.12 is preserved unchanged as the immediate predecessor. The accepted B1 v1.7, Rev 1.4 Amendment E and their acceptance records remain unchanged. v0.13 remains an unreviewed design-only draft pending Claude's full independent review and GPT's final adjudication.
+v0.12 is preserved unchanged as the immediate predecessor. The accepted B1 v1.7, Rev 1.4 Amendment E and their acceptance records remain unchanged. v0.13 remains an unreviewed design-only draft pending a full independent review by an authenticated reviewer and GPT's final adjudication.
 
 No parent, operator class, source site, realization setting, variant, mutation allocation, protected record, or execution input has been selected, constructed or accessed. No solver, diagnostic, model fit, sample or simulation has been run.
  
@@ -249,7 +249,7 @@ No estimand, population rule, lineage rule, support condition, or execution auth
 
 This revision adjudicates GLM's full-body review of v0.14 (directly attested by GLM) (Y1–Y12) and GPT's independent check of the relevant history and repository identities.
 
-1. **Option B attribution (GLM Y1, blocking):** corrected. The primary model's exclusion of \(\mathbf a(v)\) from the exact-cell baseline is GPT's selection of Option B. GLM's earlier recommendation was Option A, as the v0.4 decision history in §0.5 item 4 records. This is not a joint GPT/Claude decision or a Claude recommendation for Option B.
+1. **Option B attribution (GLM Y1, blocking):** corrected. The primary model's exclusion of \(\mathbf a(v)\) from the exact-cell baseline is GPT's selection of Option B. GLM's earlier recommendation was Option A, as the v0.4 decision history in §0.5 item 4 records. This is not a joint decision or a GLM recommendation for Option B.
 2. **Formula rendering (GLM Y2, editorial):** corrected. The attempt-budget condition in §8 item 13 is rendered as \(A_{\max}\ge3\).
 3. **Historical self-reference (GLM Y3, editorial):** corrected. The current §3.1 text now says “this specification proposes” rather than incorrectly presenting v0.5 as the current proposal.
 4. **Retry/reproducibility rule (GLM Y4, accepted):** accepted. The \(A_{\max}\ge3\) attempt floor, two independent complete byte-identical canonical result envelopes, uniform application, complete attempt logging, terminal cap disposition, bounded operational retry and unresolved nondeterministic-output disposition are retained.
@@ -1195,7 +1195,7 @@ This population specification is a new design layer. It does not rewrite or supe
 
 ## 8. Open decisions for independent review
 
-The v0.18 specification has received a full GLM review of v0.17, adjudicated in §0.22. A separate full Claude review of v0.18 remains requested. The two review streams are not substitutes for one another. GPT will adjudicate each review independently against accepted B1 v1.7 and accepted Rev 1.4 Amendment E, including their separate acceptance records:
+The v0.18 specification has received a full GLM review of v0.17, adjudicated in §0.22. A full independent Claude review of v0.18 remains requested under a separate read-only handoff. The two review streams are not substitutes for one another. GPT will adjudicate each review independently against accepted B1 v1.7 and accepted Rev 1.4 Amendment E, including their separate acceptance records:
 
 1. **Target-centred site-context equivalence.** Verify that the deterministic dependency-complete context-slice procedure preserves all relevant control, data, state, exception, cleanup and effect relationships while excluding unrelated whole-function CFG structure. Does it avoid the whole-function automorphism barrier without discarding a semantically relevant position difference?
 2. **Canonical form and source normalization.** Verify canonical-labelling uniqueness, JCS use, source/symbol normalization, alpha-renaming limits, macro/generated-code mapping and path/address exclusion.
@@ -1211,7 +1211,7 @@ The v0.18 specification has received a full GLM review of v0.17, adjudicated in 
 12. **B1/M1, lineage, artifact identity, deterministic resources, observed-output audit and governance.** Check the q/a identity coding, M1-si same-parent/same-cell rule, distinct semantic-source/runnable-artifact identity, pairwise lineage review and cluster coherence, deterministic resource budgets, discrete C_D granularity, descriptive §6.6 output concordance, Option B proxy target, N5, shortfall rule, parent count, custodian, trigger-(i), joint-consent, isolation and execution gates. Verify §§5.1–5.7, §§6–9 and predecessor approvals.
 13. **Uniform rerun reproducibility.** Verify that \(A_{\max}\ge3\) is frozen before enumeration and applies uniformly to every candidate; that two independent complete canonical result envelopes are required and must be byte-identical; that every attempt is logged; that deterministic-cap, semantic-error, operational-interruption and nondeterministic-output dispositions are distinct; and that no candidate receives selective or post-budget retries. Confirm that three is the minimum to allow one interrupted attempt and two complete verifications, not a universally fixed attempt count.
 
-Separate Claude and GLM reviews of v0.18 are requested, followed by GPT adjudication of each stream independently. Any substantive change after that review must be a new version with its own identity and review; v0.17 is not frozen by publication.
+Separate Claude and GLM reviews of v0.18 are requested, followed by GPT adjudication of each stream independently. Any substantive change after that review must be a new version with its own identity and review; v0.18 is not frozen by publication.
 
 ## 9. Explicit non-authorization
 
