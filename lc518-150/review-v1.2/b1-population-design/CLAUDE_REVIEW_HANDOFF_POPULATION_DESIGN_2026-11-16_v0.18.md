@@ -14,7 +14,7 @@ Please review the complete v0.18 specification, including every §0 historical/p
 - **Branch:** gpt/b1-computational-plan-2026-11-14
 - **Git blob SHA-1:** 2ed04ddd9e210eb707ec10c0a373197217dabe13
 - **Content-changing commit:** dd72244bac4acf588310599048dc2d45361a3da7
-- **Dimensions:** 4 newline-terminated lines; final newline present.
+- **Dimensions:** 1,222 newline-terminated lines; final newline present.
 - **Immediate predecessor:** v0.17, blob f756e9923849072be5de3cd95677fe1bee36ad92, content-changing commit ed4432e3df837aaf7569680a2ebc3615e9b86d80.
 
 The accepted predecessor artifacts remain unchanged:
