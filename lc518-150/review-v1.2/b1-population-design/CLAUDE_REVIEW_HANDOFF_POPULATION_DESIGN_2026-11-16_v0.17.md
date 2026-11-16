@@ -13,7 +13,7 @@ Review the complete v0.17 specification, including every §0 historical/provenan
 - **Predecessor:** v0.16, blob 21de8a7311e0fea2fa9ac94ffb3342494c9b7a9d, content-changing commit 26e70892688cb941512de66fa2e8e39488de67f0.
 - **Current v0.17 blob:** f756e9923849072be5de3cd95677fe1bee36ad92
 - **Content-changing commit:** ed4432e3df837aaf7569680a2ebc3615e9b86d80
-- **Dimensions:** 1191 lines; final newline present.
+- **Dimensions:** 1,190 newline-terminated lines; final newline present.
 
 The accepted predecessor artifacts remain unchanged:
 - Rev 1.4 Amendment E: blob 3728146356a74363a94fe75a87fd06c483954ee2.
