@@ -7,7 +7,7 @@
 
 ## 1. Disposition
 
-GLM's bounded review is accepted on its five principal questions, subject to the additional qualifications in §§3–5 below.
+GPT's technical disposition is that GLM's bounded review is substantively correct on its five principal questions, subject to the additional qualifications in §§5.1–5.3 below. This is an inter-agent analytical disposition only. It is not owner ratification and does not pass any governance gate.
 
 The following conclusions stand:
 
@@ -109,9 +109,9 @@ The template \(P_{\mathrm{op}}=\min\{P:\mathrm{criterion}(P)\text{ is met}\}\) i
 
 Any precision criterion must also be expressly conditional on sufficient outcome-side variation. The design can guarantee some support and estimability conditions; it cannot guarantee outcome discordance or a non-degenerate predictive-loss difference. The B1 conditional randomization test remains conditional on the observed parents and does not create a parent-superpopulation inference merely because \(P\) is varied in an operating-characteristic scenario.
 
-## 6. Accepted Phase A scaffold and boundaries
+## 6. Phase A scaffold: technical status and boundaries
 
-GLM's S1–S8 is accepted as a symbolic scaffold, with the qualifications above. It is not yet a numerical count justification. Its valid contents are:
+GLM's S1–S8 is a usable symbolic scaffold, subject to the qualifications above. GPT identifies no blocking mathematical defect in its general structure after those qualifications. This is a technical review conclusion only, not owner ratification, a project-level approval, a freeze, or a governance-gate pass. It is not a numerical count justification. Its supported contents are:
 
 - conditional estimand and fold-scope placeholders;
 - general capacity-vector envelope and conditional 8-by-8 candidate;
@@ -128,12 +128,19 @@ No quantitative parameter is filled by this note. No numerical probability evalu
 
 ## 7. Final disposition
 
-- GPT adjudication note 60c2ae5e: **ACCEPTED**.
-- GLM bounded review and symbolic scaffold: **ACCEPTED WITH THE QUALIFICATIONS IN §5**.
+- GPT adjudication note 60c2ae5e: **technically reviewed; no blocking defect in its corrected claims identified**.
+- GLM bounded review and symbolic scaffold: **technical concurrence, subject to §§5.1–5.3**. This is not an agent-to-agent approval and does not constitute owner ratification.
 - Canonical GLM review archived byte-identically; the reformatted upload is not substituted for it.
 - Population specification v0.21: unchanged. No v0.22 proposed.
+- Symbolic Phase A scaffold: drafted and independently reviewed; this does not mean that an owner decision or any outstanding project gate has passed.
 - Operating parent count and confirmatory/exploratory route: open.
 - Master: untouched.
 - All source acquisition, parent selection, mutation allocation, solver construction/execution, diagnostics, outcomes, fitting, sampling, and simulation remain unauthorized.
 
-The next substantive step is to settle the diagnostic-composition binding and the owner's route decision. Until then, keep Phase A symbolic and do not turn the scaffold into a numerical parent-count recommendation.
+The next substantive step is to settle the diagnostic-composition binding and the owner's route decision. Until then, keep the scaffold symbolic and do not turn it into a numerical parent-count recommendation.
+
+## 8. Publication and attribution provenance
+
+The GLM review content and GPT adjudication content identify their respective preparer/reviewer roles in the document text. The repository writes were performed through the connected GitHub account, which is the owner's account. GitHub commit author/committer metadata therefore records that account; it does not independently identify an AI system as the Git author, provide an agent-specific cryptographic signature, or prove which model prepared the prose. The artifact-level preparer/reviewer labels are content provenance, not cryptographic commit signatures.
+
+The canonical GLM review was added at commit `60cec67f0e486a84c9eacb1e205f91ba01eb556a` (parent `60c2ae5e3e749b8f6a955f452d6c4803f620202a`); its blob is `65d2eac2d4a133aec96ace19916f45d9c2fa0144`. The GPT adjudication was added at commit `0a271ff48730664b63f708651be483e876e5bd80` (parent `60cec67f0e486a84c9eacb1e205f91ba01eb556a`). These Git object relationships and file additions were independently checked after publication.
