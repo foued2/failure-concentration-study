@@ -30,10 +30,10 @@ GLM reports that it did not have Claude's original review document in its sandbo
 
 **Disposition: CONCUR. No amendment to the primary estimand.**
 
-v0.21 §5.7 explicitly chooses Option B. The primary target is incremental predictive information from (C_D) beyond the exact B1 cell ((q,Z,k,\ell)), while not conditioning on the realization-setting vector (\mathbf a(v)). The document also explicitly states that the predictive information may be carried through (\mathbf a(v)), and that the result is not a direct, causal, or realization-setting-independent effect.
+v0.21 §5.7 explicitly chooses Option B. The primary target is incremental predictive information from \(C_D\) beyond the exact B1 cell \(c=(q,Z,k,\ell)\), while not conditioning on the realization-setting vector \(\mathbf a(v)\). The document also explicitly states that the predictive information may be carried through \(\mathbf a(v)\), and that the result is not a direct, causal, or realization-setting-independent effect.
 
-M1-si requires within-parent variation in both realization settings and realized (C_D), but does not guarantee residual (C_D) variation at fixed (\mathbf a(v)). Accordingly:
-- the adjusted sensitivity model is estimable only where the realized design has adequate residual (C_D) variation after conditioning on (\mathbf a(v)) and the exact cell;
+M1-si requires within-parent variation in both realization settings and realized \(C_D\), but does not guarantee residual \(C_D\) variation at fixed \(\mathbf a(v)\). Accordingly:
+- the adjusted sensitivity model is estimable only where the realized design has adequate residual \(C_D\) variation after conditioning on \(\mathbf a(v)\) and the exact cell;
 - if that sensitivity is not estimable, the direct/parameter-independent question remains unanswered;
 - failure of that sensitivity does not invalidate the broader proxy-inclusive Option B primary result.
 
@@ -72,21 +72,21 @@ A lineage-feasibility assessment should therefore estimate the reference-set and
 - calibration/validation of similarity thresholds, which are triage tools; and
 - the mandatory blinded pairwise dispositions and pairwise-coherent cluster decisions that determine whether candidate implementations can count as separate verified parents.
 
-Failure to meet a threshold-validation floor makes similarity thresholds descriptive/triage-only. It does not, by itself, force the entire study to be exploratory, because the mandatory pairwise review rules remain. Conversely, unresolved candidate lineage cannot be counted toward eligible (G_c); a LINEAGE_UNRESOLVED component contributes zero to eligible parent support, and its members cannot be selected as parents until resolved.
+Failure to meet a threshold-validation floor makes similarity thresholds descriptive/triage-only. It does not, by itself, force the entire study to be exploratory, because the mandatory pairwise review rules remain. Conversely, unresolved candidate lineage cannot be counted toward eligible \(G_c\); a LINEAGE_UNRESOLVED component contributes zero to eligible parent support, and its members cannot be selected as parents until resolved.
 
 The actual workload cannot be credibly quantified from the current record alone. It depends on the selected language families, candidate frame, category definitions, number of reference units, reviewer availability, and the number of candidate pairs requiring direct disposition. No candidate-frame work or parent sourcing is authorized. A framework or assessment plan can be developed without pretending those inputs are known.
 
-### 2.4 (C_D=0) when (k_{\mathrm{fail}}=0)
+### 2.4 Sentinel when \(k_{\mathrm{fail}}=0\)
 
 **Disposition: CONCUR. Adopt a data-representation clarification; no change to the eligible population.**
 
-v0.21 §1.3 currently documents zero as a sentinel labelled **NO OBSERVED FAILURES**, not as an ordinary observed concentration value. The ratio defining (C_D) is mathematically undefined when (k_{\mathrm{fail}}=0), and B1 excludes these rows from primary-cell eligibility.
+v0.21 §1.3 currently documents zero as a sentinel labelled **NO OBSERVED FAILURES**, not as an ordinary observed concentration value. The ratio defining \(C_D\) is mathematically undefined when \(k_{\mathrm{fail}}=0\), and B1 excludes these rows from primary-cell eligibility.
 
 The data dictionary and analytical representation should therefore:
 - retain a distinct status such as `NO_OBSERVED_FAILURES`;
-- represent analytical (C_D) as NA when (k_{\mathrm{fail}}=0);
-- prohibit numerical analysis from treating a legacy zero sentinel as an observed (C_D) value;
-- preserve the established (C_D) definition for (k_{\mathrm{fail}}>0).
+- represent analytical \(C_D\) as NA when \(k_{\mathrm{fail}}=0\);
+- prohibit numerical analysis from treating a legacy zero sentinel as an observed \(C_D\) value;
+- preserve the established \(C_D\) definition for \(k_{\mathrm{fail}}>0\).
 
 This is prospective for the new population: no new-population variants or outcomes exist, so there is no migration task. The convention must be fixed in the data dictionary before diagnostic or analytical data are generated. This does not alter the B1 eligible population.
 
@@ -94,21 +94,21 @@ This is prospective for the new population: no new-population variants or outcom
 
 **Disposition: CONCUR. The general formula belongs in the operative design record, conditional on a future capacity binding.**
 
-For eight strata with frozen nonnegative integer capacities (c_1,\ldots,c_8), an exact total of (k) definite failures is feasible only if (k\le\sum_j c_j). The attainable maximum numerator values are the integer interval
+For eight strata with frozen nonnegative integer capacities \(c_1,\ldots,c_8\), an exact total of \(k\) definite failures is feasible only if \(k\le\sum_j c_j\). The attainable maximum numerator values are the integer interval
 
-[
-M_{\min}(k)\le m\le M_{\max}(k),
-]
+\[
+M_{\min}(k)\le m\le M_{\max}(k).
+\]
 
 where
 
-[
+\[
 M_{\min}(k)=\min\left\{t:\sum_{j=1}^{8}\min(c_j,t)\ge k\right\},
 \qquad
 M_{\max}(k)=\min\left(k,\max_j c_j\right).
-]
+\]
 
-For a joint definite/unresolved count, the aggregate capacity condition is (k+\ell\le\sum_j c_j). The unresolved counts can occupy the remaining aggregate capacity after the definite-failure allocation.
+For a joint definite/unresolved count, the aggregate capacity condition is \(k+\ell\le\sum_j c_j\). The unresolved counts can occupy the remaining aggregate capacity after the definite-failure allocation.
 
 This formula is conditional on the frozen capacity vector. It does not bind the new population to eight slots per stratum, nor does it establish that Rev 1.4's 8-by-8 composition applies. Until the diagnostic-composition binding is separately authorized and frozen, v0.21's strata-only outer envelope remains the only unconditionally applicable bound. GLM's symbolic scaffold already contains the general formula; the remaining documentation task is to place it in, or directly reference it from, the v0.21 support rule without implying a capacity choice.
 
