@@ -1,0 +1,90 @@
+%% Failure-Concentration Programme - route/decision tree
+%% Date: 2026-11-03
+%% This diagram separates what each route ESTABLISHED from what it did NOT establish.
+%% It is an audit map, not a scientific claim.
+
+flowchart LR
+
+  ROOT["Target: incremental held-out predictive value<br/>of C beyond k and declared context Z"]
+
+  ROOT --> NAT["Natural-solver route<br/>SSSP and expression populations"]
+  ROOT --> FORM["Formal-localization route<br/>RLC-0"]
+  ROOT --> ENG["Engineered route<br/>paren7 Gate 1"]
+  ROOT --> SIM["Simulation / math route<br/>three-world and contrasts"]
+  ROOT --> H3["Natural-generation route<br/>H3 footprint"]
+  ROOT --> LC["Constructed-population route<br/>LC518-150"]
+
+  NAT --> N1["v0.1 SSSP pilot"]
+  N1 --> N1a["INFEASIBLE at yield gate<br/>4/20 eligible vs 15 required"]
+  N1a --> N1b["ESTABLISHED: this pilot cannot support the contrast<br/>NOT: any effect of C"]
+
+  NAT --> N2["v0.2 SSSP pack"]
+  N2 --> N2a["NEGATIVE delta ~ -2.6e-09<br/>CI entirely inside +/-1.6e-06"]
+  N2a --> N2b["ESTABLISHED: frozen-rule negative<br/>C=5/k on 1200/1200 rows<br/>NOT: a test of independent C variation"]
+
+  NAT --> N3["Later Codex / Gemini / expression runs"]
+  N3 --> N3a["NO ELIGIBLE CONTRAST<br/>k=0 or k>=2 bodies crash"]
+  N3a --> N3b["ESTABLISHED: retained data exhausted<br/>NOT: a scientific negative"]
+
+  FORM --> F1["RLC-0 six-seed CBMC feasibility"]
+  F1 --> F1a["CLOSED - no full-domain certification<br/>no freeze tag - no seed executed"]
+  F1a --> F1b["ESTABLISHED: toolchain/budget infeasible<br/>NOT: concentration evidence"]
+
+  ENG --> E1["Gate 1 identification audit"]
+  E1 --> E1a["CLOSED - CONSTRUCTION AUDIT FAILED<br/>no within-carrier high/low C contrast"]
+  E1a --> E1b["ESTABLISHED: this design does not identify C<br/>0 solvers - 0 model calls<br/>NOT: H1a is false"]
+
+  SIM --> S1["Three-world simulation"]
+  S1 --> S1a["W1 FAILED wiring criterion<br/>W2 UNIDENTIFIABLE<br/>W3 NULL CHECK"]
+  S1a --> S1b["ESTABLISHED: declared assumptions do not<br/>produce a passing informative world<br/>NOT: real-solver evidence"]
+
+  SIM --> S2["Stratum-specific contrasts"]
+  S2 --> S2a["DESCRIPTIVE ONLY<br/>973 strata - no adjustment - no inference"]
+  S2a --> S2b["ESTABLISHED: descriptive heterogeneity<br/>NOT: predictive gain for C"]
+
+  H3 --> H1["V1 footprint run"]
+  H1 --> H1a["INVALID_RUN"]
+  H3 --> H2["V2-V7 harnesses"]
+  H2 --> H2a["FROZEN - NEVER RUN"]
+  H3 --> H3a["V8 harness"]
+  H3a --> H3b["FROZEN - post-freeze defects"]
+  H3 --> H4["V9 secure boundary"]
+  H4 --> H4a["NOT FROZEN - BLOCKED<br/>isolation PARTIAL - ordering FAIL<br/>verdict layer missing"]
+  H3 --> H5["Copilot and GLM screens"]
+  H5 --> H5a["0 eligible bodies and 1 eligible body<br/>0 supported cells"]
+  H1a --> H6["ESTABLISHED: H3 has no scientific result<br/>NOT: any C-correctness finding"]
+  H2a --> H6
+  H3b --> H6
+  H4a --> H6
+  H5a --> H6
+
+  LC --> L1["Design v1.0 FROZEN<br/>30 parents x 5 versions = 150"]
+  L1 --> L1a["DESIGN ONLY<br/>0/150 bodies built"]
+  LC --> L2["C9 bank generation"]
+  L2 --> L2a["INFRASTRUCTURE VERIFIED<br/>144 records - 138 canonical - 0 overlap<br/>138/138 oracle answers reproduced"]
+  LC --> L3["Private mutation annex"]
+  L3 --> L3a["MISSING<br/>blocks all 150 body construction"]
+  LC --> L4["Execution and analysis"]
+  L4 --> L4a["BLOCKED / NOT STARTED<br/>no protocol - no E1 - no E2 - no E3"]
+  L1a --> L5["ESTABLISHED: bank and design inputs exist<br/>NOT: any LC518 scientific result"]
+  L2a --> L5
+  L3a --> L5
+  L4a --> L5
+
+  L5 --> FINAL["CURRENT SCIENTIFIC STATE<br/>No positive result. No refutation.<br/>No design yet shown to identify the target contrast."]
+
+  classDef good fill:#d1e7dd,stroke:#0f5132,color:#000
+  classDef bad fill:#f8d7da,stroke:#842029,color:#000
+  classDef infeas fill:#ffe5cc,stroke:#8a4b08,color:#000
+  classDef design fill:#e2e3e5,stroke:#41464b,color:#000
+  classDef block fill:#e7d6ff,stroke:#59359a,color:#000
+  classDef note fill:#fff3cd,stroke:#664d03,color:#000
+
+  class N1a,N3a infeas
+  class N2a bad
+  class F1a,E1a,S1a,H1a,H2a,H3b,H4a,H5a bad
+  class N1b,N2b,N3b,F1b,E1b,S1b,S2b,H6 design
+  class S2a design
+  class L1a,L4a,L3a block
+  class L2a,L5 good
+  class FINAL note

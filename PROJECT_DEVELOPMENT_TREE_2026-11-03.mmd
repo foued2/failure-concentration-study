@@ -1,0 +1,180 @@
+%% Failure-Concentration Programme - development tree and decision map
+%% Date: 2026-11-03
+%% Status: audit/diagram only. Not a scientific result, not a protocol,
+%%         not an authorization, not a change to any frozen artifact.
+%% Evidence base: branch research/concentration-math-spec @ 8bb2e82,
+%%         plus verified local LC518 publish set and C9 package.
+
+flowchart TB
+
+  Q["CENTRAL QUESTION<br/>Does failure concentration C add held-out predictive value<br/>beyond failure count k and declared context Z?"]
+  Q --> A1
+
+  subgraph P1["PHASE 1 - 11-12 Oct 2026 - Natural SSSP v0.1 then v0.2"]
+    direction TB
+    A1["v0.1 PROTOCOL v2 draft<br/>SSSP - 30 probes - 6 input families - 5 probes per family"]
+    A2["v0.1 freeze 5bf80b7<br/>G1 240/240 - G2 6/6 - G3 0/60"]
+    A3["Pilot: 20 single-shot submissions<br/>eligible 4/20 = 20 percent vs 75 percent gate"]
+    A4["TERMINAL: INFEASIBLE<br/>4 eligible bodies at k in 5,10,25<br/>all C = 5/k - 0 same-k different-C pairs"]
+    A5["v0.2 freeze 798b446<br/>pack = 40 bodies x 3 byte-identical replicas"]
+    A6["40 confirmatory instances<br/>1200 eligible solver-instance pairs"]
+    A7["TERMINAL: NEGATIVE under frozen rule<br/>delta = -2.638929627596376e-09<br/>95 percent CI -1.5187e-06 to 1.5827e-06"]
+    A8["Interpretability audit<br/>1200/1200 rows have C = 5/k<br/>Model B adds no column-space capacity<br/>NEGATIVE is uninformative about independent C"]
+    A1 --> A2 --> A3 --> A4
+    A5 --> A6 --> A7 --> A8
+  end
+
+  A4 --> B1
+  A8 --> B1
+
+  subgraph P2["PHASE 2 - 12-14 Oct 2026 - RLC-0 formal-localization feasibility"]
+    direction TB
+    B1["RLC-0 contract and freeze candidate<br/>6 LeetCode 704 seeds - CBMC route"]
+    B2["C2 audit: no full-domain certification<br/>canaries OOM INCOMPLETE - canary-FAIL half not observed"]
+    B3["CLOSED: bounded negative conclusion<br/>no rlc0-freeze tag - no seed compiled or executed"]
+    B1 --> B2 --> B3
+  end
+
+  B3 --> C1
+
+  subgraph P3["PHASE 3 - 14-20 Oct 2026 - v0.3-P Phase 0 design"]
+    direction TB
+    C1["Phase 0 preflight design<br/>2026-10-14 - document only"]
+    C2["Revisions D, E, F, G and review packages<br/>M3 addendum - O2 - A1 - NC1 - target bridge"]
+    C3["NO FREEZE - NO PHASE 1<br/>A/B/C/E open freeze blockers<br/>VDraft numerical conversion PROVISIONAL"]
+    C1 --> C2 --> C3
+  end
+
+  C3 --> D1
+
+  subgraph P4["PHASE 4 - 21-22 Oct 2026 - Natural-solver follow-up and expression pilot"]
+    direction TB
+    D1["Separate feasibility-first protocol frozen<br/>Gemini provider amendment"]
+    D2["Gemini pilot closed at usage cap<br/>no eligible generated bodies"]
+    D3["Expression pilot: 30 attempt dirs<br/>19 validated - 13 k>=2 crash - 6 k=0"]
+    D4["ZERO eligible k>=2 expression bodies<br/>infrastructure/feasibility observation"]
+    D5["Natural-solver closure record drafted<br/>CLOSURE_RECORD_FOR_APPROVAL_NO_AUTHORIZATION"]
+    D1 --> D2 --> D4
+    D1 --> D3 --> D4
+    D4 --> D5
+  end
+
+  D5 --> E1
+
+  subgraph P5["PHASE 5 - 23-24 Oct 2026 - Engineered task-specific route"]
+    direction TB
+    E1["Gate 1 - paren7_min_insertions<br/>128-input domain - 30 diagnostic + 98 evaluation"]
+    E2["Target design: 6 profiles at C=1 plus 1 profile at C=0.2<br/>all at k=5"]
+    E3["Identification failure<br/>no within-carrier high/low contrast<br/>C not separable from family or defect identity"]
+    E4["Option B bounded construction audit<br/>257 hand-built instances - 14 at k=5<br/>0 genuinely different mechanism pairs with matched profiles"]
+    E5["CLOSED - CONSTRUCTION AUDIT FAILED<br/>0 study solvers - 0 model calls - Gate 2 not authorized"]
+    E6["Calibration control result<br/>at fixed k=5 and C=1 score ranges 0.683673 to 0.969388<br/>high-C control 0.833333 < low-C 0.887755"]
+    E1 --> E2 --> E3 --> E4 --> E5
+    E4 --> E6
+  end
+
+  E5 --> F1
+
+  subgraph P6["PHASE 6 - 24-25 Oct 2026 - Simulation and mathematical synthesis"]
+    direction TB
+    F1["Concentration mathematical specification<br/>C = max(F)/k is a deterministic summary of vector F"]
+    F2["Three-world simulation - 2.5M cases per world"]
+    F3["W1 FAILED frozen wiring criterion<br/>domain C gain 1.961e-06 CI -1.242e-06 to 7.581e-06<br/>alternate partition flips negative"]
+    F4["W2 UNIDENTIFIABLE<br/>C=1 for every eligible case - residualized C variance 0"]
+    F5["W3 NULL CHECK<br/>oracle C-after-defects ~0 - no positive gain"]
+    F6["Independent W1 verification<br/>bit-strict reproduction - W1 remains FAILED"]
+    F7["Stratum contrasts - 973 carrier x k strata<br/>756 with >=2 C levels - descriptive only<br/>no adjustment - no inference"]
+    F8["Construct-validity assessment 2026-10-25<br/>not demonstrated and not refuted<br/>natural data infeasible - engineered design failed - W1 failed"]
+    F1 --> F2 --> F3 --> F6
+    F2 --> F4
+    F2 --> F5
+    F2 --> F7
+    F6 --> F8
+    F7 --> F8
+  end
+
+  F8 --> G1
+
+  subgraph P7["PHASE 7 - 26 Oct to 1 Nov 2026 - H3 footprint gate engineering"]
+    direction TB
+    G1["H3 frozen family partition - 30 SSSP probes<br/>6 families - eligible 2<=k<=24 - 40-group PASS target"]
+    G2["V1 run - INVALID_RUN<br/>extractor discarded module imports<br/>module-load errors became 30 failed probes"]
+    G3["V2-V7 - frozen but never run<br/>extraction - saturation - futility - AST classifier - other policy - isolation"]
+    G4["V8 - frozen tag h3-footprint-v8-freeze-2026-10-27<br/>post-freeze audit found evaluator and sampling defects"]
+    G5["V9 - implementation only - NOT FROZEN<br/>host oracle split - fail-closed gate - provenance hardening"]
+    G6["V9 blockers<br/>isolation battery PARTIAL - rendezvous ordering FAIL<br/>verdict layer NOT_IMPLEMENTED - generation/evaluation BLOCKED"]
+    G7["Copilot-Auto screen 2026-10-29<br/>12 requests - 9 unique solvers - 0 eligible bodies"]
+    G8["GLM screen 2026-10-29<br/>12 requests - 1 eligible body k=9 C=4/9 - 21/30 correct<br/>0 supported cells because m_min=4"]
+    G9["Independent audit of GLM evidence<br/>score exactly reproduced - classifier error request-03 floyd to bfs"]
+    G10["Taxonomy and cell-rules decision record<br/>DRAFT - NOT FROZEN - NOT APPROVED"]
+    G1 --> G2 --> G3 --> G4 --> G5 --> G6
+    G1 --> G7 --> G9
+    G1 --> G8 --> G9
+    G9 --> G10
+  end
+
+  G6 --> H1
+  G10 --> H1
+
+  subgraph P8["PHASE 8 - 1-3 Nov 2026 - LC518-150 constructed population and C9 bank"]
+    direction TB
+    H1["LC518-150 design package v1.0 FROZEN<br/>30 parents in 5 families K1 7 - K2 8 - K3 8 - K4 5 - K5 2"]
+    H2["150 bodies planned<br/>S0 control - SA - SB - SAB - S-extra<br/>30 controls + 90 single + 30 double"]
+    H3["BLOCKED at private annex<br/>eight-mechanism taxonomy and 28-pair schedule absent<br/>mutation assignment and all source writing stop"]
+    H4["Banks designed before bodies<br/>64 diagnostic + 80 held-out - canonical identity amount plus sorted coins"]
+    H5["Analysis v1.0 frozen: E1 matched within-parent contrasts primary<br/>E2 held-out Q - E3 exploratory prediction<br/>legacy six-family concentration explicitly not an estimand"]
+    H6["Analysis review revision 2.6 - NOT FROZEN<br/>C_D over 8 diagnostic strata - Models A/B/C<br/>M1 three-parent exact-cell floor - C8/E3 12000-resolved gate"]
+    H7["C9 bank-generation revision 2.6<br/>owner ratified LC518-GO-2026-11-03-01<br/>spec blob SHA-256 f291ae87... verified"]
+    H8["C9 package reassembled and verified<br/>tar.xz SHA-256 e0be3f2a... - 16/16 SHA256SUMS<br/>73/73 tests pass on CPython 3.13.5 - 1 Windows skip"]
+    H9["GitHub Actions run 41591572358 - SUCCESS<br/>run 2026-11-03T06:42:21Z to 06:44:02Z<br/>artifact 13210063805 - 75523 bytes - not expired"]
+    H10["Independent bank audit - ALL CHECKS PASS<br/>144 records - 138 canonical - zero overlap<br/>6/6 artifact hashes - 138/138 oracle answers"]
+    H11["PROVENANCE LIMIT<br/>run logs and run_manifest not in 12-file publish set<br/>artifact download returns 401 - no anonymous access"]
+    H12["SOLVER BODIES: 0 of 150<br/>no execution protocol - no E1 contrasts - no E3 prediction"]
+    H1 --> H2 --> H3
+    H1 --> H4 --> H7 --> H8 --> H9 --> H10 --> H11
+    H5 --> H6
+    H3 --> H12
+    H10 --> H12
+  end
+
+  H12 --> Z["NO LC518 SCIENTIFIC RESULT EXISTS YET<br/>The bank is verified input infrastructure.<br/>E1/E2/E3 are preregistered designs, not findings."]
+
+  classDef terminal fill:#f8d7da,stroke:#842029,color:#000
+  classDef infeasible fill:#ffe5cc,stroke:#8a4b08,color:#000
+  classDef closed fill:#f5c2c7,stroke:#842029,color:#000
+  classDef failed fill:#f1aeb5,stroke:#842029,color:#000
+  classDef design fill:#e2e3e5,stroke:#41464b,color:#000
+  classDef blocked fill:#e7d6ff,stroke:#59359a,color:#000
+  classDef verified fill:#d1e7dd,stroke:#0f5132,color:#000
+  classDef warn fill:#fff3cd,stroke:#664d03,color:#000
+
+  class A4 infeasible
+  class A7 terminal
+  class A8 warn
+  class B3 closed
+  class C3 design
+  class D4 infeasible
+  class D5 design
+  class E3 closed
+  class E5 closed
+  class F3 failed
+  class F4 infeasible
+  class F5 design
+  class F8 design
+  class G2 failed
+  class G3 design
+  class G4 failed
+  class G5 blocked
+  class G6 blocked
+  class G7 infeasible
+  class G8 infeasible
+  class G10 design
+  class H3 blocked
+  class H6 design
+  class H7 verified
+  class H8 verified
+  class H9 verified
+  class H10 verified
+  class H11 warn
+  class H12 blocked
+  class Z terminal

@@ -1,15 +1,23 @@
 # LC518/150 — Design-history evidence register (mutation-allocation design inputs)
 
 **Date:** 2026-11-09
-**Status:** AUDIT RECORD — design-history evidence register, executed under the
-authorization and scope conditions of audit record §30.6 (launch directed by the owner
-via the 2026-11-09 relayed review instruction: "Then produce the design-history evidence
-register. Do not begin constructing variants yet."). This record authorizes nothing:
+**Status:** AUDIT RECORD — design-history evidence register, executed under the scope
+conditions of audit record §30.6. The launch was directed by the owner through a
+2026-11-09 review relay. Provenance correction (Rev 5): the sentence quoted in earlier
+revisions ("Then produce the design-history evidence register. Do not begin constructing
+variants yet.") is reviewer-origin wording (GPT) from the relayed review conversation,
+not owner-authored text; no verbatim owner-authored instruction producing this register
+is independently documented in this record, so the launch authorization is documented
+only as relayed. This record authorizes nothing:
 no construction, no execution, no annex inspection, no commit, no publication.
-**File status:** untracked working-tree file, repository root, branch
-`research/concentration-math-spec`. Not committed on any ref. Per the 2026-11-09
-instruction, this is a working evidence register — it becomes an authoritative record
-only after its findings and wording are owner-reviewed and ratified.
+**File status:** branch `research/concentration-math-spec`, repository root. Committed
+locally: `594f1ab` (Rev 3 register) and `3e7c66d` (Rev 4 correction). The Rev 6 text is
+an uncommitted working-tree revision on top of `3e7c66d`, held for the final review;
+commit and push await owner instruction. Remote branch tip
+`8bb2e8276a1d1b18579c022952155fc88e152794` (verified
+2026-11-09): no revision of this record has been published remotely. This is a working
+evidence register — it becomes an authoritative record only after its findings and
+wording are owner-reviewed and ratified.
 **Record-keeper:** Qoder CLI (GLM role).
 **Revision 2 (2026-11-09):** precision corrections applied in place per owner-relayed
 review: (i) explicit structural constraints distinguished from allocation details in the
@@ -31,11 +39,46 @@ committed in `594f1ab` stated that the record had been pushed to `origin`; that 
 false at commit time — the push had failed. An audit record must describe the actual
 state, not the intended outcome. Rev 3's text above has been corrected accordingly in
 this revision; evidentiary content (§§ 1–7) is unchanged.
+**Revision 5 (2026-11-09):** correction revision per a second owner-relayed review (GPT
+content review of the full Rev 4 text, received 2026-11-09). Applied corrections:
+(A) launch-provenance wording in the Status field — the relayed instruction is
+reviewer-origin, not owner-authored; (B) the File status field now states the present
+state instead of deferring to later revision notes; (C) E6 separated from the
+annex-supplied allocation inputs (construction-time, taxonomy-gated per
+`PARENT_DESIGN.md` §8.2); (D) the commit-history conclusion narrowed to assignment-level
+content and its 88-commit basis made reproducible (command, chains, review depth,
+changed-path inventory); (E) §4 item 5 relabeled as conversation-origin GPT statements,
+not owner-side evidence; (F) the archive-boundary statement now distinguishes actors and
+records the reviewer-reported three-item archive inventory; (G) C9 full path and blob
+SHA recorded, E1 conflation guard (c) added for C9 bank-construction mechanism labels,
+the A2-static audit record's byte identity added, and the 0/150 claim dated to its last
+verification. Evidentiary finding unchanged: the examined design documents specify the
+structural framework and constraints but none of the detailed mutation assignments.
+Rev 4 hash `8f03f55e3db21983404f5689b599134707ff0be86a8c63af8ba80938a387c25b`
+(18,999 bytes) is superseded; no finding is removed or weakened by these corrections.
+**Revision 6 (2026-11-09):** narrow corrections per a third owner-relayed review, in
+which the reviewer decoded and verified the exact Rev 5 bytes (24,565 bytes, SHA-256
+`3bd696cfc1cb0cf03908ca13e19a8f91b98d25d8ccc5d4bbe346589b84c835e9` — byte identity
+confirmed; Rev 5 disposition per that review: acceptable in substance, not yet
+ratifiable). Applied corrections: (R1) the 0/150 verdict is now stated as the latest
+documented construction count, with the absence of a fresh 2026-11-09 local construction
+inventory recorded explicitly instead of claiming a current fact; (R2) the 88-commit
+reachability wording now states that the commits are reachable collectively through the
+refs included by `--all`; (R3) a bounded-investigation limitation was added to the
+history review — assignment-level content embedded within an unrelated file is not
+excluded by the changed-path scan alone; (R4) an auxiliary-source note distinguishes the
+A2 audit record (scope/provenance use) and `MANIFEST.md` (identity-verification index)
+from sources examined for allocation content. The six design classifications, the A–G
+corrections, and the central finding are unchanged. Rev 5 hash
+`3bd696cfc1cb0cf03908ca13e19a8f91b98d25d8ccc5d4bbe346589b84c835e9` (24,565 bytes) is
+superseded; no finding is removed or weakened by these corrections.
 **Governing interpretation:** audit record §30 reclassification (2026-11-07): the
 mutation allocation is a required design input whose completion as a standalone annex
 has not been established; not a lost artifact.
 **Boundary compliance:** the sealed preserved archive `lc518_150_review_work.zip` was
-not opened; the owner-side conversation history, chat/e-mail delivery channel, private
+not opened by this investigation (a previous GPT account reported opening it — record
+§27 — and that account is not adopted as evidence here); the owner-side conversation
+history, chat/e-mail delivery channel, private
 accounts, and any other machine or backup were not accessed; no channel was searched
 beyond the §30.6-reachable sources; no allocation content was reconstructed, proposed,
 or pre-filled (work order :45 no-reconstruction rule remains in force).
@@ -52,6 +95,10 @@ For each required mutation-design input, classify the examined sources:
 The examined source set is exactly the §30.6 list, supplemented only by the frozen
 protocol (to record its audit-rule expectations) and the B1 decision / C9 review records
 (commit-scanned). No other archive, branch content, or channel was opened.
+Auxiliary-source note (Rev 6): the A2 audit record (§2 source 10) was consulted solely
+for scope, path and provenance statements, and `MANIFEST.md` was used as an
+identity-verification index; neither was treated as a source of missing mutation
+assignments.
 
 ## 2. Sources examined and provenance verification
 
@@ -65,13 +112,30 @@ protocol (to record its audit-rule expectations) and the B1 decision / C9 review
 | 6 | `LC518_TASK_CONTRACT.md` | `4608922:lc518-150/LC518_TASK_CONTRACT.md` | Keyword scan: contains no mutation-design content (only an unrelated harness note about input-list mutation). Task definition only |
 | 7 | Frozen A2/A3 protocol Rev 11 (frozen 2026-11-07) | local base64 `.qoder_b64_protocol.txt`; decoded 51,286 bytes | SHA-256 `530dad4baf77c00a0afa76f91321c567fcbdfe4cf4a5ae6d0bee336c5dfac739` = record §21.4/§25 freeze pin. VERIFIED. Read for audit-rule expectations only |
 | 8 | `AGENT_DECISION_CLAIM_B1_SCOPE_2026-11-05.md` | `2784297:lc518-150/review-v1.2/AGENT_DECISION_CLAIM_B1_SCOPE_2026-11-05.md` | Commit-scanned: defines B1 target and A2-static scope; contains no taxonomy/allocation content. Treats S-extra assignments as annex-dependent (see E5) |
-| 9 | `C9_GENERATION_SPEC_REVIEW.md` rev 2.6 | `511bc20:lc518-150/review-v1.2/analysis-revision-2026-11-02/` | Keyword scan: only an authority-boundary mention of private-annex access. Bank-generation spec; no mutation-design content |
-| 10 | `LC518_A2_STATIC_ANNEX_AUDIT_2026-11-06.md` | working tree (untracked) | §§ 8.6, 9.4, 30 read directly from file |
+| 9 | `C9_GENERATION_SPEC_REVIEW.md` rev 2.6 | `511bc20:lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md` (git blob `bd9f13fee63ee2716345447461bf3b8bcd904eaa`) | Keyword scan: only an authority-boundary mention of private-annex access. Bank-generation spec; no mutation-design content. Note (Rev 5): contains bank-construction parameter labels (`min-coin`, `gcd`, `gcd2`, `odd-even-amt`, `odd-odd-amt`) that are diagnostic-bank mechanisms, not the owner's mutation taxonomy — see E1 guard (c) |
+| 10 | `LC518_A2_STATIC_ANNEX_AUDIT_2026-11-06.md` | working tree (untracked) | Byte identity of the version examined 2026-11-09: SHA-256 `0bff1bbb59c67a974c58121087182c383947d978ed25d5da6686e6cc33fd1295`, 116,181 bytes. §§ 8.6, 9.4, 30 read directly from file |
 
-`lc518-150/` history: 88 commits across all refs. Reviewed classes: design handoff
-`3e9a29c` (2026-11-01); C9 review chain ending `511bc20` (2026-11-02); recovery/containment
-chain (2026-11-02–04); B1 decision chain ending `2784297` (2026-11-05). No commit in this
-history decides any element in §3.
+`lc518-150/` history: 88 commits touching `lc518-150/` are reachable collectively
+through the refs included by `--all`.
+Reproducible basis (recomputed 2026-11-09 for Rev 5, re-verified unchanged for Rev 6): `git rev-list --all --count -- lc518-150/` = 88; full listing via
+`git log --all --name-status -- lc518-150/`. Chains: design handoff `3e9a29c` (2026-11-01);
+C9 review chain ending `511bc20` (2026-11-02); recovery/containment chains (2026-11-02–04);
+B1 decision chain ending `2784297` (2026-11-05). Review depth: commit subjects and
+changed-file lists for all 88 commits; content reads restricted to the files cited in §2
+at the commits cited there, plus one targeted historical diff (`976ae04`, below). The
+union of changed paths over all 88 commits contains no annex, allocation, or
+taxonomy-definition artifact — only the work order, task contract, design-handoff files,
+worklog, review/manifest records, C9 bank-generation artifacts, and containment/recovery
+artifacts. The one commit whose subject mentions a taxonomy (`976ae04`, "Remove taxonomy
+identifier from public LC518 work order") removed an M-series defect-taxonomy label
+("M08-style resource inefficiency") from one work-order sentence — unrelated to the
+eight-mechanism mutation taxonomy. Bounded-investigation limitation (Rev 6): the
+changed-path inventory identified no allocation-bearing artifact by filename or commit
+metadata; the contents of every historical file version were not exhaustively inspected,
+so assignment-level content embedded within an unrelated file is not excluded by this
+history scan alone. Narrowed conclusion: no examined commit is identified as supplying
+the missing assignment-level content for E1–E6; the work-order and frozen design records
+do specify the structural constraints and role definitions listed in §3.
 
 ## 3. The six design elements — register
 
@@ -89,13 +153,18 @@ history decides any element in §3.
 - Worklog entry 29 (verbatim): "STOP RULE INVOKED (work order :45 + :47): the private
   mutation-design annex and pair-allocation schedule have NOT reached me. I have not
   invented, renamed, merged, or substituted any mechanism."
-- No mechanism name, definition, or count-8 list occurs in any examined source. (Frozen
-  protocol C1 requires of any supplied annex: "Fail if any mechanism lacks a definition or
-  count ≠ 8" — an audit expectation, not taxonomy content.)
+- No member of the eight-mechanism mutation taxonomy is named or defined in any examined
+  source, and no count-8 mechanism list occurs. (Frozen protocol C1 requires of any
+  supplied annex: "Fail if any mechanism lacks a definition or count ≠ 8" — an audit
+  expectation, not taxonomy content.)
 - **Conflation guards (record-keeper note):** (a) `BANK_DESIGN.md` strata D1–D8 are
   diagnostic *input strata* (64 bank records), not mutation mechanisms; (b) the 2026-10-31
   "six-family taxonomy (v0.2 instrument)" recorded in earlier worklog entries belongs to the
-  pre-LC518 study and is not the eight-mechanism mutation taxonomy. Neither may stand in
+  pre-LC518 study and is not the eight-mechanism mutation taxonomy; (c) the examined C9
+  bank-generation review (§2 source 9) uses parameter labels such as `min-coin`, `gcd`,
+  `gcd2`, `odd-even-amt`, `odd-odd-amt` for diagnostic-bank record construction — these are
+  diagnostic-bank mechanisms, and none of them names or defines a member of the owner's
+  eight-mechanism mutation taxonomy. None of these may stand in
   for the taxonomy in any later plan.
 
 ### E2. Pair-to-parent allocation — **NOT SPECIFIED** (structural frame explicit; assignment absent)
@@ -165,7 +234,12 @@ history decides any element in §3.
   (mechanism, K5) cell qualifies; K5 is reportable descriptively only… (Structural basis,
   annex-free: K5 has 2 parent groups, below any three-parent minimum under any schedule.)"
   — the K5 exclusion is explicit and annex-independent.
-- No compatibility mapping exists in any examined source.
+- No compatibility mapping exists in any examined source. **Scope note (Rev 5):** E6 is
+  not an annex-supplied allocation element. Per `PARENT_DESIGN.md` §8.2 the compatibility
+  report requires the taxonomy, will be produced at construction time, and will be marked
+  DESIGNED_NOT_VERIFIED — a construction-time, taxonomy-gated assessment, not content
+  established as owner-supplied inside the annex. Protocol C6 (annex-level feasibility
+  screen) and C7 (K5 exclusion) are audit requirements, not compatibility-mapping evidence.
 
 ### Summary table
 
@@ -176,7 +250,7 @@ history decides any element in §3.
 | E3 SA/SB orientation | not specified | role semantics (WO §3); annex declares per-pair rule (protocol C3) |
 | E4 Repeated pairs | not specified | count = 2, preselection timing (WO :47; protocol C2) |
 | E5 S-extra balancing | assignments not specified | balancing wording (WO :47); 6×4+2×3 arithmetic expectation (protocol C5) |
-| E6 Parent-family compatibility | not specified | §11 duty (WO; PD §8.2; protocol C6/C7) |
+| E6 Parent-family compatibility | not specified | §11 duty (WO §11); construction-time, taxonomy-gated output per PD §8.2 — not an annex-supplied input; C6/C7 are audit rules, not mapping evidence |
 
 **Overall:** no complete mutation-allocation element is specified in the examined
 sources. Certain structural constraints and audit expectations are explicit — the 28+2
@@ -186,8 +260,10 @@ as an audit expectation (protocol C5), and the K5 scope exclusion (protocol C7) 
 none of them establishes any missing assignment or identity. No element's detailed
 content (taxonomy, pair-to-parent assignment, per-pair orientation, replication
 identities, S-extra assignments, compatibility mapping) reaches "explicit" or
-"proposed, not final" in the examined sources. All six are commissioned-but-unspecified
-pending an owner-supplied annex that is not evidenced to exist.
+"proposed, not final" in the examined sources. E1–E5 are commissioned owner-supplied
+annex inputs pending an annex that is not evidenced to exist. E6 is likewise absent from
+every examined source, but it is a construction-time, taxonomy-gated assessment
+(`PARENT_DESIGN.md` §8.2), not established as annex-supplied content.
 
 ## 4. Verification of §30's documentary bases (provenance check requested 2026-11-09)
 
@@ -210,8 +286,10 @@ pending an owner-supplied annex that is not evidenced to exist.
    **Note for the record:** §30.1 quotes this sentence truncated at "…can be recovered."
    The quote is accurate as far as it goes; the protocol sentence additionally bars search
    beyond the recorded scope and restates path 2's separate-authorization requirement.
-5. **Owner-side statements** (§30.1 GPT correction wording) — not locally verifiable;
-   recorded as owner-channel statements consistent with the verified documentary bases.
+5. **Conversation-origin GPT statements** (the §30.1 correction wording) — not locally
+   verifiable. These are reviewer statements from the conversation record, retained as
+   contextual material consistent with the verified documentary bases; they are not
+   independent owner-side evidence unless explicit owner adoption is documented.
 
 ## 5. Channels not examined (unchanged from §§9.4, 28.2, 29.3)
 
@@ -224,9 +302,14 @@ pending an owner-supplied annex that is not evidenced to exist.
 - Any other machine or backup.
 - `C:\Windows\Temp` (access-denied to this process; §29).
 - Contents of the two committed message archives (metadata-level classification only; §29).
-- The sealed preserved archive `lc518_150_review_work.zip` — contents known only through
-  GPT's breached-boundary report (record §27), which is **not adopted as evidence** by this
-  register.
+- The sealed preserved archive `lc518_150_review_work.zip` — not opened by this
+  investigation. Contents are known only through a previous GPT breached-boundary account
+  (record §27), which is **not adopted as evidence** by this register. Reviewer-reported
+  Library metadata (2026-11-09; not verifiable from this environment): three similarly
+  named entries — `lc518_150_review_work.zip`, `lc518_150_review_work(1).zip`,
+  `lc518_150_review_work(2).zip` — each listed at 18,106 bytes, contents uninspected by
+  this investigation. No examined evidence establishes that any of the three contains the
+  mutation allocation.
 
 ## 6. Non-claims
 
@@ -244,8 +327,11 @@ pending an owner-supplied annex that is not evidenced to exist.
   authorized new design); it records only what the examined sources establish for each.
   Failure to locate the allocation in the examined sources does not, by itself, justify
   dropping the design.
-- Verdict unchanged: **BLOCKED / NOT ASSESSABLE**; 0/150 solver bodies; no construction,
-  execution, or commit authorized by this record.
+- Verdict unchanged as of this revision: **BLOCKED / NOT ASSESSABLE**. The latest
+  documented construction count is 0/150, verified in the 2026-11-06 A2-static annex
+  audit (§2 source 10). This register does not include a fresh local construction
+  inventory as of 2026-11-09; the current count has not been independently reverified.
+  No construction, execution, or commit is authorized by this record.
 
 ## 7. Planning consequence (record-keeper statement)
 

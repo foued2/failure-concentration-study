@@ -1,0 +1,155 @@
+// Failure-Concentration Programme - route/decision tree
+// Date: 2026-11-03
+// Audit map only. Not a scientific result, protocol, or authorization.
+// Render: dot -Tsvg PROJECT_DEVELOPMENT_TREE_2026-11-03.dot -o tree.svg
+
+digraph failure_concentration {
+  graph [
+    rankdir=LR,
+    fontname="Helvetica",
+    fontsize=11,
+    labelloc="t",
+    label="Failure-Concentration Programme - route and decision tree (2026-11-03)\nAudit map; no scientific result is asserted by this diagram.",
+    nodesep=0.28,
+    ranksep=0.55,
+    compound=true
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Helvetica",
+    fontsize=10,
+    margin="0.12,0.07"
+  ];
+  edge [
+    fontname="Helvetica",
+    fontsize=8,
+    color="#555555",
+    arrowsize=0.7
+  ];
+
+  root [
+    label="Target: incremental held-out predictive value\nof C beyond k and declared context Z",
+    fillcolor="#cfe2ff", color="#084298", penwidth=2
+  ];
+
+  subgraph cluster_natural {
+    label="Natural-solver route (SSSP / expression)";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    n1 [label="v0.1 pilot\n20 submissions", fillcolor="#ffffff"];
+    n1r [label="INFEASIBLE\n4/20 eligible vs 15 required\nall eligible C = 5/k\n0 same-k different-C pairs", fillcolor="#ffe5cc", color="#8a4b08"];
+    n2 [label="v0.2 pack\n40 bodies x 3 replicas\n40 instances", fillcolor="#ffffff"];
+    n2r [label="NEGATIVE under frozen rule\ndelta = -2.639e-09\nCI [-1.519e-06, 1.583e-06]", fillcolor="#f8d7da", color="#842029"];
+    n2u [label="Uninformative about independent C\nC = 5/k on 1200/1200 rows\nModel B adds no column space", fillcolor="#fff3cd", color="#664d03"];
+    n3 [label="Codex / Gemini / expression runs", fillcolor="#ffffff"];
+    n3r [label="NO ELIGIBLE CONTRAST\nk=0 bodies or k>=2 crashes", fillcolor="#ffe5cc", color="#8a4b08"];
+    n1 -> n1r;
+    n2 -> n2r -> n2u;
+    n3 -> n3r;
+  }
+
+  subgraph cluster_formal {
+    label="Formal-localization route";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    f1 [label="RLC-0\n6 LeetCode 704 seeds\nCBMC feasibility", fillcolor="#ffffff"];
+    f1r [label="CLOSED\nno full-domain certification\nno freeze tag\nno seed executed", fillcolor="#f5c2c7", color="#842029"];
+    f1 -> f1r;
+  }
+
+  subgraph cluster_engineered {
+    label="Engineered route";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    e1 [label="Gate 1\nparen7_min_insertions\n128-input domain", fillcolor="#ffffff"];
+    e1r [label="CLOSED - CONSTRUCTION AUDIT FAILED\nno within-carrier high/low C contrast\n0 solvers; 0 model calls", fillcolor="#f5c2c7", color="#842029"];
+    e2 [label="Option B audit\n257 instances; 14 at k=5\n0 genuinely different\nmatched-mechanism pairs", fillcolor="#f8d7da", color="#842029"];
+    e1 -> e1r -> e2;
+  }
+
+  subgraph cluster_sim {
+    label="Simulation / math route";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    s1 [label="Three-world simulation\n2.5M cases per world", fillcolor="#ffffff"];
+    s1r [label="W1 FAILED wiring criterion\nC gain 1.961e-06\nCI [-1.242e-06, 7.581e-06]\nalternate partition flips negative", fillcolor="#f1aeb5", color="#842029"];
+    s2 [label="W2 UNIDENTIFIABLE\nC=1 everywhere; residual variance 0", fillcolor="#ffe5cc", color="#8a4b08"];
+    s3 [label="W3 NULL CHECK\noracle C-after-defects ~ 0", fillcolor="#e2e3e5", color="#41464b"];
+    s4 [label="Stratum contrasts\n973 strata; 756 with >=2 C levels\ndescriptive, no inference", fillcolor="#e2e3e5", color="#41464b"];
+    s1 -> s1r;
+    s1 -> s2;
+    s1 -> s3;
+    s1 -> s4;
+  }
+
+  subgraph cluster_h3 {
+    label="H3 natural-generation route";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    h1 [label="V1 run", fillcolor="#ffffff"];
+    h1r [label="INVALID_RUN\nextractor lost imports\nmodule loads became failures", fillcolor="#f1aeb5", color="#842029"];
+    h2 [label="V2-V7 harnesses", fillcolor="#ffffff"];
+    h2r [label="FROZEN - NEVER RUN", fillcolor="#e2e3e5", color="#41464b"];
+    h3 [label="V8 harness\nfrozen 2026-10-27", fillcolor="#ffffff"];
+    h3r [label="Post-freeze audit found\nevaluator + sampling defects\nno scientific result", fillcolor="#f1aeb5", color="#842029"];
+    h4 [label="V9 secure boundary", fillcolor="#ffffff"];
+    h4r [label="NOT FROZEN - BLOCKED\nisolation PARTIAL\nrendezvous ordering FAIL\nverdict layer missing", fillcolor="#e7d6ff", color="#59359a"];
+    h5 [label="Copilot / GLM screens", fillcolor="#ffffff"];
+    h5r [label="0 eligible bodies (Copilot)\n1 eligible body (GLM, k=9, C=4/9)\n0 supported cells", fillcolor="#ffe5cc", color="#8a4b08"];
+    h1 -> h1r;
+    h2 -> h2r;
+    h3 -> h3r;
+    h4 -> h4r;
+    h5 -> h5r;
+  }
+
+  subgraph cluster_lc518 {
+    label="LC518-150 constructed-population route";
+    fontsize=11; color="#adb5bd"; style="rounded,dashed";
+    l1 [label="Design v1.0 FROZEN\n30 parents x 5 versions = 150\n5 algorithm families", fillcolor="#d1e7dd", color="#0f5132"];
+    l2 [label="C9 bank generation\n2026-11-03", fillcolor="#d1e7dd", color="#0f5132"];
+    l2r [label="INFRASTRUCTURE VERIFIED\n144 records; 138 canonical; 0 overlap\n6/6 hashes; 138/138 oracle answers\n73/73 tests on CPython 3.13.5", fillcolor="#d1e7dd", color="#0f5132"];
+    l3 [label="Private mutation annex", fillcolor="#ffffff"];
+    l3r [label="MISSING\nblocks all 150 body construction", fillcolor="#e7d6ff", color="#59359a"];
+    l4 [label="Solver execution + E1/E2/E3", fillcolor="#ffffff"];
+    l4r [label="NOT STARTED\n0/150 bodies\nno execution protocol\nno E1/E2/E3 result", fillcolor="#e7d6ff", color="#59359a"];
+    l1 -> l2;
+    l2 -> l2r;
+    l1 -> l3 -> l3r;
+    l1 -> l4 -> l4r;
+  }
+
+  final [
+    label="CURRENT SCIENTIFIC STATE\nNo positive result. No refutation.\nNo design yet shown to identify the target contrast.",
+    fillcolor="#fff3cd", color="#664d03", penwidth=2
+  ];
+
+  root -> n1 [label="route 1"];
+  root -> f1 [label="route 2"];
+  root -> e1 [label="route 3"];
+  root -> s1 [label="route 4"];
+  root -> h1 [label="route 5"];
+  root -> l1 [label="route 6"];
+
+  n1r -> n2 [style=dashed, label="next attempt"];
+  n2u -> n3 [style=dashed, label="same degeneracy"];
+  n3r -> f1 [style=dashed, label="pivot"];
+  f1r -> e1 [style=dashed, label="pivot"];
+  e1r -> s1 [style=dashed, label="pivot to assumptions"];
+  s1r -> h1 [style=dashed, label="new natural route"];
+  h4r -> l1 [style=dashed, label="new task/population"];
+  l2r -> l4 [style=dashed, label="prerequisite met"];
+  l3r -> l4 [style=dashed, label="prerequisite missing"];
+
+  n1r -> final [style=dotted, color="#842029"];
+  n2u -> final [style=dotted, color="#842029"];
+  n3r -> final [style=dotted, color="#842029"];
+  f1r -> final [style=dotted, color="#842029"];
+  e2 -> final [style=dotted, color="#842029"];
+  s1r -> final [style=dotted, color="#842029"];
+  s2 -> final [style=dotted, color="#842029"];
+  s3 -> final [style=dotted, color="#842029"];
+  s4 -> final [style=dotted, color="#842029"];
+  h1r -> final [style=dotted, color="#842029"];
+  h2r -> final [style=dotted, color="#842029"];
+  h3r -> final [style=dotted, color="#842029"];
+  h4r -> final [style=dotted, color="#842029"];
+  h5r -> final [style=dotted, color="#842029"];
+  l4r -> final [style=dotted, color="#59359a"];
+}
