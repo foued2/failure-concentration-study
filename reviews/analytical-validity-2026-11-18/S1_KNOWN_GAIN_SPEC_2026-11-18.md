@@ -556,13 +556,13 @@ MCSE(\widehat{\mathrm{FPR}}_J)
 
 At the planned \(R_{\mathrm{valid},J}=2{,}000\), the MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each:
 
-| Null parent count \(J\) | Planned valid replications | MCSE at 5% FPR | MCSE at 6% FPR |
+| Null parent count \(J\) | Planned replications (valid if none unavailable) | MCSE at 5% FPR | MCSE at 6% FPR |
 |---:|---:|---:|---:|
 | 30 | 2,000 | 0.004873 | 0.005310 |
 | 60 | 2,000 | 0.004873 | 0.005310 |
 | 120 | 2,000 | 0.004873 | 0.005310 |
 
-The values are identical across \(J\) only because the planned replication count is identical; any unavailable replications change the denominator and therefore the MCSE. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
+The values are identical across \(J\) only because the planned replication count is identical. The 2,000 values are attempted replications, not a promise of 2,000 valid cases; any unavailable replications change \(R_{\mathrm{valid},J}\) and therefore the MCSE. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
 
 The relative bias rule has the following absolute equivalents. These values are shown for all \(\eta\) so that the scale is visible; only the \(J=120,\eta=0.12\) cell is the primary bias gate.
 
@@ -682,6 +682,7 @@ Please review this v0.5 document as a specification, not as a report of executed
 8. **Tolerances and Monte Carlo precision:** Are the provisional 80% recovery and 10% bias tolerances defensible as engineering choices? Are the displayed MCSE formulas, t-based Monte Carlo intervals and explicit pass/fail/inconclusive rules adequate? Does the absence of empirical parent-level variance mean these gates should remain provisional pending a separately authorized pilot? Are the false-positive-rate MCSE calculations and reference values adequate when explicitly reported separately for each J?
 9. **Full-vector comparator:** Is the equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) correctly limited to this generator, and is it still worth retaining as a generator identity rather than removing it?
 10. **Scope and B1 bridge:** Is the inference-transfer boundary in §9 sufficiently explicit? What exact known-truth calibration of the B1 v1.6 estimator and conditional-randomization procedure would be required before any B1 claim?
+11. **Positive inference:** Does the positive statement in §1 correctly and sufficiently describe exactly what a complete S1 pass licenses, without implying concentration is useful in real solvers or a general summary of a failure vector?
 11. **Matched-null assessment:** Please state in your own words your assessment of §6. Does it preserve the same diagnostic process, parent-effect distribution, and unresolved-outcome status as the positive world? Do you agree it is adequate as a minimum null only because both worlds set \(k_{\mathrm{unresolved}}=0\), while leaving unresolved-outcome handling untested? Please record your §6 assessment in your own review rather than relying on GPT's summary.
 12. **S3 distinction:** Is the proposed S3a oracle adjustment for observed \(H\) appropriate as a diagnostic first step? Is S3b, with an imperfectly observed common cause or best-available proxy, necessary before assessing feasible adjustment? Does either synthetic scenario support any empirical claim about real solvers?
 13. **§6 in your own words:** Do you agree that the matched null preserves the same diagnostic process and parent-effect distribution and is adequate only as a no-unresolved minimum null? Please state whether (k_{\mathrm{unresolved}}=0) in both worlds means that unresolved outcome handling remains untested, and specify any issue you still see in §6.
