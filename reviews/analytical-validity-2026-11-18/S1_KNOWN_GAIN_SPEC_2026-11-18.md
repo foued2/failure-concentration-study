@@ -554,9 +554,9 @@ MCSE(\widehat{\mathrm{FPR}}_J)
 {R_{\mathrm{valid},J}}}.
 \]
 
-At the planned \(R_{\mathrm{valid},J}=2{,}000\), the MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each:
+If all 2,000 attempted null replications are valid (so \(R_{\mathrm{valid},J}=2{,}000\)), the reference MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each:
 
-| Null parent count \(J\) | Planned replications (valid if none unavailable) | MCSE at 5% FPR | MCSE at 6% FPR |
+| Null parent count \(J\) | Planned attempted replications | Reference MCSE at 5% FPR | Reference MCSE at 6% FPR |
 |---:|---:|---:|---:|
 | 30 | 2,000 | 0.004873 | 0.005310 |
 | 60 | 2,000 | 0.004873 | 0.005310 |
@@ -684,7 +684,7 @@ Please review this v0.5 document as a specification, not as a report of executed
 10. **Scope and B1 bridge:** Is the inference-transfer boundary in §9 sufficiently explicit? What exact known-truth calibration of the B1 v1.6 estimator and conditional-randomization procedure would be required before any B1 claim?
 11. **Positive inference:** Does the positive statement in §1 correctly and sufficiently describe exactly what a complete S1 pass licenses, without implying concentration is useful in real solvers or a general summary of a failure vector?
 12. **Matched-null assessment:** Please state in your own words your assessment of §6. Does it preserve the same diagnostic process, parent-effect distribution, and unresolved-outcome status as the positive world? Do you agree it is adequate as a minimum null only because both worlds set \(k_{\mathrm{unresolved}}=0\), while leaving unresolved-outcome handling untested? Please record your §6 assessment in your own review rather than relying on GPT's summary.
-12. **S3 distinction:** Is the proposed S3a oracle adjustment for observed \(H\) appropriate as a diagnostic first step? Is S3b, with an imperfectly observed common cause or best-available proxy, necessary before assessing feasible adjustment? Does either synthetic scenario support any empirical claim about real solvers?
+13. **S3 distinction:** Is the proposed S3a oracle adjustment for observed \(H\) appropriate as a diagnostic first step? Is S3b, with an imperfectly observed common cause or best-available proxy, necessary before assessing feasible adjustment? Does either synthetic scenario support any empirical claim about real solvers?
 
 
 Please give section-specific objections, distinguish mathematical errors from design preferences, and state which issues are true blockers versus limitations that can be accepted for a narrow first-stage machinery check. Do not treat this request as a request for approval, a freeze decision or an execution GO.
