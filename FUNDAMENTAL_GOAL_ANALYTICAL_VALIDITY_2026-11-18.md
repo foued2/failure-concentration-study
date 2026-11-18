@@ -196,7 +196,7 @@ independently.
 
 ## 9. Immediate next actions, in order
 
-1. **Claude reviews the S1 specification** at `reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md`, with section-specific objections to the true outcome model, estimand, circularity, estimator, uncertainty procedure, and tolerances.
+1. **DeepSeek reviews the S1 specification in the web chat** at `reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md`, with section-specific objections to the true outcome model, estimand, circularity, estimator, uncertainty procedure, and tolerances.
 2. **GPT adjudicates the review** and revises the S1 specification. No implementation begins during this step.
 3. **Freeze the reviewed S1 specification and its matched-null companion only after review.** The proposed tolerances remain provisional until that review is resolved.
 4. **Specify the remaining S2–S7 scenarios** under the same review discipline. No simulation is run merely because a scenario has been written or frozen.
@@ -287,9 +287,9 @@ A separate S1 known-gain specification has been prepared at:
 
 reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md
 
-It is a mathematical design draft for Claude's independent review. It specifies a latent common-cause outcome model, derives its population log-loss gain independently of the fitted estimator, defines a candidate estimator and parent-cluster test procedure, and proposes calibration tolerances. It is **not accepted, frozen, or executable**.
+It is a mathematical design draft for DeepSeek's independent web-chat review. It specifies a latent common-cause outcome model, derives its population log-loss gain independently of the fitted estimator, defines a candidate estimator and parent-cluster test procedure, and proposes calibration tolerances. It is **not accepted, frozen, or executable**.
 
-Claude's sequence is adopted for this draft:
+DeepSeek's web-chat sequence is adopted for this draft:
 1. review the S1 mathematical specification;
 2. resolve circularity and estimator-target alignment;
 3. adjudicate the proposed bias, coverage, detection, and false-positive tolerances;

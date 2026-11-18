@@ -1,6 +1,6 @@
 # Analytical-validity review bundle — 2026-11-18
 
-This folder exists so that GPT and Claude can challenge the audits directly, at the source, without
+This folder exists so that GPT and the DeepSeek web-chat reviewer can challenge the audits directly, at the source, without
 going through a summary. Every file here was written on 2026-11-18 and is a **record audit**: it adds
 no hypothesis, authorizes nothing, and modifies no frozen document. The repository's frozen records
 (v0.1, v0.2, v0.3-P, Gate 1, three-world simulation, B1 v1.7, v0.21) are unchanged.
@@ -98,4 +98,11 @@ this index.
 
 ## S1 review state
 
-reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a new design-only draft. It is not frozen and does not authorize generator-code implementation or simulation. Claude's review is requested on the complete document, especially the outcome model, estimand/circularity, estimator alignment with B1, parent-level uncertainty, and proposed tolerances. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a new design-only draft. It is not frozen and does not authorize generator-code implementation or simulation. DeepSeek's web-chat review of v0.1 has been received. Version 0.2 addresses its section-specific objections and is returned for a second review, especially the binary-proxy limitation, independent gain derivation, full-vector equality proof, estimator transfer boundary, and provisional tolerances. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
+
+
+## Reviewer identity and handoff
+
+The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude is not the reviewer of S1 v0.2.
+
+The S1 review response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`. The revised specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.2. It remains a draft, not frozen and not executable.
