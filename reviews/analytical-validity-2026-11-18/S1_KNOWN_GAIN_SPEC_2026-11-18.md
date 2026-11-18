@@ -287,6 +287,7 @@ Each class contribution is the average of the two KL terms for that class; the f
 \[
 \boxed{\Delta^*_{\mathrm{panel}}(0.12)=0.01278646640215432\ \text{nats per held-out input}.}
 
+\]
 
 The values are directly reproducible from the displayed Bernoulli-KL formula. They are not empirical results, not a practical threshold \(\tau\), and not claims about real solvers. The grid is intended to expose sensitivity to signal strength; no result may be selected post hoc as the preferred S1 result.
 
@@ -370,8 +371,7 @@ h(p_{x_i,c}(\eta),\widehat q_1(x_i,c))
 \right].
 \]
 
-Because the fixed panel has 20 items in each difficulty class and S1 has no input-identity effect, this is equivalent to the class-weighted expression below. In the remainder of the document, \(\Delta_{\mathrm{fit}}\) is shorthand for this panel-conditional quantity:
-where
+The cross-entropy function and the generator-specific conditional probabilities are defined as follows:
 
 \[
 h(p,q)=-p\log q-(1-p)\log(1-q),
@@ -627,7 +627,7 @@ No S2-S7 scenario is frozen by this S1 document.
 
 ## 10. Questions submitted to DeepSeek
 
-Please review this v0.2 document as a specification, not as a report of executed work. Specific objections are requested with section references.
+Please review this v0.3 document as a specification, not as a report of executed work. Specific objections are requested with section references.
 
 1. **Outcome model:** Is the latent common-cause model in §3 a legitimate positive predictive benchmark, or does it fail to represent the scientific claim the project needs to test?
 2. **Circularity:** Does deriving \(\Delta^*\) from \(P(Y\mid X,C_D)\) after marginalizing \(H\) adequately separate the true outcome model from the estimator? Is the fitted-gain calculation in §5.3 independent enough?
@@ -667,14 +667,14 @@ This revision responds to the section-by-section S1 review supplied by DeepSeek 
 - The two-valued \(C_D\) support is explicitly identified as a binary-proxy calibration, not a general test of multi-valued concentration.
 - The parent-effect marginalization is shown line by line; \(\eta\) is identified as an analyst-selected DGP parameter, and a pre-run signal-strength grid with analytically derived gains is declared.
 - The equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) is proved from the ancillary randomization in this deliberately favourable construction and is not generalized.
-- The matched null is expanded. DeepSeek's first review described §6 as missing; the v0.1 source did contain §6. DeepSeek's second-round response explicitly accepts this correction. The presence dispute is closed; the substantive adequacy of the expanded matched-null specification remains open to review.
+- The matched null is expanded. The matched null is expanded. The review's description of §6 as missing is not adopted as a factual finding: §6 existed in v0.1, but its full unchanged hierarchy and null implications are now made explicit.
 - \(\Delta_{\mathrm{fit}}\) is elevated as the replication-specific known truth for the fitted pair; the bootstrap interval is explicitly conditional on the training fit and fixed input panel.
 - The one-sided 95% lower bound is explicitly the 5th bootstrap percentile.
 - Tolerance rationales, sensitivity cut-offs, the limitation of coverage assessment to \(J=120\), and the geometric rationale for the \(J\) grid are stated.
 - The correctly specified saturated estimator is acknowledged as favourable. A pass validates only this estimator and generator; it does not validate B1 v1.6.
 - The inference-transfer boundary and need for a separate B1 bridge calibration are explicit.
 
-**Not resolved by this revision:** the proposed tolerances still require independent review; no estimator-misspecification arm has been specified; absolute parent-level variance and interval widths remain unknown pending a permitted calibration; and S1 remains a deliberately favourable binary-proxy, fixed-panel, synthetic benchmark. The second-round DeepSeek assessment supplied so far is provisional because the reviewer could not access the v0.2 GitHub text.
+**Not resolved by this revision:** the proposed tolerance values still require DeepSeek's review; no estimator-misspecification arm has been specified; the absolute parent-level variance and interval widths remain unknown pending a permitted calibration; and S1 remains a binary-proxy, fixed-panel, synthetic benchmark.
 
 No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
 
