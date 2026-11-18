@@ -207,3 +207,46 @@ The first-round report's description that §6 was missing was corrected because 
 ### 9.3 Current disposition
 
 S1 v0.3 is a revised design draft returned for direct, section-specific DeepSeek review. The available second-round review is not direct verification because the reviewer could not access the file. No freeze, implementation, simulation, model-fitting, bank-reuse, or execution GO follows from this round. The next review must be based on the actual v0.3 text supplied directly in the DeepSeek chat, not on a GitHub link it cannot fetch.
+
+
+---
+
+## 10. Round 5 — DeepSeek's direct review of S1 v0.3 and Claude's handoff critique, 2026-11-18
+
+**Review materials:** direct, section-specific DeepSeek review of the complete v0.3 text (owner-supplied file), plus Claude's critique of the preceding handoff.
+
+**Reviewer identity:** DeepSeek is the active independent S1 reviewer. Claude supplied an additional critique of scope and handoff logic; Claude did not review the v0.3 mathematics directly.
+
+### 10.1 DeepSeek's direct assessment
+
+DeepSeek's central verdict was: **"Defensible as a narrow first-stage calibration, with one condition."** It found no mathematical or statistical error in the construction, fixed-panel estimand, KL arithmetic, latent common-cause model, fitted-pair truth, conditional parent-cluster bootstrap target, or generator-specific full-vector equality.
+
+| Issue | DeepSeek's direct assessment | Disposition in v0.4 |
+|---|---|---|
+| Binary \(Q\) and \(C_D\) | The bijection is algebraically consistent; acceptable for a narrow first stage. It is a blocker only if used to claim that the max statistic is a generally useful summary or to validate B1. | **Accepted.** The scope now says a pass is compatible with \(C_D\) being useless as a general summary statistic. |
+| Fixed-panel estimand and KL values | Mathematically correct and reproducible. DeepSeek suggested noting monotonicity over the \(\eta\) grid. | **Accepted.** A derivative argument is added to §2.2.1. |
+| Latent common-cause model | Correct for a predictive-proxy benchmark; not a general concentration benchmark. | **Accepted.** §1 now says S1 has no direct real-solver inference. |
+| Fitted-pair truth and bootstrap | Correctly defined. The conditional/marginal distinction is properly handled. | **Accepted.** Gate-specific Monte Carlo precision is made explicit. |
+| Monte Carlo precision for coverage | The 95% binomial standard error at 2,000 replications is approximately 0.0049. | **Already specified.** §7.3 reports 0.004873 near 95% coverage. |
+| 80% recovery tolerance | An engineering choice, not a statistical necessity. Its scientific decision rationale is not established. | **Accepted as provisional.** §7 says this is an engineering tolerance, not a decision threshold. |
+| 10% bias tolerance | The absolute margin is stated, but its detectability is unknown without parent-level variance. | **Accepted as provisional.** §7.3 now states the MCSE and confidence interval for the mean recovery ratio and mean bias; results can be inconclusive. No pre-run variance is invented. |
+| Full-vector equality | Correct for this generator; effectively vacuous for the scientific question because other vector details are ancillary by construction. Retaining it aids transparency. | **Accepted.** Retained only as a generator identity, not a general or empirical result. |
+| Matched null | DeepSeek's direct wording: **"The matched null is adequate as a minimum false-positive companion."** It preserves the diagnostic process, parent clustering and parent-effect distribution. Both positive and null worlds have \(k_{\mathrm{unresolved}}=0\). | **Accepted with an explicit boundary.** §6 now says it is matched only in a no-unresolved setting and does not test unresolved-outcome handling. |
+| S3 | DeepSeek's direct wording: **"S3 must demonstrate the incremental information beyond the common cause."** | **Accepted.** §8 keeps the oracle \(H\)-adjustment distinct from the \(\eta=0\) matched null and flags imperfect-proxy adjustment as a separate possible scenario. |
+| B1 v1.6 | A separate known-truth calibration is required, including a non-binary/multi-valued generator, the exact B1 estimator and conditional-randomization procedure, matching null, matching uncertainty target, and inference boundary. | **Accepted.** No S1-to-B1 inference transfer is allowed. This is a hard blocker for B1 claims, not for the limited S1 machinery check. |
+
+### 10.2 Claude's additional challenge
+
+Claude's key correction is that the handoff should not imply S1 can answer an empirical question about real solvers. This is accepted. S1 can answer only whether this particular estimator and test-parent uncertainty procedure recover known information under its synthetic setup.
+
+Claude also asked that the project name a decision changed by S1. This is now explicit in §1: a complete pass permits carrying the machinery forward to further synthetic validation; a failure requires revising or rejecting the estimator/uncertainty combination; an inconclusive result does not permit progression. None of those outcomes changes the evidence about real-solver predictive value. If the project will not use this methodological proceed/revise/stop decision, S1 should not be run.
+
+### 10.3 Remaining cautions and disposition
+
+1. The 80% recovery and 10% bias tolerances remain provisional engineering choices. Their achieved Monte Carlo precision is unknown until replication-level variances are measured. Any pilot-based revision requires separate authorization and a distinct confirmatory run; pilot replications are not pooled.
+2. The matched null has \(k_{\mathrm{unresolved}}=0\) in both worlds. It does not validate unresolved-outcome handling; S6 must do that.
+3. The proposed S3 observes the true common cause \(H\), so it is an oracle adjustment. A design using only imperfect proxies for defect identity may require a further scenario.
+4. A pass in S1 remains a machinery result for this favourable binary-proxy generator, not evidence that concentration is a useful general summary and not a result about real solvers.
+5. B1 v1.6 remains unvalidated until its exact estimator and conditional-randomization procedure are tested against a matching known-truth generator.
+
+**Current version:** S1 v0.4, recorded in the same branch. It is awaiting direct DeepSeek review of the v0.4 text. The v0.3 review does not approve or freeze v0.4. No freeze, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO follows from this round.
