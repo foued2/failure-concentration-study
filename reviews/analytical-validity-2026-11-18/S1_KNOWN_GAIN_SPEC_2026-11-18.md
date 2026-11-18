@@ -273,6 +273,7 @@ D_{\mathrm B}(p+d_\eta\|p)
 D_{\mathrm B}(p-d_\eta\|p)
 \right].
 \]
+Because the panel contains exactly 20 inputs at each of the three values of \(X\), this equal-class expression is exactly the fixed-panel estimand \(\Delta^*_{\mathrm{panel}}(\eta)\) defined in §2.2.1.
 
 The per-class arithmetic for every predeclared \(\eta\) is:
 
@@ -666,7 +667,7 @@ This revision responds to the section-by-section S1 review supplied by DeepSeek 
 - The two-valued \(C_D\) support is explicitly identified as a binary-proxy calibration, not a general test of multi-valued concentration.
 - The parent-effect marginalization is shown line by line; \(\eta\) is identified as an analyst-selected DGP parameter, and a pre-run signal-strength grid with analytically derived gains is declared.
 - The equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) is proved from the ancillary randomization in this deliberately favourable construction and is not generalized.
-- The matched null is expanded. The matched null is expanded. The review's description of §6 as missing is not adopted as a factual finding: §6 existed in v0.1, but its full unchanged hierarchy and null implications are now made explicit.
+- The matched null is expanded. The review's description of §6 as missing is not adopted as a factual finding: §6 existed in v0.1, but its full unchanged hierarchy and null implications are now made explicit.
 - \(\Delta_{\mathrm{fit}}\) is elevated as the replication-specific known truth for the fitted pair; the bootstrap interval is explicitly conditional on the training fit and fixed input panel.
 - The one-sided 95% lower bound is explicitly the 5th bootstrap percentile.
 - Tolerance rationales, sensitivity cut-offs, the limitation of coverage assessment to \(J=120\), and the geometric rationale for the \(J\) grid are stated.
