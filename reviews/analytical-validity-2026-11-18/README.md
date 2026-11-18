@@ -15,7 +15,7 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18.md` | First-pass 22-claim ledger. Superseded by `-v2`; kept for the correction trail. |
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
-| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.4 draft awaiting direct DeepSeek review. Defines a favourable binary-proxy machinery check, its limited decision consequence, provisional tolerances with MC precision rules, and explicit limits on real-solver and B1 inference. No code or runs. |
+| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.5 draft awaiting direct DeepSeek review. Defines the concrete estimator-selection gate, explicit MCSE and per-J null precision, S3a/S3b distinction, and S6's not-yet-specified status. No code or runs. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -98,11 +98,11 @@ this index.
 
 ## S1 review state
 
-reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a design-only draft, now at v0.4. DeepSeek directly reviewed v0.3 from the supplied text and found no mathematical or statistical error in the declared narrow target. Version 0.4 strengthens the real-solver scope boundary, defines the limited methodological decision consequences, makes the two engineering tolerances explicitly provisional with gate-specific Monte Carlo precision rules, and clarifies the no-unresolved scope of the matched null. It remains unaccepted, unfrozen, and non-executable. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a design-only draft, now at v0.5. DeepSeek directly reviewed v0.4 and retained its narrow-machinery-check recommendation subject to a concrete downstream decision, a positive inference statement, and explicit MC precision reporting. Version 0.5 names the estimator-selection decision for S2-S7, displays the precision formulas and per-J false-positive MCSE, splits S3 into oracle and imperfect-proxy stages, and marks S6 as named but not yet specified. It remains unaccepted, unfrozen, and non-executable. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
 
 
 ## Reviewer identity and handoff
 
-The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied an additional critique but is not the S1 reviewer. DeepSeek's direct v0.3 assessment is recorded in §10 of the reviewer ledger; v0.4 is the response awaiting the next direct review.
+The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied additional critiques but is not the S1 reviewer. DeepSeek's direct v0.3 review is in §10, and its direct v0.4 review is in §11 of the reviewer ledger. Version 0.5 is awaiting DeepSeek's next direct review.
 
-The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional summary-based second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`, and DeepSeek's direct v0.3 review is recorded in §10. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.4. It remains a draft, not frozen and not executable.
+The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional summary-based second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`, and DeepSeek's direct v0.3 review is recorded in §10. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.5. It remains a draft, not frozen and not executable.
