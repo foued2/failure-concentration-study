@@ -15,7 +15,7 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18.md` | First-pass 22-claim ledger. Superseded by `-v2`; kept for the correction trail. |
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
-| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 draft for Claude review. Gives a latent common-cause outcome model, derives the true log-loss gain independently, and proposes an estimator, uncertainty procedure, and calibration tolerances. No code or runs. |
+| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.3 draft for DeepSeek web-chat review. Defines a favourable binary-proxy, fixed-panel calibration; derives its known gain; specifies the conditional parent-bootstrap target, Monte Carlo precision, and inference-transfer limits. No code or runs. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -98,11 +98,11 @@ this index.
 
 ## S1 review state
 
-reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a new design-only draft. It is not frozen and does not authorize generator-code implementation or simulation. DeepSeek's web-chat review of v0.1 has been received. Version 0.2 addresses its section-specific objections and is returned for a second review, especially the binary-proxy limitation, independent gain derivation, full-vector equality proof, estimator transfer boundary, and provisional tolerances. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a design-only draft, now at v0.3. DeepSeek's first-round review of v0.1 is recorded. Its second-round feedback on v0.2 was explicitly **provisional** because the reviewer could not access the GitHub text. Version 0.3 sharpens the binary-proxy disclosure, formal panel estimand, per-class gain arithmetic, conditional-coverage target, tolerance matrix, and Monte Carlo precision. It remains unaccepted, unfrozen, and non-executable. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
 
 
 ## Reviewer identity and handoff
 
-The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude is not the reviewer of S1 v0.2.
+The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied a critique but is not the reviewer of S1 v0.3.
 
-The S1 review response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`. The revised specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.2. It remains a draft, not frozen and not executable.
+The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional second-round adjudication is in \`DEEPSEEK_S1_SECOND_ROUND_ADJUDICATION_2026-11-18.md\`. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.3. It remains a draft, not frozen and not executable.
