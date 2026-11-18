@@ -98,11 +98,11 @@ this index.
 
 ## S1 review state
 
-reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a design-only draft, now at v0.3. DeepSeek's first-round review of v0.1 is recorded. Its second-round feedback on v0.2 was explicitly **provisional** because the reviewer could not access the GitHub text. Version 0.3 sharpens the binary-proxy disclosure, formal panel estimand, per-class gain arithmetic, conditional-coverage target, tolerance matrix, and Monte Carlo precision. It remains unaccepted, unfrozen, and non-executable. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a design-only draft, now at v0.4. DeepSeek directly reviewed v0.3 from the supplied text and found no mathematical or statistical error in the declared narrow target. Version 0.4 strengthens the real-solver scope boundary, defines the limited methodological decision consequences, makes the two engineering tolerances explicitly provisional with gate-specific Monte Carlo precision rules, and clarifies the no-unresolved scope of the matched null. It remains unaccepted, unfrozen, and non-executable. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.
 
 
 ## Reviewer identity and handoff
 
-The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied a critique but is not the reviewer of S1 v0.3.
+The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied an additional critique but is not the S1 reviewer. DeepSeek's direct v0.3 assessment is recorded in §10 of the reviewer ledger; v0.4 is the response awaiting the next direct review.
 
-The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.3. It remains a draft, not frozen and not executable.
+The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional summary-based second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`, and DeepSeek's direct v0.3 review is recorded in §10. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.4. It remains a draft, not frozen and not executable.
