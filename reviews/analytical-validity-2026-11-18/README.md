@@ -15,7 +15,7 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18.md` | First-pass 22-claim ledger. Superseded by `-v2`; kept for the correction trail. |
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
-| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.3 draft for DeepSeek web-chat review. Defines a favourable binary-proxy, fixed-panel calibration; derives its known gain; specifies the conditional parent-bootstrap target, Monte Carlo precision, and inference-transfer limits. No code or runs. |
+| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.4 draft awaiting direct DeepSeek review. Defines a favourable binary-proxy machinery check, its limited decision consequence, provisional tolerances with MC precision rules, and explicit limits on real-solver and B1 inference. No code or runs. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
