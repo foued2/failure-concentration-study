@@ -355,6 +355,7 @@ Use a **parent-cluster bootstrap of the independent test sample**, conditional o
 3. Recalculate the equal-parent-weighted mean loss difference.
 4. Repeat for 1,999 bootstrap draws.
 5. Use the 2.5th and 97.5th percentiles for the two-sided 95% interval.
+6. For the one-sided 95% lower bound used in the positive-detection and false-positive criteria, use the 5th percentile of the same bootstrap distribution. Do not reuse the two-sided 2.5th-percentile endpoint for a one-sided 5% test.
 
 No row-level bootstrap is allowed. The training prediction functions remain fixed within this conditional interval because the interval targets \(\Delta_{\mathrm{fit}}\). Variation in training fits is assessed across the independent simulation replications. The interval must not be described as including training-sample uncertainty.
 
