@@ -30,7 +30,11 @@ not cancelled; it is sequenced after the instrument is shown to work.
 
 ## 2. What changed
 
-The three-world simulation was the programme's positive control, and it failed.
+The three-world simulation was specified as a **wiring check**, and it failed. It was not a calibrated
+positive control: the design fixes defect-reach parameters but defines no true value of `Δ_pred`, so a
+small result cannot establish that the method misses a known effect. Both reviewers have since
+withdrawn the "positive control" label (see the reviewer-response record in
+`reviews/analytical-validity-2026-11-18/`).
 
 `engineered-study/math/results/three_world/11_THREE_WORLD_SIM_RESULT.md`:
 
@@ -52,10 +56,12 @@ Two qualifications must travel with this, and both are in the source:
 
 1. The report's own scope line: "Synthetic-data simulation only. Results show implications of the
    declared assumptions; they are not evidence about real solvers."
-2. GPT's caveat (Appendix B §1): before calling W1 a failed positive control, one must verify that the
+2. GPT's caveat (Appendix B §1): before treating W1 as a failed positive control, one must verify that the
    injected effect was injected into **the same estimand the analysis was built to recover**. A
    simulation can contain a parameter called a concentration effect without creating the corresponding
-   observable predictive gain.
+   observable predictive gain. **This verification has since been done and it fails:** the design fixes
+   defect-reach parameters (`d_h = 0.8`, `e_h = 0.35`) and defines no true `Δ_pred` anywhere, so W1 is a
+   wiring check whose positive-control status is unproven.
 
 Subject to that verification, the implication is the one GPT states: "We have not demonstrated that
 our analysis can detect the phenomenon we intend to investigate."
@@ -71,7 +77,7 @@ These must not be conflated, and the order is a dependency order, not a preferen
 | **1. Measurement** | The partition captures a reproducible failure pattern; `C` is not merely an artefact of the chosen strata or of the noisy maximum | **Unresolved** | no record; formulation note §7–§8 |
 | **2. Mechanism** | Dominant diagnostic failures recur on corresponding held-out inputs | **Not demonstrated** | proposed only (§5 below) |
 | **3. Identification** | `C` contributes beyond competing explanations (family, defect identity, realization setting, `F`) | **Not demonstrated** | Gate 1 closed; v0.21 `a(v)` confound admitted |
-| **4. Statistical detection** | The analysis recovers prespecified effects with adequate power and controlled false positives | **W1 failed its positive-control check** | `11_THREE_WORLD_SIM_RESULT.md` |
+| **4. Statistical detection** | The analysis recovers prespecified effects with adequate power and controlled false positives | **W1 failed its wiring check; its status as a positive control is unproven** | `11_THREE_WORLD_SIM_RESULT.md` |
 
 The sequence follows: **repair and independently validate the simulation (gate 4), while fixing the
 measurement definition it tests (gate 1).** Only then is a defensible operating population and sample
@@ -89,7 +95,7 @@ record says something different).
 
 | # | Issue | Status | What the record actually shows |
 |---|---|---|---|
-| 1 | The simulation that was meant to test the design failed: W1 had the effect built in, C gain ≈2×10⁻⁶, interval includes zero, alternate partition flips the sign | **Verified** | Exact values in §2. Sign flip is of the **point estimate** (+1.96×10⁻⁶ → −1×10⁻⁶); both intervals include zero, so it is sign instability, not a significant reversal. GPT's caveat about injection-into-the-same-estimand remains open. |
+| 1 | The simulation that was meant to test the design failed: W1 had the effect built in, C gain ≈2×10⁻⁶, interval includes zero, alternate partition flips the sign | **Numbers verified; "effect built in" not supported** | Exact values in §2. Sign flip is of the **point estimate** (+1.96×10⁻⁶ → −1×10⁻⁶); both intervals include zero, so it is sign instability, not a significant reversal. The design injects defect reach, not a `Δ_pred` truth, so W1 is a wiring check, not a positive control. |
 | 2 | `C` depends on the partition; the W1 sign flip shows partition changes can reverse the result; freezing the partition is necessary but not sufficient | **Verified** | `C = max_j f_j / k` exists only after the strata are fixed; W1's partition arm is the empirical instance. Formulation note §8 requires the feasible-support gate on the diagnostic footprints before held-out scores. |
 | 3 | Solver-level variables have solver-level sample sizes; the solver random effect can absorb `C`; a 100-solver design has little power for a 0.01–0.02 nat effect | **Verified structurally; one clause not supported** | The hierarchy is correct and the record already names the fix: worklog C4 accepts "crossed RE (generation group / solver / input group / template) primary, grouped bootstrap fallback". **But** "the earlier power work found that solver variation dominates" is not in the record. The recorded assumption is ICC ρ = 0.05, at which 80 % power for β = 0.06 needs ≈20 effective bodies per cell (160 per condition); at 12/cell power is 0.512. That is a clustering cost, not dominance. |
 | 4 | Small `k` makes `C` nearly degenerate: `k=1` ⇒ `C=1`; `k=2` ⇒ `{0.5, 1}`; the max of noisy counts is biased upward | **Verified (discreteness) / Argument (bias)** | Formulation note §8: "`C` has no variation at `k = 1` and at every `k` from 25 through 30; at `k = 2`, two levels are possible." The upward bias of a maximum is a property of the estimator, not a repository measurement; its size depends on probe generation and has not been quantified here. |

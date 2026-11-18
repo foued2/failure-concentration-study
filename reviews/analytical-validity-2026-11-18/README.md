@@ -56,8 +56,9 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
 
 1. **Is `F`-vs-`C` a fair comparison?** The repo's condition 6 mandates it; the equal-score arm fails.
    A reviewer who thinks the domain arm is the wrong target has a real argument.
-2. **Is W1 a failed positive control or a failed wiring check?** The design fixes defect reach, not a
-   `Δ_pred` truth. If no mapping exists, "the effect was built in" is an interpretation.
+2. **W1 is a wiring check, not a positive control.** The design fixes defect reach, not a `Δ_pred`
+   truth, so "the effect was built in" is an interpretation the design does not support. The open
+   question is the opposite one: whether any *future* S1 scenario can inject a known `Δ_pred` at all.
 3. **Is the parent (30) or the variant (150) the right `J`?** M1-si is within-parent, which removes the
    parent effect but leaves ≤1 df per parent and confounds `C_D` with the mutation.
 4. **Does conditioning on `k_unresolved` help or hurt?** Control vs collider depends on an unstated DAG.
@@ -65,6 +66,19 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
    that claims to separate them must say how family-difficulty is held fixed.
 6. **Does the external literature change any verdict?** The DOI list in `claude-keys-verification` §13
    is the intended attack surface. Two references were deliberately omitted rather than guessed.
+7. **Does domain weighting manufacture the `F` advantage?** Claude's hypothesis: `S_D` rewards cases
+   whose failures sit in large families, so the domain arm favours the dominance pattern by
+   construction. The design's evaluation sizes are `N = (9, 9, 23, 23, 31, 3)`, while diagnostic
+   families are equal at five probes each — so the two arms differ by size weighting, not by
+   dominance weighting as such. The models are already family-adjusted. **Test:** recompute `S_D`
+   with equalised `N_j` from `three_world/per_trial.json` (local) and see whether the `F` margin
+   shrinks. Not yet run.
+8. **Does the solver-unit problem apply to W1?** No — W1 cases are independent Bernoulli draws
+   conditional on defect reach, and the reported interval is a 500-trial interval, not an
+   input-level confidence interval. The design says it "does not preserve input-level dependence".
+   So W1 cannot be faulted for missing a solver random effect, and it equally cannot speak to the
+   clustered world. The solver-unit problem is decisive for the *real* design, where the unit is the
+   parent (30), not for W1.
 
 ## What is not here
 

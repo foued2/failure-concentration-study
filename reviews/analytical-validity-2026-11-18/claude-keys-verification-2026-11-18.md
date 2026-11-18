@@ -21,7 +21,7 @@ Status vocabulary: **On record** = the repo already contains this, with a citati
 
 | # | Claude's key | Repo status | Literature geometry | Verdict |
 |---|---|---|---|---|
-| 1 | W1 was a failed positive control | On record since 2026-11-01 | Simulation-study methodology | **Partly** — the failure is real and was already dispositive; "positive control" overstates what W1 specified |
+| 1 | W1 was a failed positive control | On record since 2026-11-01 | Simulation-study methodology | **Partly** — the failure is real and was already dispositive; "positive control" is not established |
 | 2 | `C` depends on the partition; W1 sign flip proves it | On record | Partition-testing theory + MAUP + multiverse | **Verified** — the most solid key |
 | 3 | Effective sample size is the number of solvers; solver variation dominates | Hierarchy on record; dominance **contradicted** | Multilevel / design effect | **Direction right, key premise false, case understated** |
 | 4 | Small `k` makes `C` degenerate; "most of the eligible range" barely varies | Discreteness on record; range claim **contradicted** | Hill numbers / Berger–Parker | **Partly** — arithmetic right, scope claim false, bias claim needs a qualifier |
@@ -54,6 +54,11 @@ diagnosis; it is that the work continued without a closure record.
 ---
 
 ## 1. Key 1 — "W1 was a failed positive control"
+
+**Status as of this round:** W1 is a **wiring check**, and its status as a positive control is
+**unproven**. The design fixes defect-reach parameters and defines no true value of `Δ_pred`, so the
+small result cannot be read as "the method missed a known effect". Both reviewers have withdrawn the
+"positive control" label; that withdrawal is recorded in `REVIEWER_RESPONSE_2026-11-18.md`.
 
 **What Claude says.** The three-world simulation (500 trials × 5,000 cases) built a concentration
 effect into world 1; the `C` gain was ≈2×10⁻⁶, the interval included zero, and an alternate partition
@@ -102,8 +107,9 @@ positive control (Morris et al. 2019, `10.1002/sim.8086`). For inference algorit
 known truth, simulation-based calibration (Talts et al. 2018, arXiv:1804.06788) is the standard
 template; the three-world design lacks its central ingredient, a known posterior/truth.
 
-**Verdict:** partly. The evidence is exact and independently reproduced; the label overstates the
-specification; the conclusion is right and was already recorded.
+**Verdict:** partly. The evidence is exact and independently reproduced; "positive control" is not
+established — W1 is a wiring check; the practical conclusion is right and was already recorded on
+2026-11-01.
 
 ---
 
