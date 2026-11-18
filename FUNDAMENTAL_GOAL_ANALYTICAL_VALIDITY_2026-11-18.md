@@ -298,3 +298,21 @@ DeepSeek's web-chat sequence is adopted for this draft:
 No generator code has been written. No S1 or S2 simulation has been run. No model has been fitted. Writing generator code is implementation and is outside the current design-only scope.
 
 The calibration values of \(J\) in the S1 draft are simulation dimensions for measuring estimator behavior, not an operating parent-count decision. The required real-study parent count remains undecided and must not be inferred from this draft.
+
+
+## 13. Design-only state update — 2026-11-18, round 4
+
+S1 has been revised to v0.3 at \`reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md\`.
+
+The revision:
+- makes the target an explicit average over the 60 fixed panel positions and indexes it by \(\eta\);
+- tabulates per-difficulty KL contributions for all three signal strengths;
+- states that \(C_D\) is a one-to-one recoding of the binary signal \(Q\), so S1 is a favourable proxy-recovery calibration rather than evidence that concentration is uniquely informative;
+- retains the full-vector information equality only as a generator-specific identity;
+- defines average conditional parent-bootstrap coverage across training fits;
+- specifies the \((J,\eta)\) reporting matrix, the single primary positive-world gate, absolute bias equivalents, and Monte Carlo standard-error reporting;
+- states the required S3 contrast between the unadjusted proxy association and the incremental information remaining after \(H\) is observed.
+
+The supplied DeepSeek second-round assessment is provisional: DeepSeek could not fetch the GitHub v0.2 text and did not verify the specification directly. It is not a freeze approval. DeepSeek has explicitly accepted the factual correction that §6 was present in v0.1; the remaining question concerns the adequacy of the expanded matched-null specification.
+
+The active reviewer remains DeepSeek in the web chat. The next review must be based on the actual v0.3 text supplied directly to that chat. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
