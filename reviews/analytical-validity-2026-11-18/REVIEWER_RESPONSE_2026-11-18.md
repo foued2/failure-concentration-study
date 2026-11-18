@@ -169,4 +169,41 @@ variants are nested within parents. The MDE arithmetic in `claude-keys-verificat
 4. Is the conditional parent-cluster bootstrap adequate for \(\Delta_{\mathrm{fit}}\), or is a different uncertainty procedure required?
 5. Is the proposed separation between this marginal calibration and a future exact-B1 bridge the correct sequence?
 
-The full reviewer report's observation that §6 was missing is respectfully challenged: the section was present in the v0.1 source. The v0.2 expansion is supplied to remove any ambiguity about the null construction.
+The first-round report's description that §6 was missing was corrected because §6 was present in the v0.1 source. That was recorded as a factual disagreement at the time. In the supplied second-round response, DeepSeek explicitly accepts the correction. The presence dispute is therefore closed; the remaining review question is whether the expanded v0.2/v0.3 null specification is substantively adequate.
+
+
+---
+
+## 9. Round 4 — independent critique and provisional DeepSeek second-round review, 2026-11-18
+
+**Review materials received:** an owner-supplied combined note containing Claude's critique of the v0.2 handoff and DeepSeek's second-round response.
+
+**Reviewer identity:** Claude is not the S1 reviewer. The active independent reviewer remains DeepSeek in the web chat. Claude's points below are treated as an additional challenge, not as a review approval or a replacement for DeepSeek.
+
+**DeepSeek's evidentiary limit:** DeepSeek stated that it could not fetch the GitHub links in its chat session. Its v0.2 assessment is therefore explicitly provisional and based on the handoff summary, not a direct inspection of the specification, equations, or section text. It is not a freeze approval.
+
+### 9.1 Adjudication
+
+| Point | Raised by | Adjudication | v0.3 treatment |
+|---|---|---|---|
+| \(C_D\) is a one-to-one recoding of \(Q\); the binary proxy is the actual signal available to the estimator | Claude; consistent with DeepSeek's binary-proxy concern | **Accepted.** This is a favourable proxy-recovery benchmark, not a test that concentration is uniquely informative or that a general maximum statistic is sufficient. | The purpose, §3.2, §4.1, and §9 now state the bijection and its inference limit explicitly. |
+| \(I(Y;F\mid X)=I(Y;C_D\mid X)\) is built into the construction | Claude | **Accepted as a limitation, not a mathematical error.** The proof is retained only as a property of this generator. It cannot support a general claim that the full failure vector adds no information. | §4.1 now calls it a generator identity and says the design cannot support an empirical or general compression claim. |
+| Whether §6 was missing in v0.1 | DeepSeek's first-round review; correction raised by GPT | **Closed factual issue.** DeepSeek's second-round response says it accepts the correction that §6 was present in v0.1. | The v0.2 history is preserved; the current record states that the presence dispute is closed. The adequacy of the expanded null remains reviewable. |
+| The panel-conditional estimand needs a formal fixed-panel expression and explicit \(\eta\) dependence | DeepSeek | **Accepted.** | §2.2.1 averages explicitly over the 60 fixed panel positions; the gain is indexed by \(\eta\). |
+| Entropy/KL arithmetic should be independently checkable for every difficulty class and \(\eta\) | DeepSeek | **Accepted.** | §4 gives the class-specific average KL contributions across all three predeclared signal strengths. |
+| The coverage target must distinguish average conditional coverage from marginal coverage | DeepSeek | **Accepted.** | §5.5 defines coverage conditional on each training fit and then averaged over training fits. It does not claim coverage of \(\Delta^*\). |
+| Tolerances need an explicit \((J,\eta)\) decision structure, absolute bias units, and Monte Carlo precision | DeepSeek | **Accepted with a declared primary-only gate.** | §7 marks \(J=120,\eta=0.12\) as the sole positive-world gate; all other positive cells are report-only; the null false-positive gate applies at all three \(J\) values. Absolute bias equivalents and Monte Carlo standard errors are specified. |
+| Ask whether the binary-proxy advantage is acceptable before asking for approval | Claude | **Accepted.** | §10 asks first whether this deliberately favourable proxy-recovery calibration is useful or should be changed. It explicitly requests objections, not approval. |
+| A separate confounding control must distinguish an unadjusted proxy association from information remaining after observing the common cause | Claude; also relevant to DeepSeek's proxy/mechanism question | **Accepted as the required S3 design property.** | §8 says S3 must retain the unadjusted association, observe \(H\), and compare \(X,H\) with \(X,H,C_D\); it is not replaced by the \(\eta=0\) matched null. |
+
+### 9.2 What remains unresolved
+
+1. Whether the deliberately favourable binary-proxy calibration is an acceptable first-stage test for the project, or should be redesigned before any implementation.
+2. Whether the single primary positive-world gate at \(J=120,\eta=0.12\) and the proposed pass bands are defensible.
+3. Whether the test-parent cluster bootstrap has adequate finite-cluster coverage at the primary point.
+4. Whether the marginal S1 estimator is a useful preliminary calibration before a separate exact-B1 v1.6 bridge.
+5. Whether a misspecification arm should be added to S1 or explicitly specified as a separate later calibration.
+
+### 9.3 Current disposition
+
+S1 v0.3 is a revised design draft returned for direct, section-specific DeepSeek review. The available second-round review is not direct verification because the reviewer could not access the file. No freeze, implementation, simulation, model-fitting, bank-reuse, or execution GO follows from this round. The next review must be based on the actual v0.3 text supplied directly in the DeepSeek chat, not on a GitHub link it cannot fetch.
