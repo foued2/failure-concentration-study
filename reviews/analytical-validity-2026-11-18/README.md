@@ -15,6 +15,7 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18.md` | First-pass 22-claim ledger. Superseded by `-v2`; kept for the correction trail. |
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
+| `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 draft for Claude review. Gives a latent common-cause outcome model, derives the true log-loss gain independently, and proposes an estimator, uncertainty procedure, and calibration tolerances. No code or runs. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -93,3 +94,8 @@ Nothing in this folder is a scientific finding. Every "not established" in the b
 about what the existing designs and records show, not a claim that concentration has no predictive
 value. Where a claim is inference rather than record, it is labelled as such in the body, not only in
 this index.
+
+
+## S1 review state
+
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a new design-only draft. It is not frozen and does not authorize generator-code implementation or simulation. Claude's review is requested on the complete document, especially the outcome model, estimand/circularity, estimator alignment with B1, parent-level uncertainty, and proposed tolerances. The \(J\) grid is a calibration dimension only; it does not select the LC518 operating parent count.

@@ -117,3 +117,19 @@ variants are nested within parents. The MDE arithmetic in `claude-keys-verificat
 | Decide whether to open a PR | owner | publication is not adoption |
 | Verify whether any S1 scenario can inject a known `Δ_pred` | design | requires a mapping from reach to estimand |
 | Confirmatory vs exploratory route | owner | recorded as "OWNER DECISION OPEN" |
+
+
+---
+
+## 7. Round 3 — Claude's S1 sequence, 2026-11-18
+
+| Point | Claude's instruction | Disposition |
+|---|---|---|
+| A | The S1 document is not yet published and must not be listed as an achievement | **Accepted.** The S1 document is now added as a clearly labelled draft for review; no claim of prior publication is made. |
+| B | Specify the true outcome model before the estimator; calculate the gain from the generator, not from the estimator | **Implemented in draft.** The outcome model is driven by latent state \(H\), parent effect \(U\), and input difficulty \(X\). \(C_D\) is not in the outcome equation. The population gain is derived by marginalizing the declared generator. A separate exact conditional risk calculation is specified for each fitted training pair. |
+| C | Explicitly test and explain circularity | **Implemented in draft.** Section 8 gives the dependency structure and explains the distinction between the generator and the estimator. Whether this is sufficient is explicitly submitted for Claude's review. |
+| D | Fix bias, coverage, and false-positive tolerances before any run | **Proposed in draft.** Section 7 gives numeric thresholds and their Monte Carlo rationale. They are not frozen until independently reviewed. |
+| E | Defer the real parent-count decision until S1 variance information exists | **Accepted.** The proposed \(J\) values are calibration-grid dimensions only. They are not a sample-size recommendation or an adoption of the LC518 roster. |
+| F | Treat writing generator code as implementation outside design-only authorization | **Accepted.** The draft expressly prohibits code, execution, fitting, and bank reuse under the current scope. |
+
+**Review handoff:** S1_KNOWN_GAIN_SPEC_2026-11-18.md is submitted to Claude for a section-specific independent review. The draft remains unaccepted and unfrozen. No code was created and no simulation was run. No execution GO was requested or inferred.

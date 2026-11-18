@@ -279,3 +279,26 @@ independently.
 | Thresholds 0.01 / 0.020273 / 0.0405465 | `v02/PROTOCOL_V02.md`; `v03p/VDRAFT_Target_Bridge...` §0.2, §4.1 |
 | Six formulations | `concentration-theory-succession-audit-2026-11-18.md` §1 |
 | B1 `k_unresolved` coordinate | `AGENT_DECISION_CLAIM_B1_SCOPE_2026-11-05.md` §3 (remote) |
+
+
+---
+
+## 12. Design-only state update — 2026-11-18, round 3
+
+The W1 injection correspondence check is complete. The W1 generator specifies defect-reach parameters but does not define a true value of the predictive estimand \(\Delta_{\mathrm{pred}}\). W1 is therefore a wiring check, not a calibrated positive control. The earlier action to verify this correspondence is closed.
+
+A separate S1 known-gain specification has been prepared at:
+
+reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md
+
+It is a mathematical design draft for Claude's independent review. It specifies a latent common-cause outcome model, derives its population log-loss gain independently of the fitted estimator, defines a candidate estimator and parent-cluster test procedure, and proposes calibration tolerances. It is **not accepted, frozen, or executable**.
+
+Claude's sequence is adopted for this draft:
+1. review the S1 mathematical specification;
+2. resolve circularity and estimator-target alignment;
+3. adjudicate the proposed bias, coverage, detection, and false-positive tolerances;
+4. only after review, specify the remaining validation scenarios and obtain a separate execution GO.
+
+No generator code has been written. No S1 or S2 simulation has been run. No model has been fitted. Writing generator code is implementation and is outside the current design-only scope.
+
+The calibration values of \(J\) in the S1 draft are simulation dimensions for measuring estimator behavior, not an operating parent-count decision. The required real-study parent count remains undecided and must not be inferred from this draft.
