@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/failure-concentration-study/population-manifest.schema.json",
+  "title": "Population manifest (M1-si structural support)",
+  "type": "object",
+  "required": ["manifest_id", "limits_id", "limits_echo", "counts", "parents", "variants"],
+  "properties": {
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "limits_id": { "type": "string", "minLength": 1 },
+    "limits_echo": {
+      "type": "object",
+      "required": [
+        "max_parents",
+        "max_variants_per_parent",
+        "max_total_variants",
+        "m1_si_min_qualifying_parents"
+      ],
+      "properties": {
+        "max_parents": { "type": "integer", "minimum": 0 },
+        "max_variants_per_parent": { "type": "integer", "minimum": 0 },
+        "max_total_variants": { "type": "integer", "minimum": 0 },
+        "m1_si_min_qualifying_parents": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["parents", "variants"],
+      "properties": {
+        "parents": { "type": "integer", "minimum": 0 },
+        "variants": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "parents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["parent_id", "operator_class", "eligible"],
+        "properties": {
+          "parent_id": { "type": "string", "minLength": 1 },
+          "operator_class": { "enum": ["OC-A", "OC-B", "OC-C", "OC-D"] },
+          "eligible": { "type": "boolean" },
+          "exclusion_reason": { "type": ["string", "null"] },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "variant_id",
+          "parent_id",
+          "site_ref",
+          "cell",
+          "settings",
+          "source_digest",
+          "artifact_digest",
+          "construction_status",
+          "diagnostic_status"
+        ],
+        "properties": {
+          "variant_id": { "type": "string", "minLength": 1 },
+          "parent_id": { "type": "string", "minLength": 1 },
+          "site_ref": { "type": "string", "minLength": 1 },
+          "cell": {
+            "type": "object",
+            "required": ["q", "Z", "k_unresolved"],
+            "properties": {
+              "q": { "type": "string", "minLength": 1 },
+              "Z": { "type": "string", "minLength": 1 },
+              "k_unresolved": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "settings": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": { "type": ["string", "integer", "boolean"] }
+          },
+          "source_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "artifact_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "construction_status": { "enum": ["PLANNED", "BUILT", "BUILD_FAILED"] },
+          "build_failure_reason": { "type": ["string", "null"] },
+          "diagnostic_status": { "enum": ["NOT_RUN", "COMPLETED", "INVALID", "UNRESOLVED"] },
+          "diagnostic_disposition": { "type": ["string", "null"] },
+          "strata_counts": {
+            "type": ["object", "null"],
+            "required": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"],
+            "additionalProperties": false,
+            "properties": {
+              "S1": { "type": "integer", "minimum": 0 },
+              "S2": { "type": "integer", "minimum": 0 },
+              "S3": { "type": "integer", "minimum": 0 },
+              "S4": { "type": "integer", "minimum": 0 },
+              "S5": { "type": "integer", "minimum": 0 },
+              "S6": { "type": "integer", "minimum": 0 },
+              "S7": { "type": "integer", "minimum": 0 },
+              "S8": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "k_fail": { "type": ["integer", "null"], "minimum": 0 },
+          "C_D": { "type": ["string", "null"], "pattern": "^(0|[1-9][0-9]*)(/[1-9][0-9]*)?$" },
+          "concentration_label": { "type": ["string", "null"] },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

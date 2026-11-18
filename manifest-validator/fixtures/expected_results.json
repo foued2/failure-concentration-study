@@ -1,0 +1,216 @@
+{
+  "description": "Hand-declared expectations. These are written independently of the validator output; run_tests.py compares them to the produced report. 'error_codes' is the exact set of distinct error codes; [] means the fixture must validate.",
+  "expectations": [
+    {
+      "fixture": "valid_realized.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": []
+    },
+    {
+      "fixture": "valid_not_realized.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": [],
+      "max_qualifying_parents": 2
+    },
+    {
+      "fixture": "cross_parent_digest.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "REALIZED",
+      "error_codes": [],
+      "warning_codes": ["CROSS_PARENT_DIGEST"],
+      "alias_reasons": [],
+      "excluded_reasons": []
+    },
+    {
+      "fixture": "dup_settings_alias.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": ["DUP_OPERATION_COORDINATE"],
+      "excluded_reasons": []
+    },
+    {
+      "fixture": "same_source_pair.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": ["DUP_SOURCE_DIGEST"],
+      "excluded_reasons": [],
+      "max_qualifying_parents": 2
+    },
+    {
+      "fixture": "planned_only.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": ["NOT_BUILT"],
+      "variants_realized": 0
+    },
+    {
+      "fixture": "built_not_diagnosed.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": ["NOT_DIAGNOSED"],
+      "variants_realized": 0
+    },
+    {
+      "fixture": "build_failed.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": ["NOT_BUILT"],
+      "variants_realized": 1
+    },
+    {
+      "fixture": "unresolved_outcome.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": ["NOT_DIAGNOSED"],
+      "variants_realized": 0
+    },
+    {
+      "fixture": "ineligible_parent.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": ["PARENT_INELIGIBLE"],
+      "variants_realized": 0
+    },
+    {
+      "fixture": "cd_miscalculated.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["CD_MISMATCH"]
+    },
+    {
+      "fixture": "cd_sum_mismatch.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["CD_SUM_MISMATCH"]
+    },
+    {
+      "fixture": "cd_zero_without_convention.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["CD_ZERO_CONVENTION"]
+    },
+    {
+      "fixture": "limits_echo_mismatch.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["LIMITS_ECHO_MISMATCH"]
+    },
+    {
+      "fixture": "ceiling_exceeded.json",
+      "limits": "limits_tight.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["CEILING_EXCEEDED"]
+    },
+    {
+      "fixture": "missing_parent_ref.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["REF_MISSING"]
+    },
+    {
+      "fixture": "placeholder_machine_field.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["VARIANT_FIELD"]
+    },
+    {
+      "fixture": "count_mismatch.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["COUNT_MISMATCH"]
+    },
+    {
+      "fixture": "no_settings_variation.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": [],
+      "max_qualifying_parents": 0
+    },
+    {
+      "fixture": "no_concentration_variation.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": [],
+      "max_qualifying_parents": 0
+    },
+    {
+      "fixture": "zero_failures_labelled.json",
+      "limits": "limits_standard.json",
+      "valid": true,
+      "m1_si": "NOT_REALIZED",
+      "error_codes": [],
+      "warning_codes": [],
+      "alias_reasons": [],
+      "excluded_reasons": [],
+      "variants_realized": 1,
+      "max_qualifying_parents": 0
+    },
+    {
+      "fixture": "settings_placeholder.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["VARIANT_FIELD"]
+    },
+    {
+      "fixture": "limits_echo_mismatch_values.json",
+      "limits": "limits_standard.json",
+      "valid": false,
+      "m1_si": "NOT_ESTABLISHED",
+      "error_codes": ["LIMITS_ECHO_VALUE"]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "counts": {
+    "parents": 1,
+    "variants": 2
+  },
+  "limits_echo": {
+    "m1_si_min_qualifying_parents": 3,
+    "max_parents": 8,
+    "max_total_variants": 64,
+    "max_variants_per_parent": 8
+  },
+  "limits_id": "G0-LIMITS-2026-11-17",
+  "manifest_id": "M-planned",
+  "parents": [
+    {
+      "eligible": true,
+      "exclusion_reason": null,
+      "notes": "",
+      "operator_class": "OC-A",
+      "parent_id": "P01"
+    }
+  ],
+  "variants": [
+    {
+      "C_D": null,
+      "artifact_digest": "697c7931d3519ce2148299cdb0290f2f7de8af40fe1660c7ef6a3dac0bca6385",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "PLANNED",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "NOT_RUN",
+      "k_fail": null,
+      "notes": "",
+      "parent_id": "P01",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 5
+      },
+      "site_ref": "S17",
+      "source_digest": "332b5a55537f47f5765eb80d72e04c1dc19a115f0c009ec763bf798b05e8223e",
+      "strata_counts": null,
+      "variant_id": "P01-V1"
+    },
+    {
+      "C_D": null,
+      "artifact_digest": "d16af0c43193692902fd297d4d187385fcc924bcbc69ebe49513eca365852cf9",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "PLANNED",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "NOT_RUN",
+      "k_fail": null,
+      "notes": "",
+      "parent_id": "P01",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 10
+      },
+      "site_ref": "S17",
+      "source_digest": "254028be43824d172bfa8dbc1b82a645cdbc51914fe24ba20daf8cbc985e7386",
+      "strata_counts": null,
+      "variant_id": "P01-V2"
+    }
+  ]
+}

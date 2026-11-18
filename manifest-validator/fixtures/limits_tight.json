@@ -1,0 +1,10 @@
+{
+  "limits_id": "G0-LIMITS-TIGHT-2026-11-17",
+  "frozen": "2026-11-17",
+  "authority": "synthetic tight-ceiling authority used to test ceiling enforcement",
+  "max_parents": 2,
+  "max_variants_per_parent": 8,
+  "max_total_variants": 64,
+  "m1_si_min_qualifying_parents": 3,
+  "strata": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
+}

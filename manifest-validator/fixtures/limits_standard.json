@@ -1,0 +1,10 @@
+{
+  "limits_id": "G0-LIMITS-2026-11-17",
+  "frozen": "2026-11-17",
+  "authority": "owner-set population ceilings; this file is the independently identified authority, not the manifest",
+  "max_parents": 8,
+  "max_variants_per_parent": 8,
+  "max_total_variants": 64,
+  "m1_si_min_qualifying_parents": 3,
+  "strata": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
+}

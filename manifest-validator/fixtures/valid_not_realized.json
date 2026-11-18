@@ -1,0 +1,168 @@
+{
+  "counts": {
+    "parents": 2,
+    "variants": 4
+  },
+  "limits_echo": {
+    "m1_si_min_qualifying_parents": 3,
+    "max_parents": 8,
+    "max_total_variants": 64,
+    "max_variants_per_parent": 8
+  },
+  "limits_id": "G0-LIMITS-2026-11-17",
+  "manifest_id": "M-two-parents",
+  "parents": [
+    {
+      "eligible": true,
+      "exclusion_reason": null,
+      "notes": "",
+      "operator_class": "OC-A",
+      "parent_id": "P01"
+    },
+    {
+      "eligible": true,
+      "exclusion_reason": null,
+      "notes": "",
+      "operator_class": "OC-A",
+      "parent_id": "P02"
+    }
+  ],
+  "variants": [
+    {
+      "C_D": "3/5",
+      "artifact_digest": "697c7931d3519ce2148299cdb0290f2f7de8af40fe1660c7ef6a3dac0bca6385",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "BUILT",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "COMPLETED",
+      "k_fail": 5,
+      "notes": "",
+      "parent_id": "P01",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 5
+      },
+      "site_ref": "S17",
+      "source_digest": "332b5a55537f47f5765eb80d72e04c1dc19a115f0c009ec763bf798b05e8223e",
+      "strata_counts": {
+        "S1": 3,
+        "S2": 1,
+        "S3": 1,
+        "S4": 0,
+        "S5": 0,
+        "S6": 0,
+        "S7": 0,
+        "S8": 0
+      },
+      "variant_id": "P01-V1"
+    },
+    {
+      "C_D": "1",
+      "artifact_digest": "d16af0c43193692902fd297d4d187385fcc924bcbc69ebe49513eca365852cf9",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "BUILT",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "COMPLETED",
+      "k_fail": 5,
+      "notes": "",
+      "parent_id": "P01",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 10
+      },
+      "site_ref": "S17",
+      "source_digest": "254028be43824d172bfa8dbc1b82a645cdbc51914fe24ba20daf8cbc985e7386",
+      "strata_counts": {
+        "S1": 5,
+        "S2": 0,
+        "S3": 0,
+        "S4": 0,
+        "S5": 0,
+        "S6": 0,
+        "S7": 0,
+        "S8": 0
+      },
+      "variant_id": "P01-V2"
+    },
+    {
+      "C_D": "3/5",
+      "artifact_digest": "5380bbabd866dad2e078741642c32e70171e848284f6a8f6015649ee2bcc61af",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "BUILT",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "COMPLETED",
+      "k_fail": 5,
+      "notes": "",
+      "parent_id": "P02",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 5
+      },
+      "site_ref": "S17",
+      "source_digest": "8c3a3dacb037f848793141ab469e19ba3dcea04d798c87d703a74ea8e849e3d3",
+      "strata_counts": {
+        "S1": 3,
+        "S2": 1,
+        "S3": 1,
+        "S4": 0,
+        "S5": 0,
+        "S6": 0,
+        "S7": 0,
+        "S8": 0
+      },
+      "variant_id": "P02-V1"
+    },
+    {
+      "C_D": "1",
+      "artifact_digest": "49eb1b77a8e6ce9d92263cc23489c32275f33a3e21e38e760cafbd7b934eeddf",
+      "build_failure_reason": null,
+      "cell": {
+        "Z": "z1",
+        "k_unresolved": 0,
+        "q": "q1"
+      },
+      "concentration_label": null,
+      "construction_status": "BUILT",
+      "diagnostic_disposition": null,
+      "diagnostic_status": "COMPLETED",
+      "k_fail": 5,
+      "notes": "",
+      "parent_id": "P02",
+      "settings": {
+        "extent": "narrow",
+        "threshold": 10
+      },
+      "site_ref": "S17",
+      "source_digest": "101c7d938e685173b936cf89da742d5f448a1c1c2db360ec9a679cb2fbd771b4",
+      "strata_counts": {
+        "S1": 5,
+        "S2": 0,
+        "S3": 0,
+        "S4": 0,
+        "S5": 0,
+        "S6": 0,
+        "S7": 0,
+        "S8": 0
+      },
+      "variant_id": "P02-V2"
+    }
+  ]
+}
