@@ -316,3 +316,22 @@ The revision:
 The supplied DeepSeek second-round assessment is provisional: DeepSeek could not fetch the GitHub v0.2 text and did not verify the specification directly. It is not a freeze approval. DeepSeek has explicitly accepted the factual correction that §6 was present in v0.1; the remaining question concerns the adequacy of the expanded matched-null specification.
 
 The active reviewer remains DeepSeek in the web chat. The next review must be based on the actual v0.3 text supplied directly to that chat. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
+
+
+## 14. Design-only state update — 2026-11-18, round 5
+
+DeepSeek has now directly reviewed the complete S1 v0.3 specification. It found no mathematical or statistical error in the declared narrow predictive-proxy calibration and considers it defensible as a first-stage calibration, subject to a stronger inference-transfer statement and explicit Monte Carlo precision for the 80% recovery and 10% bias gates.
+
+S1 has been revised to v0.4 at \`reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md\`. The revision:
+- states that S1 is a synthetic analytical-machinery check, not an empirical test of real solvers;
+- states that a pass is compatible with \(C_D\) being useless as a general summary statistic because \(Q\leftrightarrow C_D\) is an error-free bijection;
+- defines the limited methodological proceed/revise/stop consequences and says not to run S1 if no such decision will be used;
+- marks the 80% learning-recovery and 10% bias tolerances as provisional engineering choices and specifies their Monte Carlo standard errors, intervals, and inconclusive outcomes;
+- makes clear that both the positive and matched-null worlds have \(k_{\mathrm{unresolved}}=0\), so the null does not test unresolved-outcome handling;
+- labels the proposed S3 as an oracle adjustment for observed \(H\), with imperfect-proxy control potentially requiring another scenario.
+
+DeepSeek's direct assessment of §6 was: "The matched null is adequate as a minimum false-positive companion." It preserves the same diagnostic and parent nuisance structure, but only for a no-unresolved setting. Its direct S3 assessment was: "S3 must demonstrate the incremental information beyond the common cause." These points are recorded in the reviewer ledger.
+
+The 80% and 10% tolerance choices still have no empirical variance basis before a permitted pilot. They remain provisional engineering tolerances, not scientific or decision-theoretic thresholds. Any pilot requires a separate authorization; its replications cannot be pooled with a later confirmatory calibration.
+
+The current specification is v0.4 and awaits direct DeepSeek review. The direct v0.3 review does not freeze v0.4. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
