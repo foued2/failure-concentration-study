@@ -20,11 +20,16 @@ This is deliberate. A useful predictor can be a proxy. S1 tests whether the anal
 **The signal is deliberately favourable and binary.** The generator first draws a binary diagnostic signal \(Q\), and \(C_D\) is then a one-to-one recoding of \(Q\): \(Q=1\) exactly when \(C_D=0.75\), and \(Q=0\) exactly when \(C_D=0.50\). There is no information loss between \(Q\) and \(C_D\) in S1. The measurement noise is between the latent state \(H\) and \(Q\), not between \(Q\) and \(C_D\). Accordingly, S1 is a **known-positive binary-proxy recovery calibration**, not evidence that concentration is a uniquely informative scientific construct, that a maximum statistic is superior to the underlying diagnostic signal, or that real diagnostic profiles behave this way.
 
 S1 cannot answer an empirical question about real solvers. Its sole potential decision output is methodological: whether this particular marginal estimator and parent-cluster test procedure can recover a known gain under a deliberately favourable, correctly specified binary-proxy generator. The prespecified consequences are limited:
-- If every primary S1 gate passes, retain this marginal estimator and test-parent uncertainty procedure as a candidate for the next synthetic validation designs (S2-S7) and a separately reviewed B1 bridge.
-- If a primary gate fails, do not carry this estimator/uncertainty combination forward unchanged; diagnose and revise the relevant component before any later validation.
-- If a primary gate is inconclusive, do not treat it as a pass; define a precision remedy or redesign and obtain a separate authorization before any further run.
+The specific downstream decision is whether the current \(M_0/M_1\) marginal estimator plus test-parent cluster-bootstrap procedure is retained as the candidate analysis machinery for the subsequent S2-S7 validation suite:
+- If every primary S1 gate is a precision-supported pass, carry this estimator/uncertainty combination forward as the **candidate** for S2-S7 specification and review. This is not an execution authorization for S2-S7 and does not validate B1.
+- If any primary gate fails, do not carry the combination forward unchanged; diagnose and revise the estimator or uncertainty procedure before the S2-S7 suite is specified around it.
+- If any primary gate is inconclusive, do not advance it as a pass; the next action is a separately authorized precision pilot or design revision, not automatic progression.
 
-Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. If the project will not use these methodological consequences to make an actual proceed/revise/stop decision, S1 has no execution purpose and should not be run.
+This is a concrete methods-selection decision: retain, revise, or stop the current candidate estimator/uncertainty combination before subsequent validation. It is not a scientific decision about whether concentration predicts real-solver correctness.
+
+**Positive inference licensed by a complete pass:** the specified marginal six-cell estimator and test-parent cluster-bootstrap procedure can recover a known binary-proxy predictive gain under independent parent sampling on the fixed panel, within the declared operating-characteristic tolerances. This is a machinery-recovery statement only. It does not imply that \(C_D\) retains useful information from a general failure vector or that it predicts correctness in actual solvers.
+
+Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. If the project will not use the methodological proceed/revise/stop rule above to decide whether this estimator/uncertainty combination advances to the S2-S7 validation suite, S1 has no execution purpose and should not be run.
 
 S1 does not establish that real solvers follow this data-generating process, that the latent state is a real defect mechanism, or that concentration itself causes errors.
 
@@ -538,7 +543,18 @@ At the primary point, the proposed criteria are:
 4. **Positive detection:** at least 80% of the primary-point one-sided 95% parent-cluster lower bounds exceed zero. This criterion is evaluated **only at \(J=120,\eta=0.12\)**. Detection at other \(J\) or \(\eta\) is reported as a sensitivity result, not used to choose the primary result.
 5. **Availability:** failed fits, empty bootstrap draws, and unavailable replications are counted and reported at every grid point. No failed replication is replaced. If more than 1% of attempted replications are unavailable at the primary point, that positive-world cell is not passed. The same 1% limit applies to each matched-null \(J\) cell. Report sensitivity at 0.5% and 2%.
 
-The matched null has \(\eta=0\), with the same diagnostic signal, parent hierarchy, panel, estimator and bootstrap. Its false-positive gate is separate from the positive-world matrix: the proportion of one-sided 95% lower bounds above zero must not exceed 6% **at each** \(J\in\{30,60,120\}\). The null gate therefore tests all three parent counts, not only the primary point. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
+The matched null has \(\eta=0\), with the same diagnostic signal, parent hierarchy, panel, estimator and bootstrap. Its false-positive gate is separate from the positive-world matrix: the proportion of one-sided 95% lower bounds above zero must not exceed 6% **at each** \(J\in\{30,60,120\}\). The null gate therefore tests all three parent counts, not only the primary point. For each \(J\), let \(K_J\) be the false-positive count and \(R_{\mathrm{valid},J}\) the number of valid null replications:
+
+\[
+\widehat{\mathrm{FPR}}_J=\frac{K_J}{R_{\mathrm{valid},J}},
+\qquad
+MCSE(\widehat{\mathrm{FPR}}_J)
+=
+\sqrt{\frac{\widehat{\mathrm{FPR}}_J(1-\widehat{\mathrm{FPR}}_J)}
+{R_{\mathrm{valid},J}}}.
+\]
+
+At the planned \(R_{\mathrm{valid},J}=2{,}000\), the MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
 
 The relative bias rule has the following absolute equivalents. These values are shown for all \(\eta\) so that the scale is visible; only the \(J=120,\eta=0.12\) cell is the primary bias gate.
 
@@ -562,9 +578,17 @@ MCSE(\widehat r)=\sqrt{\frac{\widehat r(1-\widehat r)}{R_{\mathrm{valid}}}},
 
 where `R_rate` is the denominator for the particular rate: `R_valid` for coverage, detection, and false-positive rates among valid replications, and `R_attempted = 2,000` for the availability rate. With 2,000 contributing replications, illustrative standard errors are 0.004873 at a rate of 0.95 or 0.05, 0.008944 at 0.80, and 0.005310 at 0.06. Report an exact binomial Monte Carlo interval alongside each rate.
 
-For the learning-recovery gate, calculate \(\bar r=R_{\mathrm{valid}}^{-1}\sum_j r_j\), \(MCSE(\bar r)=s_r/\sqrt{R_{\mathrm{valid}}}\), and a 95% Monte Carlo interval \(\bar r\pm t_{0.975,R_{\mathrm{valid}}-1}MCSE(\bar r)\) for \(E[r]\) across independent simulation replications. For the bias gate, calculate \(\bar b=R_{\mathrm{valid}}^{-1}\sum_j b_j\), \(MCSE(\bar b)=s_b/\sqrt{R_{\mathrm{valid}}}\), and a 95% Monte Carlo interval \(\bar b\pm t_{0.975,R_{\mathrm{valid}}-1}MCSE(\bar b)\) for \(E[b]\). Here \(s_r\) and \(s_b\) are the sample standard deviations of the replication-level recovery ratios and biases, respectively.
+For the learning-recovery gate, calculate \(\bar r=R_{\mathrm{valid}}^{-1}\sum_j r_j\) and \(MCSE(\bar r)=s_r/\sqrt{R_{\mathrm{valid}}}\). For the bias gate, calculate \(\bar b=R_{\mathrm{valid}}^{-1}\sum_j b_j\) and \(MCSE(\bar b)=s_b/\sqrt{R_{\mathrm{valid}}}\). Here \(s_r\) and \(s_b\) are the sample standard deviations of the replication-level recovery ratios and biases, respectively. Their 95% Monte Carlo intervals are:
 
-For transparent gate adjudication, call learning recovery a precision-supported pass only if the 95% Monte Carlo interval for \(E[r]\) lies entirely at or above 0.80; call it a fail if the interval lies entirely below 0.80; otherwise call it **inconclusive**. Call the bias gate a precision-supported pass only if the 95% Monte Carlo interval for \(E[b]\) lies entirely inside the equivalence band \([-0.1\Delta^*(0.12),+0.1\Delta^*(0.12)]\); call it a fail if the interval lies entirely outside that band on either side; otherwise call it **inconclusive**. These conservative Monte Carlo decision rules are stated separately from the point-estimate tolerances.
+\[
+\bar r \pm t_{0.975,R_{\mathrm{valid}}-1}\frac{s_r}{\sqrt{R_{\mathrm{valid}}}}
+\qquad\text{and}\qquad
+\bar b \pm t_{0.975,R_{\mathrm{valid}}-1}\frac{s_b}{\sqrt{R_{\mathrm{valid}}}}.
+\]
+
+These formulas are the prespecified numerical precision rules; the numerical \(s_r\) and \(s_b\) cannot be known until the independently generated simulation replications exist.
+
+For both gates, an interval that overlaps the pass region and the fail region is **inconclusive**, not a pass. For transparent gate adjudication, call learning recovery a precision-supported pass only if the 95% Monte Carlo interval for \(E[r]\) lies entirely at or above 0.80; call it a fail if the interval lies entirely below 0.80; otherwise call it **inconclusive**. Call the bias gate a precision-supported pass only if the 95% Monte Carlo interval for \(E[b]\) lies entirely inside the equivalence band \([-0.1\Delta^*(0.12),+0.1\Delta^*(0.12)]\); call it a fail if the interval lies entirely outside that band on either side; otherwise call it **inconclusive**. These conservative Monte Carlo decision rules are stated separately from the point-estimate tolerances.
 
 For any other replication-level scalar \(Z_r\), including squared error or interval width, report \(MCSE(\overline Z)=s_Z/\sqrt{R_{\mathrm{valid}}}\) and the corresponding 95% Monte Carlo interval. A mean or rate that is numerically inside its tolerance but too imprecise to distinguish values outside the tolerance must be labelled **inconclusive**, not a clean pass.
 
@@ -590,7 +614,11 @@ This compatibility is nevertheless a **favourable feature**. The true conditiona
 
 If the project requires a positive control for a direct causal effect of concentration rather than a predictive proxy, this S1 does not meet that requirement and must be rejected or renamed. Its positive world should be described as a **known-positive binary-proxy world**, not as a demonstration that concentration itself is a causal or uniquely informative construct.
 
-The later S3 confounding control must preserve the unadjusted association between \(C_D\) and \(Y\), then make the common cause \(H\) observed and include it in both comparator models. The baseline should condition on \(X,H\); the augmented model should condition on \(X,H,C_D\). Under this generator, \(Y\perp C_D\mid(X,H)\), so the known conditional incremental gain of adding \(C_D\) after observing \(H\) is zero, even though the unadjusted \(X\)-only comparison can show a positive proxy gain. This is an **oracle common-cause adjustment** because \(H\) is fully observed by design; it does not represent an imperfect real-world proxy for defect identity. If the intended scientific comparison uses only imperfect proxies or partial controls, that requires a further specified scenario. A scenario that merely sets \(\eta=0\) is the matched null in §6; it is not a substitute for this confounding control. S3 remains a proposal and is not specified or frozen by S1.
+The S3 proposal should be split into two stages:
+- **S3a, oracle adjustment:** preserve the unadjusted proxy association, make the true common cause \(H\) observable, and compare a baseline conditioned on \(X,H\) against an augmented model conditioned on \(X,H,C_D\). Under this generator, \(Y\perp C_D\mid(X,H)\), so the known conditional incremental gain from adding \(C_D\) is zero. This checks the best-case result when the common cause is known exactly.
+- **S3b, imperfect-proxy adjustment:** replace full observation of \(H\) with a declared noisy proxy or partial measurement \(W\) of \(H\), with a prespecified sensitivity/specificity or measurement model. Compare \(X,W\) against \(X,W,C_D\), and derive the corresponding known conditional gain independently. This tests whether \(C_D\) adds information beyond a feasible but imperfect common-cause measurement, rather than only beyond an oracle.
+
+S3a is a useful diagnostic first step but is not sufficient for a real-world adjustment claim. S3b is required before the project can assess the imperfect-measurement problem relevant to a non-oracle analysis. Even S3a and S3b remain synthetic scenarios and cannot by themselves establish real-solver validity. A scenario that merely sets \(\eta=0\) is the matched null in §6; it is not a substitute for either S3 stage. S3a and S3b remain proposals and are not specified or frozen by S1.
 
 ## 9. Scope limits and exact inference-transfer statement
 
@@ -623,13 +651,13 @@ A pass in this S1 alone cannot be transferred to B1 v1.6.
 The remaining validation scenarios are:
 
 - S2: the matched null in §6, extended with complete false-positive controls;
-- S3: an observable common-cause/defect-state control, where conditioning on the observed state removes the incremental information in \(C_D\), even though an unadjusted proxy association is present;
+- S3a: an oracle common-cause control, conditioning on fully observed \(H\); - S3b: an imperfect-proxy/partial-measurement control, with a prespecified noisy measurement \(W\) of \(H\), comparing \((X,W)\) with \((X,W,C_D)\). Neither stage is a real-solver validation;
 - S4: predeclared alternative diagnostic partitions, with the same underlying input-level failure outcomes reclassified;
 - S5: crossed parent, solver, input-group, and template dependence;
-- S6: unresolved outcomes associated with held-out errors, with the DAG and handling rule declared;
+- S6: a required unresolved-outcome scenario. It is **named but not specified or frozen** here. Its future specification must declare the unresolved-outcome process, its association with held-out correctness, the causal/dependence DAG, how unresolved outcomes enter the (k_{mathrm{fail}}/k_{mathrm{unresolved}}) coordinates, the estimator's treatment rule, and the corresponding known-truth and null checks;
 - S7: degenerate and unsupported cells, with explicit unavailability rather than pooling or substitution.
 
-No S2-S7 scenario is frozen by this S1 document.
+No S2-S7 scenario is frozen by this S1 document. S3a/S3b and S6 are named requirements only; they are not complete executable scenario specifications. In particular, S6 is not being treated as already designed merely because it appears in this list.
 
 ## 10. Questions submitted to DeepSeek
 
