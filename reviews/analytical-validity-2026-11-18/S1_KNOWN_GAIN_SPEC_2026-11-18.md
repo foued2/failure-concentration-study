@@ -628,18 +628,21 @@ No S2-S7 scenario is frozen by this S1 document.
 
 ## 10. Questions submitted to DeepSeek
 
-Please review this v0.3 document as a specification, not as a report of executed work. The first question is the threshold issue: is this knowingly favourable proxy-recovery exercise a defensible first-stage calibration, or should its construction be changed before any later work?
+Please review this v0.4 document as a specification, not as a report of executed work. The first issue is whether S1 has a decision-relevant methodological purpose at all. S1 cannot answer whether concentration predicts correctness in real solvers. It can only test this estimator and uncertainty procedure under the stated synthetic known-truth conditions. Please identify a concrete research or methods decision that a positive, negative, or inconclusive S1 result would change. If no such decision exists, say so and recommend that S1 not be run until its purpose is redefined.
 
-1. **Proxy-world suitability and disclosure:** Given that \(C_D\) is a one-to-one recoding of \(Q\), and that the estimator is saturated over the six \((X,C_D)\) cells, is S1 useful as a first-stage known-gain recovery calibration? Is the advantage sufficiently disclosed, or does the design need to be changed rather than merely bounded?
+1. **Real-solver relevance and decision consequence:** Do you agree that S1 cannot answer an empirical question about real solvers? Does the narrow machinery-check output described in §1 change any identifiable research decision? Name the decision and the result that would change it; if no decision changes, recommend stopping S1 rather than executing it.
 2. **Outcome model and scientific target:** Is the latent common-cause model in §3 a legitimate positive predictive benchmark for the project's intended held-out correctness question, or does it calibrate a different claim?
 3. **Panel estimand and scoring:** Is the explicit 60-item panel-conditional estimand in §2.2.1, indexed by \(\eta\), correctly stated and a defensible first calibration target? Is Bernoulli log loss the appropriate primary probabilistic score, given that it is not a decision-utility measure?
 4. **Derivation and circularity:** Is the marginalization over \(H\) and \(U\) in §4 correct and independently reproducible? Does deriving \(\Delta^*\) from the generator, and \(\Delta_{\mathrm{fit}}\) from the same known conditional distribution without test outcomes, adequately separate truth from estimator evaluation?
 5. **Estimator and transfer:** Is it acceptable to keep S1 as a deliberately limited calibration of the marginal six-cell estimator, with no inference transfer to B1 v1.6, or must the exact B1 v1.6 procedure be incorporated before this calibration can be useful?
 6. **Hierarchy and coverage:** Are the separate training/test parent samples and test-parent cluster bootstrap adequate for the declared target? Does §5.5 define the conditional-coverage target correctly as \(E_T[P_S\{\Delta_{\mathrm{fit}}(T)\in CI(T,S)\mid T\}]\)?
 7. **Calibration dimensions:** Are \(J=\{30,60,120\}\), five variants per parent, and the fixed 60-item panel defensible diagnostic dimensions without adopting an operating population size?
-8. **Tolerances and Monte Carlo precision:** Are the primary-point learning-recovery, absolute/relative bias, coverage, detection, and availability tolerances defensible? Is it appropriate that only \(J=120,\eta=0.12\) is the positive-world gate, while all other positive cells are report-only and the null false-positive gate applies at every \(J\)? Are the 2,000-replication Monte Carlo standard-error calculations and absolute bias equivalents adequate?
+8. **Tolerances and Monte Carlo precision:** Are the provisional 80% recovery and 10% bias tolerances defensible as engineering choices? Are the new Monte Carlo confidence-interval rules for these two gates sufficiently precise? Does the absence of empirical parent-level variance mean these gates should remain provisional pending a separately authorized pilot? Is it appropriate that only \(J=120,\eta=0.12\) is the positive-world gate, while all other positive cells are report-only and the null false-positive gate applies at every \(J\)?
 9. **Full-vector comparator:** Is the equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) correctly limited to this generator, and is it still worth retaining as a generator identity rather than removing it?
 10. **Scope and B1 bridge:** Is the inference-transfer boundary in §9 sufficiently explicit? What exact known-truth calibration of the B1 v1.6 estimator and conditional-randomization procedure would be required before any B1 claim?
+11. **Matched-null assessment:** Please state in your own words your assessment of §6. Does it preserve the same diagnostic process, parent-effect distribution, and unresolved-outcome status as the positive world? Do you agree it is adequate as a minimum null only because both worlds set \(k_{\mathrm{unresolved}}=0\), while leaving unresolved-outcome handling untested? Please record your §6 assessment in your own review rather than relying on GPT's summary.
+12. **S3 distinction:** Is the proposed S3 oracle adjustment for observed \(H\) an appropriate first confounding control? Is a separate scenario with an imperfectly observed common cause or best-available proxy also needed?
+13. **Stop/go value:** Which specific S1 outputs would change a methods decision: recovery, bias, coverage, positive detection, false-positive rate, or availability? State the action attached to each result. If none would change a decision, recommend no S1 execution until the decision purpose is defined.
 
 Please give section-specific objections, distinguish mathematical errors from design preferences, and state which issues are true blockers versus limitations that can be accepted for a narrow first-stage calibration. Do not treat this request as a request for approval or a freeze decision.
 ## 11. Execution and change-control boundary
@@ -690,5 +693,21 @@ No code was written, no simulation or model fit was run, no bank was reused, and
 - The S3 proposal is sharpened: retain the unadjusted proxy association, observe \(H\), and test whether adding \(C_D\) after \(X,H\) has zero known incremental gain.
 - The earlier §6-presence disagreement is closed: DeepSeek explicitly accepts that §6 existed in v0.1. The adequacy of the expanded §6 remains reviewable.
 - DeepSeek's second-round feedback is provisional, not a direct verification of v0.2 or v0.3, because it could not fetch the repository text. No freeze or execution decision follows from it.
+
+No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
+
+
+## 14. Revision record — v0.4 after DeepSeek's direct v0.3 review
+
+DeepSeek's direct review found no mathematical or statistical error in the panel estimand, KL arithmetic, latent common-cause model, fitted-pair truth, conditional parent-cluster bootstrap target, or generator-specific full-vector equality. It accepted the matched null as a minimum false-positive companion. It identified the 80% learning-recovery and 10% bias thresholds as provisional engineering choices whose precision basis remains unknown before variance is measured.
+
+- The scope is explicitly limited to a synthetic analytical-machinery check. S1 does not answer whether concentration predicts correctness in real solvers.
+- The only possible S1 decision consequence is methodological: retain, revise, or reject this marginal estimator and test-parent uncertainty procedure as candidate machinery for later synthetic validation. A pass cannot justify real-solver claims, B1 inference, or 150-variant construction.
+- The inference-transfer statement now says explicitly that a pass is compatible with \(C_D\) being useless as a general summary statistic, because \(Q\leftrightarrow C_D\) is a one-to-one, error-free encoding even though \(Q\) is noisy relative to \(H\).
+- Monotonicity of the exact gain over the declared positive \(\eta\) grid is shown from the derivative of the symmetric Bernoulli-KL contribution.
+- The matched null is stated to preserve \(k_{\mathrm{unresolved}}=0\) in both worlds. It tests false positives only in a no-unresolved setting and does not validate unresolved-outcome handling.
+- The 80% learning-recovery and 10% bias thresholds are explicitly provisional engineering tolerances. Monte Carlo standard errors and confidence intervals are defined directly for both gates, with precision-supported pass/fail/inconclusive classifications. Any pilot-based revision must be documented before a distinct confirmatory run; pilot replications are not pooled.
+- S3 is explicitly labelled an oracle common-cause adjustment because \(H\) is fully observed in that synthetic scenario; imperfect-proxy adjustment would require a separate scenario.
+- The next DeepSeek review is asked to state its own assessment of §6, identify the decision consequences of S1 outcomes, and recommend stopping S1 if no methods decision depends on it.
 
 No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
