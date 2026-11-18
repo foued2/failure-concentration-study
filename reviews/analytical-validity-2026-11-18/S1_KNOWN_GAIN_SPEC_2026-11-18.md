@@ -40,16 +40,16 @@ The target prediction task is a new variant from a new parent, evaluated on this
 
 Let \(q_0(x)=P(Y=1\mid X=x)\) and \(q_1(x,c)=P(Y=1\mid X=x,C_D=c)\) be the true marginal conditional probabilities implied by the generator, integrating over the new-parent effect and variant-level latent state. They are not fitted predictions.
 
-The population incremental log-loss gain is:
+For each declared signal strength \(\eta\), the population incremental log-loss gain is:
 
 \[
-\Delta^*
+\Delta^*_{\mathrm{panel}}(\eta)
 =
-E[\ell(Y,q_0(X))-\ell(Y,q_1(X,C_D))]
+E_\eta[\ell(Y,q_0(X))-\ell(Y,q_1(X,C_D))]
 =
-H(Y\mid X)-H(Y\mid X,C_D)
+H_\eta(Y\mid X)-H_\eta(Y\mid X,C_D)
 =
-I(Y;C_D\mid X).
+I_\eta(Y;C_D\mid X).
 \]
 
 The expectation is over the generator's parent/variant/outcome distribution and the fixed panel's equal-weighted difficulty-class distribution. It is **panel-conditional**, not input-superpopulation averaged.
@@ -552,7 +552,7 @@ For an estimated operating-characteristic proportion \(\widehat r\), including c
 MCSE(\widehat r)=\sqrt{\frac{\widehat r(1-\widehat r)}{R_{\mathrm{valid}}}},
 \]
 
-where (R_r) is the denominator for the particular rate: (R_{mathrm{valid}}) for coverage, detection, and false-positive rates among valid replications, and (R_{mathrm{attempted}}=2{,}000) for the availability rate. With 2,000 contributing replications, illustrative standard errors are 0.004873 at a rate of 0.95 or 0.05, 0.008944 at 0.80, and 0.005310 at 0.06. Report an exact binomial Monte Carlo interval alongside each rate.
+where `R_r` is the denominator for the particular rate: `R_valid` for coverage, detection, and false-positive rates among valid replications, and `R_attempted = 2,000` for the availability rate. With 2,000 contributing replications, illustrative standard errors are 0.004873 at a rate of 0.95 or 0.05, 0.008944 at 0.80, and 0.005310 at 0.06. Report an exact binomial Monte Carlo interval alongside each rate.
 
 For a replication-level scalar \(Z_r\), including fitted-gain recovery ratio, test-estimator bias \(b_r\), squared error, or interval width, report:
 
