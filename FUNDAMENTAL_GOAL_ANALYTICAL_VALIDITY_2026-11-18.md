@@ -335,3 +335,23 @@ DeepSeek's direct assessment of §6 was: "The matched null is adequate as a mini
 The 80% and 10% tolerance choices still have no empirical variance basis before a permitted pilot. They remain provisional engineering tolerances, not scientific or decision-theoretic thresholds. Any pilot requires a separate authorization; its replications cannot be pooled with a later confirmatory calibration.
 
 The current specification is v0.4 and awaits direct DeepSeek review. The direct v0.3 review does not freeze v0.4. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
+
+
+## 16. Design-only state update — 2026-11-18, round 6
+
+DeepSeek directly reviewed S1 v0.4. Its recommendation remained that S1 is defensible as a narrow first-stage machinery check, with no mathematical/statistical defect identified, but it should not be frozen until the downstream decision is named and precision presentation is explicit. DeepSeek accepted the stronger inference-transfer limit and judged the matched null adequate as a minimum false-positive companion because positive and null worlds preserve the same diagnostic and parent nuisance structure. It explicitly recognized that both worlds set \(k_{\mathrm{unresolved}}=0\), so unresolved-outcome handling remains untested.
+
+S1 has been revised to v0.5 at \`reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md\`.
+
+The one-sentence methods decision is: **S1 decides whether the current \(M_0/M_1\) marginal estimator plus test-parent cluster-bootstrap procedure is retained as the candidate method for the S2-S7 validation suite.** If all primary gates pass with the specified Monte Carlo precision, the method is carried forward for S2-S7 specification and review; if a gate fails, the method is revised before that suite is specified around it; if a gate is inconclusive, there is no progression without separately authorized precision work or redesign. This is a methods decision only and has no empirical implication about real-solver correctness.
+
+The v0.5 revision:
+- states the positive inference licensed by a complete pass, while retaining the boundary that \(C_D\) may be useless as a general summary statistic;
+- displays the recovery-ratio and mean-bias MCSE formulas and their 95% Monte Carlo intervals, with an explicit overlap-is-inconclusive decision rule;
+- reports reference false-positive MCSE values separately for each \(J=30,60,120\);
+- distinguishes S3a's oracle adjustment for observed \(H\) from S3b's imperfect-proxy adjustment using a prespecified noisy measurement \(W\);
+- identifies S6 as a required future unresolved-outcome scenario that is named but not yet specified or frozen.
+
+The direct DeepSeek review said the MCSE formulas and inconclusive rule were not visible in the copy it examined. The v0.4 blob on the review branch already contained those formulas and rules; the record cannot establish whether DeepSeek saw a different copy or overlooked the passages. v0.5 makes them prominent and adds the per-\(J\) false-positive precision table.
+
+DeepSeek's v0.4 recommendation does not freeze v0.5. The next step is direct review of the actual v0.5 text. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
