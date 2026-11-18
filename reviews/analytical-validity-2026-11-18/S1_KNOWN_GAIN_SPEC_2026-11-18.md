@@ -1,8 +1,8 @@
 # S1: known predictive-gain calibration specification
 
 **Date:** 2026-11-18  
-**Version:** 0.1  
-**Status:** **DRAFT FOR CLAUDE REVIEW. NOT ACCEPTED, NOT FROZEN, NOT AN EXECUTION GO.**  
+**Version:** 0.2 — revised after DeepSeek web-chat review  
+**Status:** **DRAFT FOR DEEPSEEK WEB-CHAT REVIEW. NOT ACCEPTED, NOT FROZEN, NOT AN EXECUTION GO.**  
 **Scope:** mathematical and statistical specification only. No generator code, executable implementation, simulation, model fitting, Monte Carlo run, solver construction, mutation allocation, bank reuse, or model/API calls are authorized or performed by this document.
 
 **Purpose:** specify a positive synthetic world in which the population incremental predictive gain is derived from a data-generating process that does not use the observed concentration statistic in its outcome equation. The document also specifies a matched null, a candidate estimator, its uncertainty procedure, and proposed calibration tolerances. It is intentionally submitted for criticism before implementation.
@@ -19,16 +19,26 @@ This is deliberate. A useful predictor can be a proxy. S1 tests whether the anal
 
 S1 does not establish that real solvers follow this data-generating process, that the latent state is a real defect mechanism, or that concentration itself causes errors.
 
-## 2. Estimand and scale
+## 2. Estimand, target population, and scoring scale
 
 Let:
 
 - \(Y=1\) mean that a held-out input is answered incorrectly; \(Y=0\) means correct.
-- \(X\) denote a predeclared held-out-input difficulty class.
+- \(X\) denote the predeclared held-out-input difficulty class.
 - \(C_D\) denote the observed diagnostic concentration calculated from eight diagnostic strata.
-- \(\ell(y,q)=-y\log(q)-(1-y)\log(1-q)\) denote Bernoulli log loss, using natural logarithms and therefore measured in **nats per held-out input**.
+- \(\ell(y,q)=-y\log(q)-(1-y)\log(1-q)\) denote Bernoulli log loss using natural logarithms, measured in **nats per held-out input**.
 
-The population target is the incremental log-loss improvement available from observing \(C_D\), in addition to \(X\), for a new parent and a new variant under the stated generator:
+### 2.1 Target population and conditioning set
+
+The S1 target is **conditional on the fixed, balanced 60-item held-out panel** described in §3.3. It is not a superpopulation target over newly sampled input identities. The panel contains 20 fixed items in each of three predeclared difficulty classes, and the target gives each class weight \(1/3\). Parent groups, variants, latent states, diagnostic measurements, and held-out outcomes are sampled from the generator; input identities and their difficulty labels are held fixed.
+
+The target prediction task is a new variant from a new parent, evaluated on this fixed panel. Parent effects are unobserved at prediction time and are integrated over their declared distribution. The target therefore generalizes over new synthetic parents and variants **for this panel only**. It does not generalize to a new input panel, a new difficulty distribution, or unseen input templates.
+
+### 2.2 Population estimand
+
+Let \(q_0(x)=P(Y=1\mid X=x)\) and \(q_1(x,c)=P(Y=1\mid X=x,C_D=c)\) be the true marginal conditional probabilities implied by the generator, integrating over the new-parent effect and variant-level latent state. They are not fitted predictions.
+
+The population incremental log-loss gain is:
 
 \[
 \Delta^*
@@ -40,11 +50,17 @@ H(Y\mid X)-H(Y\mid X,C_D)
 I(Y;C_D\mid X).
 \]
 
-Here \(q_0(X)=P(Y=1\mid X)\) and \(q_1(X,C_D)=P(Y=1\mid X,C_D)\) are the **true population conditional probabilities implied by the generator**, not fitted predictions.
+The expectation is over the generator's parent/variant/outcome distribution and the fixed panel's equal-weighted difficulty-class distribution. It is **panel-conditional**, not input-superpopulation averaged.
 
-Positive \(\Delta^*\) means that knowing concentration improves optimal log-loss prediction. Zero means no incremental information. This is a predictive-information estimand, not a causal effect.
+Positive \(\Delta^*\) means that observing concentration improves optimal prediction of held-out error probability beyond difficulty class. Zero means no incremental information. This is a predictive-information estimand, not a causal effect.
 
-The practical decision threshold is denoted \(\tau\). **S1 does not set \(\tau\)** and does not claim that its injected gain is a minimum practically important effect. The numeric \(\Delta^*\) below is a calibration truth only.
+### 2.3 Why log loss
+
+Bernoulli log loss is used because it is a strictly proper scoring rule for probabilistic predictions: in expectation, it is minimized by reporting the true conditional probability. Under the true conditional predictors above, the improvement has the exact information-theoretic representation \(I(Y;C_D\mid X)\), which permits an independent population-truth calculation.
+
+The unit is nats because the logarithm is natural. Brier score, AUC, and calibration error answer different questions and do not share this exact conditional-mutual-information identity. They may be useful secondary diagnostics, but they are not interchangeable with the primary S1 estimand.
+
+This choice is a calibration scale, not a claim that a given gain has operational decision value. The practical decision threshold is denoted \(\tau\). **S1 does not set \(\tau\)** and does not claim that its injected gain is a minimum practically important effect. The numerical \(\Delta^*\) below is a calibration truth only.
 
 ## 3. Positive-world data-generating process
 
@@ -110,7 +126,9 @@ C_D=
 
 The identities of the occupied strata and the orientation of the counts are randomized independently of \(H\). They carry no additional information about held-out outcomes under this S1 generator.
 
-### 3.3 Held-out input panel
+This construction gives \(C_D\) only **two support points**, 0.50 and 0.75. S1 therefore calibrates a **binary proxy** derived from an eight-stratum count vector; it does not test estimation with a continuous or broadly multi-valued concentration distribution. The support is deliberately narrow to create a transparent first calibration contrast at fixed \(k_{\mathrm{fail}}\) and fixed breadth \(B\). That simplicity is favourable to identification and must be carried as a limitation in any interpretation.
+
+### 3.3 Held-out input panel and known blind spot
 
 The held-out panel has three predeclared difficulty classes \(X\in\{1,2,3\}\), with equal target weights:
 
@@ -124,11 +142,15 @@ The baseline error probabilities are:
 p_1=0.25,\qquad p_2=0.50,\qquad p_3=0.75.
 \]
 
-Each synthetic variant is evaluated on 60 held-out inputs: 20 from each difficulty class. The same fixed panel is used for all parents and variants. Input identity has no additional random effect in S1; the estimand is conditional on this fixed, balanced input panel. Crossed input-group and template effects are reserved for the later dependence scenario, not silently assumed away in a generalization claim.
+Each synthetic variant is evaluated on 60 fixed held-out inputs: 20 fixed items from each difficulty class. The same panel is used for all parents and variants. Input identity has no additional random effect in S1.
+
+The estimand is conditional on this fixed balanced panel and its three-class target weights. **This is a known blind spot, not a neutral simplification:** S1 does not test input-level heterogeneity, shared input/template effects, input-cluster dependence, or generalization to a newly sampled held-out panel. A pass therefore gives no evidence of robustness to those features. They require a separately specified dependence scenario.
 
 These three held-out difficulty classes are not the eight diagnostic strata. S1 does not test diagnostic-to-held-out stratum recurrence.
 
 ### 3.4 True outcome model
+
+Let \(\eta\) be the declared positive-world signal-strength parameter. It is an analyst-selected data-generating parameter, not an estimated coefficient, a real-solver quantity, or a value derived from the fitted estimator. The pre-run signal-strength grid is \(\eta\in\{0.06,0.12,0.18\}\), with \(\eta=0.12\) the primary reference point for the calibration criteria. The smallest and largest values are sensitivity scenarios, not alternatives from which the most favourable result may be selected. For the full grid the outcome probabilities remain in the valid interval [0.02,0.98]. The implied gains are calculated in §4 rather than assumed.
 
 For every parent \(g\), variant \(v\), and held-out input \(i\) with difficulty class \(X_i=x\), generate:
 
@@ -137,20 +159,20 @@ Y_{gvi}\mid H_{gv},U_g,X_i=x
 \sim
 \operatorname{Bernoulli}
 \left(
-p_x+0.12(2H_{gv}-1)+U_g
+p_x+\eta(2H_{gv}-1)+U_g
 \right).
 \]
 
 The Bernoulli draws are conditionally independent given \(H_{gv}\), \(U_g\), and \(X_i\). Dependence is induced because variants and held-out outcomes belonging to the same parent share \(U_g\), while all outcomes for a variant also share \(H_{gv}\).
 
-The probability is always valid. Its minimum is \(0.25-0.12-0.05=0.08\), and its maximum is \(0.75+0.12+0.05=0.92\).
+The probability is valid throughout the pre-run signal grid. At the largest value \(\eta=0.18\), its minimum is \(0.25-0.18-0.05=0.02\) and its maximum is \(0.75+0.18+0.05=0.98\).
 
 **Crucially, \(C_D\) does not appear in this outcome equation.** The outcome is generated from the latent state \(H\), parent effect \(U\), and input difficulty \(X\). The diagnostic profile is generated separately from the same latent state \(H\).
 
 The intended dependency is:
 
 \[
-H\longrightarrow F\longrightarrow C_D,
+H\longrightarrow Q\longrightarrow F\longrightarrow C_D,
 \qquad
 H\longrightarrow Y,
 \qquad
@@ -161,35 +183,44 @@ X\longrightarrow Y.
 
 There is no arrow \(C_D\longrightarrow Y\). Concentration is a noisy predictive proxy for \(H\), not a causal treatment.
 
+The selected signal-strength values are synthetic design parameters only. Their range is included to reveal how calibration changes with the size of the known predictive signal; it has no empirical grounding in real solver behaviour.
+
 ## 4. Independent derivation of the true predictive gain
 
-The derivation uses only the generator above. It does not use fitted regression coefficients, test-set outcomes, or the estimator's observed score.
+The derivation uses only the generator in §3. It does not use fitted regression coefficients, training outcomes, test outcomes, or the estimator's observed score.
 
-Since \(P(H=1)=1/2\) and the diagnostic signal has sensitivity 0.8 and false-positive probability 0.2:
-
-\[
-P(Q=1)=1/2,
-\]
+Since \(P(H=1)=1/2\), \(P(Q=1\mid H=1)=0.8\), and \(P(Q=1\mid H=0)=0.2\), Bayes' rule gives:
 
 \[
-P(H=1\mid Q=1)=0.8,
-\qquad
+P(Q=1)=1/2,\qquad
+P(H=1\mid Q=1)=0.8,\qquad
 P(H=1\mid Q=0)=0.2.
 \]
 
-The parent effect is independent of \(H,Q,X\) and has mean zero. Therefore, after integrating over the parent effect and latent state:
+For a new parent, \(U_g\) is independent of \(H,Q,X\) and has equal probability at \(-0.05\) and \(+0.05\). Thus the required marginalization is:
 
 \[
-P(Y=1\mid X=x,C_D=0.75)
-=p_x+0.12(2(0.8)-1)
-=p_x+0.072,
+\begin{aligned}
+P(Y=1\mid X=x,Q=q)
+&=\sum_{h=0}^{1}\sum_{u\in\{-0.05,+0.05\}}
+\left[p_x+\eta(2h-1)+u\right]
+P(H=h\mid Q=q)P(U=u)\\
+&=p_x+\eta\left[2P(H=1\mid Q=q)-1\right]
++\tfrac12(-0.05+0.05).
+\end{aligned}
+\]
+
+Since \(C_D=0.75\) if and only if \(Q=1\), and \(C_D=0.50\) if and only if \(Q=0\), the conditional probability shifts are \(+0.6\eta\) and \(-0.6\eta\). At the primary reference point \(\eta=0.12\), these are \(+0.072\) and \(-0.072\):
+
+\[
+P(Y=1\mid X=x,C_D=0.75)=p_x+0.072,
 \]
 
 \[
-P(Y=1\mid X=x,C_D=0.50)
-=p_x+0.12(2(0.2)-1)
-=p_x-0.072.
+P(Y=1\mid X=x,C_D=0.50)=p_x-0.072.
 \]
+
+The parent effect integrates to zero in these **single-variant marginal probabilities** because \(U_g\) is independent of \(C_D\) and has mean zero. This does not remove the shared-parent dependence across variants: it remains in the joint distribution and is preserved by parent-cluster resampling in §5.5.
 
 Without concentration:
 
@@ -200,50 +231,71 @@ P(Y=1\mid X=x)=p_x.
 The two concentration values each occur with probability one half. Define the Bernoulli Kullback-Leibler divergence:
 
 \[
-D_{\mathrm{B}}(a\|b)
+D_{\mathrm B}(a\|b)
 =
 a\log\frac{a}{b}
 +(1-a)\log\frac{1-a}{1-b}.
 \]
 
-Then the exact population gain is:
+For any value of \(\eta\) in the pre-run grid, define \(d_\eta=0.6\eta\). The exact panel-conditional population gain is:
 
 \[
-\Delta^*
+\Delta^*(\eta)
 =
 \frac{1}{3}
 \sum_{p\in\{0.25,0.50,0.75\}}
 \frac{1}{2}
 \left[
-D_{\mathrm{B}}(p+0.072\|p)
+D_{\mathrm B}(p+d_\eta\|p)
 +
-D_{\mathrm{B}}(p-0.072\|p)
+D_{\mathrm B}(p-d_\eta\|p)
 \right].
 \]
 
-The three difficulty-class contributions are:
+At the primary reference point \(\eta=0.12\), \(d_\eta=0.072\). The class-specific contributions are:
 
 | Baseline error probability \(p\) | Average conditional KL gain |
 |---:|---:|
-| 0.25 | 0.0139776334252 nats |
-| 0.50 | 0.0104041323561 nats |
-| 0.75 | 0.0139776334252 nats |
+| 0.25 | 0.013977633425200666 nats |
+| 0.50 | 0.010404132356061697 nats |
+| 0.75 | 0.013977633425200597 nats |
 
 Therefore:
 
 \[
-\boxed{\Delta^*=0.0127864664022\ \text{nats per held-out input}.}
+\boxed{\Delta^*(0.12)=0.01278646640215432\ \text{nats per held-out input}.}
 \]
 
-This is the known Bayes-optimal predictive gain under S1. It is not a threshold \(\tau\), not an empirical result, and not a claim about real solvers.
+The complete pre-run signal-strength grid gives:
 
-Because the non-concentration details of \(F\) are generated independently of \(H\) and \(Y\) conditional on \(C_D\), this particular generator also has:
+| \(\eta\) | \(d_\eta=0.6\eta\) | Exact \(\Delta^*(\eta)\), nats per held-out input |
+|---:|---:|---:|
+| 0.06 | 0.036 | 0.003174991495685611 |
+| 0.12 (primary) | 0.072 | 0.01278646640215432 |
+| 0.18 | 0.108 | 0.02911562064163267 |
+
+The values are directly reproducible from the displayed Bernoulli-KL formula. They are not empirical results, not a practical threshold \(\tau\), and not claims about real solvers. The grid is intended to expose sensitivity to signal strength; no result may be selected post hoc as the preferred S1 result.
+
+### 4.1 What the full-vector equality does and does not establish
+
+Under this particular S1 construction, the full failure vector contains no information about held-out outcomes beyond \(C_D\). To show this, write the vector \(F\) equivalently as \((Q,A)\), where \(Q\) determines whether the selected pair receives counts \((3,1)\) or \((2,2)\), and \(A\) records the randomly selected pair and, when relevant, the random orientation of the count 3.
+
+By construction, \(A\) is generated independently of \(H,U,X,Y\) conditional on \(Q\). Therefore:
 
 \[
-I(Y;F\mid X)=I(Y;C_D\mid X).
+I(Y;F\mid X)
+=I(Y;Q,A\mid X)
+=I(Y;Q\mid X)+I(Y;A\mid Q,X)
+=I(Y;Q\mid X).
 \]
 
-This is a property of the deliberately controlled S1 generator. It does not imply that the full failure vector and concentration are equally informative in real data.
+Since \(C_D\) is a one-to-one function of \(Q\) in this design:
+
+\[
+\boxed{I(Y;F\mid X)=I(Y;C_D\mid X).}
+\]
+
+This equality is proved for S1's deliberately constructed measurement process. **It is a favourable feature, not evidence that concentration generally preserves the information in the full failure vector.** S1 has made every non-\(C_D\) detail of \(F\) ancillary by construction. A later scenario must allow the full vector to carry predictive information not captured by its maximum, and must assess the loss from that compression.
 
 ## 5. Candidate estimator and predictive evaluation
 
@@ -284,11 +336,13 @@ Fit by ordinary binomial maximum likelihood. No post-fit feature selection, tuni
 
 Predictions for test parents are population-marginal predictions. The parent effect is not known for a new parent; its distribution is integrated into the target conditional probabilities. Parent clustering is handled in the uncertainty procedure below.
 
-### 5.3 Conditional true gain of each fitted pair
+**Deliberately favourable calibration feature:** because \(C_D\) has only two values and \(X\) has three values, \(M_1\) is saturated over the six observable \((X,C_D)\) cells. Its functional form can represent the generator's true marginal conditional probabilities exactly. S1 therefore tests finite-sample learning and uncertainty for a correctly specified binary-proxy estimator. It does **not** test robustness to a misspecified estimator, a continuous or multi-valued concentration feature, or a more complex relationship. Those are not silently covered by a pass.
 
-The Bayes gain \(\Delta^*\) is the fixed limit. A finite training sample produces fitted prediction functions \(\widehat q_0\) and \(\widehat q_1\), which may not attain that limit.
+### 5.3 Formal known-truth target for each fitted training pair
 
-For each fitted training pair, its exact population generalization gain is calculated from the known generator probabilities:
+The Bayes population gain \(\Delta^*\) in §4 is the fixed limit available to the optimal predictors. It is **not** the target of the conditional test-parent interval.
+
+For each fitted training pair, define its replication-specific known truth \(\Delta_{\mathrm{fit}}\) as the exact expected log-loss difference of those two fitted prediction functions under the same panel-conditional generator distribution:
 
 \[
 \Delta_{\mathrm{fit}}
@@ -315,9 +369,14 @@ p_{x,0.50}=p_x-0.072,
 
 and \(P(X=x)=1/3\), \(P(C_D=c)=1/2\).
 
-This is the true expected log-loss difference of the fitted prediction rules under the declared population. It is computed analytically from the known outcome distribution after the training fit is complete, but without using any test outcomes. It may be smaller than \(\Delta^*\), zero, or negative if finite-sample fitting fails to learn the signal.
+This is the known population expected log-loss difference for this particular fitted pair. It is computed analytically from the generator after fitting, without using any test outcomes. It is a **known-truth benchmark conditional on the training fit**, not an estimate of \(\Delta^*\). It may be smaller than \(\Delta^*\), zero, or negative if finite-sample fitting fails to learn the signal.
 
-This distinction is essential: the test estimator is asked to recover \(\Delta_{\mathrm{fit}}\), while the repeated-training distribution of \(\Delta_{\mathrm{fit}}\) shows how well the learning procedure approaches the Bayes limit \(\Delta^*\).
+The two calibration questions are distinct:
+
+- Does the fitted learning procedure approach the Bayes limit? Assess the distribution of \(\Delta_{\mathrm{fit}}\) across independent training-parent samples against \(\Delta^*\).
+- Does the independent test estimator recover the gain of the fitted pair? Assess \(\widehat\Delta_{\mathrm{test}}-\Delta_{\mathrm{fit}}\) and the interval coverage conditional on that fitted pair.
+
+The bias and coverage criteria in §7 refer to the second question. They do not claim that the conditional test interval covers \(\Delta^*\) or accounts for training-sample variability.
 
 ### 5.4 Independent test estimate
 
@@ -346,46 +405,63 @@ Then give each parent equal weight:
 
 This is an estimate of the fitted pair's conditional true gain \(\Delta_{\mathrm{fit}}\), not a new estimate of \(\Delta^*\) from the training data.
 
-### 5.5 Uncertainty interval
+### 5.5 Uncertainty interval and exact scope
 
-Use a **parent-cluster bootstrap of the independent test sample**, conditional on the fitted training models:
+Use a **nonparametric parent-cluster bootstrap of the independent test sample**, conditional on the already fitted training prediction functions:
 
-1. Resample complete test-parent clusters with replacement.
+1. Resample the \(J\) complete test-parent clusters with replacement.
 2. Keep each selected parent's five variants and all 60 outcomes per variant together.
 3. Recalculate the equal-parent-weighted mean loss difference.
 4. Repeat for 1,999 bootstrap draws.
 5. Use the 2.5th and 97.5th percentiles for the two-sided 95% interval.
-6. For the one-sided 95% lower bound used in the positive-detection and false-positive criteria, use the 5th percentile of the same bootstrap distribution. Do not reuse the two-sided 2.5th-percentile endpoint for a one-sided 5% test.
+6. For the one-sided 95% lower bound used in the positive-detection and false-positive criteria, use the 5th percentile of the same bootstrap distribution, not the 2.5th percentile.
 
-No row-level bootstrap is allowed. The training prediction functions remain fixed within this conditional interval because the interval targets \(\Delta_{\mathrm{fit}}\). Variation in training fits is assessed across the independent simulation replications. The interval must not be described as including training-sample uncertainty.
+The bootstrap distribution approximates the sampling distribution of \(\widehat\Delta_{\mathrm{test}}\) over new independent parent clusters, **conditional on the fitted training models and the fixed held-out panel**. Resampled clusters are drawn with replacement; the resulting bootstrap dependence is the standard nonparametric cluster-bootstrap construction. No parametric correction is applied.
 
-This is a conditional new-parent interval on the fixed synthetic input panel. It does not generalize to new input groups or templates; that requires the later crossed-input scenario.
+The bootstrap does not capture training-sample variability. That is deliberate because this interval targets the replication-specific \(\Delta_{\mathrm{fit}}\). Training-sample variability is separately assessed across the independent simulation replications through the distribution of \(\Delta_{\mathrm{fit}}\). Thus the coverage criterion assesses conditional coverage of \(\Delta_{\mathrm{fit}}\), not marginal coverage of the Bayes limit \(\Delta^*\).
 
-## 6. Matched null companion for false-positive calibration
+No row-level or variant-level bootstrap is allowed. This procedure does not generalize to new input panels or templates; those require a later crossed-input scenario.
 
-A positive scenario alone cannot assess false positives. The minimum matched null keeps the diagnostic process, parent hierarchy, input panel, sample sizes, estimator, and uncertainty procedure unchanged, but sets:
+## 6. Fully specified matched null companion for false-positive calibration
+
+A positive scenario alone cannot assess false-positive behaviour. The matched null changes only the outcome relationship between latent state \(H\) and held-out errors. All other S1 components remain identical.
+
+**Unchanged from S1 positive world:**
+
+- \(J\) independent training parents and \(J\) independent test parents at each calibration-grid point;
+- five variants per parent;
+- parent effect \(U_g\in\{-0.05,+0.05\}\) with equal probability, shared across all variants and held-out outcomes for that parent;
+- variant-level \(H_{gv}\sim\mathrm{Bernoulli}(1/2)\);
+- diagnostic signal \(Q\) with sensitivity 0.8 and false-positive probability 0.2;
+- the eight-stratum construction of \(F\), so \(k_{\mathrm{fail}}=4\), \(k_{\mathrm{unresolved}}=0\), two occupied strata, and \(C_D\in\{0.50,0.75\}\);
+- the same fixed 60-item held-out panel, with 20 items in each difficulty class and the same baseline values \(p_1=0.25,p_2=0.50,p_3=0.75\);
+- the same M0 and M1 estimators, train/test separation, parent-cluster bootstrap, and availability rules.
+
+**The only changed parameter is \(\eta=0\** in the outcome model:
 
 \[
-\eta=0
+Y_{gvi}\mid H_{gv},U_g,X_i=x
+\sim
+\operatorname{Bernoulli}(p_x+U_g).
 \]
 
-in the outcome model:
+The latent state still predicts \(Q\), \(F\), and \(C_D\), but it no longer affects held-out outcomes. The parent effect is independent of \(H,Q,C_D,X\), and its marginal mean is zero. Therefore:
 
 \[
-P(Y=1\mid H,U,X=x)=p_x+U_g.
+P(Y=1\mid X=x,C_D=c)=p_x,
+\qquad
+Y\perp C_D\mid X,
+\qquad
+\boxed{\Delta^*=0.}
 \]
 
-The latent state still predicts the diagnostic signal and therefore \(C_D\), but it no longer affects held-out errors. Since \(U_g\) is independent of \(C_D\):
+The shared \(U_g\) still induces within-parent outcome dependence. This is important: the null preserves the same parent clustering as the positive world. A false-positive difference cannot be attributed merely to removal of the parent random effect.
 
-\[
-Y\perp C_D\mid X,\qquad \Delta^*=0.
-\]
-
-This matched null is included here only to predeclare the false-positive calibration required to interpret S1. It is the positive-world companion of the broader S2 scenario, not a complete specification of S2's other controls.
+This matched null is the minimum false-positive companion for S1. It is not the complete S2–S7 validation programme and does not establish false-positive control under other forms of confounding, input dependence, partition changes, or unresolvedness.
 
 ## 7. Simulation dimensions and proposed calibration tolerances
 
-These are **proposals for review**, not frozen criteria.
+These are **proposals for review, not frozen criteria**. Their rationales and limitations are stated so that the reviewer can accept, reject, or replace them before any run.
 
 ### 7.1 Dimensions
 
@@ -396,27 +472,31 @@ These are **proposals for review**, not frozen criteria.
 | Variants per parent, \(V\) | 5 |
 | Held-out inputs per variant, \(I\) | 60 |
 | Inputs per difficulty class | 20 |
-| Independent S1 replications per \(J\) | 2,000 |
+| Independent positive-world replications per \(J\) | 2,000 |
 | Independent matched-null replications per \(J\) | 2,000 |
 | Test-parent bootstrap draws per dataset | 1,999 |
 | Primary score | Bernoulli log loss, nats per held-out input |
 
-The \(J\) grid is intended to reveal the estimator's variance and detection curve. No minimum or adequate operating parent count is selected here. The proposed grid is not an adoption of the earlier 30-parent LC518 roster.
+The parent grid doubles from 30 to 60 to 120, spanning a fourfold range in independent training and test parent counts. If the parent-level variance of the paired test loss difference were constant, its standard error would scale approximately as \(1/\sqrt J\), giving relative standard-error factors \(1,1/\sqrt2,1/2\). The absolute interval widths cannot be responsibly supplied without the parent-level variance under the fitted procedure; that variance is not estimated in the record and is a target of the calibration. This grid is therefore a declared diagnostic range, not a claim that any point is adequate or that it spans a particular expected interval width.
+
+The \(J\) values are calibration-grid dimensions only. They are not an operating sample-size recommendation, do not adopt the LC518 30-parent roster, and do not answer the real-study parent-count question. Training and test parents are separate, so each replication uses \(2J\) independent parents in total.
 
 ### 7.2 Proposed pass criteria
 
-The following criteria are proposed for the calibration reference point \(J_{\mathrm{train}}=J_{\mathrm{test}}=120\). Results at 30 and 60 parents are reported in full but do not determine the reference-point calibration verdict.
+The following criteria are proposed for the reference point \(J_{\mathrm{train}}=J_{\mathrm{test}}=120\), except where explicitly stated otherwise. Results at 30 and 60 parents are reported in full. A successful result at 120 does not establish adequacy at 30 or 60.
 
-1. **Learning recovery:** the mean exact fitted gain across S1 training replications, \(E[\Delta_{\mathrm{fit}}]\), is at least 80% of the Bayes limit \(\Delta^*\). This checks that the fitted procedure learns most of the available signal. The 80% is a proposed engineering calibration tolerance, not a practical decision threshold.
-2. **Test-estimator bias:** the absolute Monte Carlo mean of \(\widehat\Delta_{\mathrm{test}}-\Delta_{\mathrm{fit}}\) is no more than 10% of \(\Delta^*\), approximately 0.00127865 nats. The 10% relative-bias tolerance is proposed and requires reviewer justification.
-3. **Interval coverage:** the parent-cluster 95% intervals cover the replication-specific \(\Delta_{\mathrm{fit}}\) in 94% to 96% of S1 replications. With 2,000 replications, the Monte Carlo standard error at 95% coverage is approximately 0.00487; the proposed band is about two Monte Carlo standard errors on either side of nominal coverage.
-4. **Positive detection:** at the reference point, at least 80% of S1 one-sided 95% parent-cluster lower confidence bounds exceed zero. This is a proposed conventional power criterion for this synthetic calibration point only. It does not select the real-study parent count.
-5. **False-positive control:** in the matched null, the proportion of one-sided 95% lower bounds above zero must not exceed 6% at any of the three \(J\) values. At 2,000 replications, the Monte Carlo standard error at a 5% false-positive rate is approximately 0.00487; 6% is approximately two standard errors above nominal.
-6. **Availability:** all failed fits, empty bootstrap draws, and unavailable replications are counted and reported. No failed replication is replaced. If more than 1% of the reference-point replications are unavailable, S1 is not passed.
+1. **Learning recovery:** the mean exact fitted gain across positive-world training replications, \(E[\Delta_{\mathrm{fit}}]\), is at least 80% of the Bayes limit \(\Delta^*\). The proposed rationale is that the fitted procedure should learn at least four-fifths of the known available information in this deliberately favourable, correctly specified setting. This is an engineering calibration tolerance, not a practical-effect threshold. Report sensitivity verdicts at 70% and 90% as well.
+2. **Test-estimator bias:** the absolute Monte Carlo mean of \(\widehat\Delta_{\mathrm{test}}-\Delta_{\mathrm{fit}}\) is no more than 10% of \(\Delta^*\), approximately 0.00127865 nats at the primary \(\eta=0.12\) point. This relative tolerance scales with the known injected gain and asks the test estimator to recover the fitted-pair truth with at most one-tenth of the signal lost or added on average. Also report absolute bias in nats and sensitivity verdicts at 5% and 20% of \(\Delta^*\). This is not an operational decision threshold.
+3. **Interval coverage:** the parent-cluster two-sided 95% intervals cover the replication-specific \(\Delta_{\mathrm{fit}}\) in 94% to 96% of positive-world replications at \(J=120\). With 2,000 replications, the Monte Carlo standard error at 95% coverage is approximately 0.00487, so the band is approximately two Monte Carlo standard errors around nominal coverage. Coverage at \(J=30\) and \(J=60\) is reported but is **not** covered by this pass criterion; the draft does not claim the bootstrap is calibrated at those smaller cluster counts.
+4. **Positive detection:** at \(J=120\), at least 80% of positive-world one-sided 95% parent-cluster lower bounds exceed zero. The lower bound is the 5th percentile specified in §5.5. The 80% value is a conventional design-power target for this calibration reference point, not a selection of the real-study parent count and not evidence of practical utility.
+5. **False-positive control:** in the fully matched null of §6, the proportion of one-sided 95% lower bounds above zero must not exceed 6% at each of \(J=30,60,120\). At 2,000 replications, the Monte Carlo standard error at a nominal 5% rate is approximately 0.00487; 6% is approximately two such standard errors above nominal. Report the observed proportion and its exact binomial interval; do not interpret an observed rate of 6% as proof that the population false-positive rate is at most 6%.
+6. **Availability:** all failed fits, empty bootstrap draws, and unavailable replications are counted and reported. No failed replication is replaced. If more than 1% of the reference-point positive or null replications are unavailable, the reference-point calibration is not passed. This is an operational completeness tolerance; report sensitivity at 0.5% and 2%.
 
-Report for every \(J\): mean and median \(\Delta_{\mathrm{fit}}\), mean and median test estimate, bias, RMSE, interval width, coverage, positive-detection fraction, null false-positive fraction, and all availability reasons.
+The 80% learning-recovery, 10% relative-bias, 94%-96% coverage, 80% detection, 6% false-positive and 1% availability values remain provisional until independent review. The sensitivity cut-offs are reporting requirements, not permission to select a threshold after seeing the results.
 
-The tolerances above are not inherited from v0.2's \(\delta\), the v0.3-P \(d^*\), or the historic 0.04-nat quantity. In particular, \(\Delta^*\) is not \(\tau\).
+For every \(J\) and every predeclared \(\eta\), report mean and median \(\Delta_{\mathrm{fit}}\), mean and median test estimate, bias, RMSE, interval width, coverage, positive-detection fraction, null false-positive fraction, and all availability reasons. Also report the Monte Carlo standard errors for all estimated operating characteristics.
+
+These tolerances are not inherited from v0.2's \(\delta\), the v0.3-P \(d^*\), or the historic 0.04-nat quantity. In particular, \(\Delta^*\) is not the practical threshold \(\tau\).
 
 ## 8. Circularity assessment
 
@@ -432,50 +512,65 @@ S1 avoids that direct circularity in the following way:
 
 The six-cell logistic estimator can represent the observable conditional probability table after marginalizing the latent state. That representational compatibility is not itself circular: the generator never uses the observed concentration value to draw \(Y\). The relationship arises because \(C_D\) is informative about a common latent cause.
 
+This compatibility is nevertheless a **favourable feature**. The true conditional model has exactly six \((X,C_D)\) cells, and \(M_1\) is saturated over those same six cells. S1 therefore evaluates the finite-sample performance of a correctly specified estimator. It does not test functional-form robustness or recovery under estimator misspecification. A separate misspecification arm would be required before making any such claim.
+
 **What this does not test:** it does not distinguish a useful proxy from a causal effect of concentration. S1 is a positive calibration world for incremental prediction. The later confounded scenario must make the relevant latent state observed and included among the baseline controls; its conditional incremental gain for \(C_D\) should then be zero.
 
 If the project requires a positive control for a direct causal effect of concentration rather than a predictive proxy, this S1 does not meet that requirement and must be rejected or renamed.
 
-## 9. Scope limits and relation to the remaining validation programme
+## 9. Scope limits and exact inference-transfer statement
 
 S1 deliberately holds the following fixed or absent:
 
-- one homogeneous parent-family population;
+- one homogeneous synthetic parent population;
 - one latent binary defect state, not eight causal defect mechanisms;
 - exactly four definite failures and two occupied diagnostic strata;
 - no unresolved diagnostic outcomes;
+- a binary concentration proxy with only \(C_D=0.50\) and \(C_D=0.75\);
 - a fixed held-out input panel with three difficulty classes;
 - no random input-group or template effect;
 - no diagnostic-to-held-out stratum correspondence;
-- no mutation-operator identity or realization-setting variable.
+- no mutation-operator identity or realization-setting variable;
+- a correctly specified saturated six-cell estimator.
 
-Consequently, S1 cannot validate measurement robustness, the proposed stratum-recurrence mechanism, identification against observed defect identity, unresolved-outcome handling, or cross-input generalization.
+Consequently, S1 cannot validate measurement robustness, the proposed stratum-recurrence mechanism, identification against observed defect identity, unresolved-outcome handling, generalization to new input panels, multi-valued concentration, or robustness to estimator misspecification.
 
-Those remain separate scenarios:
+**Minimum positive inference if S1 passes:** the specified marginal saturated six-cell estimator can recover the known panel-conditional predictive gain of a binary latent proxy under this particular independent-parent generator, with the operating characteristics and tolerances reported in S1.
 
-- S2: the matched null specified in §6, extended with the complete false-positive controls.
-- S3: observable common-cause/defect-state control, with the true conditional gain of \(C_D\) equal to zero after conditioning on that state.
-- S4: predeclared alternative diagnostic partitions, with the same underlying input-level failure outcomes reclassified.
-- S5: crossed parent, solver, input-group, and template dependence.
-- S6: unresolved outcomes associated with held-out errors, with the DAG and handling rule declared.
+**What a pass does not license:** it does not validate B1 v1.6, its conditional-randomization test, its exact-cell selection, its parent-population inference, its multi-valued or eight-stratum concentration support, or any claim about real solvers. It does not authorize LC518 solver construction or execution.
+
+S1 uses a deliberately marginal estimator as a first calibration step. The exact B1 v1.6 procedure is a different analysis target. Before anyone can claim that the B1 analysis is calibrated, a separate bridge calibration must either:
+
+1. apply the exact B1 v1.6 estimator and its declared conditional-randomization procedure to a generator with a known truth for that same estimand and target; or
+2. formally revise the intended B1 analysis to the estimator calibrated here, through the appropriate review and acceptance process.
+
+A pass in this S1 alone cannot be transferred to B1 v1.6.
+
+The remaining validation scenarios are:
+
+- S2: the matched null in §6, extended with complete false-positive controls;
+- S3: an observable common-cause/defect-state control, where conditioning on the observed state removes the incremental information in \(C_D\), even though an unadjusted proxy association is present;
+- S4: predeclared alternative diagnostic partitions, with the same underlying input-level failure outcomes reclassified;
+- S5: crossed parent, solver, input-group, and template dependence;
+- S6: unresolved outcomes associated with held-out errors, with the DAG and handling rule declared;
 - S7: degenerate and unsupported cells, with explicit unavailability rather than pooling or substitution.
 
 No S2-S7 scenario is frozen by this S1 document.
 
-## 10. Questions submitted to Claude
+## 10. Questions submitted to DeepSeek
 
-Please review this document as a specification, not as a report of executed work. Specific objections are requested with section references.
+Please review this v0.2 document as a specification, not as a report of executed work. Specific objections are requested with section references.
 
 1. **Outcome model:** Is the latent common-cause model in §3 a legitimate positive predictive benchmark, or does it fail to represent the scientific claim the project needs to test?
 2. **Circularity:** Does deriving \(\Delta^*\) from \(P(Y\mid X,C_D)\) after marginalizing \(H\) adequately separate the true outcome model from the estimator? Is the fitted-gain calculation in §5.3 independent enough?
 3. **Estimand:** Is conditional mutual information in nats the right calibration target for the intended held-out correctness claim, or should the target be a different predictive score?
-4. **Estimator:** Is the marginal six-cell logistic estimator a suitable first calibration estimator? Must S1 instead use the exact B1 v1.6 estimator to be useful?
+4. **Estimator and transfer:** Is it acceptable to keep S1 as a deliberately limited first calibration of the marginal six-cell estimator, with no inference transfer to B1 v1.6, or must the exact B1 v1.6 procedure be incorporated before the calibration can be useful?
 5. **Hierarchy:** Are separate training and test parent samples, plus test-parent bootstrap, sufficient for the declared conditional target? Does the procedure account for all uncertainty it claims to account for?
 6. **Calibration dimensions:** Are \(J=\{30,60,120\}\), five variants per parent, and 60 fixed input items defensible as diagnostic simulation dimensions without adopting an operating population size?
 7. **Tolerances:** Are 10% relative bias, 94%-96% coverage, 80% detection at the reference grid point, and a 6% false-positive ceiling defensible before any run? If not, propose explicit alternatives and rationales.
 8. **Proxy versus mechanism:** Is it scientifically appropriate to call this S1 positive when the signal is generated by a latent common cause, and what exactly must S3 demonstrate?
 9. **Full-vector comparator:** Does the stated equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) make this a fair calibration of the concentration summary, or does it make the example too favorable?
-10. **Scope:** What is the minimum change required before this specification can be called a valid calibration of the actual B1 analysis?
+10. **Scope:** Is the explicit inference-transfer boundary in §9 correct? What additional bridge calibration is necessary before any claim about B1 v1.6 can be made?
 
 A response that says only "approve" is not sufficient. Please identify any mathematical error, unacknowledged assumption, unsupported tolerance, or mismatch with the intended estimand.
 
@@ -485,9 +580,32 @@ This is a design-only draft. The current bounded authorization does not cover ge
 
 No code may be written, no scenario may be run, no model may be fitted, and no synthetic or real bank may be reused until all of the following occur:
 
-1. Claude completes the independent review and records section-specific objections.
+1. DeepSeek completes the independent web-chat review and records section-specific objections.
 2. GPT adjudicates those objections and revises the document if necessary.
 3. The owner accepts a specific reviewed specification hash as frozen.
 4. A separate explicit execution GO authorizes the implementation and run, with a declared scope.
 
 The parent count for a real study remains undecided. The calibration grid in §7 is not an operating sample-size recommendation and does not reopen LC518 population work.
+
+
+---
+
+## 12. Revision record — v0.2 after DeepSeek review
+
+This revision responds to the section-by-section S1 review supplied by DeepSeek on 2026-11-18. The original v0.1 remains available in the preceding Git commit.
+
+- The estimand is explicitly conditional on the fixed 60-item held-out panel, not a superpopulation of input identities.
+- The rationale for Bernoulli log loss is stated.
+- The two-valued \(C_D\) support is explicitly identified as a binary-proxy calibration, not a general test of multi-valued concentration.
+- The parent-effect marginalization is shown line by line; \(\eta\) is identified as an analyst-selected DGP parameter, and a pre-run signal-strength grid with analytically derived gains is declared.
+- The equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) is proved from the ancillary randomization in this deliberately favourable construction and is not generalized.
+- The matched null is expanded. The review's description of §6 as missing is not adopted as a factual finding: §6 existed in v0.1, but its full unchanged hierarchy and null implications are now made explicit.
+- \(\Delta_{\mathrm{fit}}\) is elevated as the replication-specific known truth for the fitted pair; the bootstrap interval is explicitly conditional on the training fit and fixed input panel.
+- The one-sided 95% lower bound is explicitly the 5th bootstrap percentile.
+- Tolerance rationales, sensitivity cut-offs, the limitation of coverage assessment to \(J=120\), and the geometric rationale for the \(J\) grid are stated.
+- The correctly specified saturated estimator is acknowledged as favourable. A pass validates only this estimator and generator; it does not validate B1 v1.6.
+- The inference-transfer boundary and need for a separate B1 bridge calibration are explicit.
+
+**Not resolved by this revision:** the proposed tolerance values still require DeepSeek's review; no estimator-misspecification arm has been specified; the absolute parent-level variance and interval widths remain unknown pending a permitted calibration; and S1 remains a binary-proxy, fixed-panel, synthetic benchmark.
+
+No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
