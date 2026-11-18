@@ -1,7 +1,7 @@
 # S1: known predictive-gain calibration specification
 
 **Date:** 2026-11-18  
-**Version:** 0.4 — revised after DeepSeek's direct v0.3 review and Claude's handoff critique  
+**Version:** 0.5 — revised after DeepSeek's direct v0.4 review and Claude's follow-up critique  
 **Status:** **DRAFT FOR DEEPSEEK WEB-CHAT REVIEW. NOT ACCEPTED, NOT FROZEN, NOT AN EXECUTION GO.**  
 **Scope:** a narrow synthetic methods-calibration / analytical-machinery check only. It is not an empirical test of real solvers and supplies no evidence that concentration predicts real-solver correctness. Mathematical and statistical specification only. No generator code, executable implementation, simulation, model fitting, Monte Carlo run, solver construction, mutation allocation, bank reuse, or model/API calls are authorized or performed by this document.
 
@@ -554,7 +554,15 @@ MCSE(\widehat{\mathrm{FPR}}_J)
 {R_{\mathrm{valid},J}}}.
 \]
 
-At the planned \(R_{\mathrm{valid},J}=2{,}000\), the MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
+At the planned \(R_{\mathrm{valid},J}=2{,}000\), the MCSE is approximately 0.004873 at a 5% false-positive rate and 0.005310 at 6%. These same calculations apply separately to \(J=30,60,120\); the actual denominator must be reported for each:
+
+| Null parent count \(J\) | Planned valid replications | MCSE at 5% FPR | MCSE at 6% FPR |
+|---:|---:|---:|---:|
+| 30 | 2,000 | 0.004873 | 0.005310 |
+| 60 | 2,000 | 0.004873 | 0.005310 |
+| 120 | 2,000 | 0.004873 | 0.005310 |
+
+The values are identical across \(J\) only because the planned replication count is identical; any unavailable replications change the denominator and therefore the MCSE. Report the observed rate and its exact binomial Monte Carlo interval; a point estimate at or below 6% is not proof that the population false-positive probability is at most 6%.
 
 The relative bias rule has the following absolute equivalents. These values are shown for all \(\eta\) so that the scale is visible; only the \(J=120,\eta=0.12\) cell is the primary bias gate.
 
@@ -651,33 +659,34 @@ A pass in this S1 alone cannot be transferred to B1 v1.6.
 The remaining validation scenarios are:
 
 - S2: the matched null in §6, extended with complete false-positive controls;
-- S3a: an oracle common-cause control, conditioning on fully observed \(H\); - S3b: an imperfect-proxy/partial-measurement control, with a prespecified noisy measurement \(W\) of \(H\), comparing \((X,W)\) with \((X,W,C_D)\). Neither stage is a real-solver validation;
+- S3a: an oracle common-cause control, conditioning on fully observed \(H\).
+- S3b: an imperfect-proxy/partial-measurement control, with a prespecified noisy measurement \(W\) of \(H\), comparing \((X,W)\) with \((X,W,C_D)\). Neither stage is a real-solver validation;
 - S4: predeclared alternative diagnostic partitions, with the same underlying input-level failure outcomes reclassified;
 - S5: crossed parent, solver, input-group, and template dependence;
-- S6: a required unresolved-outcome scenario. It is **named but not specified or frozen** here. Its future specification must declare the unresolved-outcome process, its association with held-out correctness, the causal/dependence DAG, how unresolved outcomes enter the (k_{mathrm{fail}}/k_{mathrm{unresolved}}) coordinates, the estimator's treatment rule, and the corresponding known-truth and null checks;
+- S6: a required unresolved-outcome scenario. It is **named but not specified or frozen** here. Its future specification must declare the unresolved-outcome process, its association with held-out correctness, the causal/dependence DAG, how unresolved outcomes enter the \((k_{\mathrm{fail}},k_{\mathrm{unresolved}})\) coordinates, the estimator's treatment rule, and the corresponding known-truth and null checks;
 - S7: degenerate and unsupported cells, with explicit unavailability rather than pooling or substitution.
 
 No S2-S7 scenario is frozen by this S1 document. S3a/S3b and S6 are named requirements only; they are not complete executable scenario specifications. In particular, S6 is not being treated as already designed merely because it appears in this list.
 
 ## 10. Questions submitted to DeepSeek
 
-Please review this v0.4 document as a specification, not as a report of executed work. The first issue is whether S1 has a decision-relevant methodological purpose at all. S1 cannot answer whether concentration predicts correctness in real solvers. It can only test this estimator and uncertainty procedure under the stated synthetic known-truth conditions. Please identify a concrete research or methods decision that a positive, negative, or inconclusive S1 result would change. If no such decision exists, say so and recommend that S1 not be run until its purpose is redefined.
+Please review this v0.5 document as a specification, not as a report of executed work. The first issue is whether S1 has a decision-relevant methodological purpose at all. S1 cannot answer whether concentration predicts correctness in real solvers. It can only test this estimator and uncertainty procedure under the stated synthetic known-truth conditions. Please identify a concrete research or methods decision that a positive, negative, or inconclusive S1 result would change. If no such decision exists, say so and recommend that S1 not be run until its purpose is redefined.
 
-1. **Real-solver relevance and decision consequence:** Do you agree that S1 cannot answer an empirical question about real solvers? Does the narrow machinery-check output described in §1 change any identifiable research decision? Name the decision and the result that would change it; if no decision changes, recommend stopping S1 rather than executing it.
+1. **Real-solver relevance and decision consequence:** Does the explicit §1 decision rule now identify a concrete methods decision: whether the current M0/M1 plus parent-cluster bootstrap is retained as the candidate for S2-S7? Is pass -> carry to S2-S7 specification; fail -> revise before that specification; inconclusive -> no progression a meaningful and usable rule? If not, state the precise alternative or recommend stopping S1.
 2. **Outcome model and scientific target:** Is the latent common-cause model in §3 a legitimate positive predictive benchmark for the project's intended held-out correctness question, or does it calibrate a different claim?
 3. **Panel estimand and scoring:** Is the explicit 60-item panel-conditional estimand in §2.2.1, indexed by \(\eta\), correctly stated and a defensible first calibration target? Is Bernoulli log loss the appropriate primary probabilistic score, given that it is not a decision-utility measure?
 4. **Derivation and circularity:** Is the marginalization over \(H\) and \(U\) in §4 correct and independently reproducible? Does deriving \(\Delta^*\) from the generator, and \(\Delta_{\mathrm{fit}}\) from the same known conditional distribution without test outcomes, adequately separate truth from estimator evaluation?
 5. **Estimator and transfer:** Is it acceptable to keep S1 as a deliberately limited calibration of the marginal six-cell estimator, with no inference transfer to B1 v1.6, or must the exact B1 v1.6 procedure be incorporated before this calibration can be useful?
 6. **Hierarchy and coverage:** Are the separate training/test parent samples and test-parent cluster bootstrap adequate for the declared target? Does §5.5 define the conditional-coverage target correctly as \(E_T[P_S\{\Delta_{\mathrm{fit}}(T)\in CI(T,S)\mid T\}]\)?
 7. **Calibration dimensions:** Are \(J=\{30,60,120\}\), five variants per parent, and the fixed 60-item panel defensible diagnostic dimensions without adopting an operating population size?
-8. **Tolerances and Monte Carlo precision:** Are the provisional 80% recovery and 10% bias tolerances defensible as engineering choices? Are the new Monte Carlo confidence-interval rules for these two gates sufficiently precise? Does the absence of empirical parent-level variance mean these gates should remain provisional pending a separately authorized pilot? Is it appropriate that only \(J=120,\eta=0.12\) is the positive-world gate, while all other positive cells are report-only and the null false-positive gate applies at every \(J\)?
+8. **Tolerances and Monte Carlo precision:** Are the provisional 80% recovery and 10% bias tolerances defensible as engineering choices? Are the displayed MCSE formulas, t-based Monte Carlo intervals and explicit pass/fail/inconclusive rules adequate? Does the absence of empirical parent-level variance mean these gates should remain provisional pending a separately authorized pilot? Are the false-positive-rate MCSE calculations and reference values adequate when explicitly reported separately for each J?
 9. **Full-vector comparator:** Is the equality \(I(Y;F\mid X)=I(Y;C_D\mid X)\) correctly limited to this generator, and is it still worth retaining as a generator identity rather than removing it?
 10. **Scope and B1 bridge:** Is the inference-transfer boundary in §9 sufficiently explicit? What exact known-truth calibration of the B1 v1.6 estimator and conditional-randomization procedure would be required before any B1 claim?
 11. **Matched-null assessment:** Please state in your own words your assessment of §6. Does it preserve the same diagnostic process, parent-effect distribution, and unresolved-outcome status as the positive world? Do you agree it is adequate as a minimum null only because both worlds set \(k_{\mathrm{unresolved}}=0\), while leaving unresolved-outcome handling untested? Please record your §6 assessment in your own review rather than relying on GPT's summary.
-12. **S3 distinction:** Is the proposed S3 oracle adjustment for observed \(H\) an appropriate first confounding control? Is a separate scenario with an imperfectly observed common cause or best-available proxy also needed?
-13. **Stop/go value:** Which specific S1 outputs would change a methods decision: recovery, bias, coverage, positive detection, false-positive rate, or availability? State the action attached to each result. If none would change a decision, recommend no S1 execution until the decision purpose is defined.
+12. **S3 distinction:** Is the proposed S3a oracle adjustment for observed \(H\) appropriate as a diagnostic first step? Is S3b, with an imperfectly observed common cause or best-available proxy, necessary before assessing feasible adjustment? Does either synthetic scenario support any empirical claim about real solvers?
+13. **§6 in your own words:** Do you agree that the matched null preserves the same diagnostic process and parent-effect distribution and is adequate only as a no-unresolved minimum null? Please state whether (k_{\mathrm{unresolved}}=0) in both worlds means that unresolved outcome handling remains untested, and specify any issue you still see in §6.
 
-Please give section-specific objections, distinguish mathematical errors from design preferences, and state which issues are true blockers versus limitations that can be accepted for a narrow first-stage calibration. Do not treat this request as a request for approval or a freeze decision.
+Please give section-specific objections, distinguish mathematical errors from design preferences, and state which issues are true blockers versus limitations that can be accepted for a narrow first-stage machinery check. Do not treat this request as a request for approval, a freeze decision or an execution GO.
 ## 11. Execution and change-control boundary
 
 This is a design-only draft. The current bounded authorization does not cover generator-code implementation. Writing the generator code is an implementation action, not merely writing mathematics, and is outside the scope of this document and the current design-only authorization.
@@ -742,5 +751,19 @@ DeepSeek's direct review found no mathematical or statistical error in the panel
 - The 80% learning-recovery and 10% bias thresholds are explicitly provisional engineering tolerances. Monte Carlo standard errors and confidence intervals are defined directly for both gates, with precision-supported pass/fail/inconclusive classifications. Any pilot-based revision must be documented before a distinct confirmatory run; pilot replications are not pooled.
 - S3 is explicitly labelled an oracle common-cause adjustment because \(H\) is fully observed in that synthetic scenario; imperfect-proxy adjustment would require a separate scenario.
 - The next DeepSeek review is asked to state its own assessment of §6, identify the decision consequences of S1 outcomes, and recommend stopping S1 if no methods decision depends on it.
+
+No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
+
+
+## 15. Revision record — v0.5 after DeepSeek's direct v0.4 review and Claude's follow-up
+
+- A single concrete downstream methods decision is named: whether the current \(M_0/M_1\) marginal estimator plus test-parent cluster bootstrap is carried forward as the candidate method for S2-S7 specification.
+- The proceed/revise/stop rule is explicit: all primary gates precision-supported pass -> carry the method forward as an S2-S7 candidate; any primary gate fails -> revise before the subsequent suite is designed around it; any primary gate inconclusive -> do not advance without a separately authorized precision remedy or redesign.
+- The positive inference licensed by a complete S1 pass is stated explicitly and remains limited to recovery of a known binary-proxy gain under independent parent sampling on the fixed panel.
+- The direct DeepSeek v0.4 review's request for displayed MCSE formulas and inconclusive rules is cross-checked against the v0.4 blob on the review branch. That blob already contained \(MCSE(\bar r)\), \(MCSE(\bar b)\), corresponding 95% Monte Carlo intervals, and explicit pass/fail/inconclusive rules. The reviewer report says it did not see them; the exact copy reviewed cannot be determined from the available record. To remove any ambiguity, v0.5 displays the formulas together and reiterates the overlap-is-inconclusive rule.
+- False-positive precision is now shown in an explicit per-\(J\) table for \(J=30,60,120\), using the planned 2,000 valid replications.
+- The future confounding programme is split into S3a (oracle adjustment for observed \(H\)) and S3b (imperfect-proxy/partial measurement \(W\)); S3b is required to assess feasible adjustment, but neither synthetic scenario establishes real-solver validity.
+- S6 is explicitly identified as a required but not-yet-specified unresolved-outcome scenario, with its minimum future specification elements named. It is not represented as a completed scenario.
+- The next DeepSeek review is asked to verify the concrete decision rule, positive inference statement, explicit §7 precision formulas, per-\(J\) false-positive precision, its own reading of §6, and the S3a/S3b distinction.
 
 No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
