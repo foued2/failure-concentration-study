@@ -250,3 +250,49 @@ Claude also asked that the project name a decision changed by S1. This is now ex
 5. B1 v1.6 remains unvalidated until its exact estimator and conditional-randomization procedure are tested against a matching known-truth generator.
 
 **Current version:** S1 v0.4, recorded in the same branch. It is awaiting direct DeepSeek review of the v0.4 text. The v0.3 review does not approve or freeze v0.4. No freeze, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO follows from this round.
+
+
+---
+
+## 11. Round 6 — DeepSeek's direct review of S1 v0.4 and Claude's follow-up, 2026-11-18
+
+**Review materials:** the owner-supplied direct DeepSeek review of v0.4, plus Claude's follow-up challenge to the decision consequence, oracle-S3 limitation, and S6 status.
+
+**Reviewer identity:** DeepSeek remains the direct S1 reviewer. Claude's text is an additional critique, not an independent direct inspection of the v0.4 equations.
+
+### 11.1 DeepSeek's direct v0.4 verdict
+
+DeepSeek states that its v0.3 recommendation still holds: S1 is defensible as a narrow first-stage calibration and has no identified mathematical/statistical defect, but should not be frozen until the decision consequence and precision presentation are explicit. It considers the strengthened inference-transfer wording adequate and the no-unresolved matched null adequate for minimum false-positive calibration.
+
+| Issue | Direct review disposition | Project adjudication |
+|---|---|---|
+| \(C_D\) is bijective with \(Q\) | **Accepted limitation**, not a defect. No blocker for a narrow machinery check; hard blocker for B1 or general-summary claims. | v0.5 keeps the narrow inference boundary and adds the positive claim a complete pass licenses. |
+| Positive inference | Reviewer says v0.4 mostly meets the condition, but should state what passing does license. | **Accepted.** v0.5 states that a pass licenses only recovery of a known binary-proxy predictive gain by the marginal six-cell estimator and parent-cluster procedure under independent parent sampling on the fixed panel. |
+| Concrete decision consequence | A proceed/revise/stop structure exists, but reviewer says the downstream project decision needs to be named. | **Accepted.** The decision is whether to retain the current \(M_0/M_1\) plus test-parent cluster-bootstrap procedure as the candidate method for S2-S7. Pass carries it forward for S2-S7 specification; fail requires revision; inconclusive blocks progression. |
+| Recovery and bias MCSE | Reviewer says the formulas were not visible in the copy it examined. | **Copy discrepancy recorded.** The v0.4 blob on the review branch immediately before this revision already contained \(MCSE(\bar r)\), \(MCSE(\bar b)\), their 95% Monte Carlo intervals, and explicit pass/fail/inconclusive rules. It is not possible to determine whether the reviewer saw an earlier copy or overlooked those passages. v0.5 displays the formulas together and restates the inconclusive rule to remove ambiguity. |
+| False-positive precision | Reviewer asks for MCSE per \(J\). | **Accepted.** v0.5 gives the per-\(J\) formula and a table for \(J=30,60,120\), each with 2,000 planned valid null replications and reference MCSE at 5% and 6%. |
+| Matched null | Direct verdict: **adequate as a minimum false-positive companion**. It preserves diagnostic and parent nuisance structure; both worlds have \(k_{\mathrm{unresolved}}=0\). | **Accepted.** v0.5 explicitly says unresolved-outcome handling remains untested and S6 is required. |
+| S3 | Oracle adjustment is appropriate as a first step, but not enough for a feasible-adjustment or real-world claim. | **Accepted.** v0.5 distinguishes S3a (oracle \(H\) adjustment) and S3b (imperfect proxy \(W\)); both remain synthetic and neither validates real solvers. |
+| B1 v1.6 | Separate bridge with a multi-valued/non-binary generator, exact B1 estimator and conditional-randomization procedure, matching null, matching uncertainty target and inference boundary. | **Accepted.** Hard blocker for any B1 validation claim; no S1 transfer. |
+
+### 11.2 Claude's follow-up
+
+Claude's central point is adopted: the decision needs to be stated in one concrete sentence, not just described as a general progression rule. The chosen decision is:
+
+> **S1 decides whether the current \(M_0/M_1\) marginal estimator plus test-parent cluster-bootstrap procedure is retained as the candidate method for the S2-S7 validation suite.**
+
+Claude's S3 point is also adopted: the oracle adjustment is not sufficient to assess feasible adjustment when the true common cause is not observed. S3 is now split into an oracle diagnostic (S3a) and an imperfect-proxy stage (S3b). Claude also asked whether S6 exists in the actual specification rather than only in a summary. It does appear in §9 as a required future scenario and is explicitly marked **named but not specified or frozen**. It is not represented as a completed scenario.
+
+### 11.3 S1 v0.5 changes and remaining state
+
+v0.5:
+- names the single downstream methods decision and its pass/fail/inconclusive consequences;
+- states the positive inference licensed by a pass;
+- displays the recovery-ratio and mean-bias MCSE equations with their 95% Monte Carlo intervals and overlap-is-inconclusive rules;
+- gives the null false-positive MCSE explicitly for each \(J\);
+- distinguishes S3a oracle adjustment from S3b imperfect-proxy adjustment;
+- confirms that S6 is only a named future requirement and is not yet specified.
+
+**Important execution boundary:** the specified S1 decision is internal to the analytical-methods programme. It does not change the scientific evidence about concentration or real solvers. A pass only carries the estimator candidate into S2-S7 specification/review; it does not authorize S2-S7 implementation or execution. If the owner does not intend to use this estimator-selection decision, S1 should not be run.
+
+DeepSeek's v0.4 recommendation does not freeze v0.5. The current specification remains a design draft awaiting direct review of v0.5. No freeze, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO follows from this round.
