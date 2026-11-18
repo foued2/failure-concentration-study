@@ -196,16 +196,12 @@ independently.
 
 ## 9. Immediate next actions, in order
 
-1. **Verify the W1 injection correspondence.** Read the three-world design and script
-   (`a33b475d…`, `d1909743…`) and determine whether the injected effect enters the same estimand the
-   analysis estimates. Until this is answered, W1 is "failed check" or "irrelevant check", not
-   "failed positive control".
-2. **Freeze S1–S7**: scenarios, tolerances, ICC grid, partition set, pass bands.
-3. **Run S1 and S2 first.** A positive control that cannot recover a large injected effect makes the
-   remaining scenarios uninformative.
-4. **Then S3–S7**, with the solver as the sampling unit throughout.
-5. **Only then** compute a defensible operating population and sample size.
-6. **Only then** decide the owner route (confirmatory vs exploratory) and resume population work.
+1. **Claude reviews the S1 specification** at `reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md`, with section-specific objections to the true outcome model, estimand, circularity, estimator, uncertainty procedure, and tolerances.
+2. **GPT adjudicates the review** and revises the S1 specification. No implementation begins during this step.
+3. **Freeze the reviewed S1 specification and its matched-null companion only after review.** The proposed tolerances remain provisional until that review is resolved.
+4. **Specify the remaining S2–S7 scenarios** under the same review discipline. No simulation is run merely because a scenario has been written or frozen.
+5. **Obtain a separate explicit execution GO** before writing generator code, running simulations, fitting models, or reusing any bank.
+6. **Only after validated operating characteristics exist** compute a defensible real-study parent count and decide the owner route (confirmatory versus exploratory). The calibration J grid in S1 is not that parent-count decision.
 
 ---
 
