@@ -125,6 +125,33 @@ def main():
     check(outputs[0] == outputs[1], "byte-identical repeated reports")
     check(len(outputs[0]) > 0, "non-empty report")
 
+    print("== hashing rule ==")
+    import tempfile
+
+    source_text = (FIXTURES / "valid_realized.json").read_text("utf-8").replace("\r\n", "\n")
+    with tempfile.TemporaryDirectory() as tmp:
+        lf_path = Path(tmp) / "lf.json"
+        crlf_path = Path(tmp) / "crlf.json"
+        lf_path.write_bytes(source_text.encode("utf-8"))
+        crlf_path.write_bytes(source_text.replace("\n", "\r\n").encode("utf-8"))
+        lf_report = vm.run(lf_path, FIXTURES / "limits_standard.json")
+        crlf_report = vm.run(crlf_path, FIXTURES / "limits_standard.json")
+        check(
+            lf_report["inputs"]["manifest"]["sha256_canonical"]
+            == crlf_report["inputs"]["manifest"]["sha256_canonical"],
+            "canonical digest is line-ending independent",
+        )
+        check(
+            lf_report["inputs"]["manifest"]["sha256_working"]
+            != crlf_report["inputs"]["manifest"]["sha256_working"],
+            "working digest reflects the bytes actually read",
+        )
+        check(
+            lf_report["decision"] == crlf_report["decision"]
+            and lf_report["cells"] == crlf_report["cells"],
+            "decision independent of line-ending policy",
+        )
+
     print("== schema cross-check ==")
     try:
         import jsonschema  # type: ignore

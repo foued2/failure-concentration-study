@@ -31,6 +31,20 @@ JSON (`sort_keys`, `indent=2`, `\n` terminator), so repeated runs are byte-ident
 Every report contains `pair_witness` entries, excluded records, duplicate aliases,
 shortfalls, and the SHA-256 of the manifest, limits file, schema and validator.
 
+## Hashing rule
+
+Source identity must not depend on a checkout's line-ending policy. Every digest is
+therefore reported twice:
+
+- `sha256_canonical` — over the bytes with CRLF normalised to LF. This is the identity
+  value, and it matches on a Windows checkout and on the stored Git blob (which is LF).
+- `sha256_working` — over the bytes actually read, so a reader can tell which checkout
+  produced the report.
+
+The decision and the cell report are byte-identical for CRLF and LF copies of the same
+manifest; `run_tests.py` asserts exactly that. Never compare the canonical digest to a
+`git hash-object` value: that is SHA-1 over `blob <len>\0<bytes>` and a different object.
+
 ## Boundary
 
 This tool decides whether a proposed manifest satisfies the declared structural
@@ -44,4 +58,4 @@ B1 test.
 - `manifest_schema.json` — JSON Schema draft 2020-12, cross-checked against `jsonschema`
 - `fixtures/build_fixtures.py` — deterministic synthetic fixture generator
 - `fixtures/expected_results.json` — hand-declared expectations
-- `run_tests.py` — 166 checks: expectations, determinism, schema agreement
+- `run_tests.py` — 169 checks: expectations, determinism, hashing rule, schema agreement

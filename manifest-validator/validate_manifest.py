@@ -36,7 +36,7 @@ from fractions import Fraction
 from itertools import combinations
 from pathlib import Path
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 STRATA = [f"S{i}" for i in range(1, 9)]
 CONSTRUCTION_STATUS = ("PLANNED", "BUILT", "BUILD_FAILED")
 DIAGNOSTIC_STATUS = ("NOT_RUN", "COMPLETED", "INVALID", "UNRESOLVED")
@@ -55,8 +55,26 @@ def canonical_json(obj) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
+def canonical_bytes(data: bytes) -> bytes:
+    """Canonical source representation: LF line endings, bytes otherwise unchanged.
+
+    Source identity must not depend on a checkout's line-ending policy, so the
+    canonical digest is computed over CRLF -> LF normalized bytes. The raw digest
+    of the file actually read is reported alongside it.
+    """
+    return data.replace(b"\r\n", b"\n")
+
+
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def digest_file(path: Path) -> dict:
+    raw = path.read_bytes()
+    return {
+        "sha256_canonical": sha256_bytes(canonical_bytes(raw)),
+        "sha256_working": sha256_bytes(raw),
+    }
 
 
 def sha256_file(path: Path) -> str:
@@ -103,13 +121,13 @@ def placeholder(value) -> bool:
 # --------------------------------------------------------------------------- #
 
 class Validator:
-    def __init__(self, manifest, limits, manifest_sha, limits_sha, schema_sha):
+    def __init__(self, manifest, limits, manifest_digest, limits_digest, schema_digest):
         self.m = manifest if isinstance(manifest, dict) else {}
         self.limits = limits if isinstance(limits, dict) else {}
         self.sha = {
-            "manifest": manifest_sha,
-            "limits": limits_sha,
-            "schema": schema_sha,
+            "manifest": manifest_digest,
+            "limits": limits_digest,
+            "schema": schema_digest,
         }
         self.errors = []
         self.warnings = []
@@ -743,12 +761,12 @@ class Validator:
             "validator": {
                 "name": "validate_manifest.py",
                 "version": VERSION,
-                "sha256": sha256_file(Path(__file__).resolve()),
+                **digest_file(Path(__file__).resolve()),
             },
             "inputs": {
-                "manifest": {"sha256": self.sha["manifest"]},
-                "limits": {"sha256": self.sha["limits"]},
-                "schema": {"sha256": self.sha["schema"]} if self.sha["schema"] else None,
+                "manifest": self.sha["manifest"],
+                "limits": self.sha["limits"],
+                "schema": self.sha["schema"],
             },
             "decision": {
                 "valid": valid,
@@ -779,15 +797,15 @@ def load_json(path: Path):
 
 
 def run(manifest_path: Path, limits_path: Path, schema_path=None):
-    manifest_sha = sha256_file(manifest_path)
-    limits_sha = sha256_file(limits_path)
-    schema_sha = sha256_file(schema_path) if schema_path and schema_path.exists() else None
+    manifest_digest = digest_file(manifest_path)
+    limits_digest = digest_file(limits_path)
+    schema_digest = digest_file(schema_path) if schema_path and schema_path.exists() else None
     validator = Validator(
         load_json(manifest_path),
         load_json(limits_path),
-        manifest_sha,
-        limits_sha,
-        schema_sha,
+        manifest_digest,
+        limits_digest,
+        schema_digest,
     )
     try:
         validator.check_limits()
