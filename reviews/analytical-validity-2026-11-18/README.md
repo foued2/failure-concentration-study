@@ -105,4 +105,4 @@ reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a des
 
 The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied a critique but is not the reviewer of S1 v0.3.
 
-The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional second-round adjudication is in \`DEEPSEEK_S1_SECOND_ROUND_ADJUDICATION_2026-11-18.md\`. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.3. It remains a draft, not frozen and not executable.
+The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.3. It remains a draft, not frozen and not executable.
