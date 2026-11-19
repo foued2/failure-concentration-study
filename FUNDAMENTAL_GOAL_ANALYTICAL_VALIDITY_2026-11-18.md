@@ -355,3 +355,18 @@ The v0.5 revision:
 The direct DeepSeek review said the MCSE formulas and inconclusive rule were not visible in the copy it examined. The v0.4 blob on the review branch already contained those formulas and rules; the record cannot establish whether DeepSeek saw a different copy or overlooked the passages. v0.5 makes them prominent and adds the per-\(J\) false-positive precision table.
 
 DeepSeek's v0.4 recommendation does not freeze v0.5. The next step is direct review of the actual v0.5 text. No generator code has been written, no simulation or model fit has been run, no bank has been reused, and no execution GO has been requested or inferred.
+
+
+## 17. Design-only state update — 2026-11-19, round 7
+
+DeepSeek directly reviewed S1 v0.5 and concluded that it is defensible as a narrow first-stage machinery check, with no identified mathematical/statistical defect, provided that the project genuinely uses the estimator-selection decision. Its direct assessment was that §6 is adequate as a minimum no-unresolved null; S3b is needed before any feasible-adjustment claim; S6 is correctly named but not yet specified; and no S1 pass validates B1 v1.6 or real-solver concentration claims. DeepSeek did not issue or recommend an execution GO.
+
+S1 has been revised to v0.6 at \`reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md\`.
+
+The pre-execution stop rule is now explicit. S1 is a baseline known-positive recovery check. S2-S7 address distinct threats not represented by S1: matched-null specificity, oracle/imperfect-proxy adjustment, partition sensitivity, crossed dependence, unresolved outcomes, and degenerate/unsupported support. If S2-S7 would proceed unchanged regardless of S1, or would choose an estimator independently, S1 must not be run. A separate owner commitment to use S1's pass/revise/stop result to select the candidate method is required before execution; no such commitment or execution GO is recorded.
+
+The v0.6 precision section states the MCSE and 95% half-width multipliers at 2,000 valid replications, with pilot-based formulas for estimating a confirmatory replication requirement. It makes clear that a numerical replication count cannot be justified without the replication-level standard deviations and the true distance from the decision thresholds. No finite count guarantees a decisive classification at a boundary. A planning pilot requires separate authorization and cannot be pooled into a later confirmatory run.
+
+Review-object provenance was checked by comparing Git blob sources. The v0.5 candidate blob was \`6210f8b95a2f9dbceea3606a7aa1f4dad7cb7e21\`; its v0.4 predecessor was \`dfca5d9f23b1d42557c0ea1fc4a4bdc0cdad5075\`. Their §7.3 sections are byte-for-byte identical and contain the MCSE formulas, intervals and inconclusive rules. The v0.5 per-\(J\) false-positive reference table was added in §7.2. DeepSeek did not provide the Git blob SHA of the exact object it examined, so the review-copy identity remains unconfirmed. A missing-formula defect is not supported by the committed source evidence.
+
+No code has been written, no pilot or confirmatory simulation has been run, no model has been fitted, no bank has been reused, and no execution GO has been requested or inferred.
