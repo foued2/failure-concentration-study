@@ -684,6 +684,10 @@ unique diagnostic canonicals, the only equal-exposure option is `4 × 7 + 4 × 8
 
 ### 17.3 The alternative-summary competition is real but weakly identified
 
+**Superseded — see §18.2.** The analysis below used the wrong identifying variation (equal `C_D`, differing
+alternatives) for the Level 2 question (equal alternative, differing `C_D`). The shape-count table is
+correct; the conclusion drawn from it is not, and the low-`k` claim is withdrawn.
+
 GPT is right that the exact cell leaves the *shape* of `f` free, and that second-largest share, Shannon
 entropy, and a Herfindahl/Simpson index are meaningful competitors. All are `F`-measurable, so all sit
 under the same ceiling as `C_D`.
@@ -730,3 +734,121 @@ what matters", and not "the partition is validated". That rule needs no experime
 - No extension authorized, no threshold invented, no execution of any kind.
 - Open for Claude and GLM: the §17.2 fork, the eight-item requirement checklist, and whether the §17.3
   collision analysis leaves enough identifying variation for level 2 to be worth specifying at all.
+
+---
+
+## 18. Level 2 direction error and the reallocation qualification (2026-11-19, third pass)
+
+**Reviewed object:** branch head `03f950a`. GPT accepted the name-permutation proof, qualified the
+reallocation conclusion, corrected the canonical-basis wording, and rejected the Level 2 identification
+argument. The Level 2 objection is correct and the error was mine.
+
+### 18.1 The error, stated exactly
+
+Level 2 asks whether `C_D` adds information **beyond** a competing summary `S`. The identifying variation
+for that question is:
+
+```
+same S, different C_D
+```
+
+The previous section used:
+
+```
+same C_D, different S
+```
+
+That identifies information in the **alternatives beyond `C_D`**, which is the opposite question and is not
+what Level 2 claims. The `k = 5` example (`3+2` vs `3+1+1`, both `C_D = 3/5`) demonstrated that the
+alternatives separate shapes `C_D` collapses. The "low-`k` support is nearly empty" conclusion then
+followed from a collision count in the wrong direction, and it is wrong.
+
+GPT's counter-examples check out exactly:
+
+```
+k = 3   2+1     C_D = 2/3   p_(2) = 1/3
+        1+1+1   C_D = 1/3   p_(2) = 1/3
+
+k = 4   3+1     C_D = 3/4   p_(2) = 1/4
+        2+1+1   C_D = 1/2   p_(2) = 1/4
+        1+1+1+1 C_D = 1/4   p_(2) = 1/4
+```
+
+Support for the `p_(2)` comparison therefore begins at `k = 3`, not at large `k`.
+
+### 18.2 Rebuilt support table
+
+Shapes enumerated exactly as integer partitions into at most eight parts; `C_D`, `p_(2)`, and Herfindahl
+computed in exact rational arithmetic; Shannon grouped with a numerical tolerance and approximate.
+
+| `k` | Shapes | Distinct `C_D` | `p_(2)`: classes / with ≥2 `C_D` | Herfindahl: classes / with ≥2 `C_D` | Shannon: classes / with ≥2 `C_D` |
+|---|---|---|---|---|---|
+| 3 | 3 | 3 | 2 / 1 | 3 / 0 | 3 / 0 |
+| 4 | 5 | 4 | 3 / 1 | 5 / 0 | 5 / 0 |
+| 5 | 7 | 5 | 3 / 2 | 7 / 0 | 7 / 0 |
+| 6 | 11 | 6 | 4 / 2 | 9 / 2 | 11 / 0 |
+| 7 | 15 | 7 | 4 / 3 | 13 / 2 | 15 / 0 |
+| 8 | 22 | 8 | 5 / 3 | 18 / 4 | 21 / 1 |
+| 9 | 30 | 9 | 5 / 4 | 21 / 8 | 29 / 1 |
+| 10 | 42 | 10 | 6 / 4 | 27 / 12 | 39 / 3 |
+| 11 | 56 | 11 | 6 / 5 | 34 / 15 | 52 / 4 |
+| 12 | 77 | 12 | 7 / 5 | 39 / 22 | 68 / 8 |
+
+Three findings, none of which was available before the rebuild:
+
+1. **Support is competitor-specific and runs in opposite directions.** `p_(2)` is a weak summary — it
+   leaves the maximum free on `[p_(2), 1]` — so it leaves the most `C_D` variation. Shannon entropy is a
+   rich functional that nearly separates shapes, so conditioning on it leaves almost none (3 of 39 classes
+   at `k = 10`). Herfindahl sits between. **The predeclared comparator set therefore sets the difficulty of
+   Level 2 by construction**, which makes it a substantive choice rather than a formality.
+2. **No summary is injective on shape.** At `k = 8`, `4+1+1+1+1` and `2+2+2+2` both have Shannon entropy
+   `ln 4` while `C_D` is `1/2` and `1/4`. GPT's caution about entropy is confirmed by enumeration.
+3. **Combinatorial support is not realised support.** The table counts shapes that could occur at each `k`.
+   It says nothing about the `k` distribution across the 150 solvers, which is unknown because 0/150 have
+   been evaluated. No power calculation is possible without `σ_u` and `sd(C)`.
+
+### 18.3 Canonical-basis wording corrected
+
+The previous claim that name permutation is "ill-formed" under `R = (8,8,8,8,8,4,8,8)` was too strong. The
+correct statement: admissibility is a **condition**, not a veto. Permutations among the seven
+eight-capacity positions, leaving D6 in place, are admissible; the identity is always admissible; the
+constraint bites only when a count above four is moved into the D6 position. **Every admissible relabelling
+is still inert with respect to `C_D`**, so invariance carries the result and the capacity argument does not.
+
+### 18.4 Reallocation: "outside the frozen law", not "impossible"
+
+The previous text said reallocation "breaks" the fixed-target and super-uniformity guarantees. That
+overstates it. Corrected position, now in the design record:
+
+> Reallocation is incompatible with B1's frozen resampling law and null hypothesis. A separate conditional
+> partition-randomization procedure might preserve analogous guarantees, but those would have to be
+> established for the new assignment space.
+
+The route is Option A of the record — restricting the admissible space to draws that reproduce the observed
+audit-selection key — which *could* hold the scored population fixed while conditioning on a different
+assignment space. None of B1's guarantees transfers automatically: different assignment law, different null,
+different conditioning event, and super-uniformity would need re-establishing. Not valid under this
+procedure; not shown to be impossible. Both halves are load-bearing.
+
+### 18.5 Level 1 sentence tightened
+
+Adopted verbatim as the only licensed report form:
+
+> Within the observed parent set and on the fixed 78-record development bank, the maximum-share statistic
+> improves leave-one-parent-out predictive log loss relative to the exact-cell baseline, under the
+> prespecified conditional test.
+
+Not "the statistic predicts correctness", and not any inference to a dominance mechanism, partition
+validity, or new parents.
+
+### 18.6 Disposition
+
+- **B1 v1.7 untouched.** No clause, threshold, fold, or condition modified.
+- **Level 2 reopened**, not settled: the direction error is corrected, and the rebuilt table replaces the
+  withdrawn conclusion. Whether any comparator set leaves enough equal-`S` support is now an open design
+  question with a computable input, not a claim.
+- **Level 3 reclassified** from "incompatible" to "outside B1's frozen law; a separate procedure may be
+  designable but inherits nothing".
+- **No threshold invented**, no draw taken, no execution of any kind.
+- **Record integrity:** §17.3 is marked superseded in place rather than deleted, so the error and its
+  correction remain visible in the ledger.
