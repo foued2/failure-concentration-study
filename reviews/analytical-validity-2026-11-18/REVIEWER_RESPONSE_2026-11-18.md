@@ -621,3 +621,112 @@ vacuous, because it compares against `X`, not against `F`.
 - One item remains unresolved that the review round did not settle: whether a one-parameter gain against
   the exact-cell baseline is a scientific contribution or a well-specified ablation. It is recorded as
   open, not argued away.
+
+---
+
+## 17. Dominance specificity round (2026-11-19, second pass)
+
+**Reviewed object:** branch head `d7131d2`. GPT reviewed Claude's review of that commit and issued an
+adjudication that accepts one point with correction, one as mostly covered, and one as already
+incorporated. `B1_ANALYSIS_PLAN_2026-11-14_v1.7.md` on `gpt/lc518-m1si-audit-2026-11-17` was re-read at
+blob `8c666e50` for the clauses cited below.
+
+### 17.1 The central correction is right, and it is provable
+
+GPT rejects the proposed random relabelling of the eight stratum names on the ground that it leaves `C_D`
+unchanged. It does, for every permutation:
+
+```
+C_D' = max_j f_{π(j)} / Σ_j f_{π(j)} = max_j f_j / Σ_j f_j = C_D
+```
+
+The stronger form: `C_D` depends on `f` only through the multiset `{f_1,…,f_8}`, so it is invariant under
+the whole symmetric group on labels. This is the content of the word "dominance", not a detail.
+
+Two consequences go beyond the review:
+
+1. **The operation is inert *and* ill-formed under the canonical basis.** The exposure vector is
+   `R = (8,8,8,8,8,4,8,8)`. Permuting names without permuting `R` can produce `f_j > R_j`. Permuting `R`
+   with the labels restores consistency and changes nothing. So the proposal is either empty or
+   inadmissible.
+2. **The residue is interpretive, not experimental.** `C_D` cannot attribute a gain to *which* stratum
+   dominated. Any claim of the form "failures concentrate in category X and that predicts correctness" is
+   outside what the statistic carries. This is now recorded as an interpretation rule.
+
+### 17.2 Input reallocation is a real question and is blocked by more than scope
+
+GPT correctly substitutes reallocation of diagnostic inputs, which changes `C_D`, and correctly labels it
+partition specificity rather than dominance specificity. The forensic work adds two findings:
+
+**The exact cell survives reallocation exactly.** Reallocation permutes which record feeds which `f_j`; no
+outcome changes. Therefore `k_fail`, `k_unresolved`, and the cell `(q, Z, k_fail, k_unresolved)` are
+identical across draws, so the **baseline model is unchanged** and only the supplied feature varies. That
+is the strongest argument for the sensitivity ever being run.
+
+**But it is incompatible with §5.3, not merely outside it.** B1 v1.7 §5.2 defines the resampling unit as
+the within-cell `C_D` label with the **multiset held fixed**. Three frozen guarantees depend on that:
+
+| Guarantee | Clause | Why reallocation breaks it |
+|---|---|---|
+| Audit equality, including "a previously excluded cell that becomes estimable makes the assignment inadmissible" | §5.3 step 1 | `W_{C,c} = Σ(C_D − C̄_D)²` changes with the multiset, so estimability becomes draw-dependent |
+| Permutation-invariant target population | §5.3 step 3 | Scored cells can differ across draws |
+| Super-uniformity conditional on the availability event | §5.7 V3, V5 | The conditioning event is defined over assignments sharing a multiset |
+
+So GPT's instruction not to modify B1 v1.7 is supported by a stronger reason than "different question":
+the sensitivity would break the identity between observed statistic and null reference that makes the
+current test valid. A fork must be resolved before any draw — admissibility by design-only condition
+(preserves the target population, conditions on a `C_D`-configuration event) or per-draw audit (faithful
+per draw, but coverage can drive the difference). Neither is decided, and no draw is authorized.
+
+**Arithmetic constraint recorded:** a canonical-basis random partition cannot use equal groups. With 60
+unique diagnostic canonicals, the only equal-exposure option is `4 × 7 + 4 × 8`. The record basis
+(`8 × 8`) is the comparable choice for the frozen statistic.
+
+### 17.3 The alternative-summary competition is real but weakly identified
+
+GPT is right that the exact cell leaves the *shape* of `f` free, and that second-largest share, Shannon
+entropy, and a Herfindahl/Simpson index are meaningful competitors. All are `F`-measurable, so all sit
+under the same ceiling as `C_D`.
+
+New quantitative limit: at fixed `k`, the number of distinct shapes is the partition number of `k` into at
+most eight parts, and the number of distinct `C_D` values is at most `k`:
+
+| `k` | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|
+| Shapes | 3 | 5 | 7 | 11 | 15 | 22 |
+| Distinct `C_D` (≤) | 3 | 4 | 5 | 6 | 7 | 8 |
+
+Because the cell fixes `k`, the comparison is identified only where shapes collide on one `C_D` value. At
+`k = 5`, the shapes `3+2` and `3+1+1` both give `C_D = 3/5` but differ on the second share (`2/5` vs
+`1/5`) and on Herfindahl (`0.520` vs `0.440`). Those collisions are the whole identifying variation, which
+means the comparison is nearly empty at `k ≤ 4` and concentrates in large-`k` cells. No power calculation
+exists and none can be produced without `σ_u` and `sd(C)`.
+
+### 17.4 Parent consistency
+
+Adopted as stated: `δ_g = L_{0,g} − L_{1,g}` is already mandatory (§2, §11(a)), equal weight per scored
+parent is mandatory (§3 item 4a), coverage tables are mandatory (§3 item 4c), and no parent-majority
+decision rule is added. Descriptive influence reporting is recorded as useful but must be declared before
+evaluation so it cannot become a post-hoc rescue. The minimum-coverage verdict gate remains missing, and
+still has no defensible threshold; none is invented.
+
+### 17.5 Four-level claim ladder, now recorded
+
+| Level | Claim | Support | Status |
+|---|---|---|---|
+| 1 | `C_D` improves held-out prediction over the exact-cell baseline | B1 primary comparison | Frozen, not executed |
+| 2 | The gain is specific to the maximum share rather than another shape summary | Predeclared comparison against the §17.3 set, with collisions identified in advance | Not specified; weakly identified |
+| 3 | The gain depends on the prespecified partition | Reallocation sensitivity with the §17.2 fork resolved | Not specified; incompatible with §5.3 as written |
+| 4 | The gain generalises to new parents | Post-freeze bank, separate custody, parent-population procedure | Refused by §5.7 V4 |
+
+A positive level-1 result licenses the sentence "the maximum-share statistic predicts" — not "dominance is
+what matters", and not "the partition is validated". That rule needs no experiment and is available now.
+
+### 17.6 What changed in the repository
+
+- New: `DOMINANCE_SPECIFICITY_AND_PARTITION_SENSITIVITY_2026-11-19.md` (§§1–7 above in full).
+- Novelty register §5 now points to that document for the narrower version of Threat B.
+- **B1 v1.7 untouched.** No clause, threshold, fold, or estimability condition modified.
+- No extension authorized, no threshold invented, no execution of any kind.
+- Open for Claude and GLM: the §17.2 fork, the eight-item requirement checklist, and whether the §17.3
+  collision analysis leaves enough identifying variation for level 2 to be worth specifying at all.

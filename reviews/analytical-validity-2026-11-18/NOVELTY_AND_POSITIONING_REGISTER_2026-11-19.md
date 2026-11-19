@@ -205,6 +205,11 @@ justifications are parsimony, finite-sample stability, interpretability, and pre
 of the four is measured anywhere in the corpus. This is the question a reviewer is entitled to press, and
 the register does not answer it.
 
+A narrower version of Threat B is now specified separately: whether the *maximum share* is doing the work,
+rather than any other shape summary of the same failure vector. That comparison is well posed within an
+exact cell but is identified only where distinct shapes collide on the same `C_D` value, which restricts
+it sharply at small `k`. See `DOMINANCE_SPECIFICITY_AND_PARTITION_SENSITIVITY_2026-11-19.md` §4.
+
 The earlier draft of this section said `P` "cannot be won on accuracy". That was wrong for the same reason
 as §3.2: accuracy against `X` is testable, and `C_D` may well win it. What `C_D` cannot win is accuracy
 **against `F` in population information**. Those are different contests, and only the first is the study.
