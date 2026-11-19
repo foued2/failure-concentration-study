@@ -16,6 +16,10 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
 | `S1_KNOWN_GAIN_SPEC_2026-11-18.md` | Design-only S1 v0.6 draft awaiting direct DeepSeek review. Defines the S1-before-S2-S7 stop rule, per-gate replication planning after an independently authorized pilot, hash-provenance limits, and the no-unresolved inference boundary. No code or runs. |
+| `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` | Gate 0. States the proposition once; records that the statistic is the Berger–Parker dominance index by name in the frozen protocol; proves that `C` cannot out-predict `F`; verifies 13 prior works by DOI; lists four citation corrections; pre-registers a stopping rule. |
+| `CD_MEASUREMENT_SPEC_2026-11-19.md` | Measurement layer. Separates what the protocol already requires (per-stratum unresolved vector), what is legal (three-category outcome sensitivity), and what is prohibited (recoding unresolved to 0/1). Records the record-vs-canonical exposure difference and the `k = 0` convention clash between instruments. |
+| `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md` | Maps the review's fold-level request onto B1 v1.7 clause by clause: nine of ten items are already frozen, one clause is stricter than requested, one item (a minimum-coverage verdict gate) is genuinely missing. |
+| `CONFIRMATORY_BANK_CUSTODY_REQUIREMENT_2026-11-19.md` | Records that the bank is *already* declared "development data, publicly exposed, never sealed", and states the six requirements a future confirmatory claim would need, including generation after the analysis freeze. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -41,6 +45,16 @@ with both source critiques reproduced verbatim in Appendices A and B).
 10. A third-reviewer **concurrence with a NO-GO recommendation** was recorded on 2026-11-01
     (`worklog.md:262`), route-scoped to the current operator, on exactly W1 + partition fragility +
     identification failure. It is not an owner decision, and no route-closure record exists.
+11. The frozen protocol names the statistic: `C_D` is "the Berger–Parker dominance index of the failure
+    distribution" (`LC518_A2_AUDIT_PROTOCOL_DRAFT_2026-11-06.md:218`). It is not a new measure.
+12. The per-stratum unresolved vector is **mandatory evidence**, not an optional report: "all eight
+    entries supplied", and "an omitted unresolved vector is missing evidence, not an implicit all-zero"
+    (protocol 107–119).
+13. The held-out bank is declared by the frozen plan as "development data, publicly exposed, never
+    sealed" (B1 v1.7 §1, §12). The exposure is a recorded design fact, not a discovery.
+14. B1 v1.7 already freezes fold-level estimability with three explicit conditions
+    (`G_c^train ≥ 2`, `D_c^train ≥ 2`, `W_{C,c}^train > 0`), exclusion reasons, and coverage tables
+    (§3 items 3–4). It refuses parent-population inference explicitly (§5.7 V1).
 
 **Inference, not finding (attackable):**
 
@@ -86,6 +100,18 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
    So W1 cannot be faulted for missing a solver random effect, and it equally cannot speak to the
    clustered world. The solver-unit problem is decisive for the *real* design, where the unit is the
    parent (count open), not for W1.
+9. **What is the contribution — accuracy or parsimony?** `C_D` is a function of `F`, so
+   `I(Y;C_D|X) ≤ I(Y;F|X)` and `I(Y;C_D|X,F) = 0` exactly. Accuracy cannot be the claim; the ceiling is
+   fixed by the data-processing inequality. If the claim is parsimony or interpretability, those are what
+   must be measured, and no record measures them. A reviewer who can name a third possibility should.
+10. **Which exposure basis is primary?** The protocol counts records (`N = 64`, `R_j = 8`); the capacity
+    record recommends the canonical basis (`N = 60`, `R_j = 8,8,8,8,8,4,8,8`) because D6's paired records
+    are dependent. Both are defensible; the primary must be stated, and the other reported as a
+    recomputed statistic, not an average.
+11. **Is "prespecified partition" doing the work it appears to do?** The eight strata *are* the bank's
+    construction, so the partition and the held-out outcomes share one generation event. Prespecified
+    with respect to solver outcomes: yes. Independent of the evaluation material: no. A reviewer may hold
+    that this distinction is fatal to the word "prespecified" rather than merely narrowing it.
 
 ## What is not here
 

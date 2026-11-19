@@ -414,3 +414,64 @@ before the v0.6 line was visible. It reached no remote ref and is superseded by
 `S1_KNOWN_GAIN_SPEC_2026-11-18.md`, which states the same information target with an explicit identity
 proof. It is not added to the repository; two competing specifications would be worse than one stale
 one.
+
+---
+
+## 15. Measurement, novelty, and custody round (2026-11-19)
+
+**Reviewed object:** branch head `28e789c`. Two reviewers plus an owner directive to implement the round
+properly in the repository. Four specification documents were produced; this section records what was
+verified, what was corrected, and what is new.
+
+### 15.1 Verified against the record
+
+| Claim | Verdict | Source |
+|---|---|---|
+| Eight strata are diagnostic input categories, not mechanisms | **Verified** | protocol 216, 226 |
+| Bank has 64 diagnostic records, 8 per stratum | **Verified** | capacity addendum §1; erratum §1 |
+| D6 holds 4 canonical inputs × 2 orderings, so the bank has 60 unique diagnostic canonicals | **Verified** | capacity addendum canonical row; erratum §1 |
+| 80 held-out records / 78 unique held-out canonicals | **Verified** | erratum §1 |
+| 30×5 / 150 is a logistics scenario, not adopted | **Verified** | v0.17 handoff; feasibility protocol 0.2/0.3 |
+| v0.21 requires three qualifying parents in one exact cell | **Verified** | roadmap audit 164 |
+| Per-stratum unresolved counts matter | **Verified, and already mandatory** | protocol 107–119 |
+
+### 15.2 Corrected
+
+| Review claim | Correction |
+|---|---|
+| "The held-out bank was exposed" presented as a finding | Already declared by the frozen plan: "development data, publicly exposed, never sealed" (B1 v1.7 §1, §12). The exposure is a design fact, not a discovery. |
+| Claude: LOPO needs a fold-level estimability rule and coverage reporting | Nine of ten requested elements are already frozen in B1 v1.7 §3 and §5.7; one is stricter than requested; only a minimum-coverage verdict gate is missing. See `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md`. |
+| Claude: "a sensitivity analysis should include unresolved as a separate class" | Legal only as an **outcome-model** three-category sensitivity. Recoding unresolved to 0/1 is prohibited by protocol 210–211 and by the N4-b channel construction. |
+| Claude: "the held-out fold is only about five variants" | The fold scores the held-out parent's variants on all 78 records; the independent unit is still one parent, but the per-fold test set is not five points. |
+| GPT: CodeScore "ACM TOSEM, 2024" | TOSEM 34(3):1–22, Crossref year 2025, DOI 10.1145/3695991. |
+| GPT: "RankEF (ASE 2024)" | Actual title: *Sifting through the Chaff: On Utilizing Execution Feedback for Ranking the Generated Code Candidates*, ASE 2024, pp. 229–241. "RankEF" is the system name. |
+| GPT: Almaghairbe & Roper "2016 online / 2017 journal", with an AP figure of 0.79 | ISSRE 2016, pp. 116–126, DOI 10.1109/issre.2016.22 — a conference paper with no 2017 journal issue. The 0.79 figure belongs to *Learning to Encode and Classify Test Executions*, a different and currently unverified reference. |
+| GPT: AlphaCode "(2023)" | *Science* 2022, 378(6624):1092–1097, DOI 10.1126/science.abq1158. Claude's recollection was right. |
+| Claude: bank "publicly downloadable by the entire internet" | Not established. The evidence supports CI artifact exposure with published digests; anonymous download and exploitation are both unproven. GPT's narrower wording is adopted. |
+
+### 15.3 New, and load-bearing
+
+1. **The statistic is named in the frozen protocol.** `C_D` is "the Berger–Parker dominance index"
+   (protocol 218). It is a 1970 ecology index (verified DOI 10.1126/science.168.3937.1345). No claim of a
+   novel measure survives this.
+2. **A theorem constrains the whole programme.** `C_D` is `F`-measurable, so `I(Y;C_D|X) ≤ I(Y;F|X)` and
+   `I(Y;C_D|X,F) = 0`. "C beats F" is not testable, it is false. Only compression efficiency, stability,
+   and interpretability remain.
+3. **The partition and the bank share a generation event.** The eight strata are the bank's construction.
+   "Prespecified" holds with respect to solver outcomes only.
+4. **Custody requirement 2**: a replacement bank must be generated *after* the analysis is frozen, or the
+   same shared-generation problem recurs. This is the requirement usually omitted.
+
+### 15.4 Unverifiable from this repository
+
+- The Elicit `api_access_denied` result. It is a reviewer-side plan limitation; nothing here depends on
+  it, and no Elicit result may be cited.
+- Full-text access for Chen & May 2016, both DiGiuseppe papers, and Almaghairbe & Roper 2016. Findings
+  attributed to those four rest on abstracts and records.
+
+### 15.5 What did not change
+
+No frozen record, protocol, threshold, bank, plan, or population document was altered. No execution of
+any kind. Gate 0 is now recorded as **OPEN** in the goal document; gates 1 and 3 remain unresolved or
+undemonstrated; gate 4 remains failed-as-a-wiring-check. The 2026-11-01 reviewer concurrence and the
+absence of a route-closure record are unchanged.
