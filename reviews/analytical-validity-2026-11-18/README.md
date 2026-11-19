@@ -20,7 +20,7 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `CD_MEASUREMENT_SPEC_2026-11-19.md` | Measurement layer. Separates what the protocol already requires (per-stratum unresolved vector), what is legal (three-category outcome sensitivity), and what is prohibited (recoding unresolved to 0/1). Records the record-vs-canonical exposure difference and the `k = 0` convention clash between instruments. |
 | `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md` | Maps the review's fold-level request onto B1 v1.7 clause by clause: nine of ten items are already frozen, one clause is stricter than requested, one item (a minimum-coverage verdict gate) is genuinely missing. Records the review's parent-level point as **partly addressed**: 78 records per variant sharpen one parent's score but add no parent-level replication. |
 | `CONFIRMATORY_BANK_CUSTODY_REQUIREMENT_2026-11-19.md` | Records that the bank is *already* declared "development data, publicly exposed, never sealed", and states the six requirements a future confirmatory claim would need, including generation after the analysis freeze. |
-| `DOMINANCE_SPECIFICITY_AND_PARTITION_SENSITIVITY_2026-11-19.md` | Separates three operations easily confused in review: B1's frozen within-cell `C_D` permutation, stratum-**name** permutation (proved invariant for `C_D`; admissible relabellings inert), and input **reallocation** (changes `C_D`, preserves the exact cell, sits outside B1's frozen resampling law). Adds the alternative-summary set, a per-competitor *equal-`S`* support table for the Level 2 question, and a four-level claim ladder with the exact sentence Level 1 licenses. |
+| `DOMINANCE_SPECIFICITY_AND_PARTITION_SENSITIVITY_2026-11-19.md` | Separates three operations easily confused in review: B1's frozen within-cell `C_D` permutation, stratum-**name** permutation (proved invariant for `C_D`; admissible relabellings inert), and input **reallocation** (changes `C_D`, preserves the exact cell, sits outside B1's frozen resampling law). Adds the alternative-summary set, a capacity-constrained per-competitor *equal-`S`* support table for the Level 2 question with two explicit support measures and exact entropy grouping, and a four-level claim ladder with the exact sentence Level 1 licenses and its upper-tail precondition. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -114,7 +114,7 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
 11. **Is "prespecified partition" doing the work it appears to do?** The eight strata were used to
     construct the bank, so partition and held-out outcomes share an origin. That does not by itself
     invalidate stratification — it is what stratification is. The questions that decide validity are:
-    (a) were the predicates fixed before any solver outcome existed (yes, 0/150 evaluated); (b) were they
+    (a) were the predicates fixed before any solver outcome existed (yes, 0 evaluated); (b) were they
     tuned on outcomes (no evidence, nothing to tune on); (c) does construction create an accidental
     dependence between bank and result (open, no evidence of use); (d) is the claim limited to the
     generation scheme actually tested (now stated in the register). External confirmation still requires a

@@ -177,23 +177,53 @@ Level 2 of the claim ladder asks the second question. So the identifying variati
 differing `C_D`**, and it must be computed **separately for each competitor**. The previous draft used the
 first kind of collision (equal `C_D`, differing alternatives), which identifies the wrong thing.
 
-At fixed `k` the number of distinct shapes is the partition number of `k` into at most eight parts, while
-`C_D` takes at most `k` distinct values. Enumerating shapes exactly and grouping by each competitor gives:
+At fixed `k` a failure shape is an integer partition of `k`, but not every partition is a possible
+failure vector. On the frozen **record-level** basis the exposure is `R = (8,8,8,8,8,8,8,8)`, so the two
+constraints are:
 
-| `k` | Shapes | Distinct `C_D` | `p_(2)`: classes / with ≥2 `C_D` | Herfindahl: classes / with ≥2 `C_D` | Shannon: classes / with ≥2 `C_D` |
+```
+at most 8 parts        (one per stratum)
+each part ≤ 8          (records available per stratum)
+```
+
+An earlier version of this table applied only the first constraint and therefore over-counted shapes for
+`k > 8`. Both are applied below, and Shannon entropy is grouped **exactly** rather than with a tolerance:
+since `H(f) = ln k − (1/k)·ln ∏_j f_j^{f_j}`, two shapes have equal entropy if and only if the integer
+products `∏_j f_j^{f_j}` are equal.
+
+Two support measures are reported for each competitor, because they rank the competitors *differently*:
+
+- **`V` (variable classes)** — the number of equality classes containing at least two distinct `C_D` values.
+  This counts *where* the `C_D`-versus-`S` contrast can occur.
+- **`M` (within-class spread)** — the maximum number of distinct `C_D` values inside a single class.
+  This counts *how much* `C_D` can vary once `S` is fixed.
+
+| `k` | Shapes | Distinct `C_D` | `p_(2)`: classes / `V` / `M` | Herfindahl: classes / `V` / `M` | Shannon: classes / `V` / `M` |
 |---|---|---|---|---|---|
-| 3 | 3 | 3 | 2 / **1** | 3 / 0 | 3 / 0 |
-| 4 | 5 | 4 | 3 / **1** | 5 / 0 | 5 / 0 |
-| 5 | 7 | 5 | 3 / **2** | 7 / 0 | 7 / 0 |
-| 6 | 11 | 6 | 4 / **2** | 9 / **2** | 11 / 0 |
-| 7 | 15 | 7 | 4 / **3** | 13 / **2** | 15 / 0 |
-| 8 | 22 | 8 | 5 / **3** | 18 / **4** | 21 / **1** |
-| 9 | 30 | 9 | 5 / **4** | 21 / **8** | 29 / **1** |
-| 10 | 42 | 10 | 6 / **4** | 27 / **12** | 39 / **3** |
-| 11 | 56 | 11 | 6 / **5** | 34 / **15** | 52 / **4** |
-| 12 | 77 | 12 | 7 / **5** | 39 / **22** | 68 / **8** |
+| 3 | 3 | 3 | 2 / **1** / 2 | 3 / 0 / 1 | 3 / 0 / 1 |
+| 4 | 5 | 4 | 3 / **1** / 3 | 5 / 0 / 1 | 5 / 0 / 1 |
+| 5 | 7 | 5 | 3 / **2** / 4 | 7 / 0 / 1 | 7 / 0 / 1 |
+| 6 | 11 | 6 | 4 / **2** / 5 | 9 / **2** / 2 | 11 / 0 / 1 |
+| 7 | 15 | 7 | 4 / **3** / 6 | 13 / **2** / 2 | 15 / 0 / 1 |
+| 8 | 22 | 8 | 5 / **3** / 7 | 18 / **4** / 2 | 21 / **1** / 2 |
+| 9 | 28 | 7 | 4 / **4** / 7 | 19 / **8** / 2 | 27 / **1** / 2 |
+| 10 | 38 | 7 | 5 / **4** / 7 | 23 / **12** / 2 | 35 / **3** / 2 |
+| 11 | 48 | 7 | 5 / **5** / 7 | 27 / **14** / 3 | 44 / **4** / 2 |
+| 12 | 63 | 7 | 6 / **5** / 7 | 28 / **20** / 3 | 55 / **7** / 2 |
+| 13 | 77 | 7 | 6 / **6** / 7 | 31 / **22** / 3 | 67 / **8** / 2 |
 
-Shannon classes are grouped with a numerical tolerance and are approximate; the others are exact.
+**The distinct-`C_D` column saturates because of the capacity constraint.** `max_j f_j` can range only
+over `{⌈k/8⌉, …, 8}`, so the count is `9 − ⌈k/8⌉` once `k > 8` — seven values for `9 ≤ k ≤ 16`, not `k`.
+The earlier table reported twelve values at `k = 12`, which is arithmetically impossible with eight
+strata of capacity eight.
+
+**No single ranking of the competitors is defensible.** By `V`, Herfindahl overtakes `p_(2)` from `k = 9`
+and is far ahead by `k = 12` (20 versus 5). By `M`, `p_(2)` dominates throughout (7 versus 2–3), because it
+leaves the maximum free on `[p_(2), 1]` while Herfindahl pins the shape much more tightly. Shannon is last
+on both measures: it is rich enough to nearly determine the shape.
+
+Because `V` and `M` order the competitors oppositely, the document does **not** say which competitor is
+"most informative" or "most permissive". An earlier draft did, and that ranking is withdrawn.
 
 **The support is not uniformly poor at small `k`.** For the second-largest share, it begins at `k = 3`:
 
@@ -209,31 +239,37 @@ k = 4   3+1     C_D = 3/4          p_(2) = 1/4
 So the earlier claim that "a cell with `k ≤ 4` cannot separate `C_D` from `p_(2)`" was simply wrong, and
 it is withdrawn.
 
-**The support is competitor-specific and moves in opposite directions.** `p_(2)` is a weak summary — it
-leaves the maximum free on `[p_(2), 1]` — so it leaves the most `C_D` variation. Shannon entropy is a rich
-functional that very nearly separates shapes, so conditioning on it leaves almost none: at `k = 10` only
-3 of 39 entropy classes contain more than one `C_D` value. Herfindahl sits between them.
-
-Its one instructive failure is a coincidence worth recording, because it shows that no summary is a
+Shannon's one instructive failure is a coincidence worth recording, because it shows that no summary is a
 one-to-one encoding of shape:
 
 ```
-k = 8   4+1+1+1+1   C_D = 1/2   Shannon = ln 4
-        2+2+2+2     C_D = 1/4   Shannon = ln 4
+k = 8   4+1+1+1+1   C_D = 1/2   Shannon = ln 4     product 4^4 · 1^4
+        2+2+2+2     C_D = 1/4   Shannon = ln 4     product 2^8
 ```
+
+**Canonical basis is not symmetric, and is deferred.** Under `R = (8,8,8,8,8,4,8,8)` the multiset
+abstraction fails: a multiset with parts above four is feasible only if those parts avoid the D6 position.
+The feasibility criterion becomes `max f_j ≤ 8` **and** `#{j : f_j > 4} ≤ 7`, and the tabulation must be
+over ordered vectors with a distinguished position rather than partitions. Only the record basis is
+tabulated here; the canonical variant is a labelled secondary that would need its own enumeration.
 
 Three consequences, stated as design constraints rather than findings:
 
 1. **Which competitors are predeclared materially determines the difficulty of the question.** A rich
-   competitor makes level 2 nearly untestable at the population level, by construction. Selecting the
-   comparator set is therefore a substantive scientific choice, not a formality, and changing it after
-   seeing results is a search.
+   competitor can make level 2 hard to identify: Shannon leaves almost no `C_D` variation, and Herfindahl
+   confines `C_D` to two or three values inside any class. Selecting the comparator set is therefore a
+   substantive scientific choice, not a formality, and changing it after seeing results is a search.
 2. **Combinatorial support is not realised support.** The table counts shapes that *could* occur at each
-   `k`; it says nothing about which `k` values the 150 solvers actually have, or how often each shape
-   occurs. No solver has been evaluated, so the realised distribution is unknown.
+   `k`; it says nothing about which `k` values the proposed 150-variant scenario would realize, or how
+   often each shape would occur. That scenario is not an approved sample size and no variant has been
+   evaluated, so the realised distribution is unknown.
 3. **No power calculation exists**, and one cannot be produced without `σ_u` and `sd(C)`, neither of which
    is estimated anywhere. The table describes where the comparison is *identifiable*, not where it is
    *detectable*.
+
+**One wording boundary.** Level 2 can establish superiority to a **predeclared set** of competing
+summaries. It cannot establish superiority to every conceivable summary of the failure vector, and a
+result against three named competitors must not be reported as though it exhausted the space.
 
 ### 4.2 The subset framing that should not be used
 
@@ -267,6 +303,15 @@ A negative level-1 result makes levels 2–4 moot.
 
 It may not be shortened to "the statistic predicts correctness", and it does not establish a dominance
 mechanism, the validity of the semantic partition, or generalisation to new parent implementations.
+
+**Precondition on the sentence, not just on significance.** It may be used only when both hold:
+
+1. the observed `ΔLL` is **positive**, and
+2. the rejection is in the **upper tail**, with `p_R` driving the two-sided decision.
+
+B1 v1.7 §5.6 and §11(d) require the driving tail to be identified precisely because a lower-tail rejection
+does not establish positive incremental prediction. A significant two-sided result that is driven by the
+lower tail must be reported as a negative or adverse finding, never as support for level 1.
 
 ---
 

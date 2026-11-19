@@ -778,6 +778,11 @@ Support for the `p_(2)` comparison therefore begins at `k = 3`, not at large `k`
 
 ### 18.2 Rebuilt support table
 
+**Superseded — see §19.1.** The enumeration below applies the "at most eight parts" constraint but not the
+per-stratum capacity `f_j ≤ 8`, so its shape counts are unrestricted partition numbers for `k > 8` and its
+distinct-`C_D` column is arithmetically impossible. The direction argument and the `k = 3`/`k = 4`
+examples stand; the table does not.
+
 Shapes enumerated exactly as integer partitions into at most eight parts; `C_D`, `p_(2)`, and Herfindahl
 computed in exact rational arithmetic; Shannon grouped with a numerical tolerance and approximate.
 
@@ -852,3 +857,112 @@ validity, or new parents.
 - **No threshold invented**, no draw taken, no execution of any kind.
 - **Record integrity:** §17.3 is marked superseded in place rather than deleted, so the error and its
   correction remain visible in the ledger.
+
+---
+
+## 19. Capacity constraint, support measures, and exact entropy (2026-11-19, fourth pass)
+
+**Reviewed object:** branch head `405fa9f`. GPT accepted the direction correction and found a remaining
+arithmetic error in the enumeration, plus two definitional problems. All three are correct.
+
+### 19.1 The capacity error
+
+The rebuilt table claimed to enumerate "partitions into at most eight parts". That is one of **two**
+constraints. The record-level exposure is `R = (8,8,8,8,8,8,8,8)`, so a feasible failure vector requires
+
+```
+at most 8 parts      (one per stratum)
+each part ≤ 8         (records available per stratum)
+```
+
+The at-most-eight-parts constraint was applied; the capacity constraint was not. The result was that the
+shape counts coincided with unrestricted partition numbers for `k > 8` — 30, 42, 56, 77 at `k = 9..12` —
+and the distinct-`C_D` column reported `12` values at `k = 12`, which cannot exist. Since `max_j f_j` ranges
+only over `{⌈k/8⌉, …, 8}`, the number of distinct `C_D` values saturates at `9 − ⌈k/8⌉`: seven for
+`9 ≤ k ≤ 16`.
+
+Both constraints are now applied. The corrected counts reproduce GPT's independent recomputation exactly:
+`28, 38, 48, 63` at `k = 9..12`, with `7` distinct `C_D` values from `k = 9` onward.
+
+### 19.2 An ambiguous ranking, replaced by two defined measures
+
+The previous text said `p_(2)` "leaves the most `C_D` variation" and that Herfindahl "sits between" it and
+Shannon. That ordering is not well defined, and the table's own counts contradict it depending on which
+quantity is read. Two measures are now defined and reported separately:
+
+| Measure | Definition | What it counts |
+|---|---|---|
+| `V` | Equality classes containing ≥2 distinct `C_D` values | **Where** the contrast can occur |
+| `M` | Maximum number of distinct `C_D` values inside one class | **How much** `C_D` varies once `S` is fixed |
+
+They order the competitors **oppositely**:
+
+| `k` | `p_(2)`: `V` / `M` | Herfindahl: `V` / `M` | Shannon: `V` / `M` |
+|---|---|---|---|
+| 9 | 4 / **7** | **8** / 2 | 1 / 2 |
+| 10 | 4 / **7** | **12** / 2 | 3 / 2 |
+| 11 | 5 / **7** | **14** / 3 | 4 / 2 |
+| 12 | 5 / **7** | **20** / 3 | 7 / 2 |
+
+By `V`, Herfindahl is far ahead from `k = 9`. By `M`, `p_(2)` dominates throughout, because it leaves the
+maximum free on `[p_(2), 1]` while Herfindahl pins the shape much more tightly. Shannon is last on both.
+
+**Therefore no competitor is described as "most informative" or "most permissive".** The earlier ranking is
+withdrawn, and the replacement states only that the ordering depends on the measure, that the comparator
+set is a substantive choice, and that `V` and `M` are both inputs to any future power argument.
+
+### 19.3 Shannon entropy is now grouped exactly
+
+The approximate grouping is replaced by an integer identity valid for integer counts summing to `k`:
+
+```
+H(f) = ln k − (1/k) · ln ∏_j f_j^{f_j}
+```
+
+so two shapes have equal entropy **iff** their integer products `∏_j f_j^{f_j}` are equal. Comparison is on
+Python big integers; no tolerance is involved. The resulting Shannon column reproduces GPT's exact-grouping
+values without adjustment (27/1, 35/3, 44/4, 55/7 at `k = 9..12`), which is an independent check that both
+implementations are grouping the same objects.
+
+The `k = 8` coincidence remains the clearest demonstration that no summary is injective on shape:
+
+```
+4+1+1+1+1   C_D = 1/2   Shannon = ln 4   product 4^4 · 1^4
+2+2+2+2     C_D = 1/4   Shannon = ln 4   product 2^8
+```
+
+### 19.4 Canonical basis is asymmetric and is deferred
+
+Under `R = (8,8,8,8,8,4,8,8)` the multiset abstraction fails, because a part above four is feasible in
+seven positions but not in the D6 position. Feasibility becomes `max f_j ≤ 8` **and**
+`#{j : f_j > 4} ≤ 7`, and the tabulation must be over ordered vectors with a distinguished position rather
+than partitions. Only the record basis is tabulated. The canonical variant is a labelled secondary that
+would require its own enumeration; substituting it into the same table would be wrong.
+
+### 19.5 Level 1 gains a precondition
+
+GPT's safeguard is adopted. The licensed Level 1 sentence may be used only when **both** hold:
+
+1. the observed `ΔLL` is positive, and
+2. the rejection is in the **upper tail**, with `p_R` driving the two-sided decision.
+
+B1 v1.7 §5.6 and §11(d) require the driving tail to be reported precisely because a lower-tail rejection
+does not establish positive incremental prediction. A significant two-sided result driven by the lower tail
+is a negative or adverse finding and must never be reported as support for level 1.
+
+### 19.6 Two wording boundaries adopted
+
+- Level 2 can establish superiority to a **predeclared set** of competing summaries. It cannot establish
+  superiority to every conceivable summary, and a result against three named competitors must not be
+  presented as though it exhausted the space.
+- The 150 is referred to as the **proposed 150-variant scenario**. It is not an accepted sample size, the
+  programme is unapproved, and "0/150 evaluated" is written as "0 evaluated".
+
+### 19.7 Disposition
+
+- **B1 v1.7 untouched.** No clause, threshold, fold, or condition modified.
+- **Level 2 remains reopened**, now with a correct capacity-constrained table and two defined support
+  measures instead of a ranking.
+- **No draw, no fitting, no execution.**
+- **Record integrity:** §18.2 is marked superseded in place, so the capacity error and its correction stay
+  visible alongside the direction error of §17.3.
