@@ -4,8 +4,8 @@ Records the external review round on the pushed bundle and the disposition of ea
 provenance record, not a scientific finding. Nothing here changes a frozen document; where a label in
 this bundle was wrong, the correction is applied in place and noted below.
 
-**Reviewed object:** branch `audit/analytical-validity-2026-11-18`, head `bec7d60`.
-`master` remains `33dca9b`; `research/concentration-math-spec` remains `de39291`. No merge.
+**Historical bundle-review snapshot for §§1–6:** branch `audit/analytical-validity-2026-11-18`, head `bec7d60`. This is a record of the original bundle review, not a current-branch-head assertion. Later S1 review rounds identify their own document versions and review objects below.
+`master` was `33dca9b` and `research/concentration-math-spec` was `de39291` at that historical snapshot. No merge was made.
 
 ---
 
@@ -334,3 +334,58 @@ DeepSeek's recommendation was that v0.5 could be frozen for its narrow purpose, 
 ### 12.3 Current disposition
 
 S1 v0.6 is a design-only draft returned for direct DeepSeek review. DeepSeek's v0.5 freeze recommendation is conditional and does not freeze v0.6. The key pre-execution condition is owner commitment to use the S1 result to determine whether the current estimator/uncertainty combination proceeds as the candidate for S2-S7. That owner commitment is not evidenced in the repository record. No S1 run, pilot, implementation, freeze, solver construction, or execution GO is authorized by this round.
+
+
+---
+
+## 13. Round 8 — DeepSeek's supplied v0.5 review and direct repository provenance check, 2026-11-19
+
+**Supplied review scope:** DeepSeek explicitly says it reviewed a 770-line v0.5 document and that it cannot review v0.6. Its substantive assessments are therefore recorded as assessments of v0.5 only. They are not treated as a review of the current v0.6 specification.
+
+### 13.1 Direct repository check
+
+The current GitHub branch and file were checked directly after receiving the review:
+
+| Object | Directly returned repository evidence |
+|---|---|
+| Branch | `audit/analytical-validity-2026-11-18` |
+| Branch head before this ledger update | `722fc315979023b3eee37b276b192e080378bccb` |
+| Latest S1 file blob | `13e816a32b4a80f5705d167ff137bf88ffd1136e` |
+| Latest S1 file declaration | Version 0.6; 841 lines |
+| Parent of `722fc31` | `d945ac2b1551783160319cc87b9c55131944b4ad` |
+| S1 blob at that parent | `f32f1c5cb6940fe9f2c13f5650086c510541ded9`; also Version 0.6, 836 lines |
+| Reviewer ledger at the parent and branch head before this update | `b7d6220139209738bf9a2017f97d287796a9a701`; 337 lines; includes Round 7 |
+
+The v0.6 scenario table and §7.3 precision/planning text were already present in the parent object `f32f1c5...`; they were not introduced only by the final `722fc31` handoff-question commit. At the current branch head, the v0.6 file includes the S2–S7 scenario table, the per-`J` false-positive precision table, the MCSE equations, the `0.02236 s_r` and `0.02236 s_b` multipliers, the approximate `0.04383 s` 95% half-width factors, the pilot-based replication-count equations, and the boundary/inconclusive rule. The current reviewer ledger contains a Round 7 section documenting the v0.5 review and v0.6 revisions.
+
+Accordingly, the supplied DeepSeek statement that the named branch currently served a v0.5/770-line specification and a ledger without Round 7 does **not** match the repository objects returned for the branch head or its immediate parent. The cause is not established. The review may have used an earlier or cached rendering, a different ref, or another copy; this record does not infer which.
+
+A Git blob SHA is repository metadata. It is not expected to appear inside the file's rendered Markdown, so searching the file body for its own blob SHA is not a valid way to establish its version. The exact blob is obtained from the repository object metadata.
+
+### 13.2 Adjudication of the supplied review
+
+| DeepSeek point | Scope of supplied assessment | Current v0.6 disposition |
+|---|---|---|
+| Stop rule | Correctly identifies the owner commitment as a necessary execution condition. | **Retained.** v0.6 makes the consequence explicit: if S2–S7 proceed unchanged or select an estimator independently, S1 must not be run. The owner commitment remains unrecorded. |
+| S1 versus S2–S7 | The scenario-by-scenario table was not visible in DeepSeek's v0.5 copy. | **Resolved in v0.6.** The table names the distinct question for S2, S3a/S3b, S4, S5, S6 and S7. |
+| MCSE and replication planning | DeepSeek accepts the arithmetic but could not verify the formulas in the rendered copy it inspected. | **Present in the current v0.6 object.** §7.3 contains the proportion, recovery and bias MCSE formulas; the 2,000-replication multipliers; the planning equations; the unavailability adjustment; and the zero-distance/no-finite-guarantee caveat. |
+| Inconclusive handling | Correctly judged as non-pass. | **Retained.** The v0.6 rule does not convert overlap with a decision boundary into a pass. |
+| Provenance | DeepSeek could not identify the exact blob it reviewed. | **Current object identified, reviewed object still unknown.** The current v0.6 blob is `13e816a32b4a80f5705d167ff137bf88ffd1136e`; DeepSeek did not provide a digest for the object it inspected. |
+| Positive-inference boundary | Correctly limited to the binary-proxy, fixed-panel, independent-parent machinery check and the no-unresolved positive/null worlds. | **Retained and explicit in v0.6.** A pass does not validate unresolved-outcome handling, real solvers, general concentration, or B1 v1.6. |
+| Overall recommendation | Conditional support for v0.5 as a narrow machinery check, not a freeze or execution GO. | **Not transferred to v0.6.** A fresh direct review of the exact v0.6 object is still required. No freeze or execution GO is inferred. |
+
+### 13.3 Claude's answer-key critique
+
+Claude's concern is recorded with a distinction that matters for accuracy:
+
+- The diagnostic measurement is **not noise-free** relative to the latent state. Section 3.2 specifies (P(Q=1\mid H=1)=0.8) and (P(Q=1\mid H=0)=0.2).
+- The mapping from the generated binary signal (Q) to the observed concentration (C_D) **is exact and one-to-one**: (C_D=0.75) iff (Q=1), and (C_D=0.50) iff (Q=0). S1 therefore does not test information loss or measurement error in the mapping from a general failure vector to its concentration summary.
+- This limitation is already stated in the opening summary (§1), the diagnostic construction (§3.2), and the inference-transfer boundary (§9). The current draft does not claim a general or noisy continuous concentration measure has been validated.
+
+**Adjudication:** Claude's substantive scope warning is accepted. Its suggestion that the point is stated only in the limitations section is not accurate for the current v0.6 text: the exact (Q\leftrightarrow C_D) encoding and the (H\to Q) measurement noise are stated in the opening section. No additional specification change is required for this point.
+
+### 13.4 Current state and next review request
+
+S1 v0.6 remains a **design-only draft**. The current owner commitment to use S1's pass/revise/stop result as the candidate-method gate for S2–S7 is not evidenced. No S1 freeze, pilot, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO is authorized.
+
+The next DeepSeek review must inspect the exact v0.6 source identified by blob `13e816a32b4a80f5705d167ff137bf88ffd1136e` and state the blob SHA or content digest of the actual reviewed object. A response based on v0.5 is not a review of v0.6.
