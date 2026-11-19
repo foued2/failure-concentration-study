@@ -38,8 +38,9 @@ with both source critiques reproduced verbatim in Appendices A and B).
    power, and that "previous power figures remain invalidated".
 9. The LC518 strata are input categories, not verified mechanisms; `C_D` is not a defect-localization
    measure.
-10. A NO-GO was recorded on 2026-11-01 (`worklog.md:262`) on exactly W1 + partition fragility +
-    identification failure, and no route-closure record exists.
+10. A third-reviewer **concurrence with a NO-GO recommendation** was recorded on 2026-11-01
+    (`worklog.md:262`), route-scoped to the current operator, on exactly W1 + partition fragility +
+    identification failure. It is not an owner decision, and no route-closure record exists.
 
 **Inference, not finding (attackable):**
 
@@ -58,10 +59,15 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
 1. **Is `F`-vs-`C` a fair comparison?** The repo's condition 6 mandates it; the equal-score arm fails.
    A reviewer who thinks the domain arm is the wrong target has a real argument.
 2. **W1 is a wiring check, not a positive control.** The design fixes defect reach, not a `Δ_pred`
-   truth, so "the effect was built in" is an interpretation the design does not support. The open
-   question is the opposite one: whether any *future* S1 scenario can inject a known `Δ_pred` at all.
-3. **Is the parent (30) or the variant (150) the right `J`?** M1-si is within-parent, which removes the
-   parent effect but leaves ≤1 df per parent and confounds `C_D` with the mutation.
+   truth, so "the effect was built in" is an interpretation the design does not support. **That question
+   is now answered:** `S1_KNOWN_GAIN_SPEC_2026-11-18.md` does carry a known gain, via
+   `I(Y;C_D|X) = I(Y;F|X)` under ancillary randomization, and it computes the population truth
+   independently of the fit. Attack whether that identity is doing real work or is an artifact of a
+   deliberately favourable generator.
+3. **Is the parent or the variant the right `J`?** M1-si is within-parent, which removes the parent
+   effect but leaves ≤1 df per parent and confounds `C_D` with the mutation. **Neither 30 nor 150 is
+   adopted** — the record calls 30 a logistics scenario and states "30 parents × 5 variants is not
+   adopted". The parent is the independent unit; the count is open.
 4. **Does conditioning on `k_unresolved` help or hurt?** Control vs collider depends on an unstated DAG.
 5. **Is the T1/T2 separation actually possible?** The repo says "unseparated in nature". A proposal
    that claims to separate them must say how family-difficulty is held fixed.
@@ -79,7 +85,7 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
    input-level confidence interval. The design says it "does not preserve input-level dependence".
    So W1 cannot be faulted for missing a solver random effect, and it equally cannot speak to the
    clustered world. The solver-unit problem is decisive for the *real* design, where the unit is the
-   parent (30), not for W1.
+   parent (count open), not for W1.
 
 ## What is not here
 

@@ -106,7 +106,8 @@ variants are nested within parents. The MDE arithmetic in `claude-keys-verificat
   flagged as an overstatement; it does not change the W1 numbers or the fact that the pipeline has
   never been shown to recover an effect.
 - `F`-versus-`C` remains reported with its qualification: domain PASS, equal FAIL, overall FAIL.
-- The NO-GO record of 2026-11-01 and the absence of a route-closure record are unchanged facts.
+- The 2026-11-01 reviewer concurrence with a NO-GO recommendation, the absence of any owner GO/NO-GO
+  decision, and the absence of a route-closure record are unchanged facts.
 
 ## 6. Open items and who owns them
 
@@ -389,3 +390,27 @@ Claude's concern is recorded with a distinction that matters for accuracy:
 S1 v0.6 remains a **design-only draft**. The current owner commitment to use S1's pass/revise/stop result as the candidate-method gate for S2–S7 is not evidenced. No S1 freeze, pilot, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO is authorized.
 
 The next DeepSeek review must inspect the exact v0.6 source identified by blob `13e816a32b4a80f5705d167ff137bf88ffd1136e` and state the blob SHA or content digest of the actual reviewed object. A response based on v0.5 is not a review of v0.6.
+
+---
+
+## 14. Record-accuracy corrections carried forward (Claude round 3)
+
+Three points from Claude's round-3 message are unaffected by the later S1 rounds and were still
+unapplied in the published text at `d8ad246`. They are corrections of record, not of science, and they
+change no verdict.
+
+| # | Correction | Applied where |
+|---|---|---|
+| 1 | The 2026-11-01 NO-GO is a **third-reviewer concurrence with a route-scoped recommendation**, not an owner decision. `worklog.md:284` says "my 07:06 NO-GO was route-scoped"; no owner GO/NO-GO decision and no closure record exist. | `claude-keys-verification` §0 and §12 item 5; bundle `README` item 10 |
+| 2 | **30 parents × 5 variants and 150 variants are not adopted.** v0.17 calls 30 "a logistics scenario only, not an adopted confirmatory operating count"; the exploratory protocol states "30 parents × 5 variants is not adopted". The word "roster" is withdrawn. | `claude-keys-verification` §3, the MDE table, and §11; bundle `README` challenges 3 and 8 |
+| 3 | The execution gate is **`B1_ANALYSIS_PLAN_2026-11-14_v1.1.md:7`**, not a 2026-11-10 rule. The 2026-11-10 record is the capacity/power addendum, which says "not a GO, not a ratification of B1". Substance unchanged; the citation is corrected so it can be checked. | this section |
+
+**Sequencing consequence of correction 3.** The authorization basis is "bounded GO (design and
+mathematics only)". Design and mathematics are authorized now; execution is not. Writing and revising
+S1 v0.6 required no new GO; running it requires one.
+
+**Withdrawn in the same pass:** a parallel `S1_SPECIFICATION_DRAFT_2026-11-18.md` was written locally
+before the v0.6 line was visible. It reached no remote ref and is superseded by
+`S1_KNOWN_GAIN_SPEC_2026-11-18.md`, which states the same information target with an explicit identity
+proof. It is not added to the repository; two competing specifications would be worse than one stale
+one.
