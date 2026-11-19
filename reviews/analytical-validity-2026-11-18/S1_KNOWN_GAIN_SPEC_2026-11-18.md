@@ -740,6 +740,9 @@ Please review this v0.6 document as a specification, not as a report of executed
 13. **S3 distinction:** Is the proposed S3a oracle adjustment for observed \(H\) appropriate as a diagnostic first step? Is S3b, with an imperfectly observed common cause or best-available proxy, necessary before assessing feasible adjustment? Does either synthetic scenario support any empirical claim about real solvers?
 
 
+14. **Review-object provenance:** Please state the exact Git blob SHA or content digest of the complete v0.6 file you actually reviewed. Do not report only the filename or rendered page. Please confirm whether you directly inspected the complete §7.3 formulas and replication-planning equations. For the prior v0.5 review, the repository candidate blob was \(6210f8b95a2f9dbceea3606a7aa1f4dad7cb7e21\), but your response did not identify the reviewed hash.
+15. **Replication planning:** Given that \(s_r\), \(s_b\), and the true distances from the decision boundaries are unknown until a separate pilot or calibration exists, do you agree no defensible numerical replication requirement can yet be stated? Are the displayed \(R_{\mathrm{req}}\) formulas and boundary caveat adequate, and what planning input would you require before selecting a confirmatory count?
+
 Please give section-specific objections, distinguish mathematical errors from design preferences, and state which issues are true blockers versus limitations that can be accepted for a narrow first-stage machinery check. Do not treat this request as a request for approval, a freeze decision or an execution GO.
 ## 11. Execution and change-control boundary
 
@@ -831,5 +834,7 @@ No code was written, no simulation or model fit was run, no bank was reused, and
 - The MCSE formulas are displayed with the numerical multipliers and approximate 95% half-width factors at 2,000 valid replications. The text explains why numeric values cannot be supplied without \(s_r\) and \(s_b\).
 - Approximate replication-count planning formulas are supplied for the recovery and bias gates using pilot standard deviations and prespecified distances from their boundaries. No exact confirmatory replication count is claimed before those quantities are known. Boundary cases are explicitly identified as potentially inconclusive regardless of increasing replication count.
 - Any planning pilot requires separate authorization and cannot be pooled into a later confirmatory run.
+- The next review request explicitly asks DeepSeek for the exact Git blob SHA or content digest of the complete file it reviewed, and confirmation that it directly inspected the full §7.3 and replication-planning text.
+
 
 No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
