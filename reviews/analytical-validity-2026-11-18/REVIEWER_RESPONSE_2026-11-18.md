@@ -296,3 +296,41 @@ v0.5:
 **Important execution boundary:** the specified S1 decision is internal to the analytical-methods programme. It does not change the scientific evidence about concentration or real solvers. A pass only carries the estimator candidate into S2-S7 specification/review; it does not authorize S2-S7 implementation or execution. If the owner does not intend to use this estimator-selection decision, S1 should not be run.
 
 DeepSeek's v0.4 recommendation does not freeze v0.5. The current specification remains a design draft awaiting direct review of v0.5. No freeze, implementation, simulation, model fitting, bank reuse, solver construction, or execution GO follows from this round.
+
+
+---
+
+## 12. Round 7 — DeepSeek's direct review of S1 v0.5 and Claude's replication/provenance challenge, 2026-11-19
+
+**Review materials:** the supplied DeepSeek review, which reports direct examination of S1 v0.5 and the Round 6 reviewer ledger, plus Claude's follow-up on decision relevance, review-object provenance, and Monte Carlo precision.
+
+### 12.1 DeepSeek's direct v0.5 verdict
+
+DeepSeek's verdict is that S1 v0.5 is defensible as a narrow first-stage machinery check. It found no mathematical or statistical defect that prevents that limited use, and it considers the existing proceed/revise/stop decision operational **provided that the project actually uses it**.
+
+| Issue | DeepSeek's direct assessment | Adjudication |
+|---|---|---|
+| Decision consequence | The pass/fail/inconclusive consequences are clear. A hard blocker arises if the project would advance to S2 regardless of S1. | **Accepted with the stronger Claude stop rule.** v0.6 states that if S2-S7 proceed unchanged regardless of S1, or choose their estimator independently, S1 must not be run. A separate owner commitment to use this gate is required before execution. |
+| Positive inference | Adequate. It licenses only recovery of the binary-proxy gain under the fixed-panel independent-parent generator and says nothing about real solvers or a general summary statistic. | **Accepted.** v0.6 additionally states that the matched null is limited to \(k_{\mathrm{unresolved}}=0\) in both worlds. |
+| Recovery/bias MCSE | Formulas and inconclusive logic are acknowledged in the Round 6 ledger. DeepSeek says it could not independently verify the formulas in its rendered copy because of page truncation. | **No missing-formula defect established.** The v0.5 source object and v0.4 predecessor were compared by blob. Their §7.3 text is byte-for-byte identical and contains the \(MCSE(\bar r)\), \(MCSE(\bar b)\), t-based interval formulas, and inconclusive rules. v0.5 also added a separate per-\(J\) false-positive reference table in §7.2. The precise file blob DeepSeek examined remains unconfirmed because its report gives no Git blob SHA. |
+| Per-\(J\) false-positive precision | Confirmed in the Round 6 ledger and judged adequate. | **Accepted.** v0.6 retains the per-\(J\) table and clarifies the actual valid denominator. |
+| §6 matched null | Adequate as a minimum no-unresolved null. It preserves diagnostic and parent nuisance structure; both worlds have \(k_{\mathrm{unresolved}}=0\). | **Accepted.** It does not test unresolved-outcome handling. |
+| S3a/S3b | Oracle S3a is a useful diagnostic; S3b is necessary before a feasible-adjustment claim. | **Accepted.** v0.6 retains both stages and makes their distinct roles explicit. |
+| S6 | Correctly named as required future work, but not yet specified. | **Accepted.** S6 remains named but not specified or frozen. |
+| General validity | No mathematical/statistical defect prevents the narrow S1 machinery check. B1 v1.6 still needs its own exact-estimator known-truth bridge. | **Accepted.** No S1-to-B1 inference transfer. |
+
+DeepSeek's recommendation was that v0.5 could be frozen for its narrow purpose, conditional on the project genuinely using the downstream estimator-selection decision. It did **not** recommend or imply an execution GO.
+
+### 12.2 Claude's additional challenges and v0.6 response
+
+**A. S1 must have a real stop rule before execution.** Claude asks what S2-S7 discover that S1 cannot. v0.6 now explains that S1 is a baseline known-positive recovery check only. S2 tests null specificity; S3a/S3b test oracle and imperfect-proxy adjustment; S4 tests partition sensitivity; S5 tests crossed dependence; S6 tests unresolved outcomes; and S7 tests degenerate or unsupported support. If those later scenarios and their estimator choices proceed regardless of S1, then S1 has no sequencing value and must not be run. The owner must explicitly commit to using S1's result as the candidate-method gate before execution.
+
+**B. Review-object provenance must be hash-based.** The v0.5 Git blob on the review branch at the start of this round was 6210f8b95a2f9dbceea3606a7aa1f4dad7cb7e21. Its v0.4 predecessor blob was dfca5d9f23b1d42557c0ea1fc4a4bdc0cdad5075. A direct source comparison found the complete §7.3 sections byte-for-byte identical; both contain the recovery/bias MCSE formulas and interval/inconclusive rules. The v0.5 change added the per-J false-positive table in §7.2. DeepSeek's supplied response reports rendering truncation and does not identify the Git blob it reviewed. Therefore the exact review object cannot be cryptographically confirmed from the current record. It is incorrect to claim that the formulas were absent from the committed v0.5 source; it is also not possible to prove that the copy DeepSeek inspected was byte-identical to that object. v0.6 asks the next reviewer to state the exact blob SHA of the reviewed object.
+
+**C. The 2,000-replication plan may yield an inconclusive result.** This cannot be predicted numerically without the replication-level standard deviations and the distance of the true recovery/bias means from their gate boundaries. v0.6 reports the MCSE and 95% half-width multipliers at 2,000 valid replications, then gives planning equations using pilot estimates of the standard deviations and prespecified boundary distances. It states that no finite count guarantees a decisive result when the true quantity is exactly on a boundary. A pilot requires separate authorization and cannot be pooled into the confirmatory run. No numerical replication count is invented.
+
+**D. The positive inference must preserve the unresolved-outcome boundary.** v0.6 states that the S1 positive and matched-null worlds both have \(k_{\mathrm{unresolved}}=0\). A pass does not cover unresolved-outcome handling; S6 remains required and not specified.
+
+### 12.3 Current disposition
+
+S1 v0.6 is a design-only draft returned for direct DeepSeek review. DeepSeek's v0.5 freeze recommendation is conditional and does not freeze v0.6. The key pre-execution condition is owner commitment to use the S1 result to determine whether the current estimator/uncertainty combination proceeds as the candidate for S2-S7. That owner commitment is not evidenced in the repository record. No S1 run, pilot, implementation, freeze, solver construction, or execution GO is authorized by this round.
