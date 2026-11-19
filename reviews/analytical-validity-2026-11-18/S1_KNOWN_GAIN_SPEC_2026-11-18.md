@@ -607,11 +607,51 @@ For the learning-recovery gate, calculate \(\bar r=R_{\mathrm{valid}}^{-1}\sum_j
 \bar b \pm t_{0.975,R_{\mathrm{valid}}-1}\frac{s_b}{\sqrt{R_{\mathrm{valid}}}}.
 \]
 
-These formulas are the prespecified numerical precision rules; the numerical \(s_r\) and \(s_b\) cannot be known until the independently generated simulation replications exist.
+These formulas are the prespecified numerical precision rules; the numerical \(s_r\) and \(s_b\) cannot be known until independently generated simulation replications or a separate planning pilot produce them.
 
-For both gates, an interval that overlaps the pass region and the fail region is **inconclusive**, not a pass. For transparent gate adjudication, call learning recovery a precision-supported pass only if the 95% Monte Carlo interval for \(E[r]\) lies entirely at or above 0.80; call it a fail if the interval lies entirely below 0.80; otherwise call it **inconclusive**. Call the bias gate a precision-supported pass only if the 95% Monte Carlo interval for \(E[b]\) lies entirely inside the equivalence band \([-0.1\Delta^*(0.12),+0.1\Delta^*(0.12)]\); call it a fail if the interval lies entirely outside that band on either side; otherwise call it **inconclusive**. These conservative Monte Carlo decision rules are stated separately from the point-estimate tolerances.
+At \(R_{\mathrm{valid}}=2{,}000\):
+
+\[
+MCSE(\bar r)=0.02236\,s_r,\qquad MCSE(\bar b)=0.02236\,s_b,
+\]
+
+and the approximate 95% Monte Carlo half-widths are \(0.04383\,s_r\) and \(0.04383\,s_b\), respectively. If fewer replications are valid, replace 2,000 by the actual \(R_{\mathrm{valid}}\); the multipliers increase accordingly. These are scale factors, not numerical MCSE values, because \(s_r\) and \(s_b\) are unknown before the replications exist.
+
+For both gates, an interval that overlaps the pass region and the fail region is **inconclusive**, not a pass. This is an intended outcome near either decision boundary, not an implementation defect. If the true mean is exactly on a decision boundary, increasing the replication count does not make a precision-supported pass or fail the natural outcome; the interval should continue to allow an inconclusive classification. For transparent gate adjudication, call learning recovery a precision-supported pass only if the 95% Monte Carlo interval for \(E[r]\) lies entirely at or above 0.80; call it a fail if the interval lies entirely below 0.80; otherwise call it **inconclusive**. Call the bias gate a precision-supported pass only if the 95% Monte Carlo interval for \(E[b]\) lies entirely inside the equivalence band \([-0.1\Delta^*(0.12),+0.1\Delta^*(0.12)]\); call it a fail if the interval lies entirely outside that band on either side; otherwise call it **inconclusive**. These conservative Monte Carlo decision rules are stated separately from the point-estimate tolerances.
 
 For any other replication-level scalar \(Z_r\), including squared error or interval width, report \(MCSE(\overline Z)=s_Z/\sqrt{R_{\mathrm{valid}}}\) and the corresponding 95% Monte Carlo interval. A mean or rate that is numerically inside its tolerance but too imprecise to distinguish values outside the tolerance must be labelled **inconclusive**, not a clean pass.
+
+A numerical replication count that is guaranteed to avoid an inconclusive result cannot be set from the present specification alone. It depends on both the unknown replication-level standard deviations and the distance of the true operating characteristics from the decision boundaries.
+
+After a separately authorized, independent planning pilot, let \(s_{r,\mathrm{pilot}}\) and \(s_{b,\mathrm{pilot}}\) be the pilot standard deviations, and let \(\mu_r,\mu_b\) be the planning values for the recovery ratio and mean bias. Define the distances from the relevant boundaries:
+
+\[
+\delta_r=|\mu_r-0.80|,
+\qquad
+m_b=0.1\Delta^*(0.12),
+\qquad
+\delta_b=\left|m_b-|\mu_b|\right|.
+\]
+
+For a target 95% Monte Carlo half-width no larger than the corresponding distance, approximate requirements are:
+
+\[
+R_{\mathrm{req},r}
+=
+\left\lceil
+\left(\frac{1.96\,s_{r,\mathrm{pilot}}}{\delta_r}\right)^2
+\right\rceil,
+\qquad
+R_{\mathrm{req},b}
+=
+\left\lceil
+\left(\frac{1.96\,s_{b,\mathrm{pilot}}}{\delta_b}\right)^2
+\right\rceil.
+\]
+
+The confirmatory replication target should be at least the larger requirement, adjusted for expected unavailability and recalculated with the appropriate \(t\) critical value. These are planning approximations, not a claim that the required number is presently known. If \(\delta_r=0\) or \(\delta_b=0\), no finite replication count can ensure an interval wholly on one side of that boundary. If either distance is small, the required count can become very large.
+
+Accordingly, the planned 2,000 replications per cell are a starting design, **not a guarantee that the recovery or bias decision will be non-inconclusive**. A separate pilot to estimate \(s_r\) and \(s_b\) requires its own explicit authorization. Pilot replications must remain independent of, and must not be pooled into, a later confirmatory run. If no pilot is authorized, the planned 2,000-replication result must be allowed to remain inconclusive; it must not be rescued by a post hoc extension or threshold change.
 
 All nine positive-world cells must report mean and median \(\Delta_{\mathrm{fit}}\), mean and median test estimate, bias, RMSE, interval width, coverage, positive-detection fraction, and availability reasons. All three matched-null cells must report false-positive fraction and availability. Report the MCSE and Monte Carlo interval for each operating-characteristic estimate; do not choose a more favourable \(\eta\), \(J\), or sensitivity tolerance after seeing results.
 
@@ -779,5 +819,17 @@ No code was written, no simulation or model fit was run, no bank was reused, and
 - The future confounding programme is split into S3a (oracle adjustment for observed \(H\)) and S3b (imperfect-proxy/partial measurement \(W\)); S3b is required to assess feasible adjustment, but neither synthetic scenario establishes real-solver validity.
 - S6 is explicitly identified as a required but not-yet-specified unresolved-outcome scenario, with its minimum future specification elements named. It is not represented as a completed scenario.
 - The next DeepSeek review is asked to verify the concrete decision rule, positive inference statement, explicit §7 precision formulas, per-\(J\) false-positive precision, its own reading of §6, and the S3a/S3b distinction.
+
+No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
+
+
+## 17. Revision record — v0.6 after DeepSeek's direct v0.5 review and Claude's follow-up
+
+- The reason S1 precedes S2-S7 is made explicit. S1 tests baseline known-positive recovery under the most favourable correctly specified case; S2-S7 address distinct null, confounding, partition, crossed-dependence, unresolved-outcome, and degenerate-support threats that S1 does not test.
+- The sequencing rule is self-cancelling: if S2-S7 will proceed unchanged regardless of S1 or choose their estimator independently, S1 must not be run. A separate owner commitment to use S1's pass/revise/stop result to select the candidate method for S2-S7 is required before execution. No such commitment or execution GO is recorded here.
+- The pass statement is restricted to the positive binary-proxy world and its matched null with \(k_{\mathrm{unresolved}}=0\) in both. It explicitly does not validate unresolved-outcome handling; S6 remains a required but not-yet-specified future scenario.
+- The MCSE formulas are displayed with the numerical multipliers and approximate 95% half-width factors at 2,000 valid replications. The text explains why numeric values cannot be supplied without \(s_r\) and \(s_b\).
+- Approximate replication-count planning formulas are supplied for the recovery and bias gates using pilot standard deviations and prespecified distances from their boundaries. No exact confirmatory replication count is claimed before those quantities are known. Boundary cases are explicitly identified as potentially inconclusive regardless of increasing replication count.
+- Any planning pilot requires separate authorization and cannot be pooled into a later confirmatory run.
 
 No code was written, no simulation or model fit was run, no bank was reused, and no execution GO was requested or inferred.
