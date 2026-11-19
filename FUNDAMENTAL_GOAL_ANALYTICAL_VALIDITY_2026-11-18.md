@@ -196,16 +196,22 @@ independently.
 
 ## 9. Immediate next actions, in order
 
-1. **Verify the W1 injection correspondence.** Read the three-world design and script
-   (`a33b475d…`, `d1909743…`) and determine whether the injected effect enters the same estimand the
-   analysis estimates. Until this is answered, W1 is "failed check" or "irrelevant check", not
-   "failed positive control".
-2. **Freeze S1–S7**: scenarios, tolerances, ICC grid, partition set, pass bands.
-3. **Run S1 and S2 first.** A positive control that cannot recover a large injected effect makes the
-   remaining scenarios uninformative.
-4. **Then S3–S7**, with the solver as the sampling unit throughout.
-5. **Only then** compute a defensible operating population and sample size.
-6. **Only then** decide the owner route (confirmatory vs exploratory) and resume population work.
+1. **W1 injection correspondence: resolved, and it fails.** The design fixes defect reach
+   (`d_h = 0.8`, `d_j = 0.05`; `e_h = 0.35`, `e_j = 0.03`) and defines no true value of `Δ_pred`
+   anywhere. W1 is therefore a wiring check, its positive-control status is unproven, and it cannot be
+   used as a power result.
+2. **Freeze the S1 specification by hash.** The draft is
+   `reviews/analytical-validity-2026-11-18/S1_SPECIFICATION_DRAFT_2026-11-18.md`. It fixes the target
+   (`Δ_pred = I(Y;C|X)` in nats), the generator that imposes that target by construction, six worlds,
+   one multilevel estimator, and the pass/fail rules. **Nothing in it has been run.**
+3. **Request one GO naming S1's scope.** Writing the design is inside the existing bounded GO
+   ("design and mathematics only"); executing it is not. No simulation, fitting, or Monte Carlo may
+   run before that GO.
+4. **Run S1-W0 first.** The null world gates everything else: if it yields gains above the
+   false-positive criterion, no positive-world result is interpretable.
+5. **Then S1-W1 to S1-W5**, with the **parent** as the independent unit and the operating parent count
+   left open — reported as a grid, not adopted as 30.
+6. **Then S2–S7**, only if S1 passes. Then the operating population, then the route decision.
 
 ---
 

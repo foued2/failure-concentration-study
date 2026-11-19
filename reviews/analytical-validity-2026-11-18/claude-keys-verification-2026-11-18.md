@@ -37,7 +37,9 @@ technical finding about the repository, and the most decisive internal result in
 full-vector `F` versus `C` comparison — is missing from the list entirely (§10).
 
 **The single most important repo fact for this whole exercise:** the programme's own third reviewer
-recorded a **NO-GO** on 2026-11-01 citing exactly W1 + partition fragility + identification failure:
+recorded a **concurrence with a GPT+Claude NO-GO recommendation** on 2026-11-01, route-scoped to the
+current `C = max_j f_j / k` operationalization, citing exactly W1 + partition fragility + identification
+failure:
 
 > "DISPOSITION: CONCUR with NO-GO. Rationale: identification failed by three independent routes; the
 > one quantitative test failed small and partition-fragile; construct validity sits upstream of all
@@ -46,10 +48,17 @@ recorded a **NO-GO** on 2026-11-01 citing exactly W1 + partition fragility + ide
 
 and, nine minutes later, that **no route-closure record exists anywhere in the repo**
 (`worklog.md`, 2026-11-01 07:10 entry). So Claude's central conclusion is a rediscovery of a
-disposition already on record seventeen days earlier, and GPT's framing — "it changes how we should
-assess the entire proposed research programme" — understates the situation. The programme had already
+disposition already on record seventeen days earlier, and GPT's framing - "it changes how we should
+assess the entire proposed research programme" - understates the situation. The programme had already
 been assessed and stopped, in writing, on the eve of the LC518 build. What is new is not the
 diagnosis; it is that the work continued without a closure record.
+
+**Status of that NO-GO, stated precisely (Claude's round-3 correction, accepted).** It is a *reviewer
+disposition*, not an owner decision. The entry is titled a "GLM third-reviewer position", `worklog.md:284`
+records that "my 07:06 NO-GO was route-scoped", and no formal owner GO or NO-GO decision and no
+route-closure record appear anywhere in the repository. The accurate formulation is therefore: **the
+programme was advised to stop and was not formally stopped.** "The November 1 NO-GO still stands"
+overstates it by implying an owner act that never happened.
 
 ---
 
@@ -180,9 +189,13 @@ programme does not know the between-solver variance it is reasoning about.
 
 **Two further corrections Claude needs.**
 
-- **The unit is the parent, not the solver,** for the current design. LC518 supplies 30 parents G01–G30
-  in five formulation families (K1×7, K2×8, K3×8, K4×5, K5×2), with five variants each. Variants share a
-  parent, so the between-unit clustering level for a `C_D` effect is the parent.
+- **The unit is the parent, not the solver — but no operating parent count is adopted.** `PARENT_DESIGN.md`
+  defines 30 parents G01–G30 in five formulation families (K1×7, K2×8, K3×8, K4×5, K5×2), and variants
+  share a parent, so the between-unit clustering level for a `C_D` effect is the parent. **However,
+  "30 parents × 5 variants" and "150 variants" are explicitly *not adopted*:** the v0.17 handoff records
+  30 as "a logistics scenario only, not an adopted confirmatory operating count", and the exploratory
+  feasibility protocol states "30 parents × 5 variants is not adopted". 30 is a worked example, not the
+  operating design.
 - **M1-si is a within-parent design, and that changes the arithmetic.** M1-si requires ≥2 variants per
   parent with ≥2 distinct `C_D` in one exact cell, precisely to remove the parent effect. A within-parent
   contrast has ≤1 degree of freedom per parent and, as v0.21 itself admits, varies `a(v)` and `C_D`
@@ -198,16 +211,19 @@ in a random-intercept model with `J` independent units,
 with σ_u the between-unit residual SD of the outcome. Illustrative values (assumptions stated; **σ_u
 and sd(C) are not estimated anywhere in the record**, which is itself a gap):
 
-| σ_u (nats) | sd(`C`) | J = 30 parents | J = 150 variants | J needed for MDE 0.02 |
+| σ_u (nats) | sd(`C`) | J = 30 (scenario) | J = 150 | J needed for MDE 0.02 |
 |---|---|---|---|---|
 | 0.20 | 0.25 | **0.409** | 0.183 | ≈ 12,600 |
 | 0.05 | 0.25 | **0.102** | 0.046 | ≈ 785 |
 | 0.02 | 0.25 | 0.041 | 0.018 | ≈ 126 |
 
-Reading: at the LC518 roster size (30 parents), the minimum detectable cluster-level effect is
-**0.10–0.41 nats** on plausible between-unit variation — five to twenty times the highest threshold
-the programme ever set (0.02 nats). Even the most favourable row only becomes adequate at ~150
-independent units, which is the *variant* count, not the parent count.
+Reading: at **J = 30 — the logistics-scenario figure, explicitly not an adopted operating count** — the
+minimum detectable cluster-level effect is **0.10–0.41 nats** on plausible between-unit variation, five
+to twenty times the highest threshold the programme ever set (0.02 nats). Even the most favourable row
+only becomes adequate at ~150 independent units. The correct statement is therefore conditional:
+*whatever* the operating count turns out to be, `J` must be chosen so that the MDE sits below the target,
+and no such count has been justified anywhere in the record. The table shows the size of the hole, not
+the size of a planned cohort.
 
 **External literature.** The design-effect / effective-sample-size argument is standard:
 Austin & Merlo, "Intermediate and advanced topics in multilevel logistic regression analysis",
@@ -660,8 +676,9 @@ needed.
    carries ~0.05 % relative gain against `F`'s ~19 % under the same folds in W1, with the qualification
    that `F` wins on domain and fails on equal. Claude's key 6 rules out the *wrong* operation
    (conditioning on `F`) and thereby skips the right one (comparing against `F`).
-5. **The diagnosis is not new.** The repo recorded a NO-GO on 2026-11-01 on exactly these grounds, and
-   recorded that no closure record was ever created. The scientific position in the two appendices is
+5. **The diagnosis is not new.** A third-reviewer **concurrence with a NO-GO recommendation** on the
+   current `C = max_j f_j / k` operationalization was recorded on 2026-11-01, together with the finding
+   that no closure record was ever created. It is route-scoped and is not an owner decision (see §0). The scientific position in the two appendices is
    correct; its novelty is a function of how much of the programme's own record was read.
 6. **What is genuinely new in the critique is methodological, not empirical.** It names five literatures
    the project never searched — partition theory, multilevel power, winner's curse, decision value,

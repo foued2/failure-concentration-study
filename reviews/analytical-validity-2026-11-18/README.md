@@ -15,6 +15,8 @@ no hypothesis, authorizes nothing, and modifies no frozen document. The reposito
 | `claim-ledger-verified-2026-11-18.md` | First-pass 22-claim ledger. Superseded by `-v2`; kept for the correction trail. |
 | `claim-ledger-verified-2026-11-18-v2.md` | Current ledger. C-09 is recorded as **contradicted**, C-18–C-22 added. |
 | `preservation-record-2026-11-18.md` | Byte-level inventory for the `VERIFICATION_LOG.md` collision. No merge implied. |
+| `REVIEWER_RESPONSE_2026-11-18.md` | Disposition ledger for two external review rounds, including the W1 reclassification and the round-3 corrections. |
+| `S1_SPECIFICATION_DRAFT_2026-11-18.md` | **Design only, nothing run.** Specification for a simulation whose predictive gain is known by construction: target `Δ_pred = I(Y;C\|X)`, six worlds, one multilevel estimator, predeclared pass/fail rules, and the conditions under which S1 would fail as a test. |
 
 Repo-root companion: `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` (the owner-designated goal,
 with both source critiques reproduced verbatim in Appendices A and B).
@@ -37,8 +39,9 @@ with both source critiques reproduced verbatim in Appendices A and B).
    power, and that "previous power figures remain invalidated".
 9. The LC518 strata are input categories, not verified mechanisms; `C_D` is not a defect-localization
    measure.
-10. A NO-GO was recorded on 2026-11-01 (`worklog.md:262`) on exactly W1 + partition fragility +
-    identification failure, and no route-closure record exists.
+10. A third-reviewer **concurrence with a NO-GO recommendation** was recorded on 2026-11-01
+    (`worklog.md:262`), route-scoped to the current operator, on exactly W1 + partition fragility +
+    identification failure. It is not an owner decision, and no route-closure record exists.
 
 **Inference, not finding (attackable):**
 
@@ -57,10 +60,14 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
 1. **Is `F`-vs-`C` a fair comparison?** The repo's condition 6 mandates it; the equal-score arm fails.
    A reviewer who thinks the domain arm is the wrong target has a real argument.
 2. **W1 is a wiring check, not a positive control.** The design fixes defect reach, not a `Δ_pred`
-   truth, so "the effect was built in" is an interpretation the design does not support. The open
-   question is the opposite one: whether any *future* S1 scenario can inject a known `Δ_pred` at all.
-3. **Is the parent (30) or the variant (150) the right `J`?** M1-si is within-parent, which removes the
-   parent effect but leaves ≤1 df per parent and confounds `C_D` with the mutation.
+   truth, so "the effect was built in" is an interpretation the design does not support. **This is now
+   resolved in the negative: no `Δ_pred` was injected, so W1 tests no known effect.** The replacement is
+   `S1_SPECIFICATION_DRAFT_2026-11-18.md`, where the gain is imposed by construction and verified by
+   exact enumeration. Attack that specification instead — particularly its §10.
+3. **Is the parent or the variant the right `J`?** M1-si is within-parent, which removes the parent
+   effect but leaves ≤1 df per parent and confounds `C_D` with the mutation. **Neither 30 nor 150 is
+   adopted** — the record calls 30 a logistics scenario and states "30 parents × 5 variants is not
+   adopted". The parent is the independent unit; the count is open.
 4. **Does conditioning on `k_unresolved` help or hurt?** Control vs collider depends on an unstated DAG.
 5. **Is the T1/T2 separation actually possible?** The repo says "unseparated in nature". A proposal
    that claims to separate them must say how family-difficulty is held fixed.
@@ -73,12 +80,20 @@ If you are reviewing this bundle, these are the load-bearing points, not the pro
    dominance weighting as such. The models are already family-adjusted. **Test:** recompute `S_D`
    with equalised `N_j` from `three_world/per_trial.json` (local) and see whether the `F` margin
    shrinks. Not yet run.
-8. **Does the solver-unit problem apply to W1?** No — W1 cases are independent Bernoulli draws
+8. **Does the solver-unit problem apply to W1?** No - W1 cases are independent Bernoulli draws
    conditional on defect reach, and the reported interval is a 500-trial interval, not an
    input-level confidence interval. The design says it "does not preserve input-level dependence".
    So W1 cannot be faulted for missing a solver random effect, and it equally cannot speak to the
    clustered world. The solver-unit problem is decisive for the *real* design, where the unit is the
-   parent (30), not for W1.
+   parent (count open), not for W1.
+9. **Is S1 vacuous?** This is the challenge that matters most to the new specification. The gain is
+   imposed, so the risk is that the world tests a tautology: if `Δ_pred = 0.02` can only be reached by
+   making `C` reproduce `k`, or by fixing `p(z)` so the outcome is nearly deterministic in `C`, then
+   passing proves nothing. `S1_SPECIFICATION` §10 lists four such conditions and treats each as a
+   *failing* outcome. A reviewer who can construct a fifth has found a real defect.
+10. **Is the target the right target?** `Δ_pred = I(Y;C|X)` is the oracle predictability gain, not the
+    decision value of acting on `C`. A reviewer who thinks the programme needs decision value (net of
+    the cost of measuring `C`) has a different estimand, and the specification does not supply it.
 
 ## What is not here
 
@@ -93,3 +108,7 @@ Nothing in this folder is a scientific finding. Every "not established" in the b
 about what the existing designs and records show, not a claim that concentration has no predictive
 value. Where a claim is inference rather than record, it is labelled as such in the body, not only in
 this index.
+
+`S1_SPECIFICATION_DRAFT_2026-11-18.md` executes nothing: no simulation, no fitting, no Monte Carlo. It
+is inside the standing bounded GO ("design and mathematics only"). Running it requires a further GO
+naming its scope. Until that GO exists, S1 is paper design, and that is the correct state.
