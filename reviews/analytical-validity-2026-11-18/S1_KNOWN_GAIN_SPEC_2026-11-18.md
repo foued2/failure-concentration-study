@@ -1,7 +1,7 @@
 # S1: known predictive-gain calibration specification
 
 **Date:** 2026-11-18  
-**Version:** 0.5 — revised after DeepSeek's direct v0.4 review and Claude's follow-up critique  
+**Version:** 0.6 — revised after DeepSeek's direct v0.5 review and Claude's follow-up critique  
 **Status:** **DRAFT FOR DEEPSEEK WEB-CHAT REVIEW. NOT ACCEPTED, NOT FROZEN, NOT AN EXECUTION GO.**  
 **Scope:** a narrow synthetic methods-calibration / analytical-machinery check only. It is not an empirical test of real solvers and supplies no evidence that concentration predicts real-solver correctness. Mathematical and statistical specification only. No generator code, executable implementation, simulation, model fitting, Monte Carlo run, solver construction, mutation allocation, bank reuse, or model/API calls are authorized or performed by this document.
 
@@ -27,9 +27,22 @@ The specific downstream decision is whether the current \(M_0/M_1\) marginal est
 
 This is a concrete methods-selection decision: retain, revise, or stop the current candidate estimator/uncertainty combination before subsequent validation. It is not a scientific decision about whether concentration predicts real-solver correctness.
 
-**Positive inference licensed by a complete pass:** the specified marginal six-cell estimator and test-parent cluster-bootstrap procedure can recover a known binary-proxy predictive gain under independent parent sampling on the fixed panel, within the declared operating-characteristic tolerances. This is a machinery-recovery statement only. It does not imply that \(C_D\) retains useful information from a general failure vector or that it predicts correctness in actual solvers.
+**Positive inference licensed by a complete pass:** the specified marginal six-cell estimator and test-parent cluster-bootstrap procedure can recover a known binary-proxy predictive gain under independent parent sampling on the fixed panel, and distinguish that positive world from its matched \(\eta=0\) null **when \(k_{\mathrm{unresolved}}=0\) in both worlds**, within the declared operating-characteristic tolerances. This is a machinery-recovery statement only. It does not validate the handling of unresolved outcomes, which are absent and reserved for the not-yet-specified S6 scenario. It does not imply that \(C_D\) retains useful information from a general failure vector or that it predicts correctness in actual solvers.
 
-Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. If the project will not use the methodological proceed/revise/stop rule above to decide whether this estimator/uncertainty combination advances to the S2-S7 validation suite, S1 has no execution purpose and should not be run.
+Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. The reason to place S1 before S2-S7 is specific: S1 is the baseline known-positive check of whether the candidate estimator can learn and the parent-cluster procedure can quantify a signal at all under the most favourable, correctly specified binary-proxy case. The later scenarios address distinct failure modes that S1 deliberately excludes:
+
+| Later scenario | Question not answered by S1 |
+|---|---|
+| S2 | Does the procedure control false positives under the matched no-signal world across the declared parent-count grid? |
+| S3a/S3b | Does the apparent proxy gain disappear under oracle adjustment for the common cause, and what remains after only an imperfect proxy of that cause is observed? |
+| S4 | Does the result depend on the chosen diagnostic partition when the same underlying failures are reclassified? |
+| S5 | Does the procedure behave under crossed parent, solver, input-group, and template dependence? |
+| S6 | How do unresolved outcomes associated with held-out errors affect identification and the declared handling rule? |
+| S7 | What happens in degenerate or unsupported cells where concentration has no usable variation? |
+
+S1 cannot answer those questions, and its pass does not predict that the estimator will pass those later stress tests. Its only sequencing value is to prevent the project from building the more complex suite around an estimator/uncertainty combination that already fails in a favourable known-positive case. If S2-S7 will be designed and run regardless of the S1 result, or will select their estimator independently, then S1 does not change the methods decision and **must not be run**.
+
+Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. Before any S1 execution, the owner must explicitly commit in the separate execution authorization to use the pass/revise/stop result to select or reject this candidate method for S2-S7. No such owner commitment or execution GO is recorded in this draft.
 
 S1 does not establish that real solvers follow this data-generating process, that the latent state is a real defect mechanism, or that concentration itself causes errors.
 
@@ -670,7 +683,7 @@ No S2-S7 scenario is frozen by this S1 document. S3a/S3b and S6 are named requir
 
 ## 10. Questions submitted to DeepSeek
 
-Please review this v0.5 document as a specification, not as a report of executed work. The first issue is whether S1 has a decision-relevant methodological purpose at all. S1 cannot answer whether concentration predicts correctness in real solvers. It can only test this estimator and uncertainty procedure under the stated synthetic known-truth conditions. Please identify a concrete research or methods decision that a positive, negative, or inconclusive S1 result would change. If no such decision exists, say so and recommend that S1 not be run until its purpose is redefined.
+Please review this v0.6 document as a specification, not as a report of executed work. The first issue is whether S1 has a decision-relevant methodological purpose at all. S1 cannot answer whether concentration predicts correctness in real solvers. It can only test this estimator and uncertainty procedure under the stated synthetic known-truth conditions. Please identify a concrete research or methods decision that a positive, negative, or inconclusive S1 result would change. If no such decision exists, say so and recommend that S1 not be run until its purpose is redefined.
 
 1. **Real-solver relevance and decision consequence:** Does the explicit §1 decision rule now identify a concrete methods decision: whether the current M0/M1 plus parent-cluster bootstrap is retained as the candidate for S2-S7? Is pass -> carry to S2-S7 specification; fail -> revise before that specification; inconclusive -> no progression a meaningful and usable rule? If not, state the precise alternative or recommend stopping S1.
 2. **Outcome model and scientific target:** Is the latent common-cause model in §3 a legitimate positive predictive benchmark for the project's intended held-out correctness question, or does it calibrate a different claim?
