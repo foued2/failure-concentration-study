@@ -442,10 +442,10 @@ verified, what was corrected, and what is new.
 | "The held-out bank was exposed" presented as a finding | Already declared by the frozen plan: "development data, publicly exposed, never sealed" (B1 v1.7 §1, §12). The exposure is a design fact, not a discovery. |
 | Claude: LOPO needs a fold-level estimability rule and coverage reporting | Nine of ten requested elements are already frozen in B1 v1.7 §3 and §5.7; one is stricter than requested; only a minimum-coverage verdict gate is missing. See `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md`. |
 | Claude: "a sensitivity analysis should include unresolved as a separate class" | Legal only as an **outcome-model** three-category sensitivity. Recoding unresolved to 0/1 is prohibited by protocol 210–211 and by the N4-b channel construction. |
-| Claude: "the held-out fold is only about five variants" | The fold scores the held-out parent's variants on all 78 records; the independent unit is still one parent, but the per-fold test set is not five points. |
+| Claude: "the held-out fold is only about five variants" | The fold scores the held-out parent's variants on all 78 records, so the test set is not five points — but 78 rows per variant are not 78 independent parents. The parent remains the only independent unit and B1 declares its conditional target. **Partly addressed**, not refuted; see §16.3. |
 | GPT: CodeScore "ACM TOSEM, 2024" | TOSEM 34(3):1–22, Crossref year 2025, DOI 10.1145/3695991. |
 | GPT: "RankEF (ASE 2024)" | Actual title: *Sifting through the Chaff: On Utilizing Execution Feedback for Ranking the Generated Code Candidates*, ASE 2024, pp. 229–241. "RankEF" is the system name. |
-| GPT: Almaghairbe & Roper "2016 online / 2017 journal", with an AP figure of 0.79 | ISSRE 2016, pp. 116–126, DOI 10.1109/issre.2016.22 — a conference paper with no 2017 journal issue. The 0.79 figure belongs to *Learning to Encode and Classify Test Executions*, a different and currently unverified reference. |
+| GPT: Almaghairbe & Roper "2016 online / 2017 journal", with an AP figure of 0.79 | **Superseded — see §16.4.** Two papers, both real: ISSRE 2016 (`10.1109/issre.2016.22`) and *Software Quality Journal* 25(3):803–840 (`10.1007/s11219-016-9339-1`), online 2016, issue 2017. The small-cluster ≥60 % finding belongs to the SQJ paper. The 0.79 figure is unattributed and unverified. |
 | GPT: AlphaCode "(2023)" | *Science* 2022, 378(6624):1092–1097, DOI 10.1126/science.abq1158. Claude's recollection was right. |
 | Claude: bank "publicly downloadable by the entire internet" | Not established. The evidence supports CI artifact exposure with published digests; anonymous download and exploitation are both unproven. GPT's narrower wording is adopted. |
 
@@ -454,11 +454,14 @@ verified, what was corrected, and what is new.
 1. **The statistic is named in the frozen protocol.** `C_D` is "the Berger–Parker dominance index"
    (protocol 218). It is a 1970 ecology index (verified DOI 10.1126/science.168.3937.1345). No claim of a
    novel measure survives this.
-2. **A theorem constrains the whole programme.** `C_D` is `F`-measurable, so `I(Y;C_D|X) ≤ I(Y;F|X)` and
-   `I(Y;C_D|X,F) = 0`. "C beats F" is not testable, it is false. Only compression efficiency, stability,
-   and interpretability remain.
-3. **The partition and the bank share a generation event.** The eight strata are the bank's construction.
-   "Prespecified" holds with respect to solver outcomes only.
+2. **A theorem constrains the whole programme — but only against `F`.** `C_D` is `F`-measurable, so
+   `I(Y;C_D|X) ≤ I(Y;F|X)` and `I(Y;C_D|X,F) = 0`. **Superseded in part — see §16.2.** "C beats F" in
+   population information is impossible; "C adds information beyond `X`" is testable and is the B1
+   question. The earlier sentence "only compression efficiency, stability, and interpretability remain"
+   was an overreach and is withdrawn.
+3. **The partition and the bank share an origin.** The eight strata were used to construct the bank.
+   "Prespecified" holds with respect to solver outcomes, and the bank's construction does not by itself
+   invalidate prespecification. **Narrowed — see §16.3.**
 4. **Custody requirement 2**: a replacement bank must be generated *after* the analysis is frozen, or the
    same shared-generation problem recurs. This is the requirement usually omitted.
 
@@ -475,3 +478,146 @@ No frozen record, protocol, threshold, bank, plan, or population document was al
 any kind. Gate 0 is now recorded as **OPEN** in the goal document; gates 1 and 3 remain unresolved or
 undemonstrated; gate 4 remains failed-as-a-wiring-check. The 2026-11-01 reviewer concurrence and the
 absence of a route-closure record are unchanged.
+
+---
+
+## 16. Adjudication and second correction pass (2026-11-19)
+
+**Trigger:** GPT's review of `cc9b59e`, independently checking the commit, its changed files, and the B1
+v1.7 plan. Three of its five substantive objections are correct and are adopted here. Two require
+measured qualification. Nothing is defended beyond what the record supports.
+
+### 16.1 Verdict on the objections
+
+| Objection | Verdict | Action |
+|---|---|---|
+| Berger–Parker correction is right; the contribution must be the empirical application, not the index | **Accepted** | No change needed; already the register's position |
+| The DPI is correct, but "accuracy cannot be the claim" does not follow | **Accepted — the error is ours** | §3 of the register rewritten; goal document §3 corrected; README challenge 9 corrected |
+| The B1 target is a conditional LOPO target on the fixed 78-record development bank, not a "fixed held-out input bank" | **Accepted** | The proposition `P` is restated in those terms |
+| The LOPO reconciliation is mostly right, but "not five observations" does not establish parent-level precision | **Accepted in substance** | §2 of the reconciliation rewritten; Claude's point marked *partly addressed* |
+| The Almaghairbe correction is incomplete: two papers, one with a 2017 journal issue | **Accepted — the error is ours** | Register rows 7–8 split; correction table rewritten |
+| Same-generation event does not by itself invalidate prespecification | **Accepted with narrowing** | §3 of the custody document rewritten around four decidable questions |
+| "All three branches synchronized" is not supported by the remote branch list | **Qualification, see §16.6** | Claim clarified, not withdrawn |
+
+### 16.2 The information-theory scoping error, corrected
+
+The theorem is:
+
+```
+I(Y ; C_D | X)  ≤  I(Y ; F | X)      and      I(Y ; C_D | X, F)  =  0
+```
+
+Both correct. The invalid step was from those to "accuracy cannot be the claim". The comparison in the
+theorem is `C_D` against **`F`**. The comparison in B1 is `C_D` against **`X`, the exact cell**. The
+theorem says nothing about the second, and `I(Y;C_D|X) > 0` is entirely possible.
+
+Corrected position, now carried in the register and the goal document:
+
+| Claim | Status |
+|---|---|
+| `C_D` carries more **population** information than `F` | Impossible (theorem) |
+| `C_D` adds information **beyond the exact cell `X`** | Testable; this is B1's estimand |
+| A fitted `C_D` model improves held-out log loss over the exact-cell baseline | Testable |
+| A fitted `C_D` model beats a fitted full-vector model **in finite samples** | Empirically testable; a lower-dimensional feature may win on estimation variance without being more informative in the population |
+
+**Consequence for W1:** the `C/F ≈ 1/403` ratio is a result of one fitted simulation under one model class
+and one partition. It is not forced by the DPI, and the DPI does not forbid `C` from beating `F` in a
+finite sample. The DPI fixes the ordering of *population information*, not the outcome of a fitted
+comparison.
+
+**What survives unchanged:** the prohibition on testing `C_D` beyond `F`, and the prohibition on claiming
+information superiority over `F`. Those are theorems, not findings.
+
+### 16.3 The LOPO qualification, corrected
+
+The earlier section argued that because each fold scores `variants × 78` rows, "precision per fold is much
+better than five points". That is true of *a parent's measured score* and false as a response to the
+review. Seventy-eight records per variant do not create seventy-eight parent implementations. The rows
+share variant and parent structure; the statistic weights parents equally; and B1 §5.7 V1/V4 deliberately
+refuse the parent-population target.
+
+Correct adjudication:
+
+- B1 already contains the fold-estimability procedure (`G ≥ 2`, `D ≥ 2`, `W > 0`), exclusion reasons,
+  coverage tables, and equal weight per scored parent — **the review's request is largely already met**.
+- The independent unit remains the parent, and the conditional scope is declared, not hidden — but the
+  limit is **real and not removed** by row count.
+- The review's point is therefore **partly addressed, not dismissed**.
+- The one genuinely missing element is a pre-declared minimum-coverage gate with a `NOT ASSESSABLE`
+  verdict.
+
+### 16.4 The Almaghairbe conflation, corrected
+
+Two papers exist, and both are verified against Crossref:
+
+| Paper | Record | Content |
+|---|---|---|
+| *Automatically Classifying Test Results by Semi-Supervised Learning* | ISSRE 2016, pp. 116–126, `10.1109/issre.2016.22` | Semi-supervised classification of passing and failing executions from dynamic execution data |
+| *Separating Passing and Failing Test Executions by Clustering Anomalies* | *Software Quality Journal* **25**(3):803–840, `10.1007/s11219-016-9339-1`; online 2016, issue 2017 | Clustering-based separation; small clusters sometimes composed of at least 60 % failures |
+
+The previous entry collapsed these into one ISSRE paper and stated that "no 2017 journal issue exists".
+The second half was true only of the ISSRE title; the SQJ paper has a 2017 issue. More importantly, the
+**premise-relevant finding** — high failure share in small clusters — belongs to the SQJ paper. The
+register now carries it as row 8, the closest prior result in the corpus, and records that it is
+observational rather than predictive.
+
+The `0.79` average-precision figure is now marked **unverified**: it was not located in either
+Almaghairbe paper during this round, and no down-stream record may cite it until the paper containing it
+is identified.
+
+### 16.5 Same-origin restraint, corrected
+
+The earlier claim was that the shared generation event makes the partition "not independent of the
+evaluation material" and may inflate apparent reproducibility. That conclusion was too strong. A
+stratified bank is normally built from prespecified categories; constructing a bank to realize a
+partition is what stratification means.
+
+What replaces it, in the custody document §3, are four decidable questions:
+
+1. Were the stratum predicates fixed before solver outcomes existed? **Yes** — 0/150 solvers evaluated.
+2. Were they tuned on outcomes? **No evidence**, and nothing to tune on.
+3. Does construction create an accidental dependence between bank and result? **Open**; no evidence of use.
+4. Is the claim limited to the generation scheme actually tested? **Must be**, and `P` now says so.
+
+A bank generated after the analysis freeze under separate custody remains valuable for external
+confirmation. The shared origin alone does not prove the existing partition invalid, and the record must
+not say that it does.
+
+### 16.6 Repository-state statement, clarified
+
+The claim "all three branches in sync" meant **local versus `origin` equality for the three branches
+under work**: `master` at `33dca9b`, `research/concentration-math-spec` at `de39291`, and
+`audit/analytical-validity-2026-11-18` at `cc9b59e`. It did not mean, and was never a claim about, every
+remote branch sharing a head. `foued2-patch-1`, `foued2-patch-2`, and `foued2-patch-3` are separate lines
+at `e22da84`, `ef69089`, and `2d5f9c3`, and are expected to differ.
+
+The working-tree cleanliness claim is local-only by nature; it was taken from `git status --porcelain` on
+the local clone (0 modified or staged tracked files, 29 untracked exclusions) and cannot be verified
+through the remote.
+
+B1 v1.7 is not in the audit commit's tree. It lives on `gpt/lc518-m1si-audit-2026-11-17` at blob
+`8c666e501a31726c728447d155045c0b20adc178`, which matches the acceptance record GPT checked. The
+reconciliation cites a real source on a separate branch, and that separation is stated rather than
+implied.
+
+### 16.7 The proposition, after correction
+
+The claim the programme can actually make:
+
+> Within the observed parent set, does diagnostic failure dominance improve leave-one-parent-out
+> predictive log loss on the fixed 78-record development bank, beyond the exact-cell baseline, with the
+> parent as the independent unit?
+
+Narrower than external generalisation to a new parent population — which B1 explicitly refuses — and not
+vacuous, because it compares against `X`, not against `F`.
+
+### 16.8 Disposition
+
+- No solver construction, no experiment, no numerical evaluation. The pause is unaffected.
+- Nothing frozen was altered: protocol Rev 11, B1 v1.7, the bank, the thresholds, and the population
+  documents are untouched.
+- The revised register is ready for Claude and GLM review on GPT's terms: information-theory
+  interpretation, precise B1 target, and Almaghairbe references are all corrected.
+- One item remains unresolved that the review round did not settle: whether a one-parameter gain against
+  the exact-cell baseline is a scientific contribution or a well-specified ablation. It is recorded as
+  open, not argued away.

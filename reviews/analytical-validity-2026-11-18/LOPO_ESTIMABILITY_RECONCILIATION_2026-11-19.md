@@ -31,26 +31,34 @@ is stricter than the review asked for.
 
 ---
 
-## 2. Why "one parent per fold" is not the problem it looks like
+## 2. Why "one parent per fold" is partly a real limit and partly a scope declaration
 
 The review's stated worry: a held-out fold contains one parent, so its `C_D` and correctness estimate are
 noisy, and the effective sample is 30, not 150.
 
-Two corrections, in order:
+Three statements, kept separate:
 
 1. **The fold's test set is not five observations.** B1 scores the held-out parent's variants on **all 78
-   records** (§3 item 2). The scored rows per fold are `variants × 78`, not `5`. Precision per fold is
-   therefore much better than "five points".
-2. **The number of independent units is still the parent.** B1 already concedes exactly this: the
-   statistic averages with equal weight per scored parent (§3 item 4a), and §5.7 V1 states that the
-   test does not establish the parent-population target. The consequence is not a defect to be repaired
-   by pretending otherwise; it is a **declared scope limit**: LOPO yields a cross-validated
-   held-out-parent performance, and a parent-population interval requires a separate procedure that the
-   plan does not claim (a parent-level resampling of exposures, or a hierarchical superpopulation model,
-   both removed from the plan in v1.2 precisely because they were not specified).
+   records** (§3 item 2), so the scored rows per fold are `variants × 78`, not `5`. This improves the
+   precision with which *that parent's* held-out performance is measured.
+2. **It is not evidence of parent-level precision.** 78 records per variant do not create 78 independent
+   parent implementations. The rows share variant and parent structure, and the B1 statistic gives equal
+   weight to each scored parent (§3 item 4a). Row count raises the precision of a parent's score; it does
+   not raise the number of parents, and it does not supply parent-population uncertainty.
+3. **The plan declares the resulting limit rather than hiding it.** §5.7 V1 and V4 state that the test
+   addresses the **conditional target for the observed parents**, not the parent-population target. A
+   parent-population interval would require a separate procedure — parent-level resampling of exposures,
+   or a hierarchical superpopulation model — both removed in v1.2 because they were not specified.
 
-So the review is right about the arithmetic and wrong that the plan ignores it. The plan names the limit
-and forbids advertising the conditional result as population inference.
+**Correct adjudication of the review point:** *partly addressed, not dismissed.* The plan already contains
+the fold-estimability machinery and the explicit conditional target, so the review's concern is not
+unhandled. But the review is right that a large row count is not parent-level replication, and the
+register must not claim that it is. An earlier draft of this section said "the review is right about the
+arithmetic and wrong that the plan ignores it", which understated the substantive half of the point. The
+plan does not ignore the limit; it also does not remove it, and the limit is real.
+
+What remains genuinely missing is narrower than the review supposed and is confined to §3: a
+pre-declared minimum-coverage gate with a `NOT ASSESSABLE` verdict.
 
 ---
 

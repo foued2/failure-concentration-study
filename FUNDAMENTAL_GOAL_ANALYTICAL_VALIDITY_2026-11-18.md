@@ -77,7 +77,7 @@ These must not be conflated, and the order is a dependency order, not a preferen
 | **0. Position** | The proposition is not already tested, and its statistic is not presented as novel | **Open.** Index is Berger–Parker 1970; failure clustering and execution-based correctness prediction are established; the exact proposition is untested on a non-systematic search | `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` |
 | **1. Measurement** | The partition captures a reproducible failure pattern; `C` is not merely an artefact of the chosen strata or of the noisy maximum | **Unresolved**, now specified: exposure, unresolved handling, and the two counting bases are recorded; no solver evidence exists | `CD_MEASUREMENT_SPEC_2026-11-19.md` |
 | **2. Mechanism** | Dominant diagnostic failures recur on corresponding held-out inputs | **Not demonstrated** | proposed only (§5 below) |
-| **3. Identification** | `C` contributes beyond competing explanations (family, defect identity, realization setting, `F`) | **Not demonstrated**; fold machinery and coverage gate now specified; operating count open | `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md`; v0.21 `a(v)` confound admitted |
+| **3. Identification** | `C` contributes beyond competing explanations (family, defect identity, realization setting) and beyond the exact cell `(q, Z, k, ℓ)`; conditioning on `F` is excluded because it makes the estimand identically zero | **Not demonstrated**; fold machinery and coverage gate now specified; operating count open | `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md`; v0.21 `a(v)` confound admitted |
 | **4. Statistical detection** | The analysis recovers prespecified effects with adequate power and controlled false positives | **W1 failed its wiring check; its status as a positive control is unproven** | `11_THREE_WORLD_SIM_RESULT.md` |
 
 Gate 0 is prior to gate 1 because it is cheap and decisive: if the proposition is already tested, no
@@ -86,8 +86,12 @@ non-systematic search is not novelty, and the register says so explicitly.
 
 One mathematical constraint governs the whole table. `C` is a function of the full failure vector `F`, so
 `I(Y;C|X) ≤ I(Y;F|X)` for every distribution, and `I(Y;C|X,F) = 0` exactly. **No experiment can show that
-`C` out-predicts `F`.** The only available claims are compression efficiency, finite-sample stability, and
-interpretability — and none of the three is measured anywhere in the corpus.
+`C` carries more population information than `F`.** That is a ceiling against `F`, not against `X`:
+`I(Y;C|X) > 0` is possible, and it is exactly the B1 estimand. Accuracy against the predeclared exact-cell
+baseline therefore remains a legitimate claim; information superiority over `F` does not. Finite-sample
+performance against a fitted full-vector model is a separate, empirical question and may favour `C` on
+variance even though the population bound forbids the reverse. Compression efficiency, stability, and
+interpretability remain secondary claims, and none of the three is measured anywhere in the corpus.
 
 The sequence follows: **repair and independently validate the simulation (gate 4), while fixing the
 measurement definition it tests (gate 1).** Only then is a defensible operating population and sample

@@ -45,27 +45,37 @@ does not prove exploitation. Claude's stronger phrasing ("publicly downloadable"
 
 ---
 
-## 3. The deeper issue: partition and outcomes share one generation event
+## 3. Shared generation of partition and bank — a scoping question, not an invalidation
 
-This is more consequential than access, and neither reviewer stated it.
+An earlier draft of this section argued that because the eight strata are the bank's own construction,
+the partition is "not independent of the evaluation material" and the bank's reproducibility may be
+inflated. That conclusion was **overstated**, and it is corrected here.
 
-The eight diagnostic strata are not an external measurement convention applied to the bank. They **are**
-the bank's construction: the bank was generated as 8 strata × 8 records (canonical: 8×7 + 4×1), and the
-held-out set was generated in the same design event.
+A stratified bank is *normally* built from prespecified categories. Building a bank to realize a
+prespecified partition is not circular by itself — it is what stratification is. The bank was generated
+as 8 strata × 8 records (canonical: 8×7 + 4×1), and the held-out set in the same design event, but that
+establishes a shared origin, not a defect.
 
-Therefore:
+The questions that actually decide validity are these four, and none is answered by the shared origin:
 
-- "Prespecified partition" means **prespecified with respect to solver outcomes**. That holds — no
-  solver has been evaluated, so the partition cannot have been tuned to solver results.
-- It does **not** mean independent of the evaluation material. The partition and the held-out outcomes
-  were chosen together, by the same designers, in one act.
+| # | Question | Current position |
+|---|---|---|
+| 1 | Were the stratum predicates fixed **before** any solver outcome existed? | **Yes** — no solver has been evaluated (0/150) |
+| 2 | Were the predicates tuned using evaluation outcomes? | **No evidence of tuning**; nothing to tune on |
+| 3 | Does the construction determine the result through an accidental dependence or exposure pattern? | **Open** — the channel exists, no evidence of its use |
+| 4 | Is the claim limited to the bank-generation scheme actually tested? | **Must be**, and the `P` statement in the register now says so |
 
-This is legitimate for a conditional test. It is **not** legitimate to describe the partition as
-externally imposed or as validated by the bank's own structure. A structure that is generated and then
-measured with an instrument derived from the same generator can look more reproducible than it is.
+**What the shared origin does establish:** the partition is prespecified with respect to *solver
+outcomes*, not independent of the *evaluation material*. The first is what the word usually needs to mean;
+the second is a scope limit on any claim of external confirmation. Those are different statements and
+the earlier draft merged them.
 
-The S1 instrument test is the right response, and it is why S1 exists: it separates "the estimator
-recovers a known gain" from "the bank's structure makes the partition look informative".
+**What follows:** an independently generated bank after the analysis freeze, under separate custody, is
+valuable for external confirmation (§4). The shared-generation event alone does **not** prove the existing
+partition invalid, and the record must not say that it does.
+
+The S1 instrument test remains the right response to question 3: it separates "the estimator recovers a
+known gain" from "the bank's structure makes the partition look informative".
 
 ---
 
@@ -76,7 +86,7 @@ Ordered by dependency. None is currently satisfied.
 | # | Requirement | Why |
 |---|---|---|
 | 1 | **Analysis frozen first.** Estimand, conditioning set, statistic, folds, coverage gate, and decision thresholds fixed and hashed before the evaluation bank exists | otherwise the bank can shape the analysis |
-| 2 | **Bank generated after the freeze**, from a construction rule that does not reference the analysis | breaks the shared-generation-event problem of §3 |
+| 2 | **Bank generated after the freeze**, from a construction rule that does not reference the analysis | removes the shared-origin scope limit of §3, and makes external confirmation possible |
 | 3 | **Custody separated from the solver-building team.** Inputs and oracle outputs inaccessible to that team until evaluation is locked | removes the tuning channel the exposure creates |
 | 4 | **Oracle outputs withheld**, not merely undocumented | a public oracle converts evaluation into fitting |
 | 5 | **Access log preserved** | makes "not inspected" checkable rather than asserted |
