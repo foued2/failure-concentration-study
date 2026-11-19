@@ -29,7 +29,7 @@ This is a concrete methods-selection decision: retain, revise, or stop the curre
 
 **Positive inference licensed by a complete pass:** the specified marginal six-cell estimator and test-parent cluster-bootstrap procedure can recover a known binary-proxy predictive gain under independent parent sampling on the fixed panel, and distinguish that positive world from its matched \(\eta=0\) null **when \(k_{\mathrm{unresolved}}=0\) in both worlds**, within the declared operating-characteristic tolerances. This is a machinery-recovery statement only. It does not validate the handling of unresolved outcomes, which are absent and reserved for the not-yet-specified S6 scenario. It does not imply that \(C_D\) retains useful information from a general failure vector or that it predicts correctness in actual solvers.
 
-Even a complete pass does not change the evidence about whether \(C_D\) predicts correctness in real solvers. S1 does not justify building the 150-variant population, making a B1 claim, or treating concentration as a generally useful summary. The reason to place S1 before S2-S7 is specific: S1 is the baseline known-positive check of whether the candidate estimator can learn and the parent-cluster procedure can quantify a signal at all under the most favourable, correctly specified binary-proxy case. The later scenarios address distinct failure modes that S1 deliberately excludes:
+The reason to place S1 before S2-S7 is specific: S1 is the baseline known-positive check of whether the candidate estimator can learn and the parent-cluster procedure can quantify a signal at all under the most favourable, correctly specified binary-proxy case. The later scenarios address distinct failure modes that S1 deliberately excludes:
 
 | Later scenario | Question not answered by S1 |
 |---|---|
@@ -597,7 +597,7 @@ For an estimated operating-characteristic proportion \(\widehat r\), including c
 MCSE(\widehat r)=\sqrt{\frac{\widehat r(1-\widehat r)}{R_{\mathrm{valid}}}},
 \]
 
-where `R_rate` is the denominator for the particular rate: `R_valid` for coverage, detection, and false-positive rates among valid replications, and `R_attempted = 2,000` for the availability rate. With 2,000 contributing replications, illustrative standard errors are 0.004873 at a rate of 0.95 or 0.05, 0.008944 at 0.80, and 0.005310 at 0.06. Report an exact binomial Monte Carlo interval alongside each rate.
+Use (R_{mathrm{valid}}) for coverage, detection, and false-positive rates among valid replications, and (R_{mathrm{attempted}}=2{,}000) for the availability rate. With 2,000 contributing replications, illustrative standard errors are 0.004873 at a rate of 0.95 or 0.05, 0.008944 at 0.80, and 0.005310 at 0.06. Report an exact binomial Monte Carlo interval alongside each rate.
 
 For the learning-recovery gate, calculate \(\bar r=R_{\mathrm{valid}}^{-1}\sum_j r_j\) and \(MCSE(\bar r)=s_r/\sqrt{R_{\mathrm{valid}}}\). For the bias gate, calculate \(\bar b=R_{\mathrm{valid}}^{-1}\sum_j b_j\) and \(MCSE(\bar b)=s_b/\sqrt{R_{\mathrm{valid}}}\). Here \(s_r\) and \(s_b\) are the sample standard deviations of the replication-level recovery ratios and biases, respectively. Their 95% Monte Carlo intervals are:
 
@@ -609,7 +609,7 @@ For the learning-recovery gate, calculate \(\bar r=R_{\mathrm{valid}}^{-1}\sum_j
 
 These formulas are the prespecified numerical precision rules; the numerical \(s_r\) and \(s_b\) cannot be known until independently generated simulation replications or a separate planning pilot produce them.
 
-At \(R_{\mathrm{valid}}=2{,}000\):
+If all 2,000 attempted replications are valid, so \(R_{\mathrm{valid}}=2{,}000\):
 
 \[
 MCSE(\bar r)=0.02236\,s_r,\qquad MCSE(\bar b)=0.02236\,s_b,
@@ -649,7 +649,7 @@ R_{\mathrm{req},b}
 \right\rceil.
 \]
 
-The confirmatory replication target should be at least the larger requirement, adjusted for expected unavailability and recalculated with the appropriate \(t\) critical value. These are planning approximations, not a claim that the required number is presently known. If \(\delta_r=0\) or \(\delta_b=0\), no finite replication count can ensure an interval wholly on one side of that boundary. If either distance is small, the required count can become very large.
+The target valid confirmatory replication count should be at least the larger requirement, recalculated with the appropriate \(t\) critical value. If the expected unavailable fraction is (u), plan attempted replications as (R_{\mathrm{attempted}}=\lceil R_{\mathrm{valid,target}}/(1-u)\rceil). These are planning approximations, not a claim that the required number is presently known. If \(\delta_r=0\) or \(\delta_b=0\), no finite replication count can ensure an interval wholly on one side of that boundary. If either distance is small, the required count can become very large.
 
 Accordingly, the planned 2,000 replications per cell are a starting design, **not a guarantee that the recovery or bias decision will be non-inconclusive**. A separate pilot to estimate \(s_r\) and \(s_b\) requires its own explicit authorization. Pilot replications must remain independent of, and must not be pooled into, a later confirmatory run. If no pilot is authorized, the planned 2,000-replication result must be allowed to remain inconclusive; it must not be rescued by a post hoc extension or threshold change.
 
