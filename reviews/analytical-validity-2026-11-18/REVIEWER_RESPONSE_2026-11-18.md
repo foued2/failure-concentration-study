@@ -933,6 +933,10 @@ The `k = 8` coincidence remains the clearest demonstration that no summary is in
 
 ### 19.4 Canonical basis is asymmetric and is deferred
 
+**Superseded — see §20.** Deferral was unnecessary for the unweighted shape-support table. The canonical
+feasibility constraint is slack throughout the displayed range, so the table is already valid for both
+bases there; only labelled allocation counts and assignment probabilities require separate treatment.
+
 Under `R = (8,8,8,8,8,4,8,8)` the multiset abstraction fails, because a part above four is feasible in
 seven positions but not in the D6 position. Feasibility becomes `max f_j ≤ 8` **and**
 `#{j : f_j > 4} ≤ 7`, and the tabulation must be over ordered vectors with a distinguished position rather
@@ -966,3 +970,66 @@ is a negative or adverse finding and must never be reported as support for level
 - **No draw, no fitting, no execution.**
 - **Record integrity:** §18.2 is marked superseded in place, so the capacity error and its correction stay
   visible alongside the direction error of §17.3.
+
+---
+
+## 20. Canonical-basis shape support, and two wording bounds (2026-11-19, fifth pass)
+
+**Reviewed object:** branch head `6663083`. GPT accepted the capacity-constrained enumeration, the exact
+entropy grouping, the `V`/`M` definitions, and the Level 1 tail condition, after an independent
+recomputation that matched through `k = 13`. One overstatement remained.
+
+### 20.1 The overstatement, and the correct result
+
+The previous text said canonical-basis enumeration requires ordered vectors with a distinguished position
+and could therefore be deferred. That is true for **labelled allocation counts**. It is not true for the
+**unweighted shape-support table**, which is what the document tabulates.
+
+For `R = (8,8,8,8,8,4,8,8)` a multiset is feasible exactly when `max_j f_j ≤ 8` and `#{j : f_j > 4} ≤ 7`:
+necessary because D6 holds four canonical inputs, sufficient because the larger parts can be placed in the
+other seven positions.
+
+That constraint is slack far beyond the displayed range. Each part above four is at least five, so the
+number of them is at most `⌊k/5⌋`, which is `≤ 7` for every `k ≤ 39`. Recomputing both bases confirms the
+counts are identical for all `k ≤ 39` and first diverge at `k = 40`, where exactly one shape —
+`(5,5,5,5,5,5,5,5)` — becomes infeasible: all eight parts exceed four, and only seven positions can hold
+them.
+
+GPT's `k ≤ 13` statement is therefore correct and can be strengthened: **the displayed table is the
+canonical-basis shape-support table for every `k` shown, and would remain so up to `k = 39`.** Nothing in
+the table needs revision.
+
+### 20.2 Three objects, now separated
+
+| Object | Depends on | Status |
+|---|---|---|
+| Feasible **shape** support | Multisets plus both capacity constraints | Tabulated; identical across bases for `k ≤ 39` |
+| Labelled **allocation** counts | Ordered vectors with the D6 position distinguished | Not tabulated; needed only for multiplicity counts |
+| **Assignment probabilities** | A separately declared sampling law | Not defined anywhere in the record |
+
+The measurement bases remain different — `N = 64` versus `N = 60`, and `R` differs at D6 — so realised
+failure vectors and statistics will differ for actual solvers. That is a statement about realisation, not
+about support.
+
+### 20.3 Two wording bounds adopted
+
+- Replaced "no summary is a one-to-one encoding of shape" with: **none of the three named competing
+  summaries is injective over the complete feasible shape space.** The examples establish non-injectivity
+  of the named summaries, not of every conceivable summary.
+- `V` and `M` are now explicitly labelled **unweighted combinatorial support descriptors**. Every equality
+  class counts once regardless of how many shapes realise it, so a class realised by one possible shape and
+  a class realised by twenty contribute equally to `V`. That matters when moving from combinatorial support
+  to realised sample support.
+
+### 20.4 Disposition
+
+- **B1 v1.7 untouched.** Blob `8c666e50` confirmed unchanged.
+- **Level 2 remains open.** Its direction is correct and its combinatorial support is now characterised
+  correctly for both bases, but no empirical superiority has been established and none can be without
+  realised solvers.
+- **The standing distinction is now sharp:** what the statistic *could* distinguish before observing
+  solvers is established combinatorially; what it *actually* distinguishes, and whether that distinction
+  improves prediction, requires realised evidence that does not exist.
+- **Record integrity:** §19.4 is marked superseded in place, alongside §17.3 and §18.2, so all three
+  corrections remain visible with the claims they replaced.
+- No draw, no fitting, no execution. Project pause unchanged.

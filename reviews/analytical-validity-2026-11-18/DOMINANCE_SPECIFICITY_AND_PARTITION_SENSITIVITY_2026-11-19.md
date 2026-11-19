@@ -191,7 +191,10 @@ An earlier version of this table applied only the first constraint and therefore
 since `H(f) = ln k − (1/k)·ln ∏_j f_j^{f_j}`, two shapes have equal entropy if and only if the integer
 products `∏_j f_j^{f_j}` are equal.
 
-Two support measures are reported for each competitor, because they rank the competitors *differently*:
+Two support measures are reported for each competitor, because they rank the competitors *differently*. Both
+are **unweighted combinatorial support descriptors**: every equality class counts once regardless of how
+many shapes realise it, so a class realised by one possible shape and a class realised by twenty
+contribute equally to `V`:
 
 - **`V` (variable classes)** — the number of equality classes containing at least two distinct `C_D` values.
   This counts *where* the `C_D`-versus-`S` contrast can occur.
@@ -239,19 +242,41 @@ k = 4   3+1     C_D = 3/4          p_(2) = 1/4
 So the earlier claim that "a cell with `k ≤ 4` cannot separate `C_D` from `p_(2)`" was simply wrong, and
 it is withdrawn.
 
-Shannon's one instructive failure is a coincidence worth recording, because it shows that no summary is a
-one-to-one encoding of shape:
+Shannon's one instructive failure is a coincidence worth recording:
 
 ```
 k = 8   4+1+1+1+1   C_D = 1/2   Shannon = ln 4     product 4^4 · 1^4
         2+2+2+2     C_D = 1/4   Shannon = ln 4     product 2^8
 ```
 
-**Canonical basis is not symmetric, and is deferred.** Under `R = (8,8,8,8,8,4,8,8)` the multiset
-abstraction fails: a multiset with parts above four is feasible only if those parts avoid the D6 position.
-The feasibility criterion becomes `max f_j ≤ 8` **and** `#{j : f_j > 4} ≤ 7`, and the tabulation must be
-over ordered vectors with a distinguished position rather than partitions. Only the record basis is
-tabulated here; the canonical variant is a labelled secondary that would need its own enumeration.
+**None of the three named competing summaries is injective over the complete feasible shape space.** The
+examples establish non-injectivity of the named summaries, not of every possible summary of `f`.
+
+**Canonical basis: same shape support here, different allocation counts.** Under `R = (8,8,8,8,8,4,8,8)` a
+multiset shape is feasible exactly when `max_j f_j ≤ 8` and `#{j : f_j > 4} ≤ 7` — necessary because D6
+holds only four canonical inputs, and sufficient because the larger parts can be placed in the other seven
+positions.
+
+That constraint is **slack throughout this table**. Each part above four is at least five, so the count of
+such parts is at most `⌊k/5⌋`, which stays `≤ 7` for every `k ≤ 39`. Recomputing both bases confirms the
+counts are identical for all `k ≤ 39`; they first diverge at `k = 40`, where the single shape
+`(5,5,5,5,5,5,5,5)` becomes infeasible because all eight parts exceed four and only seven positions can
+hold them.
+
+So the displayed record-level table is **also the canonical-basis shape-support table for every `k` shown**.
+What differs between the bases is not feasible shape support but the counting of labelled allocations, and
+beyond that the probabilities of allocations, which need their own sampling law. Three objects must be kept
+apart:
+
+| Object | Depends on | Status |
+|---|---|---|
+| Feasible **shape** support | Multisets plus both capacity constraints | Tabulated; identical across bases for `k ≤ 39` |
+| Labelled **allocation** counts | Ordered vectors with the D6 position distinguished | Not tabulated; needed only for multiplicity counts |
+| **Assignment probabilities** | A separately declared sampling law | Not defined anywhere |
+
+The measurement bases remain different — `N = 64` versus `N = 60`, and `R` differs at D6 — so observed
+failure vectors and statistics will differ for real solvers. That is a statement about realisation, not
+about the shape table.
 
 Three consequences, stated as design constraints rather than findings:
 
