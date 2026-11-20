@@ -1,7 +1,7 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.4  
+**Version:** 0.5  
 **Date:** 2026-11-20  
 **Status:** DRAFT FOR INDEPENDENT REVIEW; AUTHORITY STATE ADJUDICATED: NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
@@ -103,9 +103,13 @@ The later population-design v0.21:
 - proposes a new protected evaluation set for the newer confirmatory population; and
 - states that a separate B1 amendment is required before a new protected set can replace the 78-record set in the accepted analysis plan.
 
-The earlier BANK_DESIGN describes a different bank configuration, including an 80-record held-out bank. These records must not be combined or treated as interchangeable.
+The earlier BANK_DESIGN describes an 80-raw-record H1–H8 held-out bank. Its H6 schedule specifies two canonical instances with two orderings each, plus six singleton records: 10 raw H6 rows but 8 H6 canonical identities. If the other 70 H records are all unique canonical identities, the 80-row H bank contains 78 unique canonical identities. That arithmetic creates a plausible but unproven hypothesis that B1 v1.7's 78-record development bank is the H80 identity set after collapsing the two H6 ordering pairs.
 
-**No stratum definition or record count from the earlier BANK_DESIGN is promoted to current authority by this blueprint.** The controlling diagnostic bank, the 78-record B1 development bank, the earlier 80-record held-out design, and the newer protected-set proposal must be reconciled against the actual frozen manifests, hashes, and accepted specifications.
+The accepted B1 v1.7 plan and its acceptance record do not cite BANK_DESIGN v1.0/H80, supply the 78 identities, or describe such a de-duplication. The identity relationship is therefore OPEN: equality, partial overlap, and disjointness have not been established. The frozen H80 manifest would be needed to confirm whether any additional H-record collisions exist, and a direct identity-set comparison would be needed to test the hypothesis.
+
+The bank roles remain distinct even if the identity sets prove equal: historical H80 is an 80-raw-record held-out target in the earlier package; B1 v1.7 uses 78 publicly exposed development rows in its accepted analysis plan. Identity equality would establish overlap or lineage, not analytical interchangeability, and neither document's authority is changed by a matching count.
+
+**No stratum definition or record count from the earlier BANK_DESIGN is promoted to current authority by this blueprint.** The controlling diagnostic bank, the B1 78-row development bank, the historical H80 design, and the newer protected-set proposal remain separate authority/role objects and must be reconciled against exact frozen manifests, hashes, and accepted specifications. The H80-to-B1 identity hypothesis is not tested here: the current project pause prohibits bank access.
 
 ---
 
@@ -162,6 +166,8 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 - Build a source-authority table containing document path, branch, commit, blob hash, version, date, acceptance/freeze status, and the precise decision it controls.
 - Retrieve and compare the full source text of the earlier BANK_DESIGN, the applicable C9 generation specification, B1 v1.7, its acceptance record, and population-design v0.21.
 - Compare actual bank manifests and hashes only where their repository or authorized artifact identities are available. A design document is not proof that a bank file was generated or validated.
+- For D0.3, treat the possible H80-to-B1-78 canonical-identity reconciliation as a hypothesis, not a result. If a future explicit reopening authorizes it, compare normalized keys `(amount, tuple(sorted(coins)))` and report unique-key counts, duplicate multiplicities, intersection, set differences, and manifest hashes. Do not infer identity equality from the 80/78 counts or opaque IDs alone.
+- The present project pause prohibits opening or comparing bank manifests. No identity comparison is performed in this blueprint.
 - Record every difference in bank size, stratum definitions, canonical identity rules, held-out membership, score weights, and custody.
 - Do not resolve version conflicts by choosing the largest or newest number. The controlling authority must be explicit in an accepted source record.
 
@@ -169,7 +175,7 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 
 - **D0.1 Source-of-truth register:** all controlling and superseded records.
 - **D0.2 Bank identity register:** authoritative diagnostic and held-out manifest identities and hashes, or an explicit statement that they are unavailable/unverified.
-- **D0.3 Version reconciliation:** explanation of the 64/80/78 record references and whether the new protected-set proposal changes the B1 target.
+- **D0.3 Version reconciliation:** distinguish the 64 abstract diagnostic slots, historical D64 bank, historical H80 raw rows, B1's 78 development rows, and v0.21's proposed protected set. Record the conditional H80 count arithmetic and the untested hypothesis that B1's 78 identity set may equal the 78 unique H80 canonical identities after the two H6 ordering pairs are collapsed. Equality, overlap, and disjointness remain OPEN until a separately authorized identity-only manifest comparison is completed; the current pause prohibits that comparison.
 - **D0.4 Authority decision:** explicit disposition of whether the old D1–D8 definitions are binding, superseded, or unresolved.
 
 ### 4.4 Pass and stop criteria
@@ -801,6 +807,8 @@ Starting statuses at the time this blueprint was drafted:
 | Eight records per diagnostic stratum in that earlier design | VERIFIED-SOURCE |
 | D6 contains four canonical instances × two orderings in that earlier design | VERIFIED-SOURCE |
 | Earlier H1–H8 definitions and 80-record count | VERIFIED-SOURCE for that earlier design only; current authority OPEN |
+| H80 unique canonical-identity count | OPEN at manifest level; H6's stated pair structure yields 8 identities from 10 rows; 78 total is conditional on no additional collisions among the other 70 rows |
+| H80-to-B1-78 identity-set relationship | OPEN; canonical de-duplication is a plausible hypothesis, but no source link or identity comparison establishes equality, overlap, or disjointness |
 | Current B1 78-record development-bank status | VERIFIED-SOURCE in v0.21/B1 records; actual bank identity must be reconciled to the governing manifest |
 | New protected-set proposal | VERIFIED-SOURCE as a proposal; independent custodian and accepted amendment OPEN |
 | Actual parent/operator selection in v0.21 | OPEN; v0.21 says none selected |
@@ -930,7 +938,7 @@ These are relevant motivation and limitation sources. Their measurement units an
 
 This document remains a blueprint for critique and is not accepted merely because the cross-review has converged on several findings. The convergence recorded in §5.6.6 is technical agreement on the identified issues and closure conditions, not a formal joint sign-off or owner ratification.
 
-The next review work is ordered, not open-ended. The present authority ruling is recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`: accepted symbolic statistical authority exists, but no operational D1–D8 specification is adopted for v0.21.
+The next review work is ordered, not open-ended. The present authority ruling and the D0.3 H80-to-B1-78 identity hypothesis are recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`: accepted symbolic statistical authority exists, no operational D1–D8 specification is adopted for v0.21, and the identity-set relationship remains untested.
 
 1. Obtain an owner-authorized selection of the exact operational D1–D8 specification and diagnostic manifest. The source-authority audit is complete; the adoption decision remains open. Do not presume BANK_DESIGN v1.0 or C9 rev 2.6 wins.
 2. Adjudicate D4 against that adopted source: a composite is possible only with a specific rationale, fixed pre-outcome subtype definitions/proportions, and mandatory subtype reporting; otherwise a separately reviewed redesign is required.
