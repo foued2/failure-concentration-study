@@ -1,7 +1,7 @@
 # LC518 diagnostic-specification authority decision
 
 **Decision ID:** LC518-DIAG-AUTH-2026-11-20  
-**Version:** 1.0  
+**Version:** 1.1  
 **Decision date:** 2026-11-20  
 **Status:** GPT SOURCE-ADJUDICATION RECORDED; NO CURRENT OPERATIONAL D1–D8 SPECIFICATION ADOPTED  
 **Repository:** `foued2/failure-concentration-study`  
@@ -62,6 +62,20 @@ The 64-record D bank in v1.0 happens to match the `8 × 8` abstract structure in
 
 **Disposition:** BANK_DESIGN v1.0 remains authoritative for its earlier frozen package and is a historical candidate source for possible selective adoption. It is not the current operational D1–D8 authority for v0.21.
 
+### 3.1 D0.3 identity-reconciliation hypothesis: H80 may reduce to 78 canonical inputs
+
+BANK_DESIGN v1.0 §2 defines canonical identity as `(amount, tuple(sorted(coins)))`; permutation copies of one mathematical instance share one canonical identity. Its §5 H6 row specifies 10 raw records as 2 canonical instances × 2 orderings plus 6 singleton records. H6 therefore contains 8 canonical identities.
+
+If each of the other 70 H1–H5/H7–H8 records also has a unique canonical identity, the complete 80-row H1–H8 bank would have 78 unique canonical identities. This is the count pattern identified in the cross-review. The design text alone does not prove that the other 70 records contain no additional within-stratum or cross-stratum canonical collisions; the frozen H80 manifest is required to establish the exact unique-identity count and multiplicities.
+
+This arithmetic supports, but does not establish, the following D0.3 hypothesis: the B1 v1.7 78-record development bank might contain exactly the 78 unique canonical identities obtained by collapsing the two H6 ordering pairs in the historical 80-row H80 bank.
+
+The accepted B1 v1.7 plan and its acceptance record do not cite BANK_DESIGN v1.0/H80, provide the 78 identities, or state that the rows were obtained by canonical de-duplication. Therefore equality, partial overlap, and disjointness of the two identity sets are all **OPEN**. Do not state that B1 is H80 deduplicated; equally, do not claim that the identity sets differ merely because the documents assign them different roles.
+
+Even if the identity sets prove equal, the design objects remain different in role and provenance: H80 is the earlier package's 80-raw-record held-out target; B1 v1.7's 78 rows are publicly exposed development rows used in its accepted analysis plan. Identity-set equality would establish lineage or overlap, not make the targets analytically interchangeable or sealed.
+
+The decisive comparison, if separately authorized after the current pause is lifted, is an identity-only comparison of all 80 H80 records and all 78 B1 rows using normalized keys `(amount, tuple(sorted(coins)))`. It must report the distinct-key count for each bank, duplicate multiplicities, intersection, H80-only keys, B1-only keys, and exact manifest hashes/provenance. Raw row count, a claimed total of 78, or equality of opaque IDs alone is insufficient. No such comparison is performed by this decision; the current pause and no-bank-access boundary remain in force.
+
 ## 4. Why C9 revision 2.6 is not current authority
 
 C9 rev 2.6 pins detailed proposed generator rules, including refinements to D4 and D5. Its own status says the revision has not received separate follow-up review, is not owner-ratified or frozen, and does not modify historical BANK_DESIGN v1.0. It states that the historical design-of-record sources remain authoritative until separate owner ratification.
@@ -77,7 +91,7 @@ C9 may be used as review material. Its changed details, including the proposed D
 | Eight diagnostic strata × eight records | Accepted symbolic structure inherited through Rev 1.4; 64 abstract diagnostic slots | Not proof of a generated or current D1–D8 manifest |
 | Historical D1–D8 diagnostic bank | Defined in BANK_DESIGN v1.0 for the earlier 150-body package; 64 records | Not automatically adopted by v0.21 |
 | B1 v1.7 development/outcome records | Fixed 78-record publicly exposed development bank | Not the diagnostic bank and not sealed confirmatory data |
-| Historical H1–H8 held-out bank | 80-record target in BANK_DESIGN v1.0 | Not B1 v1.7's 78-record target or v0.21's proposed new protected set |
+| Historical H1–H8 held-out bank | 80 raw records in BANK_DESIGN v1.0; H6's two reordered pairs account for 10 rows but 8 canonical identities; total unique identities are 78 only if the other 70 rows are unique | Not adopted as B1 v1.7's target; its identity-level relation to B1's 78 rows is unresolved; not v0.21's proposed new protected set |
 
 ## 6. Consequences for the research claim
 
@@ -121,4 +135,4 @@ This decision does **not** choose among those future routes, create a bank, reco
 
 This is a documentation-only authority determination. It does not reopen the paused project and authorizes no bank access, bank generation, oracle access, solver construction or modification, compilation, execution, diagnostic probing, outcome collection, simulation, sampling, predictive fitting, or power analysis. No frozen specification, bank, manifest, or solver was modified by this decision.
 
-**Final ruling:** accepted authority exists for the symbolic eight-stratum statistical structure and B1 analysis procedure. **No operational D1–D8 specification is presently adopted for v0.21. Gate 0 remains open.**
+**Final ruling:** accepted authority exists for the symbolic eight-stratum statistical structure and B1 analysis procedure. **No operational D1–D8 specification is presently adopted for v0.21.** The H80-to-B1-78 identity-set relationship is an explicit, untested D0.3 hypothesis, not an established lineage finding. Gate 0 remains open.
