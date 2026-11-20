@@ -1381,3 +1381,37 @@ assessment has been run.
 - B1 v1.7, Rev 11, the measurement specification, and all other frozen records remain unchanged.
   No bank access, outcome access, solver construction, experiment, fitting, simulation, or execution
   occurred. The project pause remains in force.
+
+---
+
+## 26. Claude follow-up review — Sed DBSCAN and bibliography check (2026-11-20)
+
+**Disposition:** the Sed qualification is accepted and expanded. The earlier register sentence was
+correct about the agglomerative result but incomplete: §6.2 also reports very high failure density in
+Sed's smallest clusters under DBSCAN, with a reasonable F-measure. The different clustering methods
+produce different results; this is evidence of configuration sensitivity, not a reason to remove the
+sub-50 % observation. NanoXML version 3 remains the counterexample where larger clusters held most
+failures. The register now records all three.
+
+**Bibliography adjudication:**
+
+1. Dickinson et al. (2001): DOI `10.1145/503209.503243` retained. The conflicting `503241.503243`
+   secondary entry is not adopted.
+2. Wu et al. (2004), input-level model: paper identity and proceedings metadata corroborated, but
+   third-party DOI identifiers conflict. The register withholds the DOI pending primary publisher/
+   Crossref resolution.
+3. Wu et al. (2004), maximum-entropy model: bibliographic record and abstract-level result remain
+   corroborated; full text is not claimed as reviewed.
+4. Chen et al. (2017): full text confirmed; journal issue corrected to 66(3), pages 806–824.
+5. Xiong et al. (2018): the full paper's first-page citation confirms DOI `10.1145/3180155.3180182`.
+6. Tian et al. (2022): the publisher postprint and institutional bibliographic record confirm DOI
+   `10.1145/3511096`.
+
+**Effect on the record:** register §9.2 adds the DBSCAN result; §9.7 corrects Chen's issue, withholds
+Wu input-level DOI pending resolution, and clarifies Dickinson's DOI conflict; §9.9 records this
+adjudication. README indexing is updated.
+
+**Gate status:** Gate 0 remains OPEN. The wider scoping review, reproducible search log, and systematic
+backward/forward citation checks are incomplete. Foued's conditional Gate 1 instruction is therefore
+not triggered as a formal gate transition. No Gate 1 freeze, bank access, design census, or outcome work
+is authorized by this entry. No frozen protocol was changed.

@@ -310,9 +310,13 @@ prediction of held-out correctness.
 The full text was also checked from the authors' institutional repository copy ([Strathprints full-text PDF](https://strathprints.strath.ac.uk/58621/1/Almaghairbe_Roper_SQJ_2016_Separating_passing_and_failing_test_executions.pdf)). It documents substantial
 heterogeneity across systems, program versions, and clustering configurations:
 
-- In §6.2, for the reported Sed small-cluster analysis, the small-cluster failure density does **not**
-  reach 50 %; its maximum is just above 40 % under complete linkage with an average cluster size of
-  approximately three.
+- In §6.2, the **agglomerative hierarchical-clustering** results for Sed show small-cluster
+  failure density below 50 %, peaking just above 40 % under complete linkage at an average cluster
+  size of about three. This statement is specific to that method and analysis.
+- The same section reports a markedly different Sed result under **DBSCAN**: very high failure
+  density in the smallest clusters and a reasonable F-measure. DBSCAN generated many more small
+  clusters than the agglomerative analysis. EM, by contrast, performed very poorly on Sed. These are
+  method-dependent results, not contradictory estimates of one universal Sed rate.
 - NanoXML version 3 is a direct counterexample to a universal small-cluster claim: the paper reports
   that its largest clusters contained most of the failures.
 - Other sections report different quantities, including the proportion of all failures captured by
@@ -458,16 +462,24 @@ abstract is not silently promoted to a full-text review.
 | Register ID | Work and DOI | What it establishes | What it pre-empts | What it does not pre-empt | Verification level |
 |---|---|---|---|---|---|
 | 8b | Dickinson, Leon & Podgurski (2001), “Pursuing Failure: The Distribution of Program Failures in a Profile Space,” ESEC/FSE-9, pp. 246–255. [10.1145/503209.503243](https://doi.org/10.1145/503209.503243) | Failure executions can occupy unusual/sparse regions of an execution-profile space; the paper motivates failure-pursuit sampling from profile-space structure. | Clustering and geometric/profile-space structure of program failures as a new general idea. | A prespecified diagnostic-input partition, a maximum-share scalar, exact-cell incremental prediction, or parent-grouped evaluation. | Bibliographic record and abstract-level description checked; full text not reviewed in this pass. |
-| 8c | Wu et al. (2004), “A Statistical Model to Locate Faults at Input Level,” ASE 2004. [10.1109/ASE.2004.1342745](https://doi.org/10.1109/ASE.2004.1342745) | Uses success/failure patterns to locate faults at input level; the abstract reports five programs and 17 experiments, with mean precision 0.803 and recall 0.697. | Statistical use of input-level failure patterns for fault localisation. | Prediction of held-out solver-version record correctness, C_D, or incremental value beyond the B1 exact-cell baseline. | Bibliographic record and abstract checked; full text not reviewed in this pass. |
+| 8c | Wu et al. (2004), “A Statistical Model to Locate Faults at Input Level,” ASE 2004, pp. 274–277. DOI withheld pending publisher-level resolution. | Uses success/failure patterns to locate faults at input level; the abstract reports five programs and 17 experiments, with mean precision 0.803 and recall 0.697. | Statistical use of input-level failure patterns for fault localisation. | Prediction of held-out solver-version record correctness, C_D, or incremental value beyond the B1 exact-cell baseline. | Title, authors, venue, pages and abstract-level result corroborated; third-party DOI records conflict; full text not reviewed in this pass. |
 | 15 | Herzig (2014), “Using Pre-Release Test Failures to Build Early Post-Release Defect Prediction Models,” ISSRE 2014, pp. 300–311. [10.1109/ISSRE.2014.21](https://doi.org/10.1109/ISSRE.2014.21) | Test-execution metrics, including sequences/bursts of quality-gate failures, are used to predict pre- and post-release defect counts for code artifacts in the Windows 8 development setting. The study is explicitly exploratory. | Use of development-time test-failure metrics as predictors of later software defect outcomes. | Record-level correctness prediction for solver variants, the eight fixed diagnostic strata, maximum-share dominance, or B1's parent-held-out conditional estimand. | Full text reviewed; single-product setting and stated scope limitations retained. |
 | 16 | Wu et al. (2004), “Application of Maximum Entropy Principle to Software Failure Prediction,” COMPSAC 2004, pp. 180–185. [10.1109/CMPSAC.2004.1342825](https://doi.org/10.1109/CMPSAC.2004.1342825) | Two maximum-entropy models use input/failure co-occurrence and fault/failure relationships; the abstract reports five programs and 17 experiments, with average precision 0.876 and 0.858. | Predictive/statistical modelling of software failure from input and fault relationships. | C_D, an eight-stratum prespecified failure-dominance summary, exact-cell incremental prediction, or parent-grouped solver-version evaluation. | Bibliographic record and abstract checked; full text not reviewed in this pass. |
-| 17 | Chen et al. (2017), “An Empirical Study on the Effect of Testing on Code Quality Using Topic Models: A Case Study on Software Development Systems,” *IEEE Transactions on Reliability* 66(4):806–824. [10.1109/TR.2017.2699938](https://doi.org/10.1109/TR.2017.2699938) | LDA-derived topics represent higher-level themes across source and test files; topic testedness and topic defect density are used to predict defect-prone and under-tested topics in Mylyn, Eclipse, and NetBeans. The paper reports average precision 0.75 and recall 0.77 for that topic-level task. | Semantic/topic-level testing and defect-proneness analysis, including prediction using test information. | Fixed diagnostic *input* strata, a maximum share of definite failures, or per-record correctness of held-out solver variants. | Full text reviewed. |
+| 17 | Chen et al. (2017), “An Empirical Study on the Effect of Testing on Code Quality Using Topic Models: A Case Study on Software Development Systems,” *IEEE Transactions on Reliability* 66(3):806–824. [10.1109/TR.2017.2699938](https://doi.org/10.1109/TR.2017.2699938) | LDA-derived topics represent higher-level themes across source and test files; topic testedness and topic defect density are used to predict defect-prone and under-tested topics in Mylyn, Eclipse, and NetBeans. The paper reports average precision 0.75 and recall 0.77 for that topic-level task. | Semantic/topic-level testing and defect-proneness analysis, including prediction using test information. | Fixed diagnostic *input* strata, a maximum share of definite failures, or per-record correctness of held-out solver variants. | Full text reviewed. |
 | 18 | Xiong et al. (2018), “Identifying Patch Correctness in Test-Based Program Repair,” ICSE 2018, pp. 789–799. [10.1145/3180155.3180182](https://doi.org/10.1145/3180155.3180182) | Uses execution-behaviour similarity of passing/failing tests to assess generated patch correctness. Its 139-patch study reports preventing 56.3 % of incorrect generated patches without blocking correct patches in that dataset. | Correctness assessment from behaviour of failing and passing tests in automated program repair. | Solver-variant record-level correctness, a fixed eight-stratum dominance statistic, or B1's exact-cell/LOPO estimand. | Full text reviewed; the 139-patch dataset and study-specific result are not generalised beyond the paper. |
 | 19 | Tian et al. (2022), “Predicting Patch Correctness Based on the Similarity of Failing Test Cases,” *ACM Transactions on Software Engineering and Methodology* 31(4), Article 77. [10.1145/3511096](https://doi.org/10.1145/3511096) | BATS uses representations and similarity of failing test specifications/cases to historical patches to predict patch correctness; results vary with similarity thresholds and the availability of comparable historical tests. | Prediction of patch correctness from failing-test similarity and historical patch behaviour. | A fixed input-stratum maximum-share statistic, incremental prediction beyond `(q,Z,k,ℓ)`, or parent-held-out solver-variant record correctness. | Full paper/publisher postprint reviewed; dataset and threshold dependence retained as limitations. |
 
-**Metadata correction.** The Dickinson DOI used here is `10.1145/503209.503243`. A secondary search result surfaced
-a conflicting `503271.503243` string; it is not adopted. The proceedings/bibliographic records and
-independent citations support `503209.503243`.
+**Metadata corrections and open identifier.**
+- Dickinson, Leon & Podgurski's DOI remains `10.1145/503209.503243`. The SQJ paper's own reference list
+  and DBLP proceedings record support that identifier. A conflicting `503241.503243` string appears
+  in a secondary ResearchGate record and is not adopted.
+- The DOI for Wu et al.'s ASE 2004 input-level fault-localisation paper is **not settled in this pass**.
+  Third-party records return incompatible strings, including `10.1109/ASE.2004.10008`,
+  `10.1109/ASE.2004.1342745`, `10.1109/ASE.2004.1342763`, and `10.1109/ASE.2004.7`.
+  The official ASE 2004 programme confirms the paper's title, authors and venue, and DBLP confirms
+  pages 274–277, but the primary IEEE/Crossref DOI record has not been resolved here. No candidate DOI
+  is printed in row 8c or used as a citation until that conflict is settled.
+- Chen et al.'s issue is `66(3)`, not `66(4)`; the page range remains 806–824.
 
 **Interpretation.** These additions close neither Gate 0 nor the novelty question. They show that the
 surrounding territory is broader than failure clustering alone: input-level fault localisation,
@@ -497,3 +509,39 @@ stratum dominates, that the index is new, or that a positive B1 result would est
 
 **Gate 0 status remains OPEN; P remains UNPROVEN.** The statement fixes the target and inferential
 scope, but the broader citation-search protocol and backward/forward citation checks are not yet complete.
+
+### 9.9 Claude follow-up review — additional full-text and identifier adjudication (2026-11-20)
+
+Claude's follow-up review is accepted on the need to state both Sed clustering outcomes. The full text
+supports the following narrower account: under agglomerative hierarchical clustering, Sed's §6.2
+small-cluster failure density peaks just above 40 % and remains below 50 %; under DBSCAN, Sed has a
+very high failure density in the smallest clusters and a reasonable F-measure. The DBSCAN result is not
+an exception to the agglomerative figure; it is a different algorithm and clustering configuration.
+The NanoXML version 3 case remains a separate exception in which the largest clusters contained most
+failures. Section 9.2 now records all three facts.
+
+The additional literature checks also distinguish “not checked by Claude in that round” from “not
+verified by any reviewer”:
+
+- **Chen et al. (2017):** the article full text is available and was reviewed; the journal issue is
+  66(3), pages 806–824. The DOI and article identity are corroborated; the earlier 66(4) issue number
+  is corrected.
+- **Xiong et al. (2018):** the authors' full paper is available; its first-page ACM reference gives
+  DOI `10.1145/3180155.3180182`. The 139-patch result remains study-specific.
+- **Tian et al. (2022):** the University of Luxembourg repository provides the publisher postprint and
+  bibliographic record for DOI `10.1145/3511096`; the full paper was reviewed. Its similarity-threshold
+  and historical-test availability limits remain part of the interpretation.
+- **Wu et al. (2004), maximum entropy:** the title, COMPSAC venue, pages and abstract-level result are
+  corroborated. Full text was not reviewed in this pass; the entry remains abstract-level.
+- **Wu et al. (2004), input-level fault localisation:** the paper identity, title, authors, venue,
+  pages and abstract-level result are corroborated, but the DOI strings in third-party records conflict.
+  Row 8c therefore withholds the DOI rather than choosing one by plausibility. Publisher/Crossref
+  resolution is still required.
+- **Dickinson et al. (2001):** the paper and proceedings entry are confirmed. The `503209.503243`
+  DOI is supported by the SQJ paper's bibliography and DBLP; the conflicting `503241.503243` secondary
+  record is not used.
+
+These checks improve metadata accuracy but do not complete the Gate 0 search protocol. The evidence
+matrix still lacks a complete, reproducible database/query/screening log and systematic backward- and
+forward-citation checks. **Gate 0 remains OPEN; P remains UNPROVEN.** No Gate 1 freeze is declared by
+this amendment.
