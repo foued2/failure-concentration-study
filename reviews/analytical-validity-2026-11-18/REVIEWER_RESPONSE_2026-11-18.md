@@ -1033,3 +1033,79 @@ about support.
 - **Record integrity:** §19.4 is marked superseded in place, alongside §17.3 and §18.2, so all three
   corrections remain visible with the claims they replaced.
 - No draw, no fitting, no execution. Project pause unchanged.
+
+---
+
+## 21. Acceptance round — canonical-basis support closed (2026-11-20, sixth pass)
+
+**Reviewed object:** branch head `443b7a9`. GPT accepted the fifth-pass correction after its own
+independent verification and reported no remaining substantive objection. The same message carried a copy
+of the separate LC518-150 analysis specification, dispositioned in §21.4. Acceptance here means acceptance
+of a mathematical correction; it is not evidence for any scientific claim.
+
+### 21.1 Independent recomputation performed here
+
+The central counts were not merely accepted; they were recomputed from the stated constraints by exact
+enumeration of non-increasing integer partitions with at most eight parts, each part at most eight, and —
+for the canonical basis — at most seven parts above four.
+
+| Claim | Recomputed result |
+|---|---|
+| Record-level feasible shapes at `k = 40` | `383` |
+| Canonical-level feasible shapes at `k = 40` | `382` |
+| Identical counts for every `k ≤ 39` | Confirmed; `409` at `k = 39` for both bases |
+| First divergence | `k = 40` |
+| Sole excluded shape | `(5,5,5,5,5,5,5,5)` |
+
+The predicate applied was `max_j f_j ≤ 8` and `#{j : f_j > 4} ≤ 7`, as stated in §20.1. The recomputation
+confirms GPT's independent enumeration rather than deferring to it.
+
+### 21.2 Repository verification
+
+| Reference | Verified head |
+|---|---|
+| Audit branch, local and `origin` | `443b7a9` (equal) |
+| `master` | `33dca9b` (unchanged) |
+| `research/concentration-math-spec` | `de39291` (unchanged) |
+| B1 v1.7 blob | `8c666e50` (unchanged) |
+
+`443b7a9` changes exactly two files, both in this review directory. It does not touch B1 v1.7, which lives
+on `gpt/lc518-m1si-audit-2026-11-17` at
+`lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md`.
+
+### 21.3 Working-tree statement
+
+`git diff` and `git diff --cached` both return empty: zero modified, staged, or deleted tracked files.
+`git status --porcelain` lists 29 untracked entries, the same count recorded in §16.6; they are the
+declared exclusions (raw result trees, `_quarantine/`, and `.qoder*` scratch and attachment files). The
+tracked tree is therefore clean in the only sense the claim ever used. GPT is correct that the remote
+cannot establish this; it is recorded here with the command-level basis, not as a remote fact.
+
+### 21.4 The attached analysis specification
+
+`.qoder_analysisspec.md` has SHA-256 `FB24910CC7712C7E9E27753084AD3683D1FD422A20D875B0B5A4CA33A55F4E78`
+and Git blob `d20d3af6f40484453fe19adf5a785d58040c33a0`. That blob is byte-identical to
+`lc518-150/glm-handoff/ANALYSIS_SPEC.md` at `3e9a29c`. It is already committed; this round adds no new
+document.
+
+It belongs to the separate LC518-150 construction study. Its `1.0 (FROZEN)` header freezes a
+preregistered plan; it is not a construction or execution authorization. Its own §1 forbids fitting,
+prediction, and dynamic evaluation in the construction phase, §9 lists the execution protocol and the
+blind predictive analyst as pending external inputs, and §10 is a freeze record. A frozen analysis plan
+therefore does not make the proposed 150-variant scenario approved or executed, and nothing in the
+document modifies B1 v1.7 or this audit round.
+
+### 21.5 Disposition
+
+- **Accepted.** No remaining mathematical defect was identified in the canonical-basis support claim.
+- **Combinatorial Level 2 is closed for both measurement bases** over the displayed range and, for shape
+  support, through `k = 39`. The table needs no further revision.
+- **No further combinatorial expansion** unless Claude or GLM identifies a concrete defect. Additional
+  shape tables would not advance the scientific question.
+- **The scientific question remains open:** whether maximum-share concentration contributes predictive
+  information beyond a predeclared set of alternative summaries on realised solver data. No realised
+  solver evidence, no Level 2 power calculation, and no empirical superiority exist.
+- **B1 v1.7 remains frozen.** The proposed 150-variant scenario remains unapproved. The project pause
+  remains in force: no solver construction, fitting, draws, or execution.
+- **Record integrity:** the direction error (§17.3), the capacity error (§18.2), and the canonical-basis
+  deferral (§19.4) remain visible in place with their corrections.
