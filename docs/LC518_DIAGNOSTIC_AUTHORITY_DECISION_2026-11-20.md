@@ -18,7 +18,7 @@ The controlling symbolic layer is:
 1. **B1/M1 Rev 1.4 Amendment E**, accepted for the symbolic feasibility specification by its separate GPT acceptance record. The Rev 1.4 acceptance is not a separate formal freeze.
 2. **B1 analysis plan v1.7**, accepted and frozen as a symbolic analysis plan by its separate GPT acceptance record. It is not an execution GO.
 
-The inherited Rev 1.1 §1.2 diagnostic structure, retained by Rev 1.4 §§1.1–1.4, states (S=8) strata and (R_s=8) records per stratum as **abstract structural constants** and expressly says no bank data are executed or reused by that specification. It defines the mathematical quantities (f_s(v)), (M(v)=\max_s f_s(v)), and (C_D(v)=M(v)/k(v)). It does not define the named input challenges D1–D8.
+The inherited Rev 1.1 §1.2 diagnostic structure, retained by Rev 1.4 §§1.1–1.4, states `S = 8` strata and `R_s = 8` records per stratum as **abstract structural constants** and expressly says no bank data are executed or reused by that specification. It defines the mathematical quantities `f_s(v)`, `M(v) = max_s f_s(v)`, and `C_D(v) = M(v)/k(v)`. It does not define the named input challenges D1–D8.
 
 **Authority ruling:** the current design has an accepted eight-stratum/eight-record-per-stratum symbolic structure, but **no adopted operational D1–D8 specification or current v0.21-linked diagnostic manifest**. The old D1–D8 names and rules must therefore not be treated as binding for v0.21, and no current-design diagnostic outcomes may be counted or interpreted under an assumed v1.0/C9 mixture.
 
@@ -28,7 +28,7 @@ This is a positive determination of the present authority state: **NO OPERATIONA
 
 ### 2.1 Rev 1.4 Amendment E
 
-The accepted Rev 1.4 specification is the symbolic B1/M1 feasibility specification. Its inherited §§1.1–1.4 preserve (S=8), (R_s=8) as abstract structural constants, the failure/unresolved count definitions, and the Berger–Parker maximum-share expression. The acceptance record states that Rev 1.4 is accepted for the symbolic specification, while distinguishing acceptance from a separate formal freeze.
+The accepted Rev 1.4 specification is the symbolic B1/M1 feasibility specification. Its inherited §§1.1–1.4 preserve `S = 8`, `R_s = 8` as abstract structural constants, the failure/unresolved count definitions, and the Berger–Parker maximum-share expression. The acceptance record states that Rev 1.4 is accepted for the symbolic specification, while distinguishing acceptance from a separate formal freeze.
 
 The abstract structure implies 64 diagnostic record slots in the mathematical design. It does **not** establish 64 generated records, actual record identities, named input categories, item-level rule parameters, canonical IDs, or a frozen manifest.
 
@@ -58,7 +58,7 @@ That freeze establishes the status of the earlier study-package design. It does 
 
 There is also a material target distinction: BANK_DESIGN v1.0 specifies an 80-record held-out bank, whereas accepted B1 v1.7 specifies the publicly exposed 78-record development bank as its outcome-record population. v0.21 proposes a further protected evaluation set and requires a separate B1 amendment. These must not be collapsed into one “held-out bank”.
 
-The 64-record D bank in v1.0 happens to match the (8\times8) abstract structure in Rev 1.4. Equal counts do not prove identity of record membership or semantic adoption. No exact path/hash cross-reference or owner-authorized selective adoption of BANK_DESIGN v1.0 §6 into v0.21 was found in the records reviewed.
+The 64-record D bank in v1.0 happens to match the `8 × 8` abstract structure in Rev 1.4. Equal counts do not prove identity of record membership or semantic adoption. No exact path/hash cross-reference or owner-authorized selective adoption of BANK_DESIGN v1.0 §6 into v0.21 was found in the records reviewed.
 
 **Disposition:** BANK_DESIGN v1.0 remains authoritative for its earlier frozen package and is a historical candidate source for possible selective adoption. It is not the current operational D1–D8 authority for v0.21.
 
@@ -83,8 +83,8 @@ C9 may be used as review material. Its changed details, including the proposed D
 
 Until an operational diagnostic specification and manifest are adopted:
 
-1. The eight-component vector (F=(f_1,\ldots,f_8)) is only symbolically defined by eight abstract strata. The current input meaning of each component is not fixed.
-2. A calculation of (C_D) is mathematically definable once the eight record groups and outcomes exist, but its current-design construct interpretation is not established without the operational stratum definitions.
+1. The eight-component vector `F = (f_1, ..., f_8)` is only symbolically defined by eight abstract strata. The current input meaning of each component is not fixed.
+2. A calculation of `C_D` is mathematically definable once the eight record groups and outcomes exist, but its current-design construct interpretation is not established without the operational stratum definitions.
 3. Historical descriptions of D1–D8 may be made only with an explicit reference to BANK_DESIGN v1.0 and its earlier-package status.
 4. The D4 composite, D5 objective-validity, and D6 record-versus-pair weighting questions must be adjudicated against the specification eventually adopted. The prior review conclusions remain design requirements; they do not convert C9 into authority.
 5. No diagnostic outcome should be used to resolve source authority or retrospectively choose stratum membership.
