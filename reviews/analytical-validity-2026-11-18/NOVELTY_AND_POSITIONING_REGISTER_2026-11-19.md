@@ -307,7 +307,7 @@ published online 2016-10-03) states that, **in many cases**, small clusters were
 some system/configuration combinations, not a universal rate, not a population estimate, and not a
 prediction of held-out correctness.
 
-The full text was also checked from the authors' institutional repository copy. It documents substantial
+The full text was also checked from the authors' institutional repository copy ([Strathprints full-text PDF](https://strathprints.strath.ac.uk/58621/1/Almaghairbe_Roper_SQJ_2016_Separating_passing_and_failing_test_executions.pdf)). It documents substantial
 heterogeneity across systems, program versions, and clustering configurations:
 
 - In §6.2, for the reported Sed small-cluster analysis, the small-cluster failure density does **not**
