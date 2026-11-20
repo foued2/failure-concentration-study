@@ -337,7 +337,7 @@ Accordingly:
 
 - **Stage 2 is no longer an unanswered list of questions:** the earlier design's input meanings, mathematical construction logic, and interpretation limits are now documented.
 - **Stage 2 is not a current-design PASS:** its applicability to v0.21 and the operator-to-stratum mapping remain unresolved.
-- **Gate 0 cannot close on this result alone.** The current bank-authority conflict, mutation specification gap, diagnostic-to-held-out transport, measurement validity, and literature boundary remain separate gates.
+- **Gate 0 cannot close on this result alone.** The operational diagnostic-specification adoption gap, mutation specification gap, diagnostic-to-held-out transport, measurement validity, and literature boundary remain separate gates.
 
 
 #### 5.6.6 Cross-review adjudication of D4, D5 and D6 (2026-11-20)
@@ -349,11 +349,11 @@ This subsection records the points on which the GPT adjudication and the subsequ
 The authority audit is complete and its result is recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`. Accepted Rev 1.4 Amendment E and B1 v1.7 control the symbolic statistical structure, including eight abstract diagnostic strata with eight records per stratum. They do not define named D1–D8 input categories. BANK_DESIGN v1.0 is frozen for the earlier 150-body package but is not adopted by v0.21. C9 rev 2.6 is unratified and does not amend v1.0. The current ruling is **NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED FOR v0.21**.
 
 A future adoption decision must be owner-authorized and versioned, and must:
-1. names the exact adopted diagnostic specification, revision, repository path and immutable blob identity;
-2. states whether C9 rev 2.6 is adopted, rejected, or only partly adopted, with each changed rule identified;
-3. identifies the authoritative diagnostic manifest and its hash, including record IDs, assigned stratum, rule IDs, canonical IDs, subtype labels/parameters, and D6 pair identities;
-4. reconciles the diagnostic specification with the applicable B1 analysis plan and the evaluation-target version; and
-5. records any required B1 amendment and its separate review/acceptance status.
+1. name the adopted diagnostic specification, revision, repository path and immutable blob identity;
+2. state whether C9 rev 2.6 is adopted, rejected, or only partly adopted, identifying each changed rule;
+3. identify the authoritative diagnostic manifest and its hash, including record IDs, assigned stratum, rule IDs, canonical IDs, subtype labels/parameters, and D6 pair identities;
+4. reconcile the diagnostic specification with the applicable B1 analysis plan and the evaluation-target version; and
+5. record any required B1 amendment and its separate review/acceptance status.
 
 Until this is done, the eight-stratum object over which C_D would be calculated is not fully specified for v0.21. No diagnostic outcome should be counted or interpreted as current-design evidence on the basis of an assumed v1.0/C9 mixture.
 
