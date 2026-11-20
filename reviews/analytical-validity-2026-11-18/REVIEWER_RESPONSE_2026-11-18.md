@@ -1109,3 +1109,116 @@ document modifies B1 v1.7 or this audit round.
   remains in force: no solver construction, fitting, draws, or execution.
 - **Record integrity:** the direction error (§17.3), the capacity error (§18.2), and the canonical-basis
   deferral (§19.4) remain visible in place with their corrections.
+
+---
+
+## 22. Documentary closing round — accepted, with two repository corrections (2026-11-20, seventh pass)
+
+**Reviewed object:** branch head `950fb93` and GLM's documentary closing review of 2026-11-20, as
+adjudicated by GPT. GPT closes the analytical review cycle and accepts the narrow §5.3 text verification,
+but finds the proposed roadmap addendum not ready: the branch-count reconciliation and the B1 tree
+inventory do not hold. Both objections are correct; the verified corrections follow. The attached
+`.qoder_analysisspec.md` is unchanged and is dispositioned once in §21.4, not re-recorded here.
+
+### 22.1 Disposition adopted
+
+| Area | Status |
+|---|---|
+| Combinatorial support audit | Closed |
+| Branch ancestry dispute | Closed |
+| B1 v1.7 identity and §5.2 | Closed |
+| Independent §5.3 text verification | Closed |
+| Roadmap addendum | Not yet published |
+| Branch-count and B1 tree-inventory reconciliation | **Correction required** |
+| Empirical superiority over competing summaries | Untested |
+
+### 22.2 B1 inventory — the word "only" is withdrawn
+
+GLM's §1 row 2 says B1 v1.7 is present in the tip tree of `gpt/b1-computational-plan-2026-11-14` **only**,
+while also recording `gpt/lc518-m1si-audit-2026-11-17` at `7365ad5`. Those two statements are
+inconsistent, and the second branch does contain the file. Verified this round:
+
+| Branch | Tip | `.../B1_ANALYSIS_PLAN_2026-11-14_v1.7.md` |
+|---|---|---|
+| `gpt/b1-computational-plan-2026-11-14` | `46d548f` | Present, blob `8c666e50` |
+| `gpt/lc518-m1si-audit-2026-11-17` | `7365ad5` | Present, blob `8c666e50` |
+| `master` | `33dca9b` | Absent |
+| `docs/scientific-roadmap-audit-2026-11-18` | `874915b` | Absent |
+| `audit/analytical-validity-2026-11-18` | `950fb93` | Absent |
+| `research/concentration-math-spec` | `de39291` | Absent |
+
+The path is identical on both GPT branches:
+`lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md`.
+The blob is identical: `8c666e501a31726c728447d155045c0b20adc178`, content SHA-256
+`797bd9f72cf94fdc0eff4a03b1544823d4042f8e530b27f4fb70cbd7f2baca7c`, 111,169 bytes, 331 LF-terminated
+lines, final newline present. Across all refs the blob is reachable at exactly this one path, so there is
+no same-content/different-path copy. The correct inventory is therefore **same path and same blob on the
+two GPT branches; absent from the other four**. The identity and acceptance of B1 v1.7 are unchanged; only
+the word "only" was wrong.
+
+### 22.3 Branch count — 63 verified, reference set not archived
+
+`git ls-remote --heads origin` returns **63** heads. The roadmap audit records **60** at its
+2026-11-18T08:55:36+01:00 commit, but neither that document nor any other archived file preserves the
+60-name enumeration. A true added/deleted/renamed comparison is therefore **not reconstructable from the
+primary record**. Any explanation that asserts "two new branches" against a net increase of three is
+unsupported; GPT's objection is correct.
+
+What can be verified is which heads carry tip commits after the snapshot:
+
+| Head | Tip | Tip time |
+|---|---|---|
+| `foued2-patch-3` | `2d5f9c3` | 2026-11-18T12:24:32+01:00 |
+| `audit/c09-count-reconciliation-2026-11-18` | `204500e` | 2026-11-18T12:31:26+01:00 |
+| `audit/analytical-validity-2026-11-18` | `950fb93` | 2026-11-20T07:19:13+01:00 |
+| `research/concentration-math-spec` | `de39291` | 2026-11-18T14:30:05+01:00 (updated head, not a new head) |
+| `docs/scientific-roadmap-audit-2026-11-18` | `874915b` | 2026-11-18T08:55:36+01:00 (at the snapshot) |
+
+`60 + 3 = 63` is arithmetically consistent with three additions, but which three cannot be fixed without
+the baseline list: the roadmap branch's own inclusion in the 60 is exactly what the missing enumeration
+would settle. Two readings survive — (a) roadmap counted, additions are `foued2-patch-3`,
+`audit/c09-count-reconciliation-2026-11-18`, and `audit/analytical-validity-2026-11-18`; (b) roadmap not
+counted, and three of the post-snapshot heads are the additions. No deletion or rename is detectable from
+the current ref set, but absence of a deletion cannot be proven without the same list.
+
+**Requirement for the addendum:** archive GLM's actual `ls-remote` output (if it survives in
+`audit_scratch/doc_review_20261120/`) or state that the 60-name baseline is unavailable and mark
+added/deleted/renamed entries `UNVERIFIED`. It must not explain a three-head increase by two branches.
+
+### 22.4 Provenance distinction kept strict
+
+Git author and committer identity is self-reported configuration; it does not establish who wrote the
+document. Document authorship, Git identity, and owner acceptance remain three separate facts. The counts
+themselves check out:
+
+| Branch | Commits ahead of `master` | Authors recorded |
+|---|---:|---|
+| `audit/analytical-validity-2026-11-18` | 156 | foued2 64, DeepSeek 48, GLM 38, MUSE 4, Codex 2 (`codex@local` 1, `codex@localhost` 1) |
+| `gpt/b1-computational-plan-2026-11-14` | 124 | foued2 121, `GLM <glm@review-chain.local>` 3 |
+
+GLM's 21/21 battery is retained as **GLM-reported verification**, not as a result independently
+reproduced here. The scripts and raw outputs named in GLM's report are not in this repository, and the
+report does not carry the individual check results or hashes of those files. A reproducible archive needs
+both. This round's own checks were targeted and independent (§22.2–§22.3), not a rerun of that battery.
+
+### 22.5 What the §5.3 verification closes, and what it does not
+
+The textual gap is closed: the pinned B1 v1.7 text does contain the excluded-cell inadmissibility rule,
+the selection-key-only admissibility condition, and the permutation-invariant target population. That is
+a statement about the frozen text, not about the statistical validity of the test. The test remains
+conditional on its exchangeability assumption and the declared design-support conditions; its null is
+stronger than \(\beta_C = 0\); and a rejection alone cannot establish that concentration is the unique
+source of predictive information rather than parent quality or unresolved-placement association. This is
+an interpretation boundary, not a new defect, and it must accompany any eventual result.
+
+### 22.6 Disposition
+
+- **Analytical review cycle closed** on GPT's terms. The combinatorial audit is not reopened.
+- **Roadmap addendum remains unpublished and is not ready.** It is blocked on the missing reference set
+  and on the B1 inventory correction in §22.2.
+- **B1 v1.7 untouched.** No clause, threshold, fold, or condition modified; no draw, fitting, or
+  execution.
+- **GLM's report authorizes no repository change, solver construction, or experiment.** This ledger
+  records the adjudication only. The project pause remains in force.
+- **The scientific position is unchanged:** no solver outcomes, no demonstrated predictive gain, and no
+  evidence that `C_D` outperforms the predeclared competing summaries.
