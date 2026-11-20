@@ -1,9 +1,9 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.1  
+**Version:** 0.2  
 **Date:** 2026-11-20  
-**Status:** DRAFT FOR INDEPENDENT REVIEW  
+**Status:** DRAFT FOR INDEPENDENT REVIEW; D1–D8 HISTORICAL SEMANTICS ADJUDICATED, CURRENT APPLICABILITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
 **Scope:** Documentation-only scientific review. This is not a protocol amendment, bank specification, mutation allocation, freeze, statistical decision, or execution authorization.
@@ -247,6 +247,107 @@ If a rate interpretation is proposed, the denominator must reflect the relevant 
 **STOP / REJECT THE CURRENT MEASUREMENT:** the partition cannot be reconstructed reliably, record membership is outcome-adaptive, or failure counts can be duplicated or missed under the frozen scoring rules.
 
 ---
+
+### 5.6 Documentary adjudication of D1–D8 (2026-11-20)
+
+This subsection records the result of a source-level review of the earlier bank design, its later C9 replacement proposal, the earlier analysis draft, the current v0.21 population design, and the November 10 mutation-allocation search report.
+
+#### 5.6.1 Source authority and version disposition
+
+| Record | What it establishes | Authority for the current v0.21 population |
+|---|---|---|
+| Earlier BANK_DESIGN.md, version 1.0, marked FROZEN on 2026-11-01 | Defines the 64-record diagnostic bank, eight records per D1–D8 stratum, the high-level construction rule for each stratum, the 80-record held-out bank, and the canonical-identity rule | Frozen for the earlier 150-body construction-study package. It is not, by itself, proof that v0.21 adopted the same bank or that the 150-body design remains current |
+| C9_GENERATION_SPEC_REVIEW.md, revision 2.6, 2026-11-02 | Provides a much more detailed proposed generator procedure, including exact D1–D8 construction details and corrected D4/D5 rules | Not owner-ratified or frozen. Its own header says it does not modify historical BANK_DESIGN v1.0. It may clarify the proposal, but its changed details cannot be treated as binding |
+| ANALYSIS_SPEC_REVIEW_DRAFT.md | Describes eight D1–D8 input strata, 64 records, a separate order-pair feature family, and states that the strata are input categories rather than verified mechanisms | Explicitly review-only and not the design of record. Useful corroboration of intended interpretation, not an authority override |
+| Population-design v0.21 | Refers to eight diagnostic strata in the C_D definition; says no parent or mutation mechanism has been selected; requires a future B1 amendment for a new protected evaluation set | Current design-only draft, but it does not enumerate D1–D8 names or explicitly incorporate BANK_DESIGN v1.0 by path/hash |
+| November 10 mutation-allocation search review | Reports no named eight-mechanism taxonomy, no M01–M08 definitions, and no pair-to-parent allocation in the five reviewed November 6 conversation PDFs | Bounded evidence that the mutation allocation is not established in the reviewed source set. A standalone annex's existence remains unproven |
+
+**Authority finding:** the intended meanings of D1–D8 can be recovered from the earlier frozen BANK_DESIGN v1.0. The available records do not establish that v0.21 formally adopted that exact bank specification. The count “eight” is not sufficient evidence of identity between two bank versions.
+
+#### 5.6.2 What each earlier diagnostic stratum is designed to challenge
+
+The table below separates the documented input challenge from what can legitimately be inferred. The high-level definitions are in frozen BANK_DESIGN v1.0. Where more exact construction detail is taken from C9 revision 2.6, it is explicitly labelled as an unratified proposal.
+
+| Stratum | Documented input-property challenge | Exact construction detail available in the record | What the label does not establish |
+|---|---|---|---|
+| **D1 boundary-amount** | Small and threshold-adjacent amounts relative to the smallest denomination; intended to expose boundary and off-by-one mistakes | BANK_DESIGN lists the pattern 0, 1, 2, c_min−1, c_min, c_min+1, 2c_min, 2c_min+1. C9 spells this out as the eight ordered amounts for each drawn coin set | It does not prove that every record is a distinct boundary case. For example, when c_min=1, c_min−1=0. Nor does it identify a particular source mutation or prove an off-by-one defect occurred |
+| **D2 exact-match** | A target amount exactly equals one denomination, with other denominations present as distractors; intended to test direct denomination recognition and handling of irrelevant alternatives | BANK_DESIGN: amount equals one denomination with 1–4 distractors. C9 specifies the matching coin is placed in the coin array and amount is set to that coin value | It does not establish a single “exact-match bug” or guarantee that all erroneous algorithms fail this case |
+| **D3 unreachable** | Inputs for which no valid combination exists; intended to test zero-answer and empty-result handling | BANK_DESIGN identifies two constructions. C9 specifies (i) minimum denomination greater than amount and (ii) a common denomination GCD g that does not divide the amount. Both guarantee the oracle answer is zero | This is already a heterogeneous stratum: the minimum-denomination rule and the GCD divisibility rule are different mathematical reasons for unreachability. They are not one causal defect |
+| **D4 modular-parity** | Parity and modular structure in denomination sets and target amounts | BANK_DESIGN describes all-odd denomination sets paired with even/odd amounts, plus denomination sets with GCD 2 and odd amounts. C9 proposes an explicit split: two all-odd/even-amount cases, two all-odd/odd-amount contrast cases, and four all-even-denomination cases with GCD exactly 2 and odd amount | This is not a uniform “unreachable” category. Under the C9 proposal only the GCD-2/odd-amount subgroup is guaranteed to have answer zero. The first four are parity contrasts and can be reachable. D4 therefore mixes parity contrasts with modular non-reachability and overlaps conceptually with the GCD subtype of D3 |
+| **D5 non-greedy** | Coin sets and amounts for which largest-first greedy choice does not produce a minimum-coin solution; intended to expose a greedy shortcut or misunderstanding of the task | Frozen BANK_DESIGN describes {1,3,4}-type examples at divergent amounts. C9 proposes replacing fixed examples with [1,4,5,6,9] at amount 8 and [1,2,4,5,6] at amount 9, plus six generated records accepted only when largest-first greedy coin count differs from the minimum-coin count | The LC518 task asks for the number of combinations, not the minimum number of coins. The D5 construction criterion uses a separate minimum-coin optimization problem to select a greedy counterexample. It can challenge a solver that wrongly substitutes a greedy/minimum-coin approach, but it is not a measurement of the combinations-count objective by itself. The C9 replacement examples are unratified and do not supersede the frozen v1.0 {1,3,4}-type wording |
+| **D6 reorder-pairs** | Invariance to the order in which denominations are supplied; the same mathematical instance is represented in two array orderings | Four canonical instances, each emitted as an original/permuted pair, for eight records total. Each pair has the same amount and sorted denomination set and differs only in coin-array order | Eight records are four canonical input cases, not eight independent mathematical challenges. The concentration count f_6 is record-based; a pair failing twice contributes two D6 failure records. C_D therefore does not itself measure order sensitivity. The earlier analysis draft proposes separate pair-level quantities, including d_order_inconsistent, and explicitly requires pair dependence to be disclosed; that draft is not a frozen analysis authority |
+| **D7 wide-n** | Large numbers of denominations, with moderate target amounts; intended to challenge handling and iteration over wide coin arrays | n in [50,300], amount in [50,500] in BANK_DESIGN | It identifies input scale in n. It does not, by itself, establish a runtime or memory stress test, because no execution budget or resource-failure protocol is supplied by this bank definition |
+| **D8 large-amount** | Large target amounts with a smaller denomination set; intended to challenge handling and iteration over the amount dimension | Amount in [2000,5000], n in [3,30] in BANK_DESIGN | It identifies input scale in amount. It does not, by itself, establish a measured runtime, memory, or complexity outcome |
+
+#### 5.6.3 The categories are assigned strata, not mutually exclusive scientific properties
+
+The bank uses D1–D8 as **record-assignment labels**. This is different from claiming that their underlying input properties are mutually exclusive.
+
+A particular input can possess multiple properties: an exact-match input can also be near a boundary; an unreachable input can also have parity/GCD structure; a high-amount input can also be unreachable. The generator's stratum/rule_id assigns the record to one construction category. That single assigned label does not mean the record lacks other mathematical properties.
+
+Consequences for interpretation:
+
+1. The eight strata are not eight disjoint failure mechanisms.
+2. Equal record counts do not prove equal numbers of independent challenge opportunities.
+3. The same underlying algorithmic weakness may affect multiple strata.
+4. A stratum may combine distinct mathematical subtypes, especially D3 and D4.
+5. The maximum-share statistic discards the identity of the dominant stratum, even though the strata have different input meanings.
+
+The earlier design's eight-record balance is a design fact, not evidence that the categories have equal causal importance, equal difficulty, equal independent exposure, or equal relevance to held-out correctness.
+
+#### 5.6.4 Mutation/operator mapping: no actual mapping can be asserted
+
+The bank strata above describe **inputs**. They do not define source-code mutations.
+
+The current population-design v0.21 says explicitly that no mutation mechanism has been selected or assigned. Its §4 defines what a future operator-class record q must contain: transformation semantics, AST structure, operand roles/types, control-flow effects, read/write footprint, preconditions/postconditions, invariants, and permitted realization fields. That is a required schema, not a catalogue of selected operators.
+
+The November 10 allocation review reports that, within the five reviewed November 6 conversation PDFs:
+- no named candidate from the intended eight-mechanism taxonomy was identified;
+- no M01–M08 or M1–M8 definitions were found;
+- no pair-to-parent assignment was found;
+- no per-pair SA/SB orientation or repeated-pair identity was established; and
+- the later correction in Part 8 says the allocation's status is unknown and the standalone annex's existence is unproven.
+
+Therefore the mutation column for every D stratum is:
+
+| Diagnostic stratum | Actual selected mutation/operator class q | Parent/pair allocation | Status |
+|---|---|---|---|
+| D1 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D2 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D3 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D4 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D5 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D6 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D7 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+| D8 | Not specified in the current v0.21 record | Not established | OPEN / NOT ESTABLISHED |
+
+It would be invalid to infer D1 → boundary mutation, D2 → exact-match mutation, and so on. Those would be invented mappings. A mutation may affect several input strata, and a stratum may be sensitive to multiple mutation classes. The valid mapping must be derived from each actually selected operator's source-level preconditions/effects and the input properties in the authoritative bank. That cannot be done until an owner-authorized, versioned q catalogue and allocation exist.
+
+#### 5.6.5 Stage 2 verdict
+
+The documentary question “what were D1–D8 intended to represent in the earlier frozen BANK_DESIGN v1.0?” is **RESOLVED** by the table in §5.6.2.
+
+The wider question “are those exact strata the binding diagnostic design for population-design v0.21?” remains **OPEN**, because v0.21 does not explicitly incorporate BANK_DESIGN v1.0 or enumerate the D1–D8 rules.
+
+The question “which actual mutation classes are intended to generate the D1–D8 patterns?” remains **BLOCKED / NOT ESTABLISHED**, because no mutation classes have been selected in v0.21 and the reviewed November 6 allocation does not establish names or assignments.
+
+Accordingly:
+
+- **Stage 2 is no longer an unanswered list of questions:** the earlier design's input meanings, mathematical construction logic, and interpretation limits are now documented.
+- **Stage 2 is not a current-design PASS:** its applicability to v0.21 and the operator-to-stratum mapping remain unresolved.
+- **Gate 0 cannot close on this result alone.** The current bank-authority conflict, mutation specification gap, diagnostic-to-held-out transport, measurement validity, and literature boundary remain separate gates.
+
+### 5.7 Evidence required to close the remaining Stage 2 items
+
+| Remaining item | Evidence that would close it | Failure / stop condition |
+|---|---|---|
+| Does v0.21 use these exact D1–D8 definitions? | An accepted, versioned v0.21-linked diagnostic-bank specification or explicit amendment citing the exact BANK_DESIGN revision/blob and current bank manifest hashes | No cross-reference, conflicting rule set, or post-outcome changes to category membership |
+| Are the strata assigned reproducibly? | Authoritative diagnostic manifest with each record's exact stratum, rule_id, canonical identity, rule parameters, and a deterministic reconstruction/validation record | Missing records, duplicate or ambiguous membership, outcome-informed classification, or inability to reproduce the stratum assignment |
+| Is the D6 dependence correctly represented? | Pair manifest identifying four canonical IDs, original/permutation roles, shared amount and denomination set, and pair-level outcome definitions | Treating eight D6 rows as eight independent instances, or using C_D alone to claim order sensitivity |
+| What mutations correspond to these challenge properties? | Owner-authorized operator-class catalogue with complete q fingerprints, preconditions/effects, selected parent/source identities, and a predeclared operator-to-input-property mapping reviewed before any diagnostic outcomes | Missing definitions, reconstruction from aggregate allocation arithmetic, or mapping chosen after viewing outcomes |
+| Do the proposed mutations actually expose the intended behaviour? | This requires a later, separately authorized empirical validation design with frozen source/inputs and an independent outcome oracle | No execution evidence; or a claimed effect that does not follow from the operator semantics and declared input conditions |
+
+The last row is deliberately not a Gate 0 documentary result. It identifies a future evidence requirement and does not authorize the required execution.
 
 ## 6. Step 2 — Establish what the mutation/operator design changes
 
@@ -708,6 +809,7 @@ The following records were retrieved from the repository. Branch and blob identi
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
+| lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
 | reviews/AI_REVIEW_2026-11-10_MUTATION_ALLOCATION_SEARCH.md | master | 51bff158b28da12d005675b29545274c582fc1f8 | Bounded review of five supplied conversation PDFs; complete allocation not established within reviewed scope |
 | engineered-study/09_CONCENTRATION_MATHEMATICAL_SPEC.md | research/concentration-math-spec | 9da18a096ef6ae9c53fa96fe85121c7727cd9dac | Historical six-family parenthesis-task math-only document; not the current eight-stratum Coin Change task |
@@ -737,7 +839,7 @@ The first substantive review should concentrate on Step 0 and Step 1:
 - What is the current authoritative held-out population, and how does it relate to the earlier 80-record design?
 - Do the current input categories have a defensible scientific interpretation?
 
-Only after those are resolved should review proceed to the mutation/operator mapping and diagnostic-to-held-out property crosswalk.
+The documentary meaning of D1–D8 in the earlier frozen BANK_DESIGN v1.0 is now adjudicated in §5.6. The first review should challenge that adjudication, especially D4's mixed parity/GCD structure, D5's use of a minimum-coin criterion for a combinations-count task, and D6's paired-record dependence. It must then resolve whether v0.21 actually adopts that older bank version. The mutation-to-stratum map remains blocked until real operator classes are authoritatively specified; no mapping may be invented from the stratum names.
 
 **Current status: DRAFT FOR REVIEW. Gate 0 remains OPEN. Project pause unchanged.**
 
