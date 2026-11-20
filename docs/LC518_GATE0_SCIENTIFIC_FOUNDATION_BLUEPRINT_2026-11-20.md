@@ -396,7 +396,7 @@ Under the earlier record-level definition, the contributions of one D6 pair to f
 | FAIL | PASS | 1 |
 | FAIL | FAIL | 2 |
 
-A pair that fails both orderings contributes two failures even when both returned values are the same wrong integer. Such a pair has no value-based order inconsistency. A pair with one PASS and one FAIL contributes one failure and, when both return comparable exact integers, its returned values differ.
+A pair that fails both orderings contributes two failures even when both returned values are the same wrong integer. Such a pair has no value-based order inconsistency. A pair with one PASS and one FAIL contributes one failure and, when both return comparable exact integers, its returned values differ. The table lists resolved PASS/FAIL combinations only. If either member is UNRESOLVED, any definite FAIL in the pair still contributes to f_6, while the unresolved record is counted separately in k_unresolved and does not enter f_6.
 
 Therefore D6 is **record-weighted** in the current historical definition, not weighted by the number of distinct canonical mathematical inputs. Each of the four canonical inputs has two record-level opportunities to contribute to f_6. The claim must not describe C_D as a share of independent canonical challenges, and it must not claim that C_D itself measures order sensitivity. It is also too strong to say that every order-sensitive solver necessarily has inflated C_D: the precise issue is the unit of counting and the paired structure.
 
