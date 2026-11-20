@@ -1222,3 +1222,58 @@ an interpretation boundary, not a new defect, and it must accompany any eventual
   records the adjudication only. The project pause remains in force.
 - **The scientific position is unchanged:** no solver outcomes, no demonstrated predictive gain, and no
   evidence that `C_D` outperforms the predeclared competing summaries.
+
+---
+
+## 23. Roadmap addendum published; review cycle stopped (2026-11-20)
+
+**Trigger:** GPT's closing adjudication of `15cabef`. It accepted both §22 corrections, added one
+precision, and recommended publishing the dated addendum by preserving the known facts and the
+uncertainty rather than reconstructing the missing baseline.
+
+### 23.1 The tip-date precision is adopted
+
+A head whose tip commit postdates the snapshot may have been created earlier and updated, or created
+later. **Tip dates do not establish branch creation.** The post-snapshot tip table in §22.3 is therefore
+metadata only. The phrase "three additions" in §22.3 is withdrawn as a description of the set difference;
+only the count difference (60 → 63) and the current listing are factual. No added, deleted, or renamed
+head is inferred from timestamps, arithmetic, or guesses.
+
+### 23.2 The dated addendum
+
+| Property | Value |
+|---|---|
+| Branch | `docs/scientific-roadmap-audit-2026-11-18` |
+| Commit | `26cba39`, parent `874915b` |
+| File | `docs/SCIENTIFIC_ROADMAP_AUDIT_REVISION_2026-11-20.md` |
+| Blob | `3ada9099ec3b68a0c48c9ed35883b7f321baa0d2` |
+| Content SHA-256 | `e9aed65aeebd44bbffd7df6e0f2894386d06db1253a9c48646c07250eeff4847` |
+| Size | 12,583 bytes, 205 LF lines |
+
+Branch tips in the addendum are recorded as of its publication; the audit branch is shown there at
+`15cabef`, which this ledger commit advances. That does not change any B1 presence, absence, path, or blob
+finding.
+
+The revision preserves the known facts and marks the limit explicitly:
+
+- the current **63-head** listing is recorded in full (Appendix A), and was checked to match
+  `git ls-remote --heads origin` exactly at publication;
+- the 60-name baseline was never archived, so the historical added/deleted/renamed comparison is
+  **UNVERIFIED**, not reconstructed;
+- the B1 v1.7 inventory is corrected to the same path and same blob `8c666e50` on both GPT branches, absent
+  from the other four checked branches;
+- the analytical-validity closure, the §5.3 text-verification boundary, and the provenance distinction are
+  recorded;
+- no frozen record, protocol, threshold, bank, population document, or solver is altered.
+
+### 23.3 Cycle closed
+
+- The analytical-validity review cycle is **closed**. No further combinatorial revisions and no further
+  branch-history speculation.
+- The roadmap addendum was the last outstanding documentary item; it is published with its uncertainty
+  intact.
+- **No execution, fitting, sampling, solver construction, or bank access.** The project pause remains in
+  force.
+- **The scientific position is unchanged:** no solver outcomes, no demonstrated predictive gain, and no
+  evidence that `C_D` outperforms the predeclared competing summaries. The next substantive work, when
+  explicitly reopened, is Gate 0, measurement validity, and the S1 known-effect validation.
