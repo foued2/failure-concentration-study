@@ -1,9 +1,9 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.2  
+**Version:** 0.3  
 **Date:** 2026-11-20  
-**Status:** DRAFT FOR INDEPENDENT REVIEW; D1–D8 HISTORICAL SEMANTICS ADJUDICATED, CURRENT APPLICABILITY OPEN  
+**Status:** DRAFT FOR INDEPENDENT REVIEW; HISTORICAL D1–D8 SEMANTICS ADJUDICATED; CURRENT AUTHORITY AND MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
 **Scope:** Documentation-only scientific review. This is not a protocol amendment, bank specification, mutation allocation, freeze, statistical decision, or execution authorization.
@@ -273,9 +273,9 @@ The table below separates the documented input challenge from what can legitimat
 | **D1 boundary-amount** | Small and threshold-adjacent amounts relative to the smallest denomination; intended to expose boundary and off-by-one mistakes | BANK_DESIGN lists the pattern 0, 1, 2, c_min−1, c_min, c_min+1, 2c_min, 2c_min+1. C9 spells this out as the eight ordered amounts for each drawn coin set | It does not prove that every record is a distinct boundary case. For example, when c_min=1, c_min−1=0. Nor does it identify a particular source mutation or prove an off-by-one defect occurred |
 | **D2 exact-match** | A target amount exactly equals one denomination, with other denominations present as distractors; intended to test direct denomination recognition and handling of irrelevant alternatives | BANK_DESIGN: amount equals one denomination with 1–4 distractors. C9 specifies the matching coin is placed in the coin array and amount is set to that coin value | It does not establish a single “exact-match bug” or guarantee that all erroneous algorithms fail this case |
 | **D3 unreachable** | Inputs for which no valid combination exists; intended to test zero-answer and empty-result handling | BANK_DESIGN identifies two constructions. C9 specifies (i) minimum denomination greater than amount and (ii) a common denomination GCD g that does not divide the amount. Both guarantee the oracle answer is zero | This is already a heterogeneous stratum: the minimum-denomination rule and the GCD divisibility rule are different mathematical reasons for unreachability. They are not one causal defect |
-| **D4 modular-parity** | Parity and modular structure in denomination sets and target amounts | BANK_DESIGN describes all-odd denomination sets paired with even/odd amounts, plus denomination sets with GCD 2 and odd amounts. C9 proposes an explicit split: two all-odd/even-amount cases, two all-odd/odd-amount contrast cases, and four all-even-denomination cases with GCD exactly 2 and odd amount | This is not a uniform “unreachable” category. Under the C9 proposal only the GCD-2/odd-amount subgroup is guaranteed to have answer zero. The first four are parity contrasts and can be reachable. D4 therefore mixes parity contrasts with modular non-reachability and overlaps conceptually with the GCD subtype of D3 |
-| **D5 non-greedy** | Coin sets and amounts for which largest-first greedy choice does not produce a minimum-coin solution; intended to expose a greedy shortcut or misunderstanding of the task | Frozen BANK_DESIGN describes {1,3,4}-type examples at divergent amounts. C9 proposes replacing fixed examples with [1,4,5,6,9] at amount 8 and [1,2,4,5,6] at amount 9, plus six generated records accepted only when largest-first greedy coin count differs from the minimum-coin count | The LC518 task asks for the number of combinations, not the minimum number of coins. The D5 construction criterion uses a separate minimum-coin optimization problem to select a greedy counterexample. It can challenge a solver that wrongly substitutes a greedy/minimum-coin approach, but it is not a measurement of the combinations-count objective by itself. The C9 replacement examples are unratified and do not supersede the frozen v1.0 {1,3,4}-type wording |
-| **D6 reorder-pairs** | Invariance to the order in which denominations are supplied; the same mathematical instance is represented in two array orderings | Four canonical instances, each emitted as an original/permuted pair, for eight records total. Each pair has the same amount and sorted denomination set and differs only in coin-array order | Eight records are four canonical input cases, not eight independent mathematical challenges. The concentration count f_6 is record-based; a pair failing twice contributes two D6 failure records. C_D therefore does not itself measure order sensitivity. The earlier analysis draft proposes separate pair-level quantities, including d_order_inconsistent, and explicitly requires pair dependence to be disclosed; that draft is not a frozen analysis authority |
+| **D4 modular-parity** | Parity and modular structure in denomination sets and target amounts | BANK_DESIGN describes all-odd denomination sets paired with even/odd amounts, plus denomination sets with GCD 2 and odd amounts. C9 proposes three construction subtypes: (i) two all-odd/even-amount records, (ii) two all-odd/odd-amount records, and (iii) four all-even-denomination records with GCD exactly 2 and odd amount | This is not a uniform “unreachable” category. Under the unratified C9 proposal, only subtype (iii) is guaranteed to have answer zero. The first two subtypes are parity contrasts whose reachability and combination counts depend on the actual denominations and amount. A pooled f_4 count therefore combines failures from different mathematical subtypes; its value depends partly on which subtype failures occur. The category overlaps conceptually with the GCD-based unreachable subtype of D3. Retaining D4 as a composite would require a specific rationale, fixed subtype definitions and proportions before outcomes, and mandatory subtype-level reporting. The C9 proportions (2:2:4) are proposed, not current authority |
+| **D5 non-greedy** | Coin sets and amounts for which largest-first greedy choice does not produce a minimum-coin solution; intended to expose a greedy shortcut or misunderstanding of the task | Frozen BANK_DESIGN describes {1,3,4}-type examples at divergent amounts. C9 proposes replacing fixed examples with [1,4,5,6,9] at amount 8 and [1,2,4,5,6] at amount 9, plus six generated records accepted only when largest-first greedy coin count differs from the minimum-coin count | LC518 asks for the number of unbounded combinations, not the minimum number of coins. Let G be the output of the specified greedy minimum-coin strategy, M the optimal minimum-coin count, and W the correct LC518 combination count. The C9 acceptance condition G ≠ M does not establish that a solver substituting G for the LC518 answer would be wrong: that requires G ≠ W for each admitted item. The two fixed C9 examples satisfy this stronger condition: (G,M,W) = (3,2,5) for [1,4,5,6,9], amount 8, and (3,2,15) for [1,2,4,5,6], amount 9. These W values are direct counts of the unbounded denomination combinations. The six random C9 records are not shown to satisfy G ≠ W merely by the current G ≠ M filter. C9 is unratified and does not supersede the frozen v1.0 {1,3,4}-type wording |
+| **D6 reorder-pairs** | Invariance to the order in which denominations are supplied; the same mathematical instance is represented in two array orderings | Four canonical instances, each emitted as an original/permuted pair, for eight records total. Each pair has the same amount and sorted denomination set and differs only in coin-array order | Eight records are four canonical input cases, not eight independent mathematical challenges. The concentration count f_6 is record-based. Each canonical input receives two record-level opportunities to contribute: PASS/PASS contributes 0, PASS/FAIL or FAIL/PASS contributes 1, and FAIL/FAIL contributes 2, even when both failures return the same wrong value. This does not mean every order-sensitive solver has an inflated C_D. It means the failed-record share and the share of distinct canonical inputs with any failure are different quantities. C_D does not itself measure order sensitivity. The earlier analysis draft proposes separate pair-level quantities, including d_order_inconsistent, but that draft is not frozen analysis authority and does not change the record-level C_D definition |
 | **D7 wide-n** | Large numbers of denominations, with moderate target amounts; intended to challenge handling and iteration over wide coin arrays | n in [50,300], amount in [50,500] in BANK_DESIGN | It identifies input scale in n. It does not, by itself, establish a runtime or memory stress test, because no execution budget or resource-failure protocol is supplied by this bank definition |
 | **D8 large-amount** | Large target amounts with a smaller denomination set; intended to challenge handling and iteration over the amount dimension | Amount in [2000,5000], n in [3,30] in BANK_DESIGN | It identifies input scale in amount. It does not, by itself, establish a measured runtime, memory, or complexity outcome |
 
@@ -337,6 +337,85 @@ Accordingly:
 - **Stage 2 is not a current-design PASS:** its applicability to v0.21 and the operator-to-stratum mapping remain unresolved.
 - **Gate 0 cannot close on this result alone.** The current bank-authority conflict, mutation specification gap, diagnostic-to-held-out transport, measurement validity, and literature boundary remain separate gates.
 
+
+#### 5.6.6 Cross-review adjudication of authority, D4, D5 and D6 (2026-11-20)
+
+This subsection records the points on which the GPT adjudication and the subsequent Claude critique/convergence supplied in this conversation agree. Claude corrected its earlier overstatement that D6 necessarily inflates concentration for every order-sensitive solver; GPT's narrower record-weighting formulation was accepted. This is a documentation-level convergence record, **not a formal joint sign-off**, not an owner ratification of a bank design, and not an amendment to B1 v1.7, BANK_DESIGN v1.0, C9 rev 2.6, or population-design v0.21.
+
+**A. Authority: agreement and closure condition**
+
+The current v0.21 design has no established controlling D1–D8 construction specification. BANK_DESIGN v1.0 is frozen for the earlier 150-body package, but its applicability to v0.21 has not been established. C9 rev 2.6 is a detailed proposal whose own status says it is not owner-ratified or frozen and does not modify v1.0. The review-only analysis draft cannot confer authority. The fact that v0.21 refers to eight strata does not prove that it adopts the identity, membership rules, record allocations, or paired structure of the earlier eight strata.
+
+Closure requires an owner-authorized, versioned source decision that:
+1. names the exact adopted diagnostic specification, revision, repository path and immutable blob identity;
+2. states whether C9 rev 2.6 is adopted, rejected, or only partly adopted, with each changed rule identified;
+3. identifies the authoritative diagnostic manifest and its hash, including record IDs, assigned stratum, rule IDs, canonical IDs, subtype labels/parameters, and D6 pair identities;
+4. reconciles the diagnostic specification with the applicable B1 analysis plan and the evaluation-target version; and
+5. records any required B1 amendment and its separate review/acceptance status.
+
+Until this is done, the eight-stratum object over which C_D would be calculated is not fully specified for v0.21. No diagnostic outcome should be counted or interpreted as current-design evidence on the basis of an assumed v1.0/C9 mixture.
+
+**B. D4: a composite is possible, but it is not yet justified or adopted**
+
+The proposed C9 construction contains three subtypes, with proposed record counts 2, 2 and 4:
+- all-odd denominations with an even target amount (2 records);
+- all-odd denominations with an odd target amount (2 records); and
+- all-even denominations with GCD exactly 2 and an odd target amount (4 records).
+
+Only the third subtype guarantees an oracle answer of zero. The first two are parity contrasts, for which reachability and the number of combinations depend on the actual denominations and amount. The resulting pooled f_4 can therefore be driven by failures in one subtype and cannot, by itself, reveal which subtype contributed those failures.
+
+The reviews agree that D4 **may** be retained as a deliberately composite category only if the design supplies a specific scientific rationale for combining these different input properties, fixes all subtype definitions and their proportions before any outcomes, and requires subtype-level counts and results to be reported alongside any pooled f_4 or C_D result. Subtype reporting is necessary but does not, by itself, establish that pooling is scientifically justified.
+
+No choice has been made to retain the composite or split it. Splitting the three proposed subtypes would change the stratum count from eight to ten unless other strata were also redesigned. A split or any altered weighting would require an explicit versioned diagnostic-design decision and reconciliation with the analysis plan; it must not be introduced as an editorial change. The proposed 2:2:4 allocation is C9 text, not current authority.
+
+**C. D5: validate against the LC518 objective, not only the auxiliary minimum-coin objective**
+
+Define:
+- G = output of the specifically declared largest-first greedy minimum-coin strategy;
+- M = optimal minimum-coin count;
+- W = correct LC518 unbounded-combination count.
+
+The current C9 random-record filter G ≠ M establishes a greedy-versus-optimal minimum-coin counterexample. It does not establish that the greedy result would be wrong when substituted for the LC518 combination-count answer. For a D5 item intended to detect a solver that returns the greedy minimum-coin count in place of the combination count, the item-level validity condition must include **G ≠ W**, and the precise greedy strategy must be specified. G ≠ M alone is insufficient.
+
+For the two fixed C9 examples, direct enumeration gives:
+- coins [1,4,5,6,9], amount 8: G = 3, M = 2, W = 5;
+- coins [1,2,4,5,6], amount 9: G = 3, M = 2, W = 15.
+
+Both fixed examples therefore distinguish the specified greedy output from the LC518 answer. This verification does not establish G ≠ W for C9's six random records, nor does it ratify C9. A valid future D5 specification must provide W and the relevant G for every admitted record, with the acceptance condition checked before outcomes. It must also state whether the intended construct is specifically failure from substituting greedy minimum-coin output, rather than claiming to measure all possible misunderstandings of combination counting.
+
+D5 failures remain genuine LC518 failures because outcomes are scored against W. The threat is to the interpretation of the diagnostic category and the concentration result, not to the oracle's definition of FAIL. Without the item-level relationship to W, a D5-dominated concentration result would be difficult to interpret as evidence about the intended diagnostic construct.
+
+**D. D6: record weighting is explicit; the intended measurement unit is not decided**
+
+Under the earlier record-level definition, the contributions of one D6 pair to f_6 are:
+
+| Original | Permutation | Contribution to f_6 |
+|---|---|---:|
+| PASS | PASS | 0 |
+| PASS | FAIL | 1 |
+| FAIL | PASS | 1 |
+| FAIL | FAIL | 2 |
+
+A pair that fails both orderings contributes two failures even when both returned values are the same wrong integer. Such a pair has no value-based order inconsistency. A pair with one PASS and one FAIL contributes one failure and, when both return comparable exact integers, its returned values differ.
+
+Therefore D6 is **record-weighted** in the current historical definition, not weighted by the number of distinct canonical mathematical inputs. Each of the four canonical inputs has two record-level opportunities to contribute to f_6. The claim must not describe C_D as a share of independent canonical challenges, and it must not claim that C_D itself measures order sensitivity. It is also too strong to say that every order-sensitive solver necessarily has inflated C_D: the precise issue is the unit of counting and the paired structure.
+
+The review-only analysis draft defines separate pair-level order features (d_order_pairs_resolved, d_order_pairs_comparable, and d_order_inconsistent). These can describe pair behaviour, but they do not modify the record-level f_6 or C_D. In that draft, d_order_inconsistent is value-based: it counts comparable pairs whose returned exact-integer values differ. Two identical wrong integers are consistent under this definition. These features are not accepted/frozen analysis authority.
+
+No decision has been made between retaining record-level D6 in C_D and redesigning the measurement around canonical pairs. Retaining record-level scoring requires an explicit claim about record weighting and mandatory separate pair-level reporting. Pair-weighting or replacing f_6 would change C_D's definition and requires a formally reviewed B1 amendment before it can be used.
+
+#### 5.6.7 Required closure order
+
+The review convergence establishes the following order. It does not authorize skipping a gate or choosing a design option by default.
+
+1. **Resolve authority first.** Identify and ratify the exact D1–D8 specification and diagnostic manifest applicable to v0.21, and reconcile it with B1 and the evaluation target.
+2. **Adjudicate D4 against that adopted specification.** Either justify a fixed composite with explicit subtype definitions/proportions and mandatory subtype reporting, or adopt a separately reviewed split/redesign. Do not assume C9's proposed 2:2:4 allocation is binding.
+3. **Adjudicate D5 against the actual LC518 objective.** Specify the greedy strategy, calculate G and W for every candidate item, and require G ≠ W for items intended to expose substitution of greedy minimum-coin output. G ≠ M alone is not enough.
+4. **Adjudicate D6's measurement unit.** State whether C_D counts records or canonical pairs. If record-based, preserve the record-level formula and describe its unit honestly, with pair-level order analysis reported separately. If pair-based, submit and review a formal analysis-plan amendment before using the changed statistic.
+5. **Only then finalize** the current diagnostic dictionary, subtype and pair manifests, and the property-level diagnostic-to-held-out crosswalk. No outcome collection or interpretation precedes these documentary and authority decisions.
+
+This ordering is a review plan only. It does not reopen the paused project, authorize bank access or generation, or permit solver construction, modification, compilation, execution, diagnostics, model fitting, simulation, sampling, or power analysis.
+
 ### 5.7 Evidence required to close the remaining Stage 2 items
 
 | Remaining item | Evidence that would close it | Failure / stop condition |
@@ -344,6 +423,9 @@ Accordingly:
 | Does v0.21 use these exact D1–D8 definitions? | An accepted, versioned v0.21-linked diagnostic-bank specification or explicit amendment citing the exact BANK_DESIGN revision/blob and current bank manifest hashes | No cross-reference, conflicting rule set, or post-outcome changes to category membership |
 | Are the strata assigned reproducibly? | Authoritative diagnostic manifest with each record's exact stratum, rule_id, canonical identity, rule parameters, and a deterministic reconstruction/validation record | Missing records, duplicate or ambiguous membership, outcome-informed classification, or inability to reproduce the stratum assignment |
 | Is the D6 dependence correctly represented? | Pair manifest identifying four canonical IDs, original/permutation roles, shared amount and denomination set, and pair-level outcome definitions | Treating eight D6 rows as eight independent instances, or using C_D alone to claim order sensitivity |
+| Is D4's composite interpretation defensible? | Adopted specification with explicit subtype labels/rules/proportions fixed pre-outcome, a rationale for pooling distinct parity/reachability properties, and mandatory subtype-level reporting; or a separately reviewed split/redesign | Pooled f_4 with no subtype identity/proportions, post-outcome reweighting, or treating the composite as one homogeneous challenge without justification |
+| Does D5 test the intended LC518-related challenge? | Per-item oracle combination count W, fully specified greedy output G, and pre-outcome verification of G ≠ W for every item intended to detect greedy-output substitution | Relying only on G ≠ M, omitting the actual combination-count answer, or claiming the category measures combination-count correctness more broadly than its validated construction supports |
+| Is D6's unit of analysis explicit? | Explicit decision that C_D is record-weighted or an approved B1 amendment defining a pair-weighted alternative; if record-weighted, separate pair-level outcome summaries | Calling record-level C_D a share of independent canonical inputs, claiming C_D measures order sensitivity, or changing f_6 without B1 amendment |
 | What mutations correspond to these challenge properties? | Owner-authorized operator-class catalogue with complete q fingerprints, preconditions/effects, selected parent/source identities, and a predeclared operator-to-input-property mapping reviewed before any diagnostic outcomes | Missing definitions, reconstruction from aggregate allocation arithmetic, or mapping chosen after viewing outcomes |
 | Do the proposed mutations actually expose the intended behaviour? | This requires a later, separately authorized empirical validation design with frozen source/inputs and an independent outcome oracle | No execution evidence; or a claimed effect that does not follow from the operator semantics and declared input conditions |
 
@@ -829,18 +911,18 @@ These are relevant motivation and limitation sources. Their measurement units an
 
 ## 16. Review disposition
 
-This document is a blueprint for critique. It does not resolve the open questions above and must not be marked accepted merely because the sequence is comprehensive.
+This document remains a blueprint for critique and is not accepted merely because the cross-review has converged on several findings. The convergence recorded in §5.6.6 is technical agreement on the identified issues and closure conditions, not a formal joint sign-off or owner ratification.
 
-The first substantive review should concentrate on Step 0 and Step 1:
+The next review work is ordered, not open-ended:
 
-- Is the earlier D1–D8 bank design still authoritative?
-- Are the diagnostic record assignments and D6 dependence represented correctly?
-- Does the later v0.21/B1 target use the same diagnostic bank?
-- What is the current authoritative held-out population, and how does it relate to the earlier 80-record design?
-- Do the current input categories have a defensible scientific interpretation?
+1. Resolve the current source-authority question by identifying the exact diagnostic specification and manifest that v0.21 is to use.
+2. Adjudicate D4 against that adopted source: a composite is possible only with a specific rationale, fixed pre-outcome subtype definitions/proportions, and mandatory subtype reporting; otherwise a separately reviewed redesign is required.
+3. Adjudicate D5 using the actual LC518 combinations-count answer W. For a greedy-substitution probe, G ≠ W must be checked per item; G ≠ M alone is inadequate.
+4. Decide whether D6 contributes to C_D as records or canonical pairs. The historical formula is record-weighted; pair-level measures are separate and do not silently change it.
+5. Complete the diagnostic-to-held-out property crosswalk only after the controlling diagnostic and evaluation sources are established.
 
-The documentary meaning of D1–D8 in the earlier frozen BANK_DESIGN v1.0 is now adjudicated in §5.6. The first review should challenge that adjudication, especially D4's mixed parity/GCD structure, D5's use of a minimum-coin criterion for a combinations-count task, and D6's paired-record dependence. It must then resolve whether v0.21 actually adopts that older bank version. The mutation-to-stratum map remains blocked until real operator classes are authoritatively specified; no mapping may be invented from the stratum names.
+The mutation-to-stratum map remains blocked until actual operator classes are authoritatively specified. No mapping may be invented from stratum names. The exact closure evidence and stop conditions are in §§5.6.6–5.7.
 
-**Current status: DRAFT FOR REVIEW. Gate 0 remains OPEN. Project pause unchanged.**
+**Current status: DRAFT FOR INDEPENDENT REVIEW. Current measurement design is NOT ACCEPTED; Gate 0 remains OPEN. Project pause unchanged.**
 
 **End of blueprint.**
