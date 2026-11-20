@@ -298,70 +298,139 @@ the fuller evaluation on three systems with the quantified finding. So 2015 take
 observation and the SQJ paper remains the closest *evidence*. Neither tests `P`, and adding row 8a does not
 change §8.
 
-### 9.2 The ≥60 % figure is now verified at the publisher abstract
+### 9.2 The ≥60 % finding: publisher abstract and full-text qualification
 
-The earlier round had not verified it. It is verified as of 2026-11-20 against the publisher abstract
-(Crossref record `10.1007/s11219-016-9339-1`, CC-BY, issue 25(3):803–840, online 2016-10-03):
+The publisher abstract for Almaghairbe & Roper's *Software Quality Journal* paper
+(DOI [10.1007/s11219-016-9339-1](https://doi.org/10.1007/s11219-016-9339-1), issue 25(3):803–840;
+published online 2016-10-03) states that, **in many cases**, small clusters were composed of at least
+60 % failures, and often more. That wording is essential. It is a cluster-composition observation for
+some system/configuration combinations, not a universal rate, not a population estimate, and not a
+prediction of held-out correctness.
 
-> "Evaluation on three systems with a range of faults demonstrates this hypothesis to be valid — in many
-> cases small clusters were composed of at least 60 % failures (and often more)."
+The full text was also checked from the authors' institutional repository copy. It documents substantial
+heterogeneity across systems, program versions, and clustering configurations:
 
-Row 8's wording therefore stands, with one qualifier: the figure is a cluster-composition observation
-("in many cases"), not a distributional estimate and not a predictor. It does not license "failures are
-usually concentrated", and it says nothing about held-out correctness. The other figures Claude lists
-(Wu 2004, Herzig 2014, Anand 2015, Sundell, Xiong 56.3 %, Tian AUC 0.557–0.718) remain abstract-level; this
-amendment does not promote them to verified findings.
+- In §6.2, for the reported Sed small-cluster analysis, the small-cluster failure density does **not**
+  reach 50 %; its maximum is just above 40 % under complete linkage with an average cluster size of
+  approximately three.
+- NanoXML version 3 is a direct counterexample to a universal small-cluster claim: the paper reports
+  that its largest clusters contained most of the failures.
+- Other sections report different quantities, including the proportion of all failures captured by
+  small clusters (for example, three of four Sed failures in a particular analysis, and a later
+  statement that 75 % of Sed failures lay in about 16 % of results). Those are *failure-capture* or
+  concentration measures, not the same denominator as the percentage of failures **within** small
+  clusters. They must not be merged into the ≥60 % cluster-density result.
 
-### 9.3 Challenge 1 — within-cell support: accepted, with one correction and one ceiling
+Accordingly, row 8 remains a real and close precedent, but its result must be described as
+configuration-dependent and heterogeneous. The paper supports the proposition that failure
+concentrations can occur in clusters; it does not support "failures are usually concentrated in small
+clusters", much less the B1 predictive proposition P. The separate ISSRE 2016 semi-supervised
+classification paper remains a different work and is not the source of the ≥60 % result.
 
-Claude's statement: the exact cell already fixes the failure total and the unresolved count, so the only
-information `C_D` can add is the ordering of the within-cell configuration.
+The 2015 AST precursor in row 8a remains the earlier preliminary observation on two systems. The 2017
+SQJ article is the fuller three-system evaluation. Neither tests P.
 
-- **Correction.** `C_D` is invariant to permuting stratum labels (dominance document §2). It does not see
-  the ordering at all. Within a fixed-`k` cell, `C_D = M/k` with `M = max_j f_j`, so the only thing that can
-  vary is the *size of the largest part*. The added information is "how large is the largest part", never
-  "which stratum holds it". A claim that `C_D` localises failures to a stratum is a different claim and
-  would require reallocating inputs, not permuting labels.
-- **Ceiling.** With eight strata of capacity eight, `M ∈ {⌈k/8⌉, …, min(8,k)}`, so any cell admits at most
-  eight distinct `M`, hence at most eight distinct `C_D`. The distinct-`C_D` column of the §4.1 table is
-  that ceiling (seven values for `9 ≤ k ≤ 16`). The realized count can only be lower. That is the
-  resolution of the exposure B1 tests: a one-parameter feature with at most eight levels.
-- **Already frozen as a design condition.** B1 v1.7 §3 item 3 makes a cell contribute only when
-  `G_c^train ≥ 2`, `D_c^train ≥ 2`, and `W_{C,c}^train = Σ_v (C_D(v) − C̄_D,c)^2 > 0`; §3 item 4 requires
-  coverage tables, exclusion reasons, and per-parent reporting. `W > 0` *is* "at least two distinct `C_D`
-  in the cell". Claude's requirement is therefore not a missing design element; it is a census that has
-  not been run.
-- **Not computed here.** The census needs the LC518 diagnostic tables, which are not in this tree, and the
-  pause forbids bank access. It is computable from the design and the `C_D` configuration alone: no
-  outcome, no fit, no solver.
+### 9.3 Challenge 1 — within-cell support and exposure-basis arithmetic
 
-**Pre-registered census (first Gate 1 action, on reopening).** Group versions by exact cell `(q, Z, k, ℓ)`.
-Per cell report: version count, parent count, `G_c`, `D_c`, distinct `M`, distinct `C_D`, and
-`W_{C,c}`. Then report (a) the cells with ≥2 distinct `C_D`; (b) the versions and parents they cover;
-(c) the cells where every version shares `M`; (d) the fraction of the 78-record estimand carried by (b).
-**Stop rule:** if no cell has ≥2 distinct `C_D` with ≥2 parents, the within-cell permutation is degenerate
-and Gate 1 fails before fitting. That outcome is reported as a design failure, never as a negative result
-about concentration.
+Claude's underlying concern is accepted: the exact cell fixes total definite failures and unresolved
+counts, so the possible within-cell contribution of C_D must be described accurately and its realised
+support audited before any predictive fit.
 
-### 9.4 Challenge 2 — power and MDE: the gap is real but not empty
+**What varies.** Within a fixed-k cell, let M = max_j f_j. Then C_D = M/k. C_D is invariant to
+permuting stratum labels. It records only the *size* of the largest failure count, not which diagnostic
+stratum contains that count. It therefore cannot identify a named failure mechanism or localise failures
+to a semantic stratum. Such a claim would require a different analysis of the stratum-labelled vector.
 
-GPT's memo carries no MDE, and Claude is right that this matters before a parent count is argued. Three
-facts, kept separate:
+**Record-level support bound.** On the record-level exposure basis, R = (8,8,8,8,8,8,8,8). Therefore
+M is in {ceil(k/8), …, min(8,k)}. There are at most eight attainable M values, hence at most eight
+distinct C_D values at any fixed k. For 9 ≤ k ≤ 16, the record-level upper bound is seven distinct
+values. This is a record-level result only.
 
-1. The record already contains illustrative MDE arithmetic (`claude-keys-verification-2026-11-18.md` §3):
-   `MDE₈₀ ≈ 2.802 · σ_u / (sd(C) · √J)`. At `J = 30` it gives 0.10–0.41 nats on the two larger assumed
-   `σ_u` rows (0.04 nats on the smallest), and the favourable row needs ≈150 units. **Both inputs are
-   assumed; neither `σ_u` nor `sd(C)` is estimated anywhere.** The table shows the size of the hole, not a
-   design input.
-2. The LC518 bank disclaims power explicitly: its sizes are for structural coverage, not statistical
-   power, and "previous power figures remain invalidated".
-3. No empirically grounded MDE therefore exists. GPT's rejection of the 150-variant programme is correct
-   on Gate 0 and on measurement, but incomplete as written: the statistical reason is the missing variance
-   source, not a computed power figure for B1.
+**Canonical-level support is not identical.** On the canonical basis, R = (8,8,8,8,8,4,8,8): the
+sixth stratum has capacity four. M is still at most eight, so the ceiling of at most eight distinct
+C_D values survives. But the exact attainable set is not given by the record-level formula above.
+For a concrete distinction at k = 54:
 
-Adopted as a Gate 0 exit condition: before any parent count is argued, state the target effect, the
-variance source, and the resulting `J`. No such `J` is currently justified anywhere in the record, and the
-`J` grid in the S1 specification is a calibration dimension only.
+- With record-level capacities, M = 7 is feasible, for example
+  (7,7,7,7,7,7,7,5), whose entries sum to 54.
+- With canonical capacities, if M were at most 7, the total could be no larger than
+  4 + 7×7 = 53. Therefore M = 7 is impossible at k = 54; the canonical vector must have M = 8.
+
+This is not a relabelling of one vector. The two exposure bases define different failure-count vectors
+and different C_D measurements. Canonical C_D must be recomputed from the canonical failure vector;
+it must never be obtained by averaging or selecting paired record-level values. The ≤8 distinct-value
+ceiling holds for both bases, but the record-level attainable-set formula must not be presented as the
+canonical attainable set.
+
+**What B1 v1.7 actually requires.** The full-population B1 cell eligibility rule is
+B1(c)=1 only when k ≥ 2, G_c ≥ 3 distinct parents, and D_c ≥ 2 distinct C_D values. This is distinct
+from the LOPO training-fold estimability rule: in each fold-cell, G_c^train ≥ 2,
+D_c^train ≥ 2, and W_C,c^train > 0. The earlier stop rule in this amendment, which used only
+two parents, was too weak: two parents do not satisfy the full-population eligibility rule. Nor is
+checking only that some cell has two C_D values enough. B1 requires the complete design-only audit,
+including all eligible and excluded cells, scored and excluded fold-cells, scored parents, and exact
+test-row sets per fold.
+
+**Pre-registered design-only support census (first Gate 1 action, only after explicit reopening).**
+For each exposure basis separately, recompute from its own diagnostic failure vectors:
+
+1. Full-population cell counts and decisions for every exact B1 cell (q, Z, k, ℓ): version count,
+   distinct-parent count G_c, distinct-C_D count D_c, distinct M and C_D values, and W_C.
+   Explicitly record eligible cells (k ≥ 2, G_c ≥ 3, D_c ≥ 2) and every excluded cell with its reason.
+2. For every LOPO fold and every cell, G_c^train, D_c^train, W_C,c^train, and the scored/excluded
+   decision with its reason.
+3. The scored-parent membership, the exact scored test-row identifiers per fold, total scored rows,
+   and parent/row coverage. Report all exclusions; do not silently pool cells or drop parents.
+4. The record-level and canonical-level audits side by side, without averaging their C_D values or
+   treating one basis's support decisions as the other's.
+
+**Stop/interpretation rule.** If no full-population cell satisfies k ≥ 2, G_c ≥ 3, and D_c ≥ 2,
+there is no B1 primary sample with the required cell support and no model fitting is permitted.
+If eligible cells exist but no LOPO fold supplies the required training support or no parent/test rows
+remain scoreable, report the exact support failure and stop before fitting. If some parents are scoreable,
+report the complete coverage and exclusions. B1 does not currently specify a minimum acceptable
+overall |G_score| threshold; this audit must not invent one. Coverage adequacy therefore remains an
+explicit unresolved design decision, not an automatic PASS from finding one eligible cell.
+
+This census is design-only: it uses diagnostic/design quantities, never outcomes or fitted models. It
+has not been run because it requires the LC518 diagnostic tables and the pause prohibits bank access.
+No result is implied.
+
+### 9.4 Challenge 2 — power and MDE belong to Gate 4, not Gate 0
+
+The earlier amendment correctly noted that no empirically grounded MDE exists, but incorrectly made
+that absence a Gate 0 exit condition. This is corrected.
+
+The repository's illustrative expression
+MDE_80 ≈ 2.802 · σ_u / (sd(C) · sqrt(J))
+and its numerical examples are an approximation for a simplified cluster-level covariate setting.
+The displayed inputs were assumed, not estimated. The calculation is not an MDE for B1 v1.7.
+
+B1 is structurally different: C_D is a version-level exposure nested within parent groups; multiple
+variants belong to each parent; the outcome is record-level Y_{v,r} across 78 bank records per version;
+evaluation is leave-one-parent-out; and the test conditions on exact cells and design-only fold-support
+decisions. Its operating characteristics depend on within- and between-parent exposure variation,
+parent and record dependence, cell support, fold-level estimability, the scored-parent set, and the
+frozen conditional-randomization/fitting pipeline. The simple expression above does not represent
+those dependencies.
+
+Consequently, the illustrative numbers must not be used to claim that 30 parents are inadequate, that
+150 variants are required, or that 150 would be adequate. No such conclusion follows from that formula.
+The 30-parent × 5-variant arrangement remains a logistics scenario, not an accepted operating sample
+size or execution GO. The LC518 bank's statement that structural coverage is not a power calculation
+also remains binding.
+
+A defensible power/MDE or operating-characteristic assessment belongs to Gate 4. It would have to
+simulate the actual frozen B1 pipeline under declared null and non-null data-generating processes,
+including parent nesting, record outcomes, the actual within-cell C_D variation, full-population
+eligibility, each LOPO fold's support rule, and the full scored-parent coverage. No such assessment has
+been run or validated. S1 known-gain calibration is also a Gate 4 validation task, not literature evidence
+for Gate 0.
+
+**Gate 0 does not require an MDE or a chosen parent count.** Gate 0 closes on the scoping-review
+deliverable: a sufficiently documented evidence matrix and citation process, a precise candidate
+contribution statement, comparison with the closest prior work, and a fixed inferential scope. It
+cannot close by treating a failed search as evidence of novelty.
 
 ### 9.5 Challenge 3 — "no exact match" is not closure: already the record's position
 
@@ -375,6 +444,56 @@ variance source, and the resulting `J`. No such `J` is currently justified anywh
 
 ### 9.6 Citation hygiene
 
-The favicon links and the stray "ES" in GPT's message are chat-interface artifacts, not record content;
-§4 and §6 carry DOI-verified citations only. Claude's venue and year checks agree with Crossref on both
-Almaghairbe papers. No row of §4 is corrected by this amendment other than the addition of row 8a.
+The favicon links and the stray "ES" in GPT's message are chat-interface artifacts, not record content.
+Bibliographic identifiers are separated from content-verification level in §9.7. DOI resolution or a
+publisher record verifies identity and metadata; it does not mean that the full paper was read. The new
+entries below preserve that distinction.
+
+### 9.7 Evidence-matrix additions and verification levels
+
+These are dated additions to the review matrix, not retroactive renumbering of the §4 table. They broaden
+the set of relevant precedents and make the verification boundary explicit. A bibliographic record or
+abstract is not silently promoted to a full-text review.
+
+| Register ID | Work and DOI | What it establishes | What it pre-empts | What it does not pre-empt | Verification level |
+|---|---|---|---|---|---|
+| 8b | Dickinson, Leon & Podgurski (2001), “Pursuing Failure: The Distribution of Program Failures in a Profile Space,” ESEC/FSE-9, pp. 246–255. [10.1145/503209.503243](https://doi.org/10.1145/503209.503243) | Failure executions can occupy unusual/sparse regions of an execution-profile space; the paper motivates failure-pursuit sampling from profile-space structure. | Clustering and geometric/profile-space structure of program failures as a new general idea. | A prespecified diagnostic-input partition, a maximum-share scalar, exact-cell incremental prediction, or parent-grouped evaluation. | Bibliographic record and abstract-level description checked; full text not reviewed in this pass. |
+| 8c | Wu et al. (2004), “A Statistical Model to Locate Faults at Input Level,” ASE 2004. [10.1109/ASE.2004.1342745](https://doi.org/10.1109/ASE.2004.1342745) | Uses success/failure patterns to locate faults at input level; the abstract reports five programs and 17 experiments, with mean precision 0.803 and recall 0.697. | Statistical use of input-level failure patterns for fault localisation. | Prediction of held-out solver-version record correctness, C_D, or incremental value beyond the B1 exact-cell baseline. | Bibliographic record and abstract checked; full text not reviewed in this pass. |
+| 15 | Herzig (2014), “Using Pre-Release Test Failures to Build Early Post-Release Defect Prediction Models,” ISSRE 2014, pp. 300–311. [10.1109/ISSRE.2014.21](https://doi.org/10.1109/ISSRE.2014.21) | Test-execution metrics, including sequences/bursts of quality-gate failures, are used to predict pre- and post-release defect counts for code artifacts in the Windows 8 development setting. The study is explicitly exploratory. | Use of development-time test-failure metrics as predictors of later software defect outcomes. | Record-level correctness prediction for solver variants, the eight fixed diagnostic strata, maximum-share dominance, or B1's parent-held-out conditional estimand. | Full text reviewed; single-product setting and stated scope limitations retained. |
+| 16 | Wu et al. (2004), “Application of Maximum Entropy Principle to Software Failure Prediction,” COMPSAC 2004, pp. 180–185. [10.1109/CMPSAC.2004.1342825](https://doi.org/10.1109/CMPSAC.2004.1342825) | Two maximum-entropy models use input/failure co-occurrence and fault/failure relationships; the abstract reports five programs and 17 experiments, with average precision 0.876 and 0.858. | Predictive/statistical modelling of software failure from input and fault relationships. | C_D, an eight-stratum prespecified failure-dominance summary, exact-cell incremental prediction, or parent-grouped solver-version evaluation. | Bibliographic record and abstract checked; full text not reviewed in this pass. |
+| 17 | Chen et al. (2017), “An Empirical Study on the Effect of Testing on Code Quality Using Topic Models: A Case Study on Software Development Systems,” *IEEE Transactions on Reliability* 66(4):806–824. [10.1109/TR.2017.2699938](https://doi.org/10.1109/TR.2017.2699938) | LDA-derived topics represent higher-level themes across source and test files; topic testedness and topic defect density are used to predict defect-prone and under-tested topics in Mylyn, Eclipse, and NetBeans. The paper reports average precision 0.75 and recall 0.77 for that topic-level task. | Semantic/topic-level testing and defect-proneness analysis, including prediction using test information. | Fixed diagnostic *input* strata, a maximum share of definite failures, or per-record correctness of held-out solver variants. | Full text reviewed. |
+| 18 | Xiong et al. (2018), “Identifying Patch Correctness in Test-Based Program Repair,” ICSE 2018, pp. 789–799. [10.1145/3180155.3180182](https://doi.org/10.1145/3180155.3180182) | Uses execution-behaviour similarity of passing/failing tests to assess generated patch correctness. Its 139-patch study reports preventing 56.3 % of incorrect generated patches without blocking correct patches in that dataset. | Correctness assessment from behaviour of failing and passing tests in automated program repair. | Solver-variant record-level correctness, a fixed eight-stratum dominance statistic, or B1's exact-cell/LOPO estimand. | Full text reviewed; the 139-patch dataset and study-specific result are not generalised beyond the paper. |
+| 19 | Tian et al. (2022), “Predicting Patch Correctness Based on the Similarity of Failing Test Cases,” *ACM Transactions on Software Engineering and Methodology* 31(4), Article 77. [10.1145/3511096](https://doi.org/10.1145/3511096) | BATS uses representations and similarity of failing test specifications/cases to historical patches to predict patch correctness; results vary with similarity thresholds and the availability of comparable historical tests. | Prediction of patch correctness from failing-test similarity and historical patch behaviour. | A fixed input-stratum maximum-share statistic, incremental prediction beyond `(q,Z,k,ℓ)`, or parent-held-out solver-variant record correctness. | Full paper/publisher postprint reviewed; dataset and threshold dependence retained as limitations. |
+
+**Metadata correction.** The Dickinson DOI used here is `10.1145/503209.503243`. A secondary search result surfaced
+a conflicting `503271.503243` string; it is not adopted. The proceedings/bibliographic records and
+independent citations support `503209.503243`.
+
+**Interpretation.** These additions close neither Gate 0 nor the novelty question. They show that the
+surrounding territory is broader than failure clustering alone: input-level fault localisation,
+test-metric defect prediction, semantic topic-level quality prediction, and patch correctness from test
+behaviour all predate or parallel parts of P. None of the works listed above, as checked here, tests the
+full conjunction in P. That remains “not found” on a scoping review, not proof of novelty.
+
+### 9.8 Candidate contribution statement, with outcome level made explicit
+
+The following is a precise *candidate research/contribution statement*, not an accepted novelty claim:
+
+> Within the observed parent set, this study tests whether a version-level maximum-share summary of a
+> prespecified diagnostic failure profile improves prediction of record-level correctness for engineered
+> solver variants on the fixed 78-record development bank, beyond the B1 exact-cell baseline
+> `(q, Z, k, ℓ)`, using leave-one-parent-out evaluation.
+
+The outcome is `Y_{v,r}`, a record-level binary correctness observation for version `v` on bank record
+`r`; `C_D(v)` is a version-level predictor. “Held out” means the parent group is held out in a LOPO fold.
+It does **not** mean the 78-record bank is sealed, independently held out, or external confirmation, and
+it does not mean the response is a single version-level correctness score. B1 v1.7 expressly describes
+the 78-record bank as publicly exposed development data and makes no new-parent population claim.
+
+This wording does not resolve the record-level versus canonical-level measurement alignment described
+in `CD_MEASUREMENT_SPEC_2026-11-19.md` §2. The primary exposure basis still needs explicit
+reconciliation with the B1 outcome rows before Gate 1. It also does not claim that C_D identifies which
+stratum dominates, that the index is new, or that a positive B1 result would establish a mechanism.
+
+**Gate 0 status remains OPEN; P remains UNPROVEN.** The statement fixes the target and inferential
+scope, but the broader citation-search protocol and backward/forward citation checks are not yet complete.

@@ -1320,3 +1320,64 @@ reopened. No combinatorial revision, no branch-history work, no solver work.
 - The next Gate 0 deliverable is the scoping review GPT specified (four comparison groups, evidence matrix,
   backward/forward citation checks), not a solver plan. The first Gate 1 action on reopening is the
   design-only support census of register §9.3.
+
+---
+
+## 25. Follow-up adjudication — full text, B1 eligibility, and Gate 4 separation (2026-11-20)
+
+**Trigger:** continued review of the Gate 0 amendment in register §9 after the independent critiques.
+This section corrects over-broad language in §24 without rewriting that dated decision record.
+
+### 25.1 Verified and accepted
+
+- **SQJ full-text qualification.** Accepted. The publisher abstract says “in many cases” small clusters
+  contained at least 60 % failures. The full text demonstrates system/version/configuration heterogeneity:
+  Sed's §6.2 small-cluster failure density remains below 50 % in the reported analysis, and NanoXML
+  version 3 is reported to have most failures in its largest clusters. Failure density within small
+  clusters must be distinguished from the fraction of all failures captured by those clusters. Register
+  §9.2 now records the distinction.
+- **Bibliographic additions.** The DOI/title/venue records for Dickinson et al. (2001), both Wu et al.
+  (2004) papers, Herzig (2014), Chen et al. (2017), Xiong et al. (2018), and Tian et al. (2022) are added
+  in §9.7. Abstract-only and full-text verification levels are explicit. The additions do not establish
+  novelty.
+- **Exposure support arithmetic.** Accepted. The record-level formula is not the canonical-level
+  attainable-set formula. At k=54, canonical capacities cannot realise M=7 because their maximum total
+  under M≤7 is 4+7×7=53; the record basis can realise M=7. The ≤8 distinct-C_D ceiling remains valid
+  on both bases.
+- **B1 eligibility distinction.** Accepted and corrected. Full-population eligibility requires
+  k≥2, G_c≥3 distinct parents, and D_c≥2 distinct C_D values. LOPO training-fold estimability separately
+  requires G_c^train≥2, D_c^train≥2, and W_C,c^train>0. The earlier two-parent census stop rule did
+  not reproduce the full-population gate and is withdrawn. The census now requires the complete
+  scored/excluded fold-cell audit, parent coverage, and exact scored-row sets on each exposure basis.
+- **Contribution wording.** Accepted with precision. The predictor is version-level C_D(v), but the
+  outcome is record-level Y_{v,r} over 78 records. “Held out” refers to parent-grouped LOPO, not a
+  sealed bank or a version-level correctness scalar.
+
+### 25.2 MDE adjudication corrected
+
+The previous §24.2 disposition stated that absence of an empirical MDE was a Gate 0 exit condition.
+That was an overreach and is corrected here. Gate 0 is literature positioning and contribution scope;
+power/MDE and known-effect operating characteristics belong to Gate 4.
+
+The expression MDE₈₀ ≈ 2.802·σ_u/(sd(C)·√J) and its numerical examples are illustrative for a
+simplified cluster-level approximation, with assumed inputs. They are **not a B1 v1.7 MDE**. B1's
+version-level exposure is nested within parents, and the response is record-level across 78 records per
+version, evaluated by LOPO and a conditional randomization pipeline. The simple expression cannot
+justify the claims that 30 parents are insufficient, that 150 variants are required, or that 150 is
+adequate. A future operating-characteristic assessment would have to simulate the actual frozen B1
+pipeline under declared data-generating processes and its exact support/coverage rules. No such
+assessment has been run.
+
+### 25.3 Effect on the record
+
+- Register §9.2 now qualifies the ≥60 % abstract finding against full-text exceptions.
+- Register §9.3 now separates record-level and canonical-level support and restores the full B1
+  eligibility/fold-audit requirements.
+- Register §9.4 moves MDE/power to Gate 4 and withdraws any sample-size inference from the simplified
+  illustrative formula.
+- Register §§9.7–9.8 add the evidence-matrix extension and precise candidate contribution statement.
+- **Gate 0 remains OPEN and P remains UNPROVEN.** The citation search remains a scoping review; broader
+  database coverage and backward/forward citation checks are outstanding.
+- B1 v1.7, Rev 11, the measurement specification, and all other frozen records remain unchanged.
+  No bank access, outcome access, solver construction, experiment, fitting, simulation, or execution
+  occurred. The project pause remains in force.
