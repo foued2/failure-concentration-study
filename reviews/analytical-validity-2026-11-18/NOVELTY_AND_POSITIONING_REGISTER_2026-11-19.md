@@ -313,10 +313,16 @@ heterogeneity across systems, program versions, and clustering configurations:
 - In §6.2, the **agglomerative hierarchical-clustering** results for Sed show small-cluster
   failure density below 50 %, peaking just above 40 % under complete linkage at an average cluster
   size of about three. This statement is specific to that method and analysis.
-- The same section reports a markedly different Sed result under **DBSCAN**: very high failure
-  density in the smallest clusters and a reasonable F-measure. DBSCAN generated many more small
-  clusters than the agglomerative analysis. EM, by contrast, performed very poorly on Sed. These are
-  method-dependent results, not contradictory estimates of one universal Sed rate.
+- The same section reports a markedly different Sed result under **DBSCAN**. Table 7's Sed V5
+  row reports cluster count 48.23 % of the test-set count, average cluster size 1 % of the test set,
+  failure density 83.3 %, and F-measure 0.3091 (the table's DBSCAN setting for Sed is
+  epsilon = 1.5, MinPoints = 1). The authors describe the smallest-cluster density as very high and
+  the F-score as reasonable.
+- This is not a clean counterexample to the agglomerative result. The DBSCAN configuration generated
+  a very large number of very small clusters, almost twice the number explored in the agglomerative
+  analysis. The density therefore comes with substantial fragmentation and should not be read as
+  evidence of broad failure capture or robust performance. EM, by contrast, performed very poorly on
+  Sed. These are method-dependent results, not contradictory estimates of one universal Sed rate.
 - NanoXML version 3 is a direct counterexample to a universal small-cluster claim: the paper reports
   that its largest clusters contained most of the failures.
 - Other sections report different quantities, including the proportion of all failures captured by
@@ -514,11 +520,14 @@ scope, but the broader citation-search protocol and backward/forward citation ch
 
 Claude's follow-up review is accepted on the need to state both Sed clustering outcomes. The full text
 supports the following narrower account: under agglomerative hierarchical clustering, Sed's §6.2
-small-cluster failure density peaks just above 40 % and remains below 50 %; under DBSCAN, Sed has a
-very high failure density in the smallest clusters and a reasonable F-measure. The DBSCAN result is not
-an exception to the agglomerative figure; it is a different algorithm and clustering configuration.
-The NanoXML version 3 case remains a separate exception in which the largest clusters contained most
-failures. Section 9.2 now records all three facts.
+small-cluster failure density peaks just above 40 % and remains below 50 %; under DBSCAN, Table 7's
+Sed V5 row reports 48.23 % cluster count, 1 % average cluster size, 83.3 % failure density, and
+F-measure 0.3091. DBSCAN generated almost twice the number of small clusters explored in the
+agglomerative analysis. This is a high-density but heavily fragmented result, not evidence that DBSCAN
+captures most failures with a small inspection burden. The DBSCAN result is not an exception to the
+agglomerative figure; it is a different algorithm and clustering configuration. The NanoXML version 3
+case remains a separate exception in which the largest clusters contained most failures. Section 9.2
+now records all three facts.
 
 The additional literature checks also distinguish “not checked by Claude in that round” from “not
 verified by any reviewer”:

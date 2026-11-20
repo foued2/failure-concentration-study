@@ -1415,3 +1415,101 @@ adjudication. README indexing is updated.
 backward/forward citation checks are incomplete. Foued's conditional Gate 1 instruction is therefore
 not triggered as a formal gate transition. No Gate 1 freeze, bank access, design census, or outcome work
 is authorized by this entry. No frozen protocol was changed.
+
+---
+
+## 27. Claude verification of the SQJ DBSCAN row and Gate 1 measurement blockers (2026-11-20)
+
+### 27.1 SQJ full-text check
+
+The primary paper confirms the DBSCAN figures in Table 7 for Sed V5: cluster count 48.23 %,
+average cluster size 1 %, failure density 83.3 %, and F-measure 0.3091. The DBSCAN parameters
+given in the table caption are epsilon = 1.5 and MinPoints = 1 for Sed. The authors state that
+DBSCAN generated almost twice the number of small clusters explored under agglomerative
+hierarchical clustering. The high density is therefore accompanied by heavy fragmentation; it
+must not be described as high recall, broad failure capture, or a generally superior clustering
+result. Register §9.2 and §9.9 now record the exact row and caveat.
+
+### 27.2 Repository and design checks
+
+- Commit `f2d57f40313f19335af0b7992318122c19780ab5` exists on branch
+  `audit/analytical-validity-2026-11-18`; its parent is
+  `ad0f1004d78b28ddb403f96c8ce3a6be07184a00`.
+- The frozen bank design specifies 64 diagnostic records, including four D6 canonical inputs
+  represented by two orderings each (60 unique diagnostic canonical inputs), and 80 held-out
+  records comprising 78 unique canonical inputs. The held-out H6 stratum has two canonical
+  pairs plus six singletons. Canonical disjointness between diagnostic and held-out banks and
+  the feature firewall are explicit in BANK_DESIGN v1.0 §§2, 7.
+- B1 v1.7 §1 defines a binary outcome `Y_{v,r}` on 78 version-by-canonical-record rows and
+  primary-cell eligibility `k ≥ 2`, `G_c ≥ 3`, `D_c ≥ 2`. Its §3 fixes LOPO scoring and the
+  fold-level design-only support conditions. Claude confirms she had now read this text;
+  her earlier uncertainty about B1(c) is withdrawn.
+
+### 27.3 The two held-out ordering pairs: correction to the option list
+
+The phrases **“fail if either ordering fails”** and **“pass only if both orderings pass”**
+are logically the same Boolean aggregation rule, not two different options. For a two-record
+canonical pair, both say that the canonical input passes only when both orderings pass.
+
+The genuinely distinct choices are:
+
+1. **Conservative all-orderings rule:** canonical PASS only if both raw executions PASS;
+   canonical FAIL if either execution is a definite FAIL; otherwise canonical UNRESOLVED.
+2. **At-least-one-pass rule:** canonical PASS if either raw execution PASS. This does not
+   establish order invariance and can label a canonical input correct despite a definite
+   wrong answer on its other ordering.
+3. **Separate-record rule:** retain both orderings as separate rows. This changes the outcome
+   unit from 78 canonical inputs to 80 raw records and requires a revised dependence/weighting
+   treatment; it is not compatible with B1 v1.7's current 78-row estimand without amendment.
+
+The conservative all-orderings rule is the most coherent candidate if the scientific correctness
+predicate requires order invariance: PASS iff both pass; FAIL if at least one definitely fails;
+UNRESOLVED if no definite failure exists and at least one ordering is unresolved. A singleton
+canonical input retains its raw status. **This is a proposed aggregation rule, not a frozen
+decision.** B1 v1.7 does not currently specify any pair-to-canonical aggregation.
+
+### 27.4 Unresolved held-out outcomes
+
+Three existing documents agree on the raw status semantics:
+
+- The task contract §5 says an observation lacking sufficient harness/oracle evidence is
+  UNRESOLVED, not PASS or FAIL; timeout classification requires a declared execution budget.
+- The GLM work order §8 says UNRESOLVED is neither PASS nor FAIL, must be counted separately,
+  and must not be collapsed into a binary record. Its §9 resolved-only score, coverage, and
+  best/worst bounds apply to its earlier mean-correctness target `Q`, not automatically to
+  B1's later record-level log-loss estimand.
+- B1 v1.7 fixes binary `Y_{v,r}` and its 78-row log-loss, but contains no rule for converting
+  an unresolved held-out observation into `Y`, no missing-outcome likelihood, and no frozen
+  resolved-only scoring rule. Its references to `u(v)` and unresolved placement are about
+  diagnostic unresolved counts and a named explanatory channel, not held-out `Y` coding.
+
+**Candidate conservative handling, not adopted:** first aggregate raw paired statuses to a
+three-state canonical status as in §27.3. Preserve every UNRESOLVED status. The B1 binary
+confirmatory analysis is available only when every primary-sample version has a resolved
+PASS/FAIL status for all 78 canonical inputs. If any primary target row remains unresolved,
+declare the B1 binary test NOT_ESTIMABLE for that dataset; do not delete the row, impute it,
+or silently recode it. Report unresolved counts and coverage by held-out stratum and version.
+A resolved-only descriptive score with explicit coverage and best/worst correctness bounds may
+be shown as a clearly separate descriptive result, but it is not the B1 primary log-loss result.
+A three-category outcome model would require a new, separately reviewed B1 version and a
+different estimand/model; it is not a sensitivity silently available under v1.7.
+
+The unresolved-rate table must be a predeclared reporting output. It may not be inspected to
+choose the aggregation or missingness rule after outcomes are observed. The rule itself must be
+fixed first; observed unresolved rates then describe coverage and determine whether the declared
+availability condition is met.
+
+### 27.5 Gate disposition
+
+Claude's review confirms that the two held-out measurement gaps are real. The diagnostic
+measurement is specified at record level by Rev 11; the diagnostic-to-held-out linkage is by
+version ID, with `C_D(v)` supplied to that version's 78 canonical correctness outcomes. The
+remaining blockers are (i) the raw-pair-to-canonical outcome aggregation and (ii) unresolved
+held-out outcome handling in the B1 binary likelihood.
+
+However, Gate 0 remains OPEN because the scoping review's reproducible search log and
+systematic backward/forward citation checks are incomplete. Foued's conditional instruction
+“if Gate 0 is done, resolve Gate 1” is therefore not triggered as a formal gate transition.
+Sections 27.3–27.4 are design proposals for review, not Gate 1 amendments. No freeze or
+implementation authorization follows. Rev 11, B1 v1.7, and the existing measurement
+specification remain unchanged; no outcome or bank access, fitting, or solver execution occurred.
