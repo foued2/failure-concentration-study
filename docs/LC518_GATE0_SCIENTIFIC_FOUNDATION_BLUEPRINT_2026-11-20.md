@@ -1,9 +1,9 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.3  
+**Version:** 0.4  
 **Date:** 2026-11-20  
-**Status:** DRAFT FOR INDEPENDENT REVIEW; HISTORICAL D1–D8 SEMANTICS ADJUDICATED; CURRENT AUTHORITY AND MEASUREMENT VALIDITY OPEN  
+**Status:** DRAFT FOR INDEPENDENT REVIEW; AUTHORITY STATE ADJUDICATED: NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
 **Scope:** Documentation-only scientific review. This is not a protocol amendment, bank specification, mutation allocation, freeze, statistical decision, or execution authorization.
@@ -47,13 +47,13 @@ It does not select parent solvers, operator classes, mutations, realization sett
 
 ---
 
-## 2. Important repository finding: D1–D8 are documented, but current authority is unresolved
+## 2. Important repository finding: symbolic eight-stratum structure accepted, operational D1–D8 authority not adopted
 
 An earlier assistant statement that the eight diagnostic strata were simply undefined was too broad. The repository contains an earlier LC518 bank-design artifact that explicitly defines D1–D8.
 
-However, that artifact is on an earlier branch and has not been reconciled with the later population-design specification v0.21 and the accepted B1 v1.7 analysis plan. The correct status is:
+However, Rev 1.4 Amendment E and B1 v1.7 are now accepted in their respective symbolic scopes, and v0.21 explicitly cites them as its statistical authorities. Those accepted records establish an eight-stratum/eight-record-per-stratum abstract diagnostic structure and the analysis framework, but they do not enumerate the operational meanings or membership rules of D1–D8. The historical BANK_DESIGN v1.0 is frozen for an earlier 150-body package, while C9 rev 2.6 remains unratified and does not amend v1.0.
 
-**The eight-stratum taxonomy is documented in an earlier LC518 bank-design record; whether those exact definitions remain binding for the current v0.21/B1 population and evaluation target has not been established by the records compared for this blueprint.**
+**Current authority determination:** the symbolic eight-stratum structure is accepted, but **no operational D1–D8 specification or current v0.21-linked diagnostic manifest is adopted**. The historical names/rules must not be treated as binding for v0.21. The complete source adjudication is recorded in [LC518 diagnostic-specification authority decision v1.0](LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md).
 
 ### 2.1 Earlier diagnostic-bank definitions
 
@@ -256,17 +256,19 @@ This subsection records the result of a source-level review of the earlier bank 
 
 | Record | What it establishes | Authority for the current v0.21 population |
 |---|---|---|
-| Earlier BANK_DESIGN.md, version 1.0, marked FROZEN on 2026-11-01 | Defines the 64-record diagnostic bank, eight records per D1–D8 stratum, the high-level construction rule for each stratum, the 80-record held-out bank, and the canonical-identity rule | Frozen for the earlier 150-body construction-study package. It is not, by itself, proof that v0.21 adopted the same bank or that the 150-body design remains current |
-| C9_GENERATION_SPEC_REVIEW.md, revision 2.6, 2026-11-02 | Provides a much more detailed proposed generator procedure, including exact D1–D8 construction details and corrected D4/D5 rules | Not owner-ratified or frozen. Its own header says it does not modify historical BANK_DESIGN v1.0. It may clarify the proposal, but its changed details cannot be treated as binding |
-| ANALYSIS_SPEC_REVIEW_DRAFT.md | Describes eight D1–D8 input strata, 64 records, a separate order-pair feature family, and states that the strata are input categories rather than verified mechanisms | Explicitly review-only and not the design of record. Useful corroboration of intended interpretation, not an authority override |
-| Population-design v0.21 | Refers to eight diagnostic strata in the C_D definition; says no parent or mutation mechanism has been selected; requires a future B1 amendment for a new protected evaluation set | Current design-only draft, but it does not enumerate D1–D8 names or explicitly incorporate BANK_DESIGN v1.0 by path/hash |
-| November 10 mutation-allocation search review | Reports no named eight-mechanism taxonomy, no M01–M08 definitions, and no pair-to-parent allocation in the five reviewed November 6 conversation PDFs | Bounded evidence that the mutation allocation is not established in the reviewed source set. A standalone annex's existence remains unproven |
+| Rev 1.4 Amendment E and its acceptance record | Accepted symbolic B1/M1 feasibility specification; inherited §§1.1–1.4 preserve eight diagnostic strata with eight records per stratum as abstract structural constants; the acceptance record says accepted for symbolic design, not a separate formal freeze | Controls the symbolic feasibility framework, but does not name D1–D8 input categories or provide a diagnostic manifest |
+| B1 analysis plan v1.7 and its acceptance record | Accepted/frozen symbolic analysis plan; uses a fixed 78-record publicly exposed development outcome bank and a diagnostic-derived C_D exposure | Controls the symbolic analysis procedure and target in v1.7; does not define operational D1–D8 membership rules and is not execution GO |
+| Population-design v0.21 | Cites Rev 1.4 Amendment E and B1 v1.7 as symbolic authorities; refers to eight diagnostic strata but does not enumerate them; proposes a different protected evaluation set subject to a separate B1 amendment | Current design-only draft; no operational D1–D8 specification is adopted in it |
+| Earlier BANK_DESIGN.md, version 1.0, marked FROZEN on 2026-11-01 | Defines the 64-record diagnostic bank, eight records per D1–D8 stratum, high-level construction rules, separate 80-record held-out bank, and canonical-identity rule | Frozen for the earlier 150-body construction-study package only; not adopted as the current v0.21 operational specification |
+| C9_GENERATION_SPEC_REVIEW.md, revision 2.6, 2026-11-02 | Provides a more detailed proposed generator procedure, including D1–D8 construction details and proposed D4/D5 corrections | Not owner-ratified or frozen; does not amend v1.0 or confer current authority |
+| ANALYSIS_SPEC_REVIEW_DRAFT.md | Describes eight D1–D8 input strata, 64 records, a separate order-pair feature family, and input-category interpretation | Review-only; corroboration, not an authority source |
+| November 10 mutation-allocation search review | Reports no named eight-mechanism taxonomy, M01–M08 definitions, or pair-to-parent allocation in the five reviewed Nov 6 conversation PDFs | Bounded evidence that the allocation is not established in the reviewed source set. Standalone annex existence remains unproven |
 
-**Authority finding:** the intended meanings of D1–D8 can be recovered from the earlier frozen BANK_DESIGN v1.0. The available records do not establish that v0.21 formally adopted that exact bank specification. The count “eight” is not sufficient evidence of identity between two bank versions.
+**Authority finding:** accepted Rev 1.4 Amendment E and B1 v1.7 establish the symbolic eight-by-eight diagnostic structure and the B1 statistical framework. They do **not** define the operational D1–D8 categories. BANK_DESIGN v1.0 remains frozen for the earlier 150-body package but is not adopted by v0.21; C9 rev 2.6 remains unratified. The current authority state is therefore adjudicated as **NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED FOR v0.21**. The complete source ruling is recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`.
 
-#### 5.6.2 What each earlier diagnostic stratum is designed to challenge
+#### 5.6.2 What each earlier diagnostic stratum was designed to challenge
 
-The table below separates the documented input challenge from what can legitimately be inferred. The high-level definitions are in frozen BANK_DESIGN v1.0. Where more exact construction detail is taken from C9 revision 2.6, it is explicitly labelled as an unratified proposal.
+The table below describes the earlier frozen BANK_DESIGN v1.0 package for historical interpretation only. It is **not** a current v0.21 operational dictionary. The high-level historical definitions are in BANK_DESIGN v1.0. Where more exact construction detail is taken from C9 revision 2.6, it is explicitly labelled as an unratified proposal.
 
 | Stratum | Documented input-property challenge | Exact construction detail available in the record | What the label does not establish |
 |---|---|---|---|
@@ -325,9 +327,9 @@ It would be invalid to infer D1 → boundary mutation, D2 → exact-match mutati
 
 #### 5.6.5 Stage 2 verdict
 
-The documentary question “what were D1–D8 intended to represent in the earlier frozen BANK_DESIGN v1.0?” is **RESOLVED** by the table in §5.6.2.
+The documentary question “what were D1–D8 intended to represent in the earlier frozen BANK_DESIGN v1.0?” is **RESOLVED** by the table in §5.6.2. This is a historical-package finding, not current v0.21 authority.
 
-The wider question “are those exact strata the binding diagnostic design for population-design v0.21?” remains **OPEN**, because v0.21 does not explicitly incorporate BANK_DESIGN v1.0 or enumerate the D1–D8 rules.
+The current authority question has now been adjudicated: **NO OPERATIONAL D1–D8 SPECIFICATION IS ADOPTED FOR v0.21**. Rev 1.4 Amendment E and B1 v1.7 control only the symbolic structure and analysis framework. The future owner decision selecting an operational specification remains **OPEN**; it must name the exact version/blob and diagnostic manifest. No default adoption of BANK_DESIGN v1.0 or C9 rev 2.6 is implied.
 
 The question “which actual mutation classes are intended to generate the D1–D8 patterns?” remains **BLOCKED / NOT ESTABLISHED**, because no mutation classes have been selected in v0.21 and the reviewed November 6 allocation does not establish names or assignments.
 
@@ -338,15 +340,15 @@ Accordingly:
 - **Gate 0 cannot close on this result alone.** The current bank-authority conflict, mutation specification gap, diagnostic-to-held-out transport, measurement validity, and literature boundary remain separate gates.
 
 
-#### 5.6.6 Cross-review adjudication of authority, D4, D5 and D6 (2026-11-20)
+#### 5.6.6 Cross-review adjudication of D4, D5 and D6 (2026-11-20)
 
 This subsection records the points on which the GPT adjudication and the subsequent Claude critique/convergence supplied in this conversation agree. Claude corrected its earlier overstatement that D6 necessarily inflates concentration for every order-sensitive solver; GPT's narrower record-weighting formulation was accepted. This is a documentation-level convergence record, **not a formal joint sign-off**, not an owner ratification of a bank design, and not an amendment to B1 v1.7, BANK_DESIGN v1.0, C9 rev 2.6, or population-design v0.21.
 
-**A. Authority: agreement and closure condition**
+**A. Authority: documentary ruling completed; adoption remains an owner decision**
 
-The current v0.21 design has no established controlling D1–D8 construction specification. BANK_DESIGN v1.0 is frozen for the earlier 150-body package, but its applicability to v0.21 has not been established. C9 rev 2.6 is a detailed proposal whose own status says it is not owner-ratified or frozen and does not modify v1.0. The review-only analysis draft cannot confer authority. The fact that v0.21 refers to eight strata does not prove that it adopts the identity, membership rules, record allocations, or paired structure of the earlier eight strata.
+The authority audit is complete and its result is recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`. Accepted Rev 1.4 Amendment E and B1 v1.7 control the symbolic statistical structure, including eight abstract diagnostic strata with eight records per stratum. They do not define named D1–D8 input categories. BANK_DESIGN v1.0 is frozen for the earlier 150-body package but is not adopted by v0.21. C9 rev 2.6 is unratified and does not amend v1.0. The current ruling is **NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED FOR v0.21**.
 
-Closure requires an owner-authorized, versioned source decision that:
+A future adoption decision must be owner-authorized and versioned, and must:
 1. names the exact adopted diagnostic specification, revision, repository path and immutable blob identity;
 2. states whether C9 rev 2.6 is adopted, rejected, or only partly adopted, with each changed rule identified;
 3. identifies the authoritative diagnostic manifest and its hash, including record IDs, assigned stratum, rule IDs, canonical IDs, subtype labels/parameters, and D6 pair identities;
@@ -406,9 +408,9 @@ No decision has been made between retaining record-level D6 in C_D and redesigni
 
 #### 5.6.7 Required closure order
 
-The review convergence establishes the following order. It does not authorize skipping a gate or choosing a design option by default.
+The current authority state is now documented in the separate diagnostic-specification authority decision. The remaining work is an owner-authorized choice of an operational specification, followed by the measurement-validity decisions. This sequence does not authorize skipping a gate or choosing a design option by default.
 
-1. **Resolve authority first.** Identify and ratify the exact D1–D8 specification and diagnostic manifest applicable to v0.21, and reconcile it with B1 and the evaluation target.
+1. **Operational specification selection remains OPEN.** The authority audit is complete: no operational D1–D8 specification is currently adopted. The next decision must select and ratify an exact specification version/blob and authoritative manifest for v0.21, and reconcile it with B1 and the evaluation target. Do not treat BANK_DESIGN v1.0 or C9 rev 2.6 as adopted by default.
 2. **Adjudicate D4 against that adopted specification.** Either justify a fixed composite with explicit subtype definitions/proportions and mandatory subtype reporting, or adopt a separately reviewed split/redesign. Do not assume C9's proposed 2:2:4 allocation is binding.
 3. **Adjudicate D5 against the actual LC518 objective.** Specify the greedy strategy, calculate G and W for every candidate item, and require G ≠ W for items intended to expose substitution of greedy minimum-coin output. G ≠ M alone is not enough.
 4. **Adjudicate D6's measurement unit.** State whether C_D counts records or canonical pairs. If record-based, preserve the record-level formula and describe its unit honestly, with pair-level order analysis reported separately. If pair-based, submit and review a formal analysis-plan amendment before using the changed statistic.
@@ -416,17 +418,29 @@ The review convergence establishes the following order. It does not authorize sk
 
 This ordering is a review plan only. It does not reopen the paused project, authorize bank access or generation, or permit solver construction, modification, compilation, execution, diagnostics, model fitting, simulation, sampling, or power analysis.
 
+
+#### 5.6.8 Current authority ruling (2026-11-20)
+
+The current authority state is no longer merely unknown. A separate source-adjudication record now determines:
+
+- **Accepted symbolic structure:** Rev 1.4 Amendment E preserves \(S=8\) diagnostic strata and \(R_s=8\) records per stratum as abstract constants. The accepted B1 v1.7 plan supplies the symbolic analysis procedure. These accepted artifacts do not name the operational input categories D1–D8.
+- **No operational adoption:** **NO OPERATIONAL D1–D8 SPECIFICATION IS ADOPTED FOR v0.21.** Neither historical BANK_DESIGN v1.0 nor unratified C9 rev 2.6 may be used as the current operational specification by default.
+- **Distinct bank objects:** the 64 abstract diagnostic slots are not proof of a generated diagnostic bank; the historical BANK_DESIGN diagnostic bank has 64 records; its distinct H1–H8 held-out bank has 80 records; B1 v1.7's publicly exposed development outcome bank has 78 records; and v0.21 proposes a further protected evaluation set requiring a separate B1 amendment. These are not interchangeable.
+- **Required owner decision:** choose and ratify one exact operational diagnostic specification and manifest, with explicit disposition of C9 changes, and reconcile it with B1 and the evaluation target. Until then, no operational record membership or outcome interpretation is authorized.
+
+The source register and evidence trail are in [LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md](LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md). This is GPT's documentary source adjudication, not a formal joint GPT/Claude sign-off or owner ratification. It does not select an operational design or reopen the project.
+
 ### 5.7 Evidence required to close the remaining Stage 2 items
 
 | Remaining item | Evidence that would close it | Failure / stop condition |
 |---|---|---|
-| Does v0.21 use these exact D1–D8 definitions? | An accepted, versioned v0.21-linked diagnostic-bank specification or explicit amendment citing the exact BANK_DESIGN revision/blob and current bank manifest hashes | No cross-reference, conflicting rule set, or post-outcome changes to category membership |
-| Are the strata assigned reproducibly? | Authoritative diagnostic manifest with each record's exact stratum, rule_id, canonical identity, rule parameters, and a deterministic reconstruction/validation record | Missing records, duplicate or ambiguous membership, outcome-informed classification, or inability to reproduce the stratum assignment |
-| Is the D6 dependence correctly represented? | Pair manifest identifying four canonical IDs, original/permutation roles, shared amount and denomination set, and pair-level outcome definitions | Treating eight D6 rows as eight independent instances, or using C_D alone to claim order sensitivity |
+| What operational D1–D8 specification governs v0.21? | An owner-authorized decision selecting an exact specification path, revision and immutable blob, explicitly stating which C9 changes are adopted/rejected, plus a v0.21-linked diagnostic manifest hash and reconciliation with B1/evaluation-target authority. Current ruling: none is adopted | Treating historical BANK_DESIGN v1.0 or unratified C9 rev 2.6 as binding without that decision; ambiguous or conflicting rule sets; missing manifest identity; or post-outcome category changes |
+| Are the strata assigned reproducibly after adoption? | Authoritative diagnostic manifest with each record's exact stratum, rule_id, canonical identity, rule parameters, subtype/pair IDs where relevant, and a deterministic reconstruction/validation record | Missing records, duplicate or ambiguous membership, outcome-informed classification, or inability to reproduce the stratum assignment |
+| Is the D6 dependence correctly represented after adoption? | Pair manifest identifying canonical IDs, original/permutation roles, shared amount and denomination set, and pair-level outcome definitions for the adopted D6 design | Treating paired rows as independent canonical instances, or using C_D alone to claim order sensitivity |
 | Is D4's composite interpretation defensible? | Adopted specification with explicit subtype labels/rules/proportions fixed pre-outcome, a rationale for pooling distinct parity/reachability properties, and mandatory subtype-level reporting; or a separately reviewed split/redesign | Pooled f_4 with no subtype identity/proportions, post-outcome reweighting, or treating the composite as one homogeneous challenge without justification |
 | Does D5 test the intended LC518-related challenge? | Per-item oracle combination count W, fully specified greedy output G, and pre-outcome verification of G ≠ W for every item intended to detect greedy-output substitution | Relying only on G ≠ M, omitting the actual combination-count answer, or claiming the category measures combination-count correctness more broadly than its validated construction supports |
 | Is D6's unit of analysis explicit? | Explicit decision that C_D is record-weighted or an approved B1 amendment defining a pair-weighted alternative; if record-weighted, separate pair-level outcome summaries | Calling record-level C_D a share of independent canonical inputs, claiming C_D measures order sensitivity, or changing f_6 without B1 amendment |
-| What mutations correspond to these challenge properties? | Owner-authorized operator-class catalogue with complete q fingerprints, preconditions/effects, selected parent/source identities, and a predeclared operator-to-input-property mapping reviewed before any diagnostic outcomes | Missing definitions, reconstruction from aggregate allocation arithmetic, or mapping chosen after viewing outcomes |
+| What mutations correspond to the adopted challenge properties? | Owner-authorized operator-class catalogue with complete q fingerprints, preconditions/effects, selected parent/source identities, and a predeclared operator-to-input-property mapping reviewed before any diagnostic outcomes | Missing definitions, reconstruction from aggregate allocation arithmetic, or mapping chosen after viewing outcomes |
 | Do the proposed mutations actually expose the intended behaviour? | This requires a later, separately authorized empirical validation design with frozen source/inputs and an independent outcome oracle | No execution evidence; or a claimed effect that does not follow from the operator semantics and declared input conditions |
 
 The last row is deliberately not a Gate 0 documentary result. It identifies a future evidence requirement and does not authorize the required execution.
@@ -886,10 +900,13 @@ The following records were retrieved from the repository. Branch and blob identi
 
 | Source | Branch | Blob SHA-1 | Use and authority limit |
 |---|---|---|---|
-| lc518-150/glm-handoff/BANK_DESIGN.md | gpt/lc518-claim-b1-primary-2026-11-05 | d91b8dcee05808926262c3636a891b776c03ab44 | Earlier D1–D8 and H1–H8 definitions; current authority unresolved |
+| lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_M1_JOINT_INCIDENCE_FEASIBILITY_SPEC_2026-11-12_v1.4.md | b8b8af042c16eeb9e02077c781ab05c582eeb65d | 3728146356a74363a94fe75a87fd06c483954ee2 | Accepted symbolic B1/M1 feasibility specification; abstract eight-by-eight structure, not named D1–D8 definitions |
+| lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_REV1_4_AMENDMENT_E_2026-11-14.md | ca15a29bd25c4c9c2293394f67cb19e1a18f34bd | 074b40980eb96d164cd8411c8995bb1db4af0d46 | Authoritative Rev 1.4 acceptance record; acceptance distinguished from formal freeze and execution GO |
+| lc518-150/glm-handoff/BANK_DESIGN.md | gpt/lc518-claim-b1-primary-2026-11-05 | d91b8dcee05808926262c3636a891b776c03ab44 | Earlier D1–D8 and H1–H8 definitions; frozen for earlier 150-body package, not adopted by v0.21 |
 | lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md | gpt/lc518-m1si-audit-2026-11-17 | 8af908f6b0ad4cd060194a0a63f4914939f07756 | Current population-design draft, conditional claim, q/a distinction, M1-si support, non-authorization |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
+| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 8974662fa2b3565cc6361067b1012ac7169f8d13 | GPT source-adjudication record: accepted symbolic eight-stratum structure, but no operational D1–D8 specification adopted for v0.21 |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
 | lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
@@ -913,9 +930,9 @@ These are relevant motivation and limitation sources. Their measurement units an
 
 This document remains a blueprint for critique and is not accepted merely because the cross-review has converged on several findings. The convergence recorded in §5.6.6 is technical agreement on the identified issues and closure conditions, not a formal joint sign-off or owner ratification.
 
-The next review work is ordered, not open-ended:
+The next review work is ordered, not open-ended. The present authority ruling is recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`: accepted symbolic statistical authority exists, but no operational D1–D8 specification is adopted for v0.21.
 
-1. Resolve the current source-authority question by identifying the exact diagnostic specification and manifest that v0.21 is to use.
+1. Obtain an owner-authorized selection of the exact operational D1–D8 specification and diagnostic manifest. The source-authority audit is complete; the adoption decision remains open. Do not presume BANK_DESIGN v1.0 or C9 rev 2.6 wins.
 2. Adjudicate D4 against that adopted source: a composite is possible only with a specific rationale, fixed pre-outcome subtype definitions/proportions, and mandatory subtype reporting; otherwise a separately reviewed redesign is required.
 3. Adjudicate D5 using the actual LC518 combinations-count answer W. For a greedy-substitution probe, G ≠ W must be checked per item; G ≠ M alone is inadequate.
 4. Decide whether D6 contributes to C_D as records or canonical pairs. The historical formula is record-weighted; pair-level measures are separate and do not silently change it.
@@ -923,6 +940,6 @@ The next review work is ordered, not open-ended:
 
 The mutation-to-stratum map remains blocked until actual operator classes are authoritatively specified. No mapping may be invented from stratum names. The exact closure evidence and stop conditions are in §§5.6.6–5.7.
 
-**Current status: DRAFT FOR INDEPENDENT REVIEW. Current measurement design is NOT ACCEPTED; Gate 0 remains OPEN. Project pause unchanged.**
+**Current status: DRAFT FOR INDEPENDENT REVIEW. Symbolic authority is adjudicated; no operational D1–D8 specification is adopted for v0.21. D4/D5/D6 validity and the owner adoption decision remain OPEN; current measurement design is NOT ACCEPTED. Gate 0 remains OPEN. Project pause unchanged.**
 
 **End of blueprint.**
