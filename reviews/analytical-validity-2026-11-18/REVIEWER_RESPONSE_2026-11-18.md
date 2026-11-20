@@ -1277,3 +1277,46 @@ The revision preserves the known facts and marks the limit explicitly:
 - **The scientific position is unchanged:** no solver outcomes, no demonstrated predictive gain, and no
   evidence that `C_D` outperforms the predeclared competing summaries. The next substantive work, when
   explicitly reopened, is Gate 0, measurement validity, and the S1 known-effect validation.
+
+---
+
+## 24. Gate 0 scoping round recorded (2026-11-20)
+
+**Trigger:** GPT's Gate 0 memo and Claude's review of it, supplied 2026-11-20. This opens the Gate 0 phase
+that the goal document already names as next; the analytical-validity cycle closed at §23 and is not
+reopened. No combinatorial revision, no branch-history work, no solver work.
+
+### 24.1 Verified against the publisher records
+
+- **The 2015 AST paper exists and is a genuine precursor.** Almaghairbe & Roper, *Building Test Oracles by
+  Clustering Failures*, 2015 IEEE/ACM 10th International Workshop on Automation of Software Test (ICSE),
+  pp. 3–7, `10.1109/ast.2015.8`. Its abstract states the hypothesis that "failures will tend to group into
+  small clusters", evaluated on two systems, with an order-of-magnitude reduction in outputs needing manual
+  examination. It was absent from the register and is now row 8a.
+- **The ≥60 % figure is verified.** The publisher abstract of the *Software Quality Journal* paper
+  (`10.1007/s11219-016-9339-1`, 25(3):803–840) reads: "in many cases small clusters were composed of at
+  least 60 % failures (and often more)". Claude was right that the earlier round had not checked it. The
+  qualifier "in many cases" is part of the finding and is now recorded.
+- **Both Almaghairbe records match Crossref**, including the online-2016 / issue-2017 split.
+
+### 24.2 Adjudicated
+
+| Claim | Disposition |
+|---|---|
+| AST 2015 is **closer** to the concentration idea than the SQJ paper | **Partly accepted.** It is the earlier statement and takes priority for the observation; the SQJ paper remains the closest *evidence*. Neither tests `P` |
+| The exact cell leaves `C_D` only the "ordering" of the configuration | **Accepted with correction.** `C_D` is label-permutation invariant; within a fixed-`k` cell only the largest part `M` varies, and only through its size — never through which stratum holds it |
+| Within-cell distinct-`C_D` counts are needed before power | **Accepted.** B1 v1.7 already makes `W_{C,c}^train > 0` an estimability condition, so this is a census, not a missing design element. Not computed: it needs the LC518 tables, which are not in this tree, and bank access is paused. Pre-registered in register §9.3 with a stop rule |
+| Gate 0 carries no power or MDE | **Accepted in part.** The record has illustrative MDE arithmetic, but `σ_u` and `sd(C)` are assumed, and the bank disclaims power. No empirical MDE exists; adopted as a Gate 0 exit condition |
+| "No exact match" cannot close Gate 0 | **Accepted; already the record's position.** §7 calls the search non-systematic, §8 calls `P` unproven. The explicit acceptance sentence is now in register §9.5 |
+| Citation artifacts in the memo | **Interface artifacts, not record errors.** §4/§6 carry DOI-verified citations only |
+
+### 24.3 Effect on the record
+
+- `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` §9 is the dated amendment (row 8a, the abstract
+  verification, the support ceiling, the pre-registered census, the MDE status, the acceptance sentence).
+  §1–§8 are unchanged, including the verdict.
+- **Gate 0 remains OPEN. `P` remains unproven.** No contribution statement is accepted yet.
+- **No execution, fitting, sampling, solver construction, or bank access.** The pause remains in force.
+- The next Gate 0 deliverable is the scoping review GPT specified (four comparison groups, evidence matrix,
+  backward/forward citation checks), not a solver plan. The first Gate 1 action on reopening is the
+  design-only support census of register §9.3.

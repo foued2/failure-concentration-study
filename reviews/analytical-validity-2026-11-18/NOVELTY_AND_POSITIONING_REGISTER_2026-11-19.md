@@ -273,3 +273,108 @@ Any figure carried into a future record must be re-checked against the paper it 
 not describe its contribution as novel, and it may not describe `C_D` as more informative than the full
 failure vector. Accuracy **against the predeclared exact-cell baseline** remains available as a claim,
 because that comparison is against `X`, not against `F`.
+
+---
+
+## 9. Dated amendment — 2026-11-20 (Gate 0 scoping round)
+
+**Trigger:** GPT's Gate 0 memo and Claude's review of it. This section adds one prior work, closes one
+provenance item, and pre-registers one design-only census. It changes no verdict: Gate 0 remains **OPEN**
+and `P` remains **unproven**. The §4 table above is retained unamended, so the dated record keeps its own
+text; the addition and the corrections are recorded here.
+
+### 9.1 Row 8a — the 2015 precursor is real and belongs in §4
+
+| # | Work | What it establishes | Pre-empts | Does **not** pre-empt |
+|---|---|---|---|---|
+| 8a | Almaghairbe & Roper 2015, *AST* — 2015 IEEE/ACM 10th International Workshop on Automation of Software Test (ICSE), pp. 3–7, `10.1109/ast.2015.8` | Preliminary study: cluster-based anomaly detection builds an oracle from input/output pairs; failures "tend to group into small clusters"; two systems; order-of-magnitude reduction in outputs needing manual examination | "Cluster failures to detect bugs / build an oracle" as novel, and the priority of the small-cluster observation (2015, before the SQJ paper) | Maximum-share scalar, held-out correctness prediction, exact-cell baseline, parent-grouped evaluation |
+
+Crossref record: IEEE, published print 2015-05, pp. 3–7. The venue string is the workshop's full name, not
+a journal.
+
+**Disposition of Claude's "closer than the SQJ paper".** Not accepted as stated. The 2015 paper is the
+*earlier* statement of the same hypothesis on two systems; the 2017 *Software Quality Journal* paper is
+the fuller evaluation on three systems with the quantified finding. So 2015 takes priority for the
+observation and the SQJ paper remains the closest *evidence*. Neither tests `P`, and adding row 8a does not
+change §8.
+
+### 9.2 The ≥60 % figure is now verified at the publisher abstract
+
+The earlier round had not verified it. It is verified as of 2026-11-20 against the publisher abstract
+(Crossref record `10.1007/s11219-016-9339-1`, CC-BY, issue 25(3):803–840, online 2016-10-03):
+
+> "Evaluation on three systems with a range of faults demonstrates this hypothesis to be valid — in many
+> cases small clusters were composed of at least 60 % failures (and often more)."
+
+Row 8's wording therefore stands, with one qualifier: the figure is a cluster-composition observation
+("in many cases"), not a distributional estimate and not a predictor. It does not license "failures are
+usually concentrated", and it says nothing about held-out correctness. The other figures Claude lists
+(Wu 2004, Herzig 2014, Anand 2015, Sundell, Xiong 56.3 %, Tian AUC 0.557–0.718) remain abstract-level; this
+amendment does not promote them to verified findings.
+
+### 9.3 Challenge 1 — within-cell support: accepted, with one correction and one ceiling
+
+Claude's statement: the exact cell already fixes the failure total and the unresolved count, so the only
+information `C_D` can add is the ordering of the within-cell configuration.
+
+- **Correction.** `C_D` is invariant to permuting stratum labels (dominance document §2). It does not see
+  the ordering at all. Within a fixed-`k` cell, `C_D = M/k` with `M = max_j f_j`, so the only thing that can
+  vary is the *size of the largest part*. The added information is "how large is the largest part", never
+  "which stratum holds it". A claim that `C_D` localises failures to a stratum is a different claim and
+  would require reallocating inputs, not permuting labels.
+- **Ceiling.** With eight strata of capacity eight, `M ∈ {⌈k/8⌉, …, min(8,k)}`, so any cell admits at most
+  eight distinct `M`, hence at most eight distinct `C_D`. The distinct-`C_D` column of the §4.1 table is
+  that ceiling (seven values for `9 ≤ k ≤ 16`). The realized count can only be lower. That is the
+  resolution of the exposure B1 tests: a one-parameter feature with at most eight levels.
+- **Already frozen as a design condition.** B1 v1.7 §3 item 3 makes a cell contribute only when
+  `G_c^train ≥ 2`, `D_c^train ≥ 2`, and `W_{C,c}^train = Σ_v (C_D(v) − C̄_D,c)^2 > 0`; §3 item 4 requires
+  coverage tables, exclusion reasons, and per-parent reporting. `W > 0` *is* "at least two distinct `C_D`
+  in the cell". Claude's requirement is therefore not a missing design element; it is a census that has
+  not been run.
+- **Not computed here.** The census needs the LC518 diagnostic tables, which are not in this tree, and the
+  pause forbids bank access. It is computable from the design and the `C_D` configuration alone: no
+  outcome, no fit, no solver.
+
+**Pre-registered census (first Gate 1 action, on reopening).** Group versions by exact cell `(q, Z, k, ℓ)`.
+Per cell report: version count, parent count, `G_c`, `D_c`, distinct `M`, distinct `C_D`, and
+`W_{C,c}`. Then report (a) the cells with ≥2 distinct `C_D`; (b) the versions and parents they cover;
+(c) the cells where every version shares `M`; (d) the fraction of the 78-record estimand carried by (b).
+**Stop rule:** if no cell has ≥2 distinct `C_D` with ≥2 parents, the within-cell permutation is degenerate
+and Gate 1 fails before fitting. That outcome is reported as a design failure, never as a negative result
+about concentration.
+
+### 9.4 Challenge 2 — power and MDE: the gap is real but not empty
+
+GPT's memo carries no MDE, and Claude is right that this matters before a parent count is argued. Three
+facts, kept separate:
+
+1. The record already contains illustrative MDE arithmetic (`claude-keys-verification-2026-11-18.md` §3):
+   `MDE₈₀ ≈ 2.802 · σ_u / (sd(C) · √J)`. At `J = 30` it gives 0.10–0.41 nats on the two larger assumed
+   `σ_u` rows (0.04 nats on the smallest), and the favourable row needs ≈150 units. **Both inputs are
+   assumed; neither `σ_u` nor `sd(C)` is estimated anywhere.** The table shows the size of the hole, not a
+   design input.
+2. The LC518 bank disclaims power explicitly: its sizes are for structural coverage, not statistical
+   power, and "previous power figures remain invalidated".
+3. No empirically grounded MDE therefore exists. GPT's rejection of the 150-variant programme is correct
+   on Gate 0 and on measurement, but incomplete as written: the statistical reason is the missing variance
+   source, not a computed power figure for B1.
+
+Adopted as a Gate 0 exit condition: before any parent count is argued, state the target effect, the
+variance source, and the resulting `J`. No such `J` is currently justified anywhere in the record, and the
+`J` grid in the S1 specification is a calibration dimension only.
+
+### 9.5 Challenge 3 — "no exact match" is not closure: already the record's position
+
+§7 states that the search is non-systematic and that absence of a hit is weak evidence of absence; §8 says
+`P` is **unproven, not novel**. This amendment makes the acceptance sentence explicit:
+
+> Gate 0 closes only when the contribution is stated in one precise paragraph, its difference from the
+> closest prior work is shown, its inferential scope is fixed, and **no priority or novelty claim rests on
+> the absence of a search hit**. A completed scoping review carrying the §7 evidence-matrix fields is the
+> minimum. A failed search is not a result.
+
+### 9.6 Citation hygiene
+
+The favicon links and the stray "ES" in GPT's message are chat-interface artifacts, not record content;
+§4 and §6 carry DOI-verified citations only. Claude's venue and year checks agree with Crossref on both
+Almaghairbe papers. No row of §4 is corrected by this amendment other than the addition of row 8a.
