@@ -195,7 +195,7 @@ The following small examples demonstrate that the defining predicates are mathem
 - D2: (C={5}), (a=5); (W=N_0=1).
 - D3: (C={5,11,13}), (a=5); the two distractors exceed the target and (W=N_0=1).
 - D4: (C={4,6}), (a=5); (gcd(C)=2), (W=N_0=0), and (c_{min}le a).
-- D5: (C={1,3}), (a=6); (W=3), (N_0=0).
+- D5: (C={1,3}), (a=10); (W=4), (N_0=0).
 - D6: (C={21,79,101,103,107,109,113,127,131,137,139}), (a=100); (W=N_0=1); an original and any non-identity permutation form one pair.
 - D7: (a=100), with denominations 37 and 63 plus 48 distinct denominations greater than 100; (W=N_0=1).
 - D8: (C={997,1003,1500}), (a=2000); (W=N_0=1).
