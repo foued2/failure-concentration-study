@@ -51,6 +51,42 @@ The digest above is the GitHub Actions artifact archive digest. It is not a subs
 | Rev 1.4 acceptance record | `lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_REV1_4_AMENDMENT_E_2026-11-14.md`, commit `ca15a29bd25c4c9c2293394f67cb19e1a18f34bd`, blob `074b40980eb96d164cd8411c8995bb1db4af0d46` | Accepted symbolic specification; separate from formal freeze and execution GO |
 | Population design v0.21 | `lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md`, branch `gpt/lc518-m1si-audit-2026-11-17`, blob `8af908f6b0ad4cd060194a0a63f4914939f07756` | Design-only draft; new protected evaluation proposal |
 
+### 2.4 Downloaded archive integrity and internal member-hash freeze
+
+The ZIP was downloaded only after §2.1's GitHub archive digest and size had been recorded. Before parsing any JSON, the downloaded archive was hashed locally.
+
+| Check | Recorded value |
+|---|---|
+| Downloaded file | `/mnt/data/lc518-bank-run-41591572358-1.zip` |
+| Downloaded size | `75,523 bytes` |
+| Downloaded SHA-256 | `6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2` |
+| GitHub metadata SHA-256 | `6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2` |
+| Result | **MATCH** |
+
+All 15 non-directory ZIP members were then streamed for byte-size and SHA-256 calculation. No member was parsed before this inventory was recorded.
+
+| ZIP member | Bytes | SHA-256 |
+|---|---:|---|
+| `bank/canonical_disjointness_report.json` | 1,085 | `839014e078580016c644667d41b9d83ab4bb8b3e888828c9cac67e952db5520c` |
+| `bank/diagnostic_bank.json` | 35,665 | `13f2e435552b2aa1e0ba88104300b0a1dbc4bb5f8c5061d78a01fe90fc52bc92` |
+| `bank/diagnostic_bank.rejections.jsonl` | 3,961 | `259a2d076c9e533d3f808d1197d90deae920918f03e99e7fefcb0a22c67fde7a` |
+| `bank/diagnostic_oracle_outputs.json` | 16,451 | `93eb393c0f56a7ed13a8ef4f1a29286c3aadcc6e5dc76fa59378bb0c1358214e` |
+| `bank/heldout_bank.json` | 40,218 | `b273c053e874f212f060ff23791f9be445a48203cbbde0ca1b285192093d26d6` |
+| `bank/heldout_bank.rejections.jsonl` | 2,575 | `ef420f4e56bf15f15bc3f1d9c17838fbbee48c344dbab9e2068efe70260a7d92` |
+| `bank/heldout_oracle_outputs.json` | 15,262 | `eaae81040424881cc9939e7415a8a5a0328fa870bd2a790d0b4409babd03e244` |
+| `execution_protocol_github_v2.json` | 7,102 | `9c54ffc2143eef807dad51ee5ba92e494e4588fa4655bd5772f613cec2f343a9` |
+| `lc518_generator.py` | 56,845 | `848984cac427547955a04b2e5c379762149ad94a37711a6483008fd55f2c161b` |
+| `lc518_launcher.py` | 28,436 | `014e45c259771b187a0a2323ad4efdf8ab4343a5f62cc8d9b53f59879409b2f9` |
+| `logs/run_manifest.json` | 3,178 | `698f4e99731f707a0f2474fdb1d46b972cbc7ebbff76d9f247885b139d14201f` |
+| `logs/stderr.log` | 13,025 | `76a92c24d5e5d20fd2d6242a45294c0a9455997e6cf9db0986c055a0d0dfa73a` |
+| `logs/stdout.log` | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+| `test_lc518_launcher.py` | 12,012 | `e11a1238a0c08d86ea7f7ec26de0baeadda7a925f5a42567273cf5262468c2a4` |
+| `test_lc518_generator.py` | 40,098 | `149df9f41bb3165626afda88a297196fde6d5ae5e259d43f38252454e34e6c41` |
+
+This member inventory is the pre-parse hash freeze for the authorized D0.3 inspection. It does not assert that the ZIP contents conform to the unratified C9 rev 2.6 specification.
+
+---
+
 ### 2.3 B1 identity-source gap
 
 B1 v1.7 and its acceptance record define the fixed development set as 78 canonical records, indexed (r=1,ldots,78), but the reviewed texts do not identify a separate 78-row source manifest by repository path and immutable hash. The analysis plan's symbolic row index is not itself an identity manifest.
