@@ -1,9 +1,9 @@
 # LC518 v0.21 operational diagnostic-strata specification
 
 **Document ID:** LC518-V021-ODS-2026-11-21  
-**Version:** 0.2  
+**Version:** 0.3  
 **Date:** 2026-11-21  
-**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; v0.2 ADDS FORMAL EXCLUSIVITY PROOF, C_D FEASIBILITY, D6 CANONICAL-WEIGHTED SENSITIVITY, AND TARGET-SELECTION DISCLOSURE; NOT ADOPTED OR FROZEN; NO BANK-GENERATION OR EXECUTION GO  
+**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; v0.3 CLARIFIES THE ACCEPTED k=0 CONVENTION AND REVIEW PROVENANCE; NOT ADOPTED OR FROZEN; NO BANK-GENERATION OR EXECUTION GO  
 **Selected route:** New v0.21-linked operational specification, per owner instruction dated 2026-11-21.  
 **Scope:** Define a new outcome-blind eight-stratum diagnostic taxonomy for the v0.21 population-design route.  
 **Does not modify:** Accepted B1/M1 Rev 1.4 Amendment E, accepted B1 analysis plan v1.7, historical BANK_DESIGN v1.0, or C9 rev 2.6.
@@ -39,7 +39,7 @@ The accepted Rev 1.4/B1 framework remains unchanged. For solver version (v):
 - (M(v)=max_j f_j(v)); and
 - (C_D(v)=M(v)/k_{mathrm{fail}}(v)) when (k_{mathrm{fail}}(v)ge1).
 
-When (k_{mathrm{fail}}=0), report (C_D=0) with the label **NO OBSERVED FAILURES**. Do not report unresolved records as definite failures. This specification does not introduce a new concentration index.
+When (k_{\mathrm{fail}}=0), the numerical index (C_D) is **undefined** under accepted Rev 1.4 §3.2. Report the status **NO OBSERVED FAILURES** and leave (C_D) undefined; do not substitute zero as a numeric index. Do not report unresolved records as definite failures. This specification does not introduce a new concentration index.
 
 The primary concentration calculation remains record-weighted. Canonical-identity counts and D6 pair summaries are required exposure/dependence diagnostics, not replacements for the accepted (f_j) definition.
 
@@ -68,7 +68,7 @@ C_D\in\left\{\frac{m}{k}:m=\left\lceil\frac{k}{8}\right\rceil,\ldots,\min(k,8)\r
 | 49–56 | (7,8) | ({7/k,8/k}) |
 | 57–64 | (8) only | ({8/k}) |
 
-For (k=0), use the accepted reporting convention (C_D=0), labelled **NO OBSERVED FAILURES**; it is not part of the positive-failure attainable set above.
+For (k=0), (C_D) is undefined; report **NO OBSERVED FAILURES** with no numeric index, as specified by Rev 1.4 §3.2. For (k\ge1), the attainable set above applies for every unresolved count (\ell\) satisfying (k+\ell\le64); the exact-maximum construction is proved in accepted Rev 1.4 §3.2.
 
 Thus (M) has only nine possible integer values, 0 through 8, but (C_D)'s attainable values depend on the denominator (k). For (k\ge57), the maximum must equal eight and (C_D) is forced to (8/k). A repeated or nearly flat (C_D) across versions must not be interpreted without conditioning on (k_{\mathrm{fail}}) and these design-imposed limits. This is a deterministic feasibility fact, not a prediction about solver outcomes or a power calculation.
 
@@ -254,7 +254,7 @@ When (K_{\mathrm{fail}}>0), report
 C_D^{(K)}=\frac{\max_jF_j^{(K)}}{K_{\mathrm{fail}}}.
 ]
 
-When (K_{\mathrm{fail}}=0), report 0 with the label **NO OBSERVED FAILURES AMONG RESOLVED CANONICAL IDENTITIES**. Always report the number of distinct identities with at least one resolved member, the number wholly unresolved, and the number of unresolved raw records. This sensitivity gives each distinct mathematical input one unit of total weight while averaging over the two D6 orders; it is descriptive only.
+When (K_{\mathrm{fail}}=0), the sensitivity ratio is undefined; report **NO OBSERVED FAILURES AMONG RESOLVED CANONICAL IDENTITIES** with no numeric sensitivity value. Always report the number of distinct identities with at least one resolved member, the number wholly unresolved, and the number of unresolved raw records. This sensitivity gives each distinct mathematical input one unit of total weight while averaging over the two D6 orders; it is descriptive only.
 
 
 
@@ -311,7 +311,7 @@ Population-design v0.21 proposes a new protected evaluation set. Using that prot
 
 Before a future diagnostic manifest can be frozen, its canonical identities must be checked against every relevant exposed development input set and the separately defined evaluation set. The H80-to-B1 source gap and the selected confirmatory route's consent/custody requirements remain blockers to that later freeze.
 
-### 6.2 Oracle-answer-conditioned construction is not population-neutral
+### 6.1 Oracle-answer-conditioned construction is not population-neutral
 
 The historical H80 audit identified 26 rejected H2 candidate attempts with reason code `H2_ORACLE_BELOW_TWO`; all 12 accepted H2 rows have oracle answer (W\ge2). The earlier BANK_DESIGN v1.0 describes H2 as a small-amount, multiple-combination challenge. The generator run operationalised that intended challenge by rejecting H2 candidates whose exact LC518 oracle answer was below two.
 
@@ -372,4 +372,4 @@ This draft authorizes documentary critique and revision only. It authorizes no b
 
 The owner's separate D0.3 GO authorized inspection of artifact 13210063805 for H80/oracle/sidecar identity reconciliation. That bounded audit is recorded separately. The artifact is to be preserved. The confirmatory route is selected with consent, but its historical consent, independent-custodian, trigger-(i), B1 amendment, and execution gates remain open.
 
-**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.2 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
+**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.3 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
