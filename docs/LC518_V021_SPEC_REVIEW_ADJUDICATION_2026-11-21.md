@@ -42,7 +42,7 @@ The 12 accepted H2 records have exact oracle-answer counts:
 
 This is selection on the **true LC518 answer W**, not on candidate solver PASS/FAIL. It conditions accepted H2 records on (W\ge2). Historical BANK_DESIGN v1.0 §5 describes H2 as a small-amount multiple-combination challenge, so the rejection predicate operationalises that design intention. Still, H80 is a fixed finite list, not a representative sample of all small-amount inputs. Descriptive claims on its declared 80-record target remain finite-bank claims; population generalization needs a separately defined conditional sampling estimand.
 
-The new v0.21 taxonomy does not inherit H2's filter. Its D1–D8 (W/N_0) predicates are explicit, pre-outcome diagnostic-construction conditions. Any future protected evaluation bank must separately define its target population and justify/freeze any oracle-answer-conditioned inclusion rule in the B1 amendment. This distinction was added to the H80 result record and v0.2 §6.2.
+The new v0.21 taxonomy does not inherit H2's filter. Its D1–D8 (W/N_0) predicates are explicit, pre-outcome diagnostic-construction conditions. Any future protected evaluation bank must separately define its target population and justify/freeze any oracle-answer-conditioned inclusion rule in the B1 amendment. This distinction was added to the H80 result record and v0.3 §6.1.
 
 ### 2.3 Record weighting and D6 pairs
 
@@ -50,7 +50,7 @@ The new v0.21 taxonomy does not inherit H2's filter. Its D1–D8 (W/N_0) predica
 
 D6 contains eight raw record presentations but four canonical mathematical inputs. Under the accepted B1 statistic, both orderings count as two tested records because the primary (f_6) and (C_D) are record-level quantities, and the design deliberately tests both orders. This does not make the two records independent canonical inputs and must not be described as equal weighting over unique inputs.
 
-The v0.2 text now requires:
+The v0.3 text now requires:
 - explicit rationale that record weighting is the accepted primary estimand over diagnostic presentations;
 - pairwise PASS/FAIL/UNRESOLVED reporting; and
 - a secondary descriptive canonical-identity-weighted sensitivity (C_D^{(K)}), where each canonical key contributes its mean failure fraction across resolved orderings (0, 1/2, or 1 for D6 pair patterns).
@@ -64,8 +64,7 @@ The sensitivity is not the accepted primary statistic and cannot receive confirm
 With eight raw records per stratum, (0\le f_j\le8), and (0\le k_{\mathrm{fail}}\le64). For fixed (k\ge1),
 
 [
-\left\lceil\frac{k}{8}\right\rceil\le M\le\min(k,8),
-qquad
+\left\lceil\frac{k}{8}\right\rceil\le M\le\min(k,8),\qquad
 C_D\in\left\{\frac{m}{k}:m=\left\lceil\frac{k}{8}\right\rceil,\ldots,\min(k,8)\right\}.
 ]
 
@@ -120,6 +119,6 @@ These checks prove only that the predicates have witnesses. They do not demonstr
 3. D6's duplicate canonical identities create a real difference between raw-record and unique-input weighting; primary record weighting is retained, with a secondary descriptive canonical-key sensitivity added.
 4. C_D feasibility has been exactly characterised for every total failure count.
 5. The eight construct rationales are clearer, but the proposed categories are not yet empirically validated, and the diagnostic-to-evaluation property crosswalk remains open.
-6. The specification remains draft v0.2, not accepted or frozen. No generator, manifest, diagnostic result, solver outcome, model fit, simulation, or experiment was created or run.
+6. The specification remains draft v0.3, not accepted or frozen. No generator, manifest, diagnostic result, solver outcome, model fit, simulation, or experiment was created or run.
 
 **Review boundary:** Claude's comments should not be described as a direct independent file-level review of v0.1. Claude should now retrieve the raw v0.3 file and challenge it directly; GLM should conduct a separate direct review. GPT will adjudicate their source-specific findings.
