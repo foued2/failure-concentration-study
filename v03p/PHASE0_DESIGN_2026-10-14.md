@@ -3,6 +3,9 @@
 **Date:** 2026-10-14
 **Status:** DRAFT for independent review. Owner-authorized (2026-10-14): Phase 0 document only. No solver generation, no hidden-outcome collection, no code implementation, and no v0.3 authorization follows from this document. v0.1, v0.2, and RLC-0 records are untouched; this file is a new dated artifact.
 
+> **Retrospective provenance qualification (2026-11-21):** The v0.1 and v0.2 retained packs do not provide independently verifiable evidence of natural, single-shot LLM generation. In particular, the v0.2 repository emitter contains 40 literal solver-body templates and deterministically writes three copies of each. The target-population language in §3 is therefore a proposed future protocol choice, not a population property empirically established by the earlier packs. Any later protocol would need a first-class provenance gate (provider/session evidence, raw ordered outputs, prompt/model/decoding record, and body/file identity accounting) before its population claims could be frozen. This qualification does not authorize Phase 1 or any solver generation. See reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md.
+
+
 ## 1. Scope and authority
 
 This document specifies the design of a prospective test of the incremental predictive value of family concentration (C) beyond failure count (k). It fixes the estimand, population, outcome, models, score, minimum meaningful effect, identifiability gate, evaluation structure, simulation plan, and stopping rules, so that no critical choice can be postponed until outcomes are seen.

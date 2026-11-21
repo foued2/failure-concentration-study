@@ -1,5 +1,38 @@
 # v0.2 Final Report — Failure-Concentration Predictive Value (Directed SSSP)
 
+
+## Retrospective provenance and estimand correction (2026-11-21)
+
+This dated note corrects the scope and provenance interpretation. It does not change the frozen v0.2 decision function, its recorded NEGATIVE classification, or any historical hash.
+
+### What the repository actually retained
+
+The current v02/generate_pack.py defines 40 distinct solver-body strings, S[1] through S[40]. Its main() deterministically loops over those 40 strings three times and writes 120 files. Each triplet has the same solver function body; only the submission/replica header changes. Thus the emitted pack contains 40 distinct body templates represented by 120 files, not 120 distinct implementations or 120 evidenced single-shot generation events.
+
+The source also includes explicit design annotations such as “natural defect: one iteration short” and “natural defect: exit on first sight, not pop”. These establish that the literal templates were organized and annotated in source. They do not, by themselves, establish who originally wrote each body or whether an earlier model session supplied it.
+
+The repository does not retain provider/session transcripts, request identifiers, raw ordered model responses, or equivalent independently verifiable evidence establishing that the 40 body templates are faithful, unmodified outputs of the named LLM procedure. Consequently, the claimed LLM origin, single-shot status, and absence of selection before the templates entered the repository are UNVERIFIED. The repository history strengthens this limitation: the v0.2 protocol/freeze commit 798b446 (2026-10-12 12:56:28 UTC) does not contain the generator script; the 120 emitted files were committed at 8f83ee8 (13:13:24 UTC); the generator script first appears in the repository at a6a8439 (14:43:20 UTC). The freeze file was amended with the generator hash in the pack commit. The script may have existed in an untracked local workspace before then, but the Git history does not establish a versioned generator artifact before emission.
+
+The statement “120 single-shot submissions” must therefore be read only as a historical protocol label and file count, not as verified provenance or 120 independent solver draws. The three copies of each body are not independent implementations. The pack's observed results describe the retained 40-body template corpus under the file-level execution/weighting used by the analysis. Population-level claims about natural single-shot LLM submissions are not supported.
+
+### What the v0.2 result does and does not say
+
+The frozen analysis returned NEGATIVE under its prespecified classification rule. That computational classification is preserved. It is not evidence that concentration has no incremental predictive value, because the eligible observations did not provide the required equal-k, different-C contrast.
+
+The probe builders in study/probes.py accept the variant index, not the instance seed. make_probe_suite(instance_seed) calls those seed-independent builders; the seed affects the probe dictionary's metadata field, not the graph construction. Therefore the graph content, predicate assignments and diagnostic failure vector for a fixed solver body are invariant across instances. The hidden-suite outcomes do vary by instance, so leave-one-instance-out scoring is not literally empty: it can evaluate whether fixed solver-level diagnostic features predict outcomes on other hidden suites for the same fixed pack. It cannot establish that instance-specific diagnostic variation predicts instance-specific correctness, nor does it test unseen-solver generalization.
+
+The v0.2 interpretability audit directly verified C = 5/k on the 90 persisted eligible pilot rows, with no within-k variation. The confirmatory report persisted aggregate counts and instance-level score contributions, not per-solver (k,C) rows; the repository's subsequent audit explicitly records that a direct confirmatory row-level recount was not performable without rerunning the solvers. Given the unchanged body corpus and seed-invariant probe graph construction, the confirmatory features inherit the same structural limitation, but this record does not misstate the 90-row pilot recount as a persisted 1,200-row confirmatory audit.
+
+The narrow interval is reproducible from the persisted instance-level delta_i values. That establishes computational reproduction of the reported score comparison, not demonstrated interval coverage and not precision for an independently varying concentration effect. The “not underpowered” statement in §7 is therefore not a valid argument that the concentration-versus-count estimand was tested with adequate power.
+
+The v0.2 relabel control also differs from the v0.1 instrument specification: v0.1 describes per-instance relabel partitions, while v0.2 freezes one shared partition per replicate across instances. This is a change in the null-control procedure and should not be described as an unchanged control.
+
+### Correct interpretation
+
+The v0.2 outcome is a frozen-rule NEGATIVE model-comparison classification on the retained, replicated source-code corpus. The experiment did not identify whether family concentration predicts hidden-suite correctness beyond failure count when concentration varies independently of count. It does not refute that hypothesis and does not establish performance for a natural LLM-generated solver population.
+
+For the supporting source review, seed and ordering checks, and limits of this adjudication, see reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md. No solver was regenerated or executed for this correction.
+
 **Status:** TERMINAL — **NEGATIVE** (2026-10-12)
 **Protocol:** v0.2, frozen 2026-10-12 before pack generation (`v0.2-freeze` @ `798b446`; protocol hash `99a7f7f00d14b98e…`).
 **Terminal runner outputs:** `v02/confirmatory_v02/confirmatory_v02_report.json`, `v02/confirmatory_v02/RESULT_V02.md`.
