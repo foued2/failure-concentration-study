@@ -1,9 +1,9 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.7  
+**Version:** 0.8  
 **Date:** 2026-11-21  
-**Status:** DRAFT FOR INDEPENDENT REVIEW; H80-TO-ORACLE RECONCILIATION PASS; H80-TO-B1 IDENTITY OPEN; NEW v0.21 OPERATIONAL-STRATA SPEC v0.1 DRAFTED BUT NOT ADOPTED; MEASUREMENT VALIDITY OPEN  
+**Status:** DRAFT FOR INDEPENDENT REVIEW; H80-TO-ORACLE RECONCILIATION PASS; H80-TO-B1 IDENTITY OPEN; NEW v0.21 OPERATIONAL-STRATA SPEC v0.3 DRAFTED BUT NOT ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
 **Scope:** Documentation-only scientific review. This is not a protocol amendment, bank specification, mutation allocation, freeze, statistical decision, or execution authorization.
@@ -105,13 +105,13 @@ The later population-design v0.21:
 
 The owner-authorized D0.3 inspection of GitHub Actions artifact 13210063805 has established the actual historical H80 contents. The bank contains 80 raw records but exactly 78 distinct canonical identities. The only duplicate groups are H057/H058 (H6-P01) and H059/H060 (H6-P02), the two declared original/permutation pairs. There are no additional within-bank canonical collisions. All 80 stored canonical IDs recompute from `(amount, tuple(sorted(coins)))`, and every record satisfies the distinct-denomination contract.
 
-The matching `heldout_oracle_outputs.json` contains exactly 78 objects. Its canonical-key set equals the H80 key set; every raw record resolves to one matching oracle object, and no key is missing or extra. The H80 rejection sidecar contains 26 rejected candidate attempts, all H2 retries with reason `H2_ORACLE_BELOW_TWO`; every affected candidate slot H018–H024 ultimately appears as an accepted row. Those retry events do not explain the two-row raw-to-oracle difference. The difference is explained by the two H6 reorder pairs sharing their canonical identities and oracle objects. The full hashes and row-level reconciliation are recorded in `docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md`.
+The matching `heldout_oracle_outputs.json` contains exactly 78 objects. Its canonical-key set equals the H80 key set; every raw record resolves to one matching oracle object, and no key is missing or extra. The H80 rejection sidecar contains 26 rejected candidate attempts, all H2 retries with reason `H2_ORACLE_BELOW_TWO`; every affected candidate slot H018–H024 ultimately appears as an accepted row. The accepted H2 rows have oracle answers (W\ge2). The retries therefore expose an oracle-answer-conditioned H2 construction filter, not selection on solver PASS/FAIL. The filter is consistent with historical BANK_DESIGN v1.0's stated multiple-combination H2 challenge, but conditions the accepted H2 inputs on (W\ge2). H80 remains the fixed finite 80-record target; it is not a representative sample of all small-amount LC518 inputs. The retries do not explain the two-row raw-to-oracle difference, which is explained by the H6 reorder pairs sharing their canonical identities and oracle objects. The full hashes and row-level reconciliation are recorded in `docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md`.
 
 This resolves H80's internal raw-row/canonical-key/oracle relationship. It does **not** resolve H80-to-B1 identity. B1 v1.7 and its acceptance record define a fixed 78-record publicly exposed development set but do not supply its 78 canonical keys or cite the H80 artifact by immutable identity. A metadata scan of the accepted B1 publication tree found no separate B1 78-row manifest or oracle attachment. The symbolic row index (r=1,ldots,78) is not an identity list. Therefore equality, partial overlap and disjointness between H80 and B1 remain **OPEN**. Do not treat matching cardinalities as identity evidence or substitute H80's oracle keys as the B1 set without contemporaneous/authoritative provenance.
 
 The bank roles remain distinct even if identity equality is eventually proven: historical H80 was the earlier package's held-out target; B1 v1.7's 78 rows are publicly exposed development data. Identity equality would establish overlap or lineage, not analytical interchangeability or a sealed target. The separate blind E3 claim requires its own identity manifest and custody evidence.
 
-**No stratum definition or record count from historical BANK_DESIGN is promoted to current v0.21 authority.** The owner selected a new v0.21-linked operational diagnostic-strata specification, now drafted separately as `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`. It is a draft only, not accepted or frozen.
+**No stratum definition or record count from historical BANK_DESIGN is promoted to current v0.21 authority.** The owner selected a new v0.21-linked operational diagnostic-strata specification, now drafted separately as `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`, current revision v0.3, blob `299464b2057d352416ddd6db1ee489ac09617394`. It is a draft only, not accepted or frozen.
 
 ---
 
@@ -166,9 +166,10 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 ### 4.2 Procedure
 
 - The owner-authorized D0.3 inspection of artifact 13210063805 is complete for H80 bank rows, H80 oracle outputs, the H80 rejection sidecar, the canonical-disjointness report, and specified run-manifest fields. The archive digest and all 15 member hashes were recorded before parsing. See the owner-GO inventory and D0.3 result records.
-- H80 result: 80 raw rows, 78 unique canonical keys, two duplicate groups (the H6 reorder pairs), 78 exact oracle keys, complete row-to-oracle resolution, and no missing or extra oracle keys. Its 26 H2 rejection attempts all ended in accepted candidate slots and do not explain the 80-to-78 reduction.
+- H80 result: 80 raw rows, 78 unique canonical keys, two duplicate groups (the H6 reorder pairs), 78 exact oracle keys, complete row-to-oracle resolution, and no missing or extra oracle keys.
+- H80's 26 H2 retries all have reason `H2_ORACLE_BELOW_TWO` and end in accepted candidate slots. The accepted H2 rows have (W\ge2). This is oracle-answer-conditioned construction of the finite H2 target, not selection on solver PASS/FAIL. The H80 target is its fixed 80-record list, not all small-amount LC518 inputs. The H2 filter does not explain the 80-to-78 raw/oracle cardinality difference.
 - H80-to-B1 result: OPEN. The accepted B1 v1.7 source set has not been independently identified by canonical keys. Do not equate the two 78-count sets. The next documentary requirement is an independently attributable B1 78-row identity manifest or an authoritative contemporaneous record linking B1 to the H80 oracle artifact, including its immutable hash and provenance.
-- The canonical identity is `(amount, tuple(sorted(coins)))`. Repeated denominations are invalid under the historical task contract; the tuple preserves multiplicity and must not be replaced by set normalization.
+- The canonical identity is `(amount, tuple(sorted(coins))`. Repeated denominations are invalid under the historical task contract; the tuple preserves multiplicity and must not be replaced by set normalization.
 - The one-oracle-object-per-distinct-canonical-identity rule is verified for H80. Each H6 reorder pair's two raw rows resolve to one shared oracle object.
 - Rejection sidecars are candidate-attempt history, not missing accepted rows. Future sidecar checks must reconcile each attempt to accepted slot identities and the publication report; event counts alone do not explain oracle-object cardinality.
 - Any later H80-to-B1 comparison must use exact manifest provenance and normalized keys, and report equality, partial intersection or disjointness without assuming any of these outcomes. The separate blind E3 claim requires its own identity/custody evidence; H80/B1 equality alone does not prove E3 contamination.
@@ -813,7 +814,7 @@ Starting statuses at the time this blueprint was drafted:
 | Coin-denomination uniqueness in the historical input domain | VERIFIED-SOURCE in BANK_DESIGN v1.0 §1; repeated denominations are invalid; sorted-tuple identity preserves multiplicity and must not be replaced with set normalization |
 | H80 raw rows and within-bank canonical identity | VERIFIED-SOURCE from artifact 13210063805: 80 raw rows, 78 unique keys, exactly two H6 duplicate-pair groups; all 80 canonical IDs recompute |
 | H80 oracle-output mapping | VERIFIED-SOURCE from artifact 13210063805: exactly 78 oracle objects; exact key equality with the 78 H80 canonical identities; every raw row resolves; no missing/extra key |
-| H80 rejection sidecar | VERIFIED-SOURCE from artifact 13210063805: 26 H2_ORACLE_BELOW_TWO retries across H018–H024, all later represented by accepted rows; not an explanation for missing oracle outputs |
+| H80 rejection sidecar | VERIFIED-SOURCE from artifact 13210063805: 26 H2_ORACLE_BELOW_TWO retries across H018–H024, all later represented by accepted rows; accepted H2 records satisfy (W\ge2), conditioning this finite stratum on the true task answer but not solver PASS/FAIL |
 | H80-to-B1-78 identity-set relationship | OPEN; H80 keys verified but independently attributable B1 78-row identity source not located |
 | Current B1 78-record development-bank status | VERIFIED-SOURCE in B1 v1.7 and its acceptance record; actual B1 identities not established by the accepted source tree |
 | New protected-set proposal | VERIFIED-SOURCE as a proposal; independent custodian and accepted amendment OPEN |
@@ -923,13 +924,14 @@ The following records were retrieved from the repository. Branch and blob identi
 | lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md | gpt/lc518-m1si-audit-2026-11-17 | 8af908f6b0ad4cd060194a0a63f4914939f07756 | Current population-design draft, conditional claim, q/a distinction, M1-si support, non-authorization |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
-| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 86d133202594072c97e9815f811b63c3dae1fd8e | GPT source-adjudication v1.3: H80-to-oracle reconciliation PASS; B1 identity source missing; no operational D1–D8 authority yet |
+| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 21404fbe4a6c7c4dc5c03f69c95a46f1d7610882 | GPT source-adjudication v1.3: H80-to-oracle reconciliation PASS; B1 identity source missing; no operational D1–D8 authority yet |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
 | lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
 | docs/LC518_D0_3_OWNER_GO_AND_HASH_INVENTORY_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ae4ac9708ebde91fd7981f9587806d068294cb1d | Owner D0.3 GO, archive digest and 15 member hashes frozen before parsing; bounded scope and limits |
-| docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 1a2255d13db6f82fdfffa265b18d075163c0b63d | H80 80/78/78 reconciliation; 26 H2 retries; B1 identity source not established |
-| docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 5c9cc5c46f2075948a0564fed5851800755768ed | New owner-selected operational taxonomy draft; not accepted, frozen, or generation-authorizing |
+| docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ec81a3a6c6d15eb7fbe9db12a8047c99554f15b7 | H80 80/78/78 reconciliation; 26 H2 retries; B1 identity source not established |
+| docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 299464b2057d352416ddd6db1ee489ac09617394 |
+| docs/LC518_V021_SPEC_REVIEW_ADJUDICATION_2026-11-21.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | c03cf8b8d27730ef4186a36c836d6c3f3cda98cc | GPT's direct adjudication of provisional Claude summary-based comments; not a direct Claude file review | New owner-selected operational taxonomy draft; not accepted, frozen, or generation-authorizing |
 | reviews/AI_REVIEW_2026-11-10_MUTATION_ALLOCATION_SEARCH.md | master | 51bff158b28da12d005675b29545274c582fc1f8 | Bounded review of five supplied conversation PDFs; complete allocation not established within reviewed scope |
 | engineered-study/09_CONCENTRATION_MATHEMATICAL_SPEC.md | research/concentration-math-spec | 9da18a096ef6ae9c53fa96fe85121c7727cd9dac | Historical six-family parenthesis-task math-only document; not the current eight-stratum Coin Change task |
 | docs/SCIENTIFIC_ROADMAP_AUDIT_2026-11-18.md | docs/scientific-roadmap-audit-2026-11-18 | e6c1a21815794a20f08bad45342fd6cff3858ee6 | Existing documentation-only repository roadmap |
@@ -954,10 +956,10 @@ The next review work is ordered, not open-ended.
 
 The current authority state and D0.3 results are recorded in the v1.3 authority decision, owner-GO inventory and D0.3 reconciliation result. H80 is reconciled internally: 80 raw rows, 78 canonical identities, 78 matching oracle objects, and 26 H2 retry events that do not explain the output count. The H80-to-B1 identity relationship remains OPEN because no independently attributable B1 78-row identity source has been located.
 
-The owner selected a new v0.21 operational-specification route. Draft v0.1 is in a separate branch and requires independent review before acceptance. Review order:
+The owner selected a new v0.21 operational-specification route. Draft v0.3 is in a separate branch and requires direct independent review before acceptance. Claude's first comments were summary-based; it has not yet reviewed v0.3 directly. GLM's direct review remains pending. Review order:
 
-1. Claude and GLM independently challenge the new D1–D8 taxonomy v0.1: construct validity, mutual exclusivity, non-emptiness, exposure/dependence, and whether the stated witnesses actually support each predicate.
-2. GPT adjudicates those challenges and revises the draft as necessary. The specification does not become operational authority until an exact version/hash is explicitly owner-accepted.
+1. Claude and GLM independently challenge the new D1–D8 taxonomy v0.3: construct validity, mutual exclusivity, non-emptiness, exposure/dependence, the C_D feasibility envelope, the D6 canonical-weighted sensitivity, and whether the stated witnesses actually support each predicate.
+2. GPT adjudicates those direct file-level challenges and revises the draft as necessary. The specification does not become operational authority until an exact version/hash is explicitly owner-accepted.
 3. Identify the independently attributable B1 78-row identity source. Do not assume it is H80's oracle key set. If no such source exists, retain the H80-to-B1 comparison as OPEN / NOT ESTABLISHED.
 4. Close the diagnostic-to-evaluation property crosswalk and transport rationale using the adopted strata and the separately defined evaluation specification.
 5. Confirmatory route is selected with consent, but before confirmatory evaluation verify actual consent provenance, appoint the independent protected-set custodian, ratify trigger-(i), complete the separate B1 amendment, and obtain its review/adjudication and a further execution GO.
@@ -966,6 +968,6 @@ D4/D5/D6 are explicitly addressed in the new v0.1 proposal but remain open to ch
 
 The mutation-to-stratum map remains blocked until actual operator classes are authoritatively specified. No mapping may be invented from stratum names. The exact closure evidence and stop conditions are in §§5.6.6–5.7.
 
-**Current status: Gate 0 remains OPEN. H80-to-oracle reconciliation is PASS; H80-to-B1 identity is OPEN / NOT ESTABLISHED because the B1 identity source is missing. A new v0.21 D1–D8 specification is drafted as v0.1 on a separate branch and is NOT ACCEPTED or FROZEN. D4/D5/D6 and the diagnostic-to-evaluation crosswalk remain subject to independent review. Confirmatory evaluation remains blocked on consent/custody/trigger-(i)/B1-amendment/execution gates. No solver or outcome work is authorized.**
+**Current status: Gate 0 remains OPEN. H80-to-oracle reconciliation is PASS; H80-to-B1 identity is OPEN / NOT ESTABLISHED because the B1 identity source is missing. A new v0.21 D1–D8 specification is drafted as v0.3 on a separate branch and is NOT ACCEPTED or FROZEN. D4/D5/D6 and the diagnostic-to-evaluation crosswalk remain subject to independent review. Confirmatory evaluation remains blocked on consent/custody/trigger-(i)/B1-amendment/execution gates. No solver or outcome work is authorized.**
 
 **End of blueprint.**
