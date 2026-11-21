@@ -1,7 +1,7 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.5  
+**Version:** 0.6  
 **Date:** 2026-11-20  
 **Status:** DRAFT FOR INDEPENDENT REVIEW; AUTHORITY STATE ADJUDICATED: NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
@@ -166,8 +166,13 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 - Build a source-authority table containing document path, branch, commit, blob hash, version, date, acceptance/freeze status, and the precise decision it controls.
 - Retrieve and compare the full source text of the earlier BANK_DESIGN, the applicable C9 generation specification, B1 v1.7, its acceptance record, and population-design v0.21.
 - Compare actual bank manifests and hashes only where their repository or authorized artifact identities are available. A design document is not proof that a bank file was generated or validated.
-- For D0.3, treat the possible H80-to-B1-78 canonical-identity reconciliation as a hypothesis, not a result. If a future explicit reopening authorizes it, compare normalized keys `(amount, tuple(sorted(coins)))` and report unique-key counts, duplicate multiplicities, intersection, set differences, and manifest hashes. Do not infer identity equality from the 80/78 counts or opaque IDs alone.
-- The present project pause prohibits opening or comparing bank manifests. No identity comparison is performed in this blueprint.
+- For D0.3, treat the possible H80-to-B1-78 canonical-identity reconciliation as a hypothesis, not a result. If a future explicit reopening authorizes it, first freeze artifact IDs, paths, byte sizes, and SHA-256 hashes for the H80 bank, H80 oracle attachment, H80 rejection sidecar, publication report, B1 78-row manifest/oracle source, and applicable generator/specification revisions. Timestamp that inventory before any identity intersection is computed.
+- Validate that every input has distinct denominations, as required by the historical LC518 design domain. Repeated denominations are invalid and must stop the audit. Use `(amount, tuple(sorted(coins)))`; this preserves multiplicity. Never normalize with a set.
+- Reconcile raw bank rows to oracle objects by canonical identity. The historical BANK_DESIGN says oracle answers are computed once per canonical instance; the proposed C9 serialization further specifies one output object per distinct canonical ID, with both rows of a reorder pair sharing one output. Therefore compare oracle-object count with unique canonical identities, not blindly with raw-row count.
+- Reconcile the rejection sidecar separately as generation-attempt history. The proposed C9 schema records rejected attempts by attempt number, planned slot/pair ID, reason, bank, and stratum. A rejected attempt may belong to a slot that later succeeds, so an ID match alone does not imply an accepted row was rejected. Rejected attempts are not accepted final rows and do not, by count alone, explain a shortfall in oracle objects.
+- Report H80 raw rows, H80 unique keys, oracle keys, B1 keys, intersection, set differences, duplicate multiplicities, row-to-oracle resolution, sidecar retry reconciliation, and all frozen hashes. Use predeclared interpretation rules: 80 rows/78 unique identities/78 matching outputs is compatible with two H6 reorder pairs; 80 unique identities/78 outputs is an unresolved missing-output/schema defect; B1 key equality supports overlap/lineage but not role interchangeability.
+- If B1 and H80 identity sets are equal, do not describe them as independent input sets or use H80 as independent new-input validation of B1. B1 v1.7 remains a publicly exposed development-bank analysis, not new-record validation. Assess the separate blind E3 claim against E3's own manifest and custody; H80/B1 equality alone does not prove E3 contamination.
+- The present project pause prohibits opening or comparing bank manifests, oracle attachments, or rejection sidecars. No identity or sidecar comparison is performed in this blueprint.
 - Record every difference in bank size, stratum definitions, canonical identity rules, held-out membership, score weights, and custody.
 - Do not resolve version conflicts by choosing the largest or newest number. The controlling authority must be explicit in an accepted source record.
 
@@ -175,7 +180,7 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 
 - **D0.1 Source-of-truth register:** all controlling and superseded records.
 - **D0.2 Bank identity register:** authoritative diagnostic and held-out manifest identities and hashes, or an explicit statement that they are unavailable/unverified.
-- **D0.3 Version reconciliation:** distinguish the 64 abstract diagnostic slots, historical D64 bank, historical H80 raw rows, B1's 78 development rows, and v0.21's proposed protected set. Record the conditional H80 count arithmetic and the untested hypothesis that B1's 78 identity set may equal the 78 unique H80 canonical identities after the two H6 ordering pairs are collapsed. Equality, overlap, and disjointness remain OPEN until a separately authorized identity-only manifest comparison is completed; the current pause prohibits that comparison.
+- **D0.3 Version reconciliation:** distinguish the 64 abstract diagnostic slots, historical D64 bank, historical H80 raw rows, B1's 78 development rows, and v0.21's proposed protected set. Record the conditional H80 count arithmetic; compare H80 raw rows with its unique canonical identities and oracle-output keys; reconcile the rejection sidecar as attempt history; then compare H80 and B1 identity sets. Equality, overlap, and disjointness remain OPEN until a separately authorized comparison after artifact hashes are frozen. The present pause prohibits all bank/oracle/sidecar access.
 - **D0.4 Authority decision:** explicit disposition of whether the old D1–D8 definitions are binding, superseded, or unresolved.
 
 ### 4.4 Pass and stop criteria
@@ -807,7 +812,10 @@ Starting statuses at the time this blueprint was drafted:
 | Eight records per diagnostic stratum in that earlier design | VERIFIED-SOURCE |
 | D6 contains four canonical instances × two orderings in that earlier design | VERIFIED-SOURCE |
 | Earlier H1–H8 definitions and 80-record count | VERIFIED-SOURCE for that earlier design only; current authority OPEN |
+| Coin-denomination uniqueness in the historical input domain | VERIFIED-SOURCE in BANK_DESIGN v1.0 §1; repeated denominations are invalid; sorted-tuple identity preserves multiplicity and must not be replaced with set normalization |
 | H80 unique canonical-identity count | OPEN at manifest level; H6's stated pair structure yields 8 identities from 10 rows; 78 total is conditional on no additional collisions among the other 70 rows |
+| H80 oracle-output cardinality | A reviewer reports 80 inputs and 78 oracle outputs, but this remains REPORTED-NOT-REPRODUCED; under the stated/proposed per-canonical-instance output rule, 78 outputs are compatible with 78 unique identities |
+| H80 rejection sidecar | Reported path `heldout_bank.rejections.jsonl`; existence/content and relation to the published bank are not verified. It must be reconciled as candidate-attempt history, not assumed to explain output cardinality |
 | H80-to-B1-78 identity-set relationship | OPEN; canonical de-duplication is a plausible hypothesis, but no source link or identity comparison establishes equality, overlap, or disjointness |
 | Current B1 78-record development-bank status | VERIFIED-SOURCE in v0.21/B1 records; actual bank identity must be reconciled to the governing manifest |
 | New protected-set proposal | VERIFIED-SOURCE as a proposal; independent custodian and accepted amendment OPEN |
@@ -914,7 +922,7 @@ The following records were retrieved from the repository. Branch and blob identi
 | lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md | gpt/lc518-m1si-audit-2026-11-17 | 8af908f6b0ad4cd060194a0a63f4914939f07756 | Current population-design draft, conditional claim, q/a distinction, M1-si support, non-authorization |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
-| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 9d8c97e2759bec61e5e1f53573cbe0ded3f4e8ba | GPT source-adjudication record: accepted symbolic eight-stratum structure, but no operational D1–D8 specification adopted for v0.21 |
+| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | d0e5cbd908296dc9feaa21ddadfbfb9843c445ec | GPT source-adjudication record v1.2: no operational D1–D8 specification adopted; H80/B1 identity, oracle-output and sidecar reconciliation specified but unperformed |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
 | lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
@@ -938,7 +946,7 @@ These are relevant motivation and limitation sources. Their measurement units an
 
 This document remains a blueprint for critique and is not accepted merely because the cross-review has converged on several findings. The convergence recorded in §5.6.6 is technical agreement on the identified issues and closure conditions, not a formal joint sign-off or owner ratification.
 
-The next review work is ordered, not open-ended. The present authority ruling and the D0.3 H80-to-B1-78 identity hypothesis are recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`: accepted symbolic statistical authority exists, no operational D1–D8 specification is adopted for v0.21, and the identity-set relationship remains untested.
+The next review work is ordered, not open-ended. The present authority ruling and D0.3 reconciliation protocol are recorded in `docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md`: no operational D1–D8 specification is adopted for v0.21; H80/B1 identity equality remains untested; oracle-output and rejection-sidecar reconciliation are specified but unperformed; and repeated denominations are invalid under the historical input-domain definition.
 
 1. Obtain an owner-authorized selection of the exact operational D1–D8 specification and diagnostic manifest. The source-authority audit is complete; the adoption decision remains open. Do not presume BANK_DESIGN v1.0 or C9 rev 2.6 wins.
 2. Adjudicate D4 against that adopted source: a composite is possible only with a specific rationale, fixed pre-outcome subtype definitions/proportions, and mandatory subtype reporting; otherwise a separately reviewed redesign is required.
