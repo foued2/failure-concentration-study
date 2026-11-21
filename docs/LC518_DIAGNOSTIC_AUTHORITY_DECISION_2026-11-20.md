@@ -3,6 +3,8 @@
 **Decision ID:** LC518-DIAG-AUTH-2026-11-20  
 **Version:** 1.2  
 **Decision date:** 2026-11-20  
+**Revision date:** 2026-11-21  
+**Revision note:** v1.2 adds D0.3 oracle-output/rejection-sidecar reconciliation, input-domain identity safeguards, and conditional consequences of H80/B1 overlap. No bank, oracle, or sidecar contents were inspected.  
 **Status:** GPT SOURCE-ADJUDICATION RECORDED; NO CURRENT OPERATIONAL D1–D8 SPECIFICATION ADOPTED  
 **Repository:** `foued2/failure-concentration-study`  
 **Scope:** Documentary authority determination for the current v0.21 population-design route. Not a bank specification, protocol amendment, owner ratification of new strata, freeze, or execution authorization.
