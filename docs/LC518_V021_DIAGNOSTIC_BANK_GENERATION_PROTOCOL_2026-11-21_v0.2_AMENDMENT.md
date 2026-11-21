@@ -118,7 +118,7 @@ The proposed PRNG draw order is:
 4. D6: one sample of 4 from the ascending 19-value list.
 5. D7: one draw from E_100, then E_101, E_102, E_103, E_104, E_105, E_106, and E_107 in that order.
 
-D1, D3, and D8 have fixed eight-value lists and consume no PRNG draws. There is no interleaving, parallel consumption, hidden draw, or draw after a failure. The seed and PRNG engine are not yet selected or frozen.
+D1, D3, and D8 have fixed eight-value lists and consume no PRNG draws. The bounded-draw schedule therefore contains exactly 36 randbelow calls: 8 for D2, 8 for D4, 8 for D5, 4 for D6, and 1 for each of the eight D7 amounts. Rejected raw PRNG words, if the unbiased randbelow mapping requires them, are recorded separately and do not count as candidate attempts. There is no interleaving, parallel consumption, hidden bounded draw, or draw after a failure. The seed and PRNG engine are not yet selected or frozen.
 
 ## 3. Selector-to-invariant proof and mandatory construction checks
 
