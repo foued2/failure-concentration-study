@@ -124,6 +124,8 @@ otin C).
 
 The validator must evaluate every candidate against all eight rules and confirm exactly one eligible assignment. If zero or multiple rules match, reject the candidate and record the cause. Do not resolve an overlap by arbitrary priority assignment or after observing solver outcomes.
 
+At whole-bank validation, the 64 raw records must yield exactly **60 distinct canonical identities**. The only permitted within-bank duplicate groups are the four D6 pair identities, each occurring exactly twice within its own declared pair. No canonical identity may appear in two different D6 pairs, in two different strata, or in any non-D6 record alongside another row. Any such collision fails the complete bank validation and must not be silently repaired by dropping or relabelling a row.
+
 ### 3.2 Non-emptiness witnesses (illustrative only)
 
 The following small examples demonstrate that the defining predicates are mathematically nonempty. They are not frozen bank records, are not assigned input IDs, and must not be copied into a future manifest without the ordinary collision and freeze checks.
@@ -187,7 +189,7 @@ Construction-check fields (W) and (N_0), where required, must be stored in an au
 
 There must be exactly one oracle-output object per distinct canonical identity, not one object per raw row. Each object contains the canonical ID, amount, sorted denominations, and exact LC518 answer (W). The two records of a D6 pair resolve to the same object.
 
-Under this draft's 64-record structure, four D6 pairs account for four intentional duplicate canonical identities; if no other duplicate is permitted, the diagnostic oracle attachment will contain 60 distinct-key objects. This is a design expectation to be checked against the manifest, not an observed artifact.
+Under this draft's 64-record structure, the whole-bank validator requires exactly 60 distinct canonical identities: four D6 pair keys with multiplicity two, and 56 other keys with multiplicity one. The diagnostic oracle attachment must therefore contain exactly 60 distinct-key objects. This is a design expectation to be checked against the future frozen manifest, not an observed artifact. Any other duplicate pattern is a validation failure.
 
 ### 5.3 Rejection sidecar
 
