@@ -2,9 +2,9 @@
 
 **Record ID:** LC518-V021-ODS-REVIEW-2026-11-21  
 **Date:** 2026-11-21  
-**Review target:** `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`, blob SHA-1 `5c9cc5c46f2075948a0564fed5851800755768ed`  
+**Review target:** `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`, v0.1 review-base blob `5c9cc5c46f2075948a0564fed5851800755768ed`; current v0.3 blob `299464b2057d352416ddd6db1ee489ac09617394`  
 **Adjudication:** GPT direct review of the full v0.1 source, with provisional Claude comments supplied in the conversation.  
-**Status:** v0.2 edits implemented; new v0.2 hash to be read from this branch. This record is not an owner acceptance or operational-specification adoption.
+**Status:** v0.2 review edits implemented; v0.3 corrected the zero-failure convention to match accepted Rev 1.4 §3.2. Current spec blob is `299464b2057d352416ddd6db1ee489ac09617394`. This record is not an owner acceptance or operational-specification adoption.
 
 ---
 
@@ -69,9 +69,9 @@ qquad
 C_D\in\left\{\frac{m}{k}:m=\left\lceil\frac{k}{8}\right\rceil,\ldots,\min(k,8)\right\}.
 ]
 
-Every integer maximum in that interval is attainable. For (k=57,ldots,64), (M=8) is forced. At (k=0), the accepted convention is (C_D=0), labelled NO OBSERVED FAILURES.
+Every integer maximum in that interval is attainable for every unresolved count \(\ell\) satisfying \(k+\ell\le64\); the exact-maximum construction is already proved in accepted Rev 1.4 §3.2. For \(k=57,\ldots,64\), \(M=8\) is forced. At \(k=0\), \(C_D\) is undefined under Rev 1.4 §3.2; report NO OBSERVED FAILURES with no numeric index.
 
-The exact range table is now in v0.2 §1.3. Reports must condition interpretation on (k_{\mathrm{fail}}); a discrete or flat (C_D) cannot be interpreted as a solver property without these design constraints.
+The exact range table is now in v0.3 §1.3. Reports must condition interpretation on \(k_{\mathrm{fail}}\); a discrete or flat \(C_D\) cannot be interpreted as a solver property without these design constraints.
 
 ### 2.5 Construct validity and expected differences
 
@@ -91,7 +91,7 @@ The rule requires four D6 pair identities with multiplicity two and 56 other ide
 
 (64-4=60) distinct canonical identities.
 
-This is a correct whole-bank consistency requirement, but it does not establish construct validity, generator feasibility, or diagnostic-to-evaluation transport. The exact multiplicity check remains in v0.2 §§3.1 and 5.2.
+This is a correct whole-bank consistency requirement, but it does not establish construct validity, generator feasibility, or diagnostic-to-evaluation transport. The exact multiplicity check remains in v0.3 §§3.1 and 5.2.
 
 ---
 
@@ -122,4 +122,4 @@ These checks prove only that the predicates have witnesses. They do not demonstr
 5. The eight construct rationales are clearer, but the proposed categories are not yet empirically validated, and the diagnostic-to-evaluation property crosswalk remains open.
 6. The specification remains draft v0.2, not accepted or frozen. No generator, manifest, diagnostic result, solver outcome, model fit, simulation, or experiment was created or run.
 
-**Review boundary:** Claude's comments should not be described as a direct independent file-level review of v0.1. Claude should now retrieve the raw v0.2 file and challenge it directly; GLM should conduct a separate direct review. GPT will adjudicate their source-specific findings.
+**Review boundary:** Claude's comments should not be described as a direct independent file-level review of v0.1. Claude should now retrieve the raw v0.3 file and challenge it directly; GLM should conduct a separate direct review. GPT will adjudicate their source-specific findings.
