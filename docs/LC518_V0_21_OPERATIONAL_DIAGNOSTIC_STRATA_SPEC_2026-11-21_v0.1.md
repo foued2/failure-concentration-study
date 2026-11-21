@@ -89,7 +89,7 @@ Every diagnostic record must satisfy the LC518 contract:
 - the coin array may be in any order; and
 - the exact LC518 answer fits a signed 32-bit integer.
 
-Equivalently, every valid input has an exact answer W no greater than 2,147,483,647. This is a **global LC518 contract condition** applying to every diagnostic record, not a D8-specific selection criterion.
+Equivalently, the exact answer for every valid input is no greater than 2,147,483,647. This is a **global LC518 contract condition** applying to every diagnostic record, not a D8-specific selection criterion.
 
 Malformed-input behaviour is outside the study contract. A repeated denomination is a contract violation, not a second representation of the same valid input. Do not normalize coin arrays with a set.
 
@@ -129,19 +129,14 @@ The full manifest must record the exact rule parameters and the validation quant
 
 | Stratum | Proposed name | Required construction rule | Intended challenge |
 |---|---|---|---|
-| **D1** | Boundary, zero-target and below-minimum cases | (2le nle10); (c_{min}ge3); (3c_{min}+1le1500); (gcd(C)=1); target (a) is one of ({0,1,c_{min}-1,c_{min}+1,2c_{min}-1,2c_{min}+1,3c_{min}-1,3c_{min}+1}); (a
-otin C); (W=N_0). The eight target positions are represented once each. | Zero-target, below-minimum and near-multiple boundary handling without exact-denomination membership or repeated-use multiplicity. |
+| **D1** | Boundary, zero-target and below-minimum cases | (2le nle10); (c_{min}ge3); (3c_{min}+1le1500); (gcd(C)=1); target (a) is one of ({0,1,c_{min}-1,c_{min}+1,2c_{min}-1,2c_{min}+1,3c_{min}-1,3c_{min}+1}); (a ∉ C); (W=N_0). The eight target positions are represented once each. | Zero-target, below-minimum and near-multiple boundary handling without exact-denomination membership or repeated-use multiplicity. |
 | **D2** | Single-denomination exact match | (n=1); (2le c_1=ale1500). Therefore (W=N_0=1). | Direct exact-match handling in the smallest denomination-set case. |
 | **D3** | Exact match with distractors | (2le nle10); (2le ale1500); exactly one denomination equals (a); every other denomination is greater than (a); (gcd(C)=1). Therefore (W=N_0=1). | Exact-denomination recognition in the presence of irrelevant larger denominations. |
 | **D4** | Parity-unreachable target | (2le nle10); every denomination is even; (gcd(C)=2); target (a) is odd, (3le ale1500), and (c_{min}le a). Therefore (W=N_0=0). | Modular/parity unreachability when the odd target is at or above the smallest available denomination, rather than merely below every available denomination. |
-| **D5** | Repeated-use combination multiplicity | (2le nle10); (10le ale1500); (a
-otin C); (gcd(C)=1); (Wge2) and (W>N_0). The exact values (W) and (N_0) are stored as pre-outcome construction checks. | LC518-specific combination-count multiplicity where at least one valid combination requires repeated use of a denomination. No greedy or minimum-coin criterion is used. |
-| **D6** | Reordering pairs | Four distinct canonical instances, each emitted as two records: one original ordering and one non-identity permutation. Thus 4 canonical identities and 8 raw records. Each instance has (11le nle30), (100le ale1500), (gcd(C)=1), (a
-otin C), and (W=N_0ge1). | Order-invariance challenge, with repeated-use multiplicity excluded by the construction rule. |
-| **D7** | Wide-denomination-set cases | (50le nle300); (50le ale500); (gcd(C)=1); (a
-otin C); and (1le W=N_0le10). | Large denomination-array traversal while keeping the number of valid combinations bounded and requiring no repeated-denomination use. |
-| **D8** | Large-target cases | (3le nle30); (2000le ale5000); (a
-otin C); (gcd(C)=1); (Wge1); (Wle2{,}147{,}483{,}647) (redundant restatement of the global §2.1 validity condition, not a D8-specific filter). Store (W) and (N_0) for descriptive validation. | Large-target computation on valid reachable inputs. This is not a high-answer-count stress stratum; combination multiplicity is reported rather than silently assumed homogeneous. |
+| **D5** | Repeated-use combination multiplicity | (2le nle10); (10le ale1500); (a ∉ C); (gcd(C)=1); (Wge2) and (W>N_0). The exact values (W) and (N_0) are stored as pre-outcome construction checks. | LC518-specific combination-count multiplicity where at least one valid combination requires repeated use of a denomination. No greedy or minimum-coin criterion is used. |
+| **D6** | Reordering pairs | Four distinct canonical instances, each emitted as two records: one original ordering and one non-identity permutation. Thus 4 canonical identities and 8 raw records. Each instance has (11le nle30), (100le ale1500), (gcd(C)=1), (a ∉ C), and (W=N_0ge1). | Order-invariance challenge, with repeated-use multiplicity excluded by the construction rule. |
+| **D7** | Wide-denomination-set cases | (50le nle300); (50le ale500); (gcd(C)=1); (a ∉ C); and (1le W=N_0le10). | Large denomination-array traversal while keeping the number of valid combinations bounded and requiring no repeated-denomination use. |
+| **D8** | Large-target cases | (3le nle30); (2000le ale5000); (a ∉ C); (gcd(C)=1); (Wge1); (Wle2{,}147{,}483{,}647) (redundant restatement of the global §2.1 validity condition, not a D8-specific filter). Store (W) and (N_0) for descriptive validation. | Large-target computation on valid reachable inputs. This is not a high-answer-count stress stratum; combination multiplicity is reported rather than silently assumed homogeneous. |
 
 ### 3.1 Exclusivity and assignment validation
 
