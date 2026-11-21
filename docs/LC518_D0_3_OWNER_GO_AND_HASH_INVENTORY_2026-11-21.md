@@ -108,6 +108,23 @@ After this inventory is committed, the archive may be downloaded and inspected w
 9. Compare H80's exact canonical-key set against an independently identified B1 78-row source using the same key. Report raw rows, unique keys, oracle keys, B1 keys, duplicate multiplicities, intersections, set differences, row-to-oracle resolution, sidecar-attempt reconciliation, and all hashes.
 10. Do not inspect E3 or claim E3 contamination. E3 requires its own separately authorized identity/custody review.
 
+## 3.1 D0.3 inspection result
+
+The authorized archive inspection has now completed for H80 only. The detailed result is recorded in `docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md`.
+
+- H80 has 80 valid raw rows and 78 unique canonical identities.
+- Exactly two duplicate groups exist, both in H6: H057/H058 (H6-P01) and H059/H060 (H6-P02). Each is an original/permutation pair; no other canonical duplicates occur.
+- All 80 stored `canonical_id` values recompute correctly; every record has distinct denominations.
+- `heldout_oracle_outputs.json` contains 78 distinct oracle keys, exactly equal to the 78 H80 canonical keys. Every raw row resolves to one matching oracle object; there are no missing or extra keys.
+- `heldout_bank.rejections.jsonl` contains 26 H2 retry events, all `H2_ORACLE_BELOW_TWO`, across H018–H024. Every affected candidate ID appears as a final accepted H2 row. These events do not account for the two-row raw-to-oracle difference.
+- The publication report is PASS, records 80 held-out rows and 78 unique canonical identities, and reports zero diagnostic/held-out canonical collisions.
+- The run manifest reports 63 total rejection events across both banks. Only the H80 sidecar was parsed in this scope; the diagnostic sidecar was not inspected.
+- The independent B1 78-row identity source remains **NOT ESTABLISHED**. The B1 analysis plan and acceptance record give the row count and symbolic index but no identity manifest. The accepted B1 publication commit `ac06c6676982eed795db9cb04c6d91803b591ac7` has a 348-entry tree with no B1 bank/oracle/record manifest file. Therefore H80-to-B1 equality, overlap, or disjointness remains OPEN.
+
+The H80-to-oracle side of D0.3 is complete. The H80-to-B1 comparison is blocked on locating an independently attributable B1 identity source; no assumption that the B1 set equals the H80 oracle keys is permitted.
+
+---
+
 ## 4. Predeclared interpretation
 
 - 80 H80 rows, 78 unique H80 keys, 78 exact oracle keys, and equality with an independently identified B1 key set supports H80/B1 identity equality. It does not make their analytical roles interchangeable.
@@ -150,4 +167,4 @@ The specification must not claim that eight strata are eight causal mechanisms, 
 
 ---
 
-**Current disposition:** D0.3 comparison GO is recorded; pre-inspection artifact metadata and source hashes are recorded above; archive contents are not yet inspected. Confirmatory route selected but consent/custody/amendment gates remain open. Artifact 13210063805 is preserved. New v0.21 operational specification is selected for separate drafting and review. The exact B1 78-row identity source remains to be identified.
+**Current disposition:** D0.3 GO is recorded. H80 raw records, canonical identities, oracle keys and H80 rejection-sidecar history have been inspected and reconciled; H80 has 80 raw rows, 78 unique identities and 78 matching oracle outputs. The H80-to-B1 identity comparison remains OPEN because no independently attributable B1 78-row identity source has been located. Confirmatory route selected but consent/custody/amendment gates remain open. Artifact 13210063805 is preserved. New v0.21 operational specification is selected for separate drafting and review.
