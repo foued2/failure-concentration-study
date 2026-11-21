@@ -103,7 +103,19 @@ These are retry-history events. Each affected candidate slot ultimately appears 
 
 The run manifest's aggregate `rejection_event_count` is 63 across the generation run. Only the H80 sidecar was in this D0.3 inspection scope; the diagnostic sidecar was not parsed, so this report does not attempt to reconcile the remaining aggregate events.
 
-**H80 rejection-sidecar interpretation: PASS.** The sidecar is a separate generation-history object and does not explain the 80-to-78 oracle cardinality. The canonical-identity collapse does.
+**H80 rejection-sidecar reconciliation: PASS.** The sidecar is a separate generation-history object and does not explain the 80-to-78 oracle cardinality. Its 26 H2 rejections reveal oracle-answer-conditioned construction ((W\ge2) for accepted H2 rows). The canonical-identity collapse, not the rejection filter, explains why 80 raw H80 rows map to 78 oracle objects.
+
+### 4.1 H2 retry filter and its target-population meaning
+
+The 26 sidecar events are specifically candidate rejections coded `H2_ORACLE_BELOW_TWO`. The rejected-attempt counts by candidate slot are H018: 6, H019: 3, H020: 1, H021: 1, H022: 10, H023: 2, and H024: 3.
+
+The 12 accepted H2 rows have oracle-answer values (W):
+
+`2, 4, 3, 6, 2, 3, 4, 2, 4, 15, 17, 4`.
+
+Thus every accepted H2 row has (W\ge2), while the rejection reason explicitly records candidate attempts with oracle answer below two. This is selection on the **true task answer (W)**, not on a candidate solver's correctness outcome. The historical BANK_DESIGN v1.0 §5 describes H2 as a small-amount, multiple-combination challenge. The generation run operationalised that intended challenge by rejecting H2 candidates whose exact LC518 oracle answer was below two. It nevertheless conditions the accepted H2 input distribution on (W\ge2).
+
+BANK_DESIGN v1.0 declares the held-out target to be the finite 80-record list with record-count weights and limits conclusions to that declared distribution. Accordingly, the filter does not invalidate descriptive results on the fixed list, but H80 must not be described as representative of all small-amount LC518 inputs or used for population generalization without an explicit conditional sampling estimand. The 26 retries are part of H80 provenance and selection history, not evidence of missing oracle objects.
 
 ## 5. Publication report
 
