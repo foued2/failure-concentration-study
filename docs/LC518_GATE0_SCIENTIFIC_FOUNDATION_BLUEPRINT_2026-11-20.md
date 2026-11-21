@@ -2,7 +2,7 @@
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
 **Version:** 0.6  
-**Date:** 2026-11-20  
+**Date:** 2026-11-21  
 **Status:** DRAFT FOR INDEPENDENT REVIEW; AUTHORITY STATE ADJUDICATED: NO OPERATIONAL D1–D8 SPECIFICATION ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
@@ -922,7 +922,7 @@ The following records were retrieved from the repository. Branch and blob identi
 | lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md | gpt/lc518-m1si-audit-2026-11-17 | 8af908f6b0ad4cd060194a0a63f4914939f07756 | Current population-design draft, conditional claim, q/a distinction, M1-si support, non-authorization |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
-| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | d0e5cbd908296dc9feaa21ddadfbfb9843c445ec | GPT source-adjudication record v1.2: no operational D1–D8 specification adopted; H80/B1 identity, oracle-output and sidecar reconciliation specified but unperformed |
+| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 23b5f05c2a2f0ca465334fa64a276c6e5b992baf | GPT source-adjudication record v1.2: no operational D1–D8 specification adopted; H80/B1 identity, oracle-output and sidecar reconciliation specified but unperformed |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
 | lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
