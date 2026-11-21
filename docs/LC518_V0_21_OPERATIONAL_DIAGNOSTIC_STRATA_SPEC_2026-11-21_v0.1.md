@@ -1,9 +1,9 @@
 # LC518 v0.21 operational diagnostic-strata specification
 
 **Document ID:** LC518-V021-ODS-2026-11-21  
-**Version:** 0.1  
+**Version:** 0.2  
 **Date:** 2026-11-21  
-**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; NOT ADOPTED; NOT FROZEN; NO BANK-GENERATION OR EXECUTION GO  
+**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; v0.2 ADDS FORMAL EXCLUSIVITY PROOF, C_D FEASIBILITY, D6 CANONICAL-WEIGHTED SENSITIVITY, AND TARGET-SELECTION DISCLOSURE; NOT ADOPTED OR FROZEN; NO BANK-GENERATION OR EXECUTION GO  
 **Selected route:** New v0.21-linked operational specification, per owner instruction dated 2026-11-21.  
 **Scope:** Define a new outcome-blind eight-stratum diagnostic taxonomy for the v0.21 population-design route.  
 **Does not modify:** Accepted B1/M1 Rev 1.4 Amendment E, accepted B1 analysis plan v1.7, historical BANK_DESIGN v1.0, or C9 rev 2.6.
@@ -42,6 +42,37 @@ The accepted Rev 1.4/B1 framework remains unchanged. For solver version (v):
 When (k_{mathrm{fail}}=0), report (C_D=0) with the label **NO OBSERVED FAILURES**. Do not report unresolved records as definite failures. This specification does not introduce a new concentration index.
 
 The primary concentration calculation remains record-weighted. Canonical-identity counts and D6 pair summaries are required exposure/dependence diagnostics, not replacements for the accepted (f_j) definition.
+
+### 1.3 Finite-sample feasibility of the primary C_D statistic
+
+Each diagnostic stratum contains eight raw records, so each definite-failure count satisfies (0\le f_j\le8), and the total definite-failure count satisfies (0\le k_{\mathrm{fail}}\le64). For a fixed total (k=k_{\mathrm{fail}}\ge1), the possible maximum failure count is exactly
+
+[
+\left\lceil\frac{k}{8}\right\rceil \le M \le \min(k,8),
+]
+
+and every integer (M) in this interval is attainable by some allocation of (k) failures across eight strata with capacity eight per stratum. Therefore the exact attainable concentration values are
+
+[
+C_D\in\left\{\frac{m}{k}:m=\left\lceil\frac{k}{8}\right\rceil,\ldots,\min(k,8)\right\}.
+]
+
+| Definite failures (k) | Attainable integer maxima (M) | Attainable (C_D) values |
+|---:|---|---|
+| 1–8 | (1,\ldots,k) | ({m/k:m=1,\ldots,k}) |
+| 9–16 | (2,\ldots,8) | ({m/k:m=2,\ldots,8}) |
+| 17–24 | (3,\ldots,8) | ({m/k:m=3,\ldots,8}) |
+| 25–32 | (4,\ldots,8) | ({m/k:m=4,\ldots,8}) |
+| 33–40 | (5,\ldots,8) | ({m/k:m=5,\ldots,8}) |
+| 41–48 | (6,\ldots,8) | ({m/k:m=6,\ldots,8}) |
+| 49–56 | (7,8) | ({7/k,8/k}) |
+| 57–64 | (8) only | ({8/k}) |
+
+For (k=0), use the accepted reporting convention (C_D=0), labelled **NO OBSERVED FAILURES**; it is not part of the positive-failure attainable set above.
+
+Thus (M) has only nine possible integer values, 0 through 8, but (C_D)'s attainable values depend on the denominator (k). For (k\ge57), the maximum must equal eight and (C_D) is forced to (8/k). A repeated or nearly flat (C_D) across versions must not be interpreted without conditioning on (k_{\mathrm{fail}}) and these design-imposed limits. This is a deterministic feasibility fact, not a prediction about solver outcomes or a power calculation.
+
+
 
 ---
 
@@ -112,19 +143,50 @@ otin C); (gcd(C)=1); (Wge1); (Wle2{,}147{,}483{,}647). Store (W) and (N_0) for d
 
 ### 3.1 Exclusivity and assignment validation
 
-The construction rules create disjoint assigned classes through their explicit conditions:
+The eight rules are pairwise disjoint by the following explicit separators; no priority rule is needed:
 
-- D2 has (n=1); all other strata have (nge2).
-- D3 requires (ain C); D1, D5, D6, D7 and D8 require (a
-otin C).
-- D4 requires (gcd(C)=2) and (W=0); D1, D3, D5, D6, D7 and D8 require (gcd(C)=1), with D5–D8 also requiring reachable targets.
-- D1 requires (W=N_0); D5 requires (W>N_0).
-- D6 is limited to (11le nle30) and (100le ale1500); D7 has (nge50); D8 has (age2000).
-- D1–D5, D7 and D8 contain no intentional within-stratum duplicate canonical identities. D6 is the only stratum permitted to contain repeated canonical identities, and only as its four declared pairs.
+| Comparison | Separating conditions |
+|---|---|
+| D2 vs D1/D3/D4/D5/D6/D7/D8 | D2 requires (n=1); every other stratum requires (n\ge2). |
+| D1 vs D3 | D1 requires (a\notin C); D3 requires exactly one (a\in C). |
+| D1 vs D4 | D1 requires (gcd(C)=1); D4 requires (gcd(C)=2). |
+| D1 vs D5 | D1 requires (W=N_0); D5 requires (W>N_0). |
+| D1 vs D6/D7 | D1 has (2\le n\le10); D6 has (11\le n\le30); D7 has (n\ge50). |
+| D1 vs D8 | D1's largest permitted target (3c_{\min}+1) is at most 1,500; D8 requires (a\ge2,000). |
+| D3 vs D4 | D3 requires (gcd(C)=1); D4 requires (gcd(C)=2). |
+| D3 vs D5/D6/D7/D8 | D3 requires (a\in C); each of D5–D8 requires (a\notin C). |
+| D4 vs D5/D6/D7/D8 | D4 requires (gcd(C)=2); D5–D8 require (gcd(C)=1). |
+| D5 vs D6 | D5 requires (2\le n\le10); D6 requires (11\le n\le30). |
+| D5 vs D7 | D5 requires (n\le10); D7 requires (n\ge50). |
+| D5 vs D8 | D5 requires (a\le1,500); D8 requires (a\ge2,000). |
+| D6 vs D7 | D6 requires (n\le30); D7 requires (n\ge50). |
+| D6 vs D8 | D6 requires (a\le1,500); D8 requires (a\ge2,000). |
+| D7 vs D8 | D7 requires (n\ge50) and (a\le500); D8 requires (n\le30) and (a\ge2,000). |
 
-The validator must evaluate every candidate against all eight rules and confirm exactly one eligible assignment. If zero or multiple rules match, reject the candidate and record the cause. Do not resolve an overlap by arbitrary priority assignment or after observing solver outcomes.
+The D4 condition (a\notin C) is implicit because every denomination is even and the target is odd. These separators cover all pairs of distinct strata.
+
+The validator must evaluate every candidate against all eight rules and confirm exactly one eligible assignment. If zero or more than one rule matches, reject the candidate and record the cause. Do not resolve an overlap by arbitrary priority assignment or after observing solver outcomes. No record reassignment stage exists; therefore there is no reassignment count to report. No diagnostic records have been generated under this draft.
 
 At whole-bank validation, the 64 raw records must yield exactly **60 distinct canonical identities**. The only permitted within-bank duplicate groups are the four D6 pair identities, each occurring exactly twice within its own declared pair. No canonical identity may appear in two different D6 pairs, in two different strata, or in any non-D6 record alongside another row. Any such collision fails the complete bank validation and must not be silently repaired by dropping or relabelling a row.
+
+### 3.3 Pre-outcome construct hypotheses and reporting
+
+The strata are defined by observable input properties and intended computational/semantic challenges. The following are **a priori susceptibility hypotheses**, not claims that a solver population must have different failure rates across all eight strata, not causal conclusions, and not predictions of an effect size or ranking.
+
+| Stratum | Input property | Pre-outcome susceptibility hypothesis | Required descriptive report |
+|---|---|---|---|
+| D1 | Eight target positions around zero and successive multiples of the minimum denomination | May expose zero-target, off-by-one, and small-boundary logic errors | Report each target position separately, including (W) and (N_0); do not hide position heterogeneity inside (f_1). |
+| D2 | One denomination equal to the target | May expose the single-denomination/base-case path and exact-match handling | Report the exact-match outcome count; (W=N_0=1) is fixed by construction. |
+| D3 | One exact-match denomination plus larger distractors | May expose loops or membership logic that mishandle denominations larger than the target | Report (n), the exact-match denomination, and distractor range. |
+| D4 | All denominations even, gcd 2, odd target | May expose incorrect zero/unreachable handling or parity/gcd reasoning | Report target and (c_{\min}), and verify (W=0). |
+| D5 | (W>N_0) and (W\ge2) | May expose a 0/1-use recurrence or other implementation that fails to count unlimited repeated use correctly | Report both exact counts (W) and (N_0) for every record. |
+| D6 | Same canonical input under two non-identical orders | May expose dependence on input ordering when the contract requires order invariance | Report pairwise PASS/FAIL/UNRESOLVED patterns and the pair-mean sensitivity in §4. |
+| D7 | 50–300 distinct denominations with a bounded small positive answer | May expose scaling or traversal issues in the denomination dimension without high answer-count complexity | Report (n), target, (W=N_0), and the bounded-answer band. |
+| D8 | Large target, 3–30 denominations, reachable answer | May expose target-dimension memory/time or array-boundary issues | Report (n), target, (W), and (N_0). |
+
+The primary hypothesis is that these predefined input challenges may elicit different failure profiles from some implementation classes. There is **no prespecified universal direction or rank order** of stratum failure rates across the solver population. A common failure rate across strata is possible and would not retroactively make input assignment invalid; it would, however, limit the empirical concentration observed beyond the finite-sample constraints in §1.3.
+
+Equal allocation of eight records per stratum is a design allocation, not evidence that the eight input-property categories have equal prevalence in naturally occurring LC518 inputs. (C_D) therefore describes concentration over this fixed, equally allocated diagnostic suite. It is not a natural-population prevalence-weighted failure share.
 
 ### 3.2 Non-emptiness witnesses (illustrative only)
 
@@ -152,7 +214,9 @@ D6 contains eight raw records but only four distinct canonical inputs. Each pair
 - `ordering = original` for one record and `ordering = permutation` for the other; and
 - evidence that the permutation is non-identity while preserving the sorted denomination tuple and amount.
 
-The primary concentration measure remains record-weighted under the accepted B1 formula. A pair contributes to (f_6) as follows:
+The primary concentration measure remains record-weighted under the accepted B1 formula. Its estimand is the share of definite **record-level failures** across the 64 diagnostic presentations. D6 deliberately allocates eight record presentations to four canonical inputs so that both orders are tested. Those two presentations count as two record exposures in the accepted primary formula; they are not eight independent canonical inputs. This choice preserves the accepted record-level (f_j) estimand and the explicit purpose of testing order invariance. It does not give equal weight to unique mathematical inputs.
+
+A pair contributes to (f_6) as follows:
 
 | Original | Permutation | Contribution to (f_6) |
 |---|---|---:|
@@ -164,6 +228,35 @@ The primary concentration measure remains record-weighted under the accepted B1 
 A definite FAIL remains a definite failure even if both orderings return the same wrong integer. If a member is UNRESOLVED, its definite FAIL partner, if any, still contributes to (f_6); unresolved records are counted separately in (k_{mathrm{unresolved}}).
 
 D6's pair-level discordance summary must be reported separately from (C_D). (C_D) is a share of failed records, not a share of independent canonical inputs and not itself an order-sensitivity statistic. A pair-weighted (f_6) or pair-weighted concentration measure would change the accepted measurement and requires a separate B1 amendment. This draft does not make that change.
+
+### 4.1 Canonical-identity-weighted descriptive sensitivity
+
+Because D6 gives each of four mathematical inputs two raw presentations while every other diagnostic identity has one, the report must also provide a clearly secondary **canonical-identity-weighted descriptive sensitivity**. This is not the accepted primary (C_D), does not replace record weighting, and must not receive confirmatory inferential status under B1 v1.7 without a separate B1 amendment.
+
+For canonical identity (q), let (R_q) be its raw records whose result is resolved as PASS or FAIL. If (|R_q|\ge1), define
+
+[
+u_q=\frac{\#\{r\in R_q:r\text{ is FAIL}\}}{|R_q|}.
+]
+
+Thus a D6 pair contributes 0 for PASS/PASS, (1/2) for PASS/FAIL or FAIL/PASS, and 1 for FAIL/FAIL. An unresolved member is not counted as a failure; the average is over resolved members only, and the unresolved-record count is reported separately. A canonical identity with no resolved member is omitted from the sensitivity denominator and reported as wholly unresolved.
+
+For stratum (j), let (K_j) be its distinct canonical identities and define
+
+[
+F_j^{(K)}=\sum_{q\in K_j:|R_q|\ge1}u_q,\qquad
+K_{\mathrm{fail}}=\sum_{j=1}^{8}F_j^{(K)}.
+]
+
+When (K_{\mathrm{fail}}>0), report
+
+[
+C_D^{(K)}=\frac{\max_jF_j^{(K)}}{K_{\mathrm{fail}}}.
+]
+
+When (K_{\mathrm{fail}}=0), report 0 with the label **NO OBSERVED FAILURES AMONG RESOLVED CANONICAL IDENTITIES**. Always report the number of distinct identities with at least one resolved member, the number wholly unresolved, and the number of unresolved raw records. This sensitivity gives each distinct mathematical input one unit of total weight while averaging over the two D6 orders; it is descriptive only.
+
+
 
 ---
 
@@ -218,7 +311,17 @@ Population-design v0.21 proposes a new protected evaluation set. Using that prot
 
 Before a future diagnostic manifest can be frozen, its canonical identities must be checked against every relevant exposed development input set and the separately defined evaluation set. The H80-to-B1 source gap and the selected confirmatory route's consent/custody requirements remain blockers to that later freeze.
 
-### 6.1 Consent and custody status
+### 6.2 Oracle-answer-conditioned construction is not population-neutral
+
+The historical H80 audit identified 26 rejected H2 candidate attempts with reason code `H2_ORACLE_BELOW_TWO`; all 12 accepted H2 rows have oracle answer (W\ge2). The earlier BANK_DESIGN v1.0 describes H2 as a small-amount, multiple-combination challenge. The generator run operationalised that intended challenge by rejecting H2 candidates whose exact LC518 oracle answer was below two.
+
+This is a filter on the **true task answer (W)**, not on a candidate solver's correctness outcome. It is therefore not post-hoc selection on solver PASS/FAIL. It nevertheless conditions the accepted H2 input distribution on (W\ge2). The H80 bank's published target is its fixed finite 80-record list with its declared record weights; no inference to all small-amount LC518 inputs is justified. The 26 retries are part of the provenance and selection history of that finite bank, not evidence of missing oracle objects.
+
+The H80 (W\ge2) filter is **not automatically imported** into the new v0.21 diagnostic taxonomy. D1–D8 use only their own explicit, pre-outcome construction predicates. Some predicates deliberately condition on (W) and/or (N_0), such as D4's (W=0), D5's (W\ge2) and (W>N_0), and D7's (W=N_0). These define the diagnostic challenge mix; they do not define a representative sample of the LC518 input population.
+
+Any future protected evaluation bank must separately state its target population and sampling frame. If inclusion or rejection depends on (W), (N_0), or another oracle-derived input property, that condition must be justified and frozen in the separate evaluation design/B1 amendment before candidate selection. The resulting estimand is conditional on that declared sampling frame. Do not transfer the H80 H2 filter by default, describe an oracle-conditioned bank as representative of all LC518 inputs, or reject candidates based on solver outcomes.
+
+### 6.2 Consent and custody status
 
 The owner selected a confirmatory route **with consent**. The accepted B1 v1.7 acceptance record still states that the joint-consent provenance gap remains open. No contemporaneous consent evidence is created by this draft or by the owner's current instruction. Before confirmatory evaluation, the actual consent record, parties, scope, date, and relation to the 2026-11-05 B1 decision must be verified. An independent protected-set custodian must also be identified and appointed, and the trigger-(i) interpretation must be ratified before the separate B1 amendment is accepted.
 
@@ -256,6 +359,8 @@ Before this specification can be accepted as the operational v0.21 D1–D8 autho
 7. **Mutual exclusivity:** verify that every candidate has exactly one assigned stratum and that all eight definitions are deterministic and outcome-blind.
 8. **Coverage and transport:** identify which evaluation properties are measured, which are omitted, and what evidence could support the diagnostic-to-evaluation crosswalk.
 9. **Reproducibility:** specify deterministic construction, hash/freeze, rejection-sidecar and oracle-validation rules before a generator can be run.
+10. **Finite-sample concentration feasibility:** verify the attainable (C_D) set for each (k_{\mathrm{fail}}) and assess the reporting implications of its discreteness.
+11. **Canonical-identity weighting:** review the proposed descriptive sensitivity (C_D^{(K)}), its handling of unresolved pair members, and its separation from the accepted primary statistic.
 
 **Acceptance gates:** independent scientific review; GPT adjudication; explicit owner acceptance of the exact document hash; a separate deterministic generation protocol; design-only feasibility review; identified B1 78-row source; resolved consent/custody/trigger-(i) gates; separate B1 amendment for the new protected target; and a further execution GO. Until those gates are complete, this draft is not current operational authority.
 
@@ -267,4 +372,4 @@ This draft authorizes documentary critique and revision only. It authorizes no b
 
 The owner's separate D0.3 GO authorized inspection of artifact 13210063805 for H80/oracle/sidecar identity reconciliation. That bounded audit is recorded separately. The artifact is to be preserved. The confirmatory route is selected with consent, but its historical consent, independent-custodian, trigger-(i), B1 amendment, and execution gates remain open.
 
-**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.1 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
+**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.2 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
