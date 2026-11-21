@@ -169,7 +169,7 @@ The validator must evaluate every candidate against all eight rules and confirm 
 
 At whole-bank validation, the 64 raw records must yield exactly **60 distinct canonical identities**. The only permitted within-bank duplicate groups are the four D6 pair identities, each occurring exactly twice within its own declared pair. No canonical identity may appear in two different D6 pairs, in two different strata, or in any non-D6 record alongside another row. Any such collision fails the complete bank validation and must not be silently repaired by dropping or relabelling a row.
 
-### 3.3 Pre-outcome construct hypotheses and reporting
+### 3.2 Pre-outcome construct hypotheses and reporting
 
 The strata are defined by observable input properties and intended computational/semantic challenges. The following are **a priori susceptibility hypotheses**, not claims that a solver population must have different failure rates across all eight strata, not causal conclusions, and not predictions of an effect size or ranking.
 
@@ -188,7 +188,7 @@ The primary hypothesis is that these predefined input challenges may elicit diff
 
 Equal allocation of eight records per stratum is a design allocation, not evidence that the eight input-property categories have equal prevalence in naturally occurring LC518 inputs. (C_D) therefore describes concentration over this fixed, equally allocated diagnostic suite. It is not a natural-population prevalence-weighted failure share.
 
-### 3.2 Non-emptiness witnesses (illustrative only)
+### 3.3 Non-emptiness witnesses (illustrative only)
 
 The following small examples demonstrate that the defining predicates are mathematically nonempty. They are not frozen bank records, are not assigned input IDs, and must not be copied into a future manifest without the ordinary collision and freeze checks.
 
