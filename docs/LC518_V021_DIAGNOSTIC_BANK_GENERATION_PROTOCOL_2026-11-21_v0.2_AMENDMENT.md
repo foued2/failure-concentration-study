@@ -104,7 +104,7 @@ The parameter selector is a finite-set sampler without replacement where a strat
 5. Preserve the selected parameter values, their zero-based eligible-list indices, PRNG draw positions, and slot assignments in the future run manifest.
 6. Do not select replacement values after any downstream validation or external preflight failure.
 
-For a full Fisher-Yates implementation on a list of length n, the loop visits i=n-1,n-2,...,1. At each step it draws an unbiased integer j from the inclusive interval [0,i] and swaps positions i and j. After the full shuffle, the selector takes the first q values. This is a complete shuffle followed by a prefix selection; a partial-shuffle variant may not be substituted unless its exact index direction and selected region are separately specified and reviewed. The exact PRNG algorithm, implementation, seed bytes, integer-range mapping, interpreter/runtime, and code hash remain freeze-blocking decisions under §7. They must be specified exactly before implementation or execution. The algorithm must not be silently replaced by a language library's unspecified default sampling method.
+For a partial Fisher-Yates sample of q values from a list L of length n, initialize i=0 and repeat while i<q: draw an unbiased integer r from [0,n-i-1], set j=i+r, swap L[i] and L[j], then increment i. The first q values after these q swaps are the ordered sample without replacement. This direction and selected prefix are normative. The exact PRNG algorithm, implementation, seed bytes, integer-range mapping for randbelow(m), interpreter/runtime, and code hash remain freeze-blocking decisions under §7. They must be specified exactly before implementation or execution. The algorithm must not be silently replaced by a language library's unspecified default sampling method.
 
 The PRNG is used only to select among already eligible parameters. It does not determine whether an input satisfies a stratum predicate. All members of every eligible set are valid by construction.
 
@@ -243,11 +243,11 @@ The preflight statuses are not candidate rejection events and are not included i
 
 The selector's parameter-selection space has the following exact number of eligible parameter combinations:
 
-N = C(1499,8) × C(748,8) × C(1491,8) × C(19,4) × 19 × 49 × 15 × 50 × 23 × 23 × 25 × 52.
+N = P(1499,8) × P(748,8) × P(1491,8) × P(19,4) × 19 × 49 × 15 × 50 × 23 × 23 × 25 × 52, where P(n,q)=n!/(n-q)! counts ordered samples without replacement.
 
-The factors correspond respectively to D2, D4, D5, D6, and the eight fixed D7 target amounts. D1, D3, and D8 have no parameter-choice degrees of freedom because their complete eight-item lists are fixed.
+The factors correspond respectively to the ordered D2, D4, D5, and D6 selections, followed by one eligible x choice for each of the eight fixed D7 target amounts. D1, D3, and D8 have no parameter-choice degrees of freedom because their complete eight-item lists are fixed. The order of each sample determines its mapping to the ascending slot IDs.
 
-Every combination counted by N satisfies the slot predicates, within-stratum uniqueness and cross-stratum identity separation proved in §§2-3. Thus the number of eligible combinations that cause a candidate-level rejection or internal quota/collision failure is zero. Conditional on correct selector and validator implementations, the candidate-rejection abort proportion is exactly 0/N = 0. This is a finite counting result, not a simulated failure rate or a probability estimate from sampled runs.
+Every ordered selector output counted by N satisfies the slot predicates, within-stratum uniqueness and cross-stratum identity separation proved in §§2-3. Thus the number of eligible ordered outputs that cause a candidate-level rejection or internal quota/collision failure is zero. Conditional on correct selector and validator implementations, the candidate-rejection abort proportion is exactly 0/N = 0. This is a finite counting result, not a simulated failure rate or a probability estimate from sampled runs.
 
 External preflight is a separate Boolean gate. Its result cannot be counted or estimated until the authoritative B1 key source and protected evaluation frame exist. A preflight overlap aborts the entire frozen selector configuration; it does not reject an individual candidate or authorize another seed.
 
