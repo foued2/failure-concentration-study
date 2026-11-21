@@ -1,9 +1,9 @@
 # LC518 v0.21 operational diagnostic-strata specification
 
 **Document ID:** LC518-V021-ODS-2026-11-21  
-**Version:** 0.3  
+**Version:** 0.4  
 **Date:** 2026-11-21  
-**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; v0.3 CLARIFIES THE ACCEPTED k=0 CONVENTION AND REVIEW PROVENANCE; NOT ADOPTED OR FROZEN; NO BANK-GENERATION OR EXECUTION GO  
+**Status:** DRAFT FOR INDEPENDENT SCIENTIFIC REVIEW; v0.4 CLARIFIES STRATUM DESCRIPTION, FIXED-MIX LIMITATIONS, ORACLE CONDITIONS, AND THE GLOBAL ANSWER-BOUND REFERENCE; NOT ADOPTED OR FROZEN; NO BANK-GENERATION OR EXECUTION GO  
 **Selected route:** New v0.21-linked operational specification, per owner instruction dated 2026-11-21.  
 **Scope:** Define a new outcome-blind eight-stratum diagnostic taxonomy for the v0.21 population-design route.  
 **Does not modify:** Accepted B1/M1 Rev 1.4 Amendment E, accepted B1 analysis plan v1.7, historical BANK_DESIGN v1.0, or C9 rev 2.6.
@@ -89,6 +89,8 @@ Every diagnostic record must satisfy the LC518 contract:
 - the coin array may be in any order; and
 - the exact LC518 answer fits a signed 32-bit integer.
 
+Equivalently, every valid input has an exact answer W no greater than 2,147,483,647. This is a **global LC518 contract condition** applying to every diagnostic record, not a D8-specific selection criterion.
+
 Malformed-input behaviour is outside the study contract. A repeated denomination is a contract violation, not a second representation of the same valid input. Do not normalize coin arrays with a set.
 
 ### 2.2 Exact task answer and bounded-combination comparison
@@ -127,11 +129,11 @@ The full manifest must record the exact rule parameters and the validation quant
 
 | Stratum | Proposed name | Required construction rule | Intended challenge |
 |---|---|---|---|
-| **D1** | Boundary-target cases | (2le nle10); (c_{min}ge3); (3c_{min}+1le1500); (gcd(C)=1); target (a) is one of ({0,1,c_{min}-1,c_{min}+1,2c_{min}-1,2c_{min}+1,3c_{min}-1,3c_{min}+1}); (a
-otin C); (W=N_0). The eight target positions are represented once each. | Boundary and zero-target handling without exact-denomination membership or repeated-use multiplicity. |
+| **D1** | Boundary, zero-target and below-minimum cases | (2le nle10); (c_{min}ge3); (3c_{min}+1le1500); (gcd(C)=1); target (a) is one of ({0,1,c_{min}-1,c_{min}+1,2c_{min}-1,2c_{min}+1,3c_{min}-1,3c_{min}+1}); (a
+otin C); (W=N_0). The eight target positions are represented once each. | Zero-target, below-minimum and near-multiple boundary handling without exact-denomination membership or repeated-use multiplicity. |
 | **D2** | Single-denomination exact match | (n=1); (2le c_1=ale1500). Therefore (W=N_0=1). | Direct exact-match handling in the smallest denomination-set case. |
 | **D3** | Exact match with distractors | (2le nle10); (2le ale1500); exactly one denomination equals (a); every other denomination is greater than (a); (gcd(C)=1). Therefore (W=N_0=1). | Exact-denomination recognition in the presence of irrelevant larger denominations. |
-| **D4** | Parity-unreachable target | (2le nle10); every denomination is even; (gcd(C)=2); target (a) is odd, (3le ale1500), and (c_{min}le a). Therefore (W=N_0=0). | Homogeneous modular unreachability: the target is odd while every available denomination is even. The minimum denomination is not itself larger than the target. |
+| **D4** | Parity-unreachable target | (2le nle10); every denomination is even; (gcd(C)=2); target (a) is odd, (3le ale1500), and (c_{min}le a). Therefore (W=N_0=0). | Modular/parity unreachability when the odd target is at or above the smallest available denomination, rather than merely below every available denomination. |
 | **D5** | Repeated-use combination multiplicity | (2le nle10); (10le ale1500); (a
 otin C); (gcd(C)=1); (Wge2) and (W>N_0). The exact values (W) and (N_0) are stored as pre-outcome construction checks. | LC518-specific combination-count multiplicity where at least one valid combination requires repeated use of a denomination. No greedy or minimum-coin criterion is used. |
 | **D6** | Reordering pairs | Four distinct canonical instances, each emitted as two records: one original ordering and one non-identity permutation. Thus 4 canonical identities and 8 raw records. Each instance has (11le nle30), (100le ale1500), (gcd(C)=1), (a
@@ -139,7 +141,7 @@ otin C), and (W=N_0ge1). | Order-invariance challenge, with repeated-use multipl
 | **D7** | Wide-denomination-set cases | (50le nle300); (50le ale500); (gcd(C)=1); (a
 otin C); and (1le W=N_0le10). | Large denomination-array traversal while keeping the number of valid combinations bounded and requiring no repeated-denomination use. |
 | **D8** | Large-target cases | (3le nle30); (2000le ale5000); (a
-otin C); (gcd(C)=1); (Wge1); (Wle2{,}147{,}483{,}647). Store (W) and (N_0) for descriptive validation. | Large-target computation on valid reachable inputs. Combination multiplicity is reported rather than silently assumed homogeneous. |
+otin C); (gcd(C)=1); (Wge1); (Wle2{,}147{,}483{,}647) (redundant restatement of the global §2.1 validity condition, not a D8-specific filter). Store (W) and (N_0) for descriptive validation. | Large-target computation on valid reachable inputs. This is not a high-answer-count stress stratum; combination multiplicity is reported rather than silently assumed homogeneous. |
 
 ### 3.1 Exclusivity and assignment validation
 
@@ -175,18 +177,20 @@ The strata are defined by observable input properties and intended computational
 
 | Stratum | Input property | Pre-outcome susceptibility hypothesis | Required descriptive report |
 |---|---|---|---|
-| D1 | Eight target positions around zero and successive multiples of the minimum denomination | May expose zero-target, off-by-one, and small-boundary logic errors | Report each target position separately, including (W) and (N_0); do not hide position heterogeneity inside (f_1). |
+| D1 | Eight target positions around zero and successive multiples of the minimum denomination, including two guaranteed below-minimum targets | May expose zero-target, below-minimum, off-by-one, and small-boundary logic errors | Report each target position separately, including (W) and (N_0). Identify a=1 and a=c_min−1 as guaranteed unreachable (W=N_0=0), and a=0 as W=N_0=1; do not hide position heterogeneity inside (f_1). |
 | D2 | One denomination equal to the target | May expose the single-denomination/base-case path and exact-match handling | Report the exact-match outcome count; (W=N_0=1) is fixed by construction. |
 | D3 | One exact-match denomination plus larger distractors | May expose loops or membership logic that mishandle denominations larger than the target | Report (n), the exact-match denomination, and distractor range. |
-| D4 | All denominations even, gcd 2, odd target | May expose incorrect zero/unreachable handling or parity/gcd reasoning | Report target and (c_{\min}), and verify (W=0). |
+| D4 | All denominations even, gcd 2, odd target at or above the minimum denomination | May expose modular/parity unreachability handling when the target is not merely below all available denominations | Report target and (c_{\min}), and verify (W=0). |
 | D5 | (W>N_0) and (W\ge2) | May expose a 0/1-use recurrence or other implementation that fails to count unlimited repeated use correctly | Report both exact counts (W) and (N_0) for every record. |
 | D6 | Same canonical input under two non-identical orders | May expose dependence on input ordering when the contract requires order invariance | Report pairwise PASS/FAIL/UNRESOLVED patterns and the pair-mean sensitivity in §4. |
 | D7 | 50–300 distinct denominations with a bounded small positive answer | May expose scaling or traversal issues in the denomination dimension without high answer-count complexity | Report (n), target, (W=N_0), and the bounded-answer band. |
-| D8 | Large target, 3–30 denominations, reachable answer | May expose target-dimension memory/time or array-boundary issues | Report (n), target, (W), and (N_0). |
+| D8 | Large target, 3–30 denominations, reachable answer, without a high-answer-count selection rule | May expose target-dimension memory/time or array-boundary issues at large permitted target amounts; does not deliberately select high answer-count cases | Report (n), target, (W), and (N_0). The signed-32-bit answer bound is global under §2.1, not a D8-specific stress criterion. |
 
 The primary hypothesis is that these predefined input challenges may elicit different failure profiles from some implementation classes. There is **no prespecified universal direction or rank order** of stratum failure rates across the solver population. A common failure rate across strata is possible and would not retroactively make input assignment invalid; it would, however, limit the empirical concentration observed beyond the finite-sample constraints in §1.3.
 
-Equal allocation of eight records per stratum is a design allocation, not evidence that the eight input-property categories have equal prevalence in naturally occurring LC518 inputs. (C_D) therefore describes concentration over this fixed, equally allocated diagnostic suite. It is not a natural-population prevalence-weighted failure share.
+The proposed 64 raw records constitute an **engineered, oracle-checked finite challenge suite**, not a probability sample of naturally occurring LC518 inputs. They are selected to satisfy predeclared input-property and exact-answer predicates. Equal allocation of eight records per stratum is a design allocation, not evidence that the eight categories have equal prevalence in naturally occurring LC518 inputs. (C_D) therefore describes concentration over this fixed, equally allocated suite. It is not a natural-population prevalence-weighted failure share.
+
+The strata are not calibrated or equated for baseline difficulty. Equal record allocation does not imply equal difficulty, comparable failure opportunity, or equivalent computational burden. The observed (f_j) values and (C_D) summarize definite failures over this exact challenge mix and therefore combine implementation behaviour with the difficulty and composition of the assigned records. This specification defines no baseline-difficulty measure or adjustment. Accordingly, (C_D) does not support an interpretation as difficulty-adjusted, mix-independent, or intrinsic implementation failure concentration, and this suite alone does not support extrapolation to differently weighted input distributions. A larger stratum failure count cannot, from this design alone, be attributed uniquely to greater implementation susceptibility rather than greater baseline challenge difficulty.
 
 ### 3.3 Non-emptiness witnesses (illustrative only)
 
@@ -317,7 +321,20 @@ The historical H80 audit identified 26 rejected H2 candidate attempts with reaso
 
 This is a filter on the **true task answer (W)**, not on a candidate solver's correctness outcome. It is therefore not post-hoc selection on solver PASS/FAIL. It nevertheless conditions the accepted H2 input distribution on (W\ge2). The H80 bank's published target is its fixed finite 80-record list with its declared record weights; no inference to all small-amount LC518 inputs is justified. The 26 retries are part of the provenance and selection history of that finite bank, not evidence of missing oracle objects.
 
-The H80 (W\ge2) filter is **not automatically imported** into the new v0.21 diagnostic taxonomy. D1–D8 use only their own explicit, pre-outcome construction predicates. Some predicates deliberately condition on (W) and/or (N_0), such as D4's (W=0), D5's (W\ge2) and (W>N_0), and D7's (W=N_0). These define the diagnostic challenge mix; they do not define a representative sample of the LC518 input population.
+The H80 (W\ge2) filter is **not automatically imported** into the new v0.21 diagnostic taxonomy. D1–D8 use only their own explicit, pre-outcome construction predicates. The proposed v0.21 rules include the following exact-answer conditions:
+
+| Stratum | Exact-answer condition | How the condition enters the rule |
+|---|---|---|
+| D1 | (W=N_0) | Explicit construction predicate. |
+| D2 | (W=N_0=1) | Implied by the single-denomination exact-match construction. |
+| D3 | (W=N_0=1) | Implied by the exact-match denomination and all-larger-distractors construction. |
+| D4 | (W=N_0=0) | Implied by all-even denominations and an odd target. |
+| D5 | (W\ge2) and (W>N_0) | Explicit construction predicates. |
+| D6 | (W=N_0\ge1) | Explicit construction predicate. |
+| D7 | (1\le W=N_0\le10) | Explicit construction predicate. |
+| D8 | (W\ge1) | Explicit reachability predicate. The upper bound (W\le2^{31}-1) repeated in the D8 rule is redundant because it already applies globally under §2.1; it is not a D8-specific filter. |
+
+These conditions are part of the definitions of the proposed diagnostic categories. Some are explicit candidate-selection predicates; others are exact-answer consequences of the structural input rules. In either case, the resulting 64 records are an engineered, oracle-checked finite challenge suite. They are not a probability sample of LC518 inputs and do not define a representative or prevalence-weighted population of those inputs. The resulting interpretation is conditional on this exact declared challenge mix.
 
 Any future protected evaluation bank must separately state its target population and sampling frame. If inclusion or rejection depends on (W), (N_0), or another oracle-derived input property, that condition must be justified and frozen in the separate evaluation design/B1 amendment before candidate selection. The resulting estimand is conditional on that declared sampling frame. Do not transfer the H80 H2 filter by default, describe an oracle-conditioned bank as representative of all LC518 inputs, or reject candidates based on solver outcomes.
 
@@ -372,4 +389,4 @@ This draft authorizes documentary critique and revision only. It authorizes no b
 
 The owner's separate D0.3 GO authorized inspection of artifact 13210063805 for H80/oracle/sidecar identity reconciliation. That bounded audit is recorded separately. The artifact is to be preserved. The confirmatory route is selected with consent, but its historical consent, independent-custodian, trigger-(i), B1 amendment, and execution gates remain open.
 
-**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.3 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
+**Current disposition:** New v0.21 operational diagnostic-strata route selected; this is draft v0.4 for independent review, not an accepted/frozen operational specification. The accepted symbolic eight-stratum structure is preserved. B1 v1.7 and Rev 1.4 remain unchanged. No experiment work is authorized.
