@@ -959,7 +959,7 @@ The following records were retrieved from the repository. Branch and blob identi
 | docs/LC518_D0_3_ARTIFACT_PRESERVATION_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ad1cd30ef6c8ec7116a89802a225208c435d9ee3 | Private Library preservation copy of artifact 13210063805; source and rematerialized copy SHA-256 verified |
 | docs/LC518_B1_78_ROW_IDENTITY_SOURCE_SEARCH_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 17a95f71a9dbd9ca82a5cdca5cb3e196cf70a576 | Repository search did not locate attributable B1 78-row identity source; H80-to-B1 comparison remains OPEN |
 | docs/LC518_GATE0_PRELIMINARY_LITERATURE_AND_CITATION_SWEEP_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 21b0d7800d4e45656f6dd01ab4b45e5837e49978 | Preliminary literature scan; backward/forward citation sweep and novelty decision remain OPEN |
-| docs/LC518_CONFIRMATORY_ROUTE_GATE_REGISTER_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 34e7d7ec9005a1137a4bba4b71ff9c114f942390 | Explicit consent, custodian, trigger-(i), B1-amendment and execution-GO blockers; no confirmatory evaluation authorized |
+| docs/LC518_CONFIRMATORY_ROUTE_GATE_REGISTER_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 550d02c89ac8f920faa5a64912b8ca63f3714e8a | Explicit consent, custodian, trigger-(i), B1-amendment and execution-GO blockers; no confirmatory evaluation authorized |
 | reviews/AI_REVIEW_2026-11-10_MUTATION_ALLOCATION_SEARCH.md | master | 51bff158b28da12d005675b29545274c582fc1f8 | Bounded review of five supplied conversation PDFs; complete allocation not established within reviewed scope |
 | engineered-study/09_CONCENTRATION_MATHEMATICAL_SPEC.md | research/concentration-math-spec | 9da18a096ef6ae9c53fa96fe85121c7727cd9dac | Historical six-family parenthesis-task math-only document; not the current eight-stratum Coin Change task |
 | docs/SCIENTIFIC_ROADMAP_AUDIT_2026-11-18.md | docs/scientific-roadmap-audit-2026-11-18 | e6c1a21815794a20f08bad45342fd6cff3858ee6 | Existing documentation-only repository roadmap |
@@ -1045,7 +1045,7 @@ The Gate 0 outcome must eventually be one of the explicit decisions in §10.3: p
 
 ### 17.5 Priority 5: confirmatory-evaluation gates
 
-**OPEN; CONFIRMATORY EVALUATION NOT AUTHORIZED.** See the gate-by-gate evidence requirements in `docs/LC518_CONFIRMATORY_ROUTE_GATE_REGISTER_2026-11-21.md` (blob `34e7d7ec9005a1137a4bba4b71ff9c114f942390`).
+**OPEN; CONFIRMATORY EVALUATION NOT AUTHORIZED.** See the gate-by-gate evidence requirements in `docs/LC518_CONFIRMATORY_ROUTE_GATE_REGISTER_2026-11-21.md` (blob `550d02c89ac8f920faa5a64912b8ca63f3714e8a`).
 
 The owner previously selected the confirmatory route with consent. The accepted B1 v1.7 acceptance record nevertheless says joint-consent provenance remains open. The following evidence and decisions remain required before any confirmatory evaluation:
 - verified contemporaneous consent record identifying the parties, scope, date and authority relevant to the B1 decision;
