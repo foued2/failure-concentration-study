@@ -2,9 +2,9 @@
 
 **Record ID:** LC518-V021-ODS-REVIEW-2026-11-21  
 **Date:** 2026-11-21  
-**Review target:** `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`, v0.1 review-base blob `5c9cc5c46f2075948a0564fed5851800755768ed`; current v0.3 blob `299464b2057d352416ddd6db1ee489ac09617394`  
+**Review target:** `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md`, v0.1 review-base blob `5c9cc5c46f2075948a0564fed5851800755768ed`; current v0.3 blob `dfda8661e3252d6fa898a28cd82b3d3a648d068e`  
 **Adjudication:** GPT direct review of the full v0.1 source, with provisional Claude comments supplied in the conversation.  
-**Status:** v0.2 review edits implemented; v0.3 corrected the zero-failure convention to match accepted Rev 1.4 §3.2. Current spec blob is `299464b2057d352416ddd6db1ee489ac09617394`. This record is not an owner acceptance or operational-specification adoption.
+**Status:** v0.2 review edits implemented; v0.3 corrected the zero-failure convention to match accepted Rev 1.4 §3.2. Current spec blob is `dfda8661e3252d6fa898a28cd82b3d3a648d068e`. This record is not an owner acceptance or operational-specification adoption.
 
 ---
 
