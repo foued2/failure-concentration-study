@@ -103,3 +103,34 @@ Before any Gate 0 novelty disposition:
 7. Record every excluded source with a reason. Do not declare novelty until the matrix and citation sweep are reproducible and independently reviewed.
 
 **Disposition: PRELIMINARY LITERATURE SCAN COMPLETE; SYSTEMATIC BACKWARD/FORWARD CITATION SWEEP OPEN; NOVELTY DECISION OPEN.**
+
+## 8. Expanded citation-chase leads from the second pass
+
+A second search pass on 2026-11-21 broadened the functional-equivalent perimeter beyond the seven core papers. It found the following additional relevant works:
+
+| Work | Source-verified details | Relevance and limitation |
+|---|---|---|
+| Haran, Karr, Last, Orso & Porter (2007), “Techniques for Classifying Executions of Deployed Software to Support Software Engineering Tasks” | *IEEE Transactions on Software Engineering*, 33(5), 287–304. DOI: [10.1109/TSE.2007.1004](https://doi.org/10.1109/TSE.2007.1004). | Classifies deployed software execution data, including passing/failing behaviour, using different instrumentation overhead/coverage strategies. This is an important adjacent line because it includes classification across deployed software instances, not only individual test-case clustering. It still predicts/labels execution behaviour from execution data, not a version-level maximum-share statistic over eight input-property strata for a separate held-out correctness target. |
+| Liu, Zhang & Han (2008), “A Systematic Study of Failure Proximity” | *IEEE Transactions on Software Engineering*. DOI: [10.1109/TSE.2008.66](https://doi.org/10.1109/TSE.2008.66). | Studies proximity relationships between failing executions for fault localization. It broadens the proximity/clustering family and should be included in the functional-equivalent review. The unit and objective are failure proximity and fault localization, not LC518's version-level (C_D) predictor. |
+| Wong, Gao, Li, Abreu & Wotawa (2016), “A Survey on Software Fault Localization” | *IEEE Transactions on Software Engineering*, 42(8), 707–740. DOI: [10.1109/TSE.2016.2521368](https://doi.org/10.1109/TSE.2016.2521368). | Broad survey of software fault-localization techniques. It is useful as a backward-citation map and taxonomy of neighboring approaches, but it is not itself an empirical test of the LC518 predictive question. |
+
+The discovery pages also report citation-index totals (for example, 248 citations / 18 references for one Dickinson ICSE record, 48 / 65 for Liu et al., and 946 / 435 for the Wong et al. survey, with coverage stated through January 2025). These are **index-level metadata**, not a deduplicated forward-citation export. They are not used as evidence of novelty or as an exhaustive citation count.
+
+### 8.1 Citation-chain implications
+
+The expanded scan makes two additional research obligations explicit:
+
+1. The literature matrix must include execution classification of deployed software and failure proximity, not only papers whose titles contain “clustering”.
+2. The broad fault-localization survey should be used to identify and screen adjacent methods (spectrum-based fault localization, statistical debugging, failure-inducing input minimization, test prioritization and multi-fault methods). Many of these are not direct LC518 equivalents, but they are plausible functional neighbors and should be screened rather than omitted by title-based inclusion.
+
+The second pass did not retrieve a complete set of citing works for the core papers. Publisher/index pages returned metadata and reference lists, but one citation-index result showed an empty “Cited By” panel while loading. Consequently, **forward citation chasing remains OPEN**. The inconsistent DOI metadata previously returned for “Pursuing Failure: The Distribution of Program Failures in a Profile Space” also remains unresolved pending a publisher/proceedings record.
+
+### 8.2 Updated preliminary synthesis
+
+The scan now identifies at least four adjacent research families:
+- operational execution-profile stratification and reliability estimation;
+- clustering/proximity/classification of passing and failing executions;
+- failure clustering for oracle construction and multi-fault debugging; and
+- broader software fault localization and statistical debugging.
+
+These families make the general idea of organizing failure evidence well established. They also widen the functional-equivalent search that must be completed before a novelty claim. The currently reviewed sources still do not, on the evidence actually inspected, settle the exact LC518 conjunction of fixed input-property strata, solver-version-level record-weighted (C_D), incremental prediction of a separate evaluation correctness target beyond the frozen baseline, and comparison with the full failure vector. That is a statement about the current reviewed set only, **not** a final novelty conclusion.
