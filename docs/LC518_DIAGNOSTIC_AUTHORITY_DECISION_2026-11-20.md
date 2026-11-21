@@ -1,10 +1,10 @@
 # LC518 diagnostic-specification authority decision
 
 **Decision ID:** LC518-DIAG-AUTH-2026-11-20  
-**Version:** 1.2  
+**Version:** 1.3  
 **Decision date:** 2026-11-20  
 **Revision date:** 2026-11-21  
-**Revision note:** v1.2 adds D0.3 oracle-output/rejection-sidecar reconciliation, input-domain identity safeguards, and conditional consequences of H80/B1 overlap. No bank, oracle, or sidecar contents were inspected.  
+**Revision note:** v1.3 records the owner-authorized H80 artifact inspection and its results: 80 raw rows, 78 unique canonical identities, 78 matching oracle objects, and 26 H2 rejection retries. H80-to-B1 identity equality remains open because no independently attributable B1 78-row source was identified. Artifact 13210063805 is preserved.  
 **Status:** GPT SOURCE-ADJUDICATION RECORDED; NO CURRENT OPERATIONAL D1–D8 SPECIFICATION ADOPTED  
 **Repository:** `foued2/failure-concentration-study`  
 **Scope:** Documentary authority determination for the current v0.21 population-design route. Not a bank specification, protocol amendment, owner ratification of new strata, freeze, or execution authorization.
@@ -68,9 +68,9 @@ The 64-record D bank in v1.0 happens to match the `8 × 8` abstract structure in
 
 BANK_DESIGN v1.0 §2 defines canonical identity as `(amount, tuple(sorted(coins)))`; permutation copies of one mathematical instance share one canonical identity. Its §5 H6 row specifies 10 raw records as 2 canonical instances × 2 orderings plus 6 singleton records. H6 therefore contains 8 canonical identities.
 
-If each of the other 70 H1–H5/H7–H8 records also has a unique canonical identity, the complete 80-row H1–H8 bank would have 78 unique canonical identities. This is the count pattern identified in the cross-review. The design text alone does not prove that the other 70 records contain no additional within-stratum or cross-stratum canonical collisions; the frozen H80 manifest is required to establish the exact unique-identity count and multiplicities.
+The owner-authorized inspection of artifact 13210063805 now establishes the actual H80 count: the bank contains 80 raw rows and exactly 78 distinct canonical identities. The only duplicate groups are the two H6 reorder pairs, H057/H058 (H6-P01) and H059/H060 (H6-P02). No additional within-stratum or cross-stratum canonical collisions occur. All 80 stored canonical IDs recompute from `(amount, tuple(sorted(coins)))`, and all rows satisfy the distinct-denomination input rule. The two H6 pairs account for exactly two excess raw rows.
 
-This arithmetic supports, but does not establish, the following D0.3 hypothesis: the B1 v1.7 78-record development bank might contain exactly the 78 unique canonical identities obtained by collapsing the two H6 ordering pairs in the historical 80-row H80 bank.
+The verified H80 result strengthens the D0.3 hypothesis: its 78 canonical keys are exactly represented by its 78 oracle-output objects. However, this still does not establish that B1 v1.7's 78 development rows are those same identities. The B1 plan and acceptance record do not provide a B1 identity list or cite H80 by artifact ID/hash.
 
 The accepted B1 v1.7 plan and its acceptance record do not cite BANK_DESIGN v1.0/H80, provide the 78 identities, or state that the rows were obtained by canonical de-duplication. Therefore equality, partial overlap, and disjointness of the two identity sets are all **OPEN**. Do not state that B1 is H80 deduplicated; equally, do not claim that the identity sets differ merely because the documents assign them different roles.
 
@@ -107,6 +107,33 @@ Interpretation is predetermined:
 - If the intersection is partial, report the exact overlap and set differences; do not describe the banks as either identical or disjoint.
 - Rejection-sidecar events are a separate generation-history result. They explain the 80/78 oracle cardinality only if the pinned artifact schema and row-level reconciliation demonstrate a direct effect; their count alone is insufficient.
 
+### 3.1.2 Authorized H80 artifact result
+
+The owner authorized inspection of GitHub Actions artifact `13210063805` (`lc518-bank-run-41591572358-1`, workflow run `41591572358`). Its archive SHA-256 was recorded from GitHub metadata before download and independently matched the downloaded 75,523-byte ZIP. All 15 archive-member byte sizes and SHA-256 hashes were recorded before parsing the bank, oracle, and H80 sidecar contents.
+
+The detailed audit is recorded in `docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md`. The controlling H80 findings are:
+
+- `heldout_bank.json`: 80 raw rows, 80 unique input IDs, 78 unique canonical IDs; all 80 denomination lists are distinct; all stored canonical IDs recompute correctly.
+- The only duplicate groups are H057/H058 (H6-P01; original/permutation) and H059/H060 (H6-P02; original/permutation). Each pair shares one canonical ID and differs only in coin ordering.
+- `heldout_oracle_outputs.json`: 78 objects, 78 unique canonical keys. Its key set equals the H80 canonical-key set exactly. Every raw H80 record resolves to exactly one oracle object with matching amount and sorted denominations; no keys are missing or extra.
+- `heldout_bank.rejections.jsonl`: 26 events, all `bank=heldout`, `stratum=H2`, `reason=H2_ORACLE_BELOW_TWO`, across candidate slots H018–H024. Every affected candidate slot later appears as an accepted H2 row. These events are retry history and do not explain the 80-to-78 oracle count.
+- `canonical_disjointness_report.json`: status PASS; 80 held-out raw rows, 78 held-out unique canonical identities, and zero cross-bank collisions in each reported D/H stratum. Its hash and all six referenced artifact hashes match the archived bytes.
+- `run_manifest.json`: reports item-8 PASS, overall generation-run status ACCEPTED, process exit 0, and 57 test-suite passes. Its aggregate rejection count is 63 across both banks. Only the H80 sidecar was parsed for this D0.3 scope; the diagnostic sidecar was not inspected.
+
+The run's `ACCEPTED` status records the generator/launcher acceptance checks for this artifact. It does not owner-ratify C9 rev 2.6, make C9 current v0.21 authority, or change the status of any accepted B1/Rev 1.4 source.
+
+**Result:** the historical H80 bank is an internally consistent 80-raw-row / 78-canonical-key input bank with exactly 78 corresponding oracle objects. The 80-to-78 difference is explained by H6 permutation identity collapse, not by rejected H80 attempts.
+
+### 3.1.3 B1 identity source remains unestablished
+
+The accepted B1 v1.7 analysis plan defines its outcome rows as canonical records (r=1,ldots,78), and its acceptance record confirms the fixed 78-record publicly exposed development set. Neither document supplies the 78 keys or cites artifact 13210063805, `heldout_bank.json`, or `heldout_oracle_outputs.json` by immutable identity.
+
+A repository-tree check of B1 acceptance commit `ac06c6676982eed795db9cb04c6d91803b591ac7` (348 entries) found the B1 plan and acceptance records but no B1 78-row bank manifest or canonical-record/oracle attachment. The symbolic index (r=1,ldots,78) is not an identity list.
+
+Accordingly, the H80 canonical set (K_H) and B1 development set (K_{B1}) cannot yet be compared directly. Do not substitute H80's oracle keys for (K_{B1}) solely because both have cardinality 78. Equality, partial overlap, and disjointness remain **OPEN** until the independently attributable B1 78-row source is identified with provenance and immutable hash.
+
+If the owner identifies `heldout_oracle_outputs.json` from artifact 13210063805 as the intended B1 source, that linkage must be supported by contemporaneous or authoritative B1 provenance; it cannot be inferred after the fact from matching counts.
+
 #### Coin-denomination identity rule
 
 BANK_DESIGN v1.0 §1 states that denominations are distinct. Thus an input such as `[1,1,2]` is outside the stated valid input domain and must fail validation rather than enter the bank comparison. The identity tuple `(amount, tuple(sorted(coins)))` would in any case preserve multiplicity: `[1,1,2]` and `[1,2]` produce different sorted tuples. Do not use set-based normalization. If an actual artifact contains repeated denominations, stop the identity audit and report the violation; do not decide post hoc whether repeated denominations should be treated as equivalent.
@@ -137,7 +164,7 @@ C9 may be used as review material. Its changed details, including the proposed D
 | Eight diagnostic strata × eight records | Accepted symbolic structure inherited through Rev 1.4; 64 abstract diagnostic slots | Not proof of a generated or current D1–D8 manifest |
 | Historical D1–D8 diagnostic bank | Defined in BANK_DESIGN v1.0 for the earlier 150-body package; 64 records | Not automatically adopted by v0.21 |
 | B1 v1.7 development/outcome records | Fixed 78-record publicly exposed development bank | Not the diagnostic bank and not sealed confirmatory data |
-| Historical H1–H8 held-out bank | 80 raw records; H6 has 10 rows but 8 canonical identities; total unique identities are 78 only if no further collisions occur | Not adopted as B1 v1.7's target; identity relation unresolved; if equal, not independent of B1's development inputs despite different roles |
+| Historical H1–H8 held-out bank | Artifact 13210063805 verifies 80 raw records and 78 unique canonical identities; the only duplicates are the two H6 reorder pairs; 78 exact oracle objects resolve all raw rows | Not adopted as B1 v1.7's target; identity-level relation to B1's 78 rows remains unresolved because no independent B1 identity source is specified |
 
 ## 6. Consequences for the research claim
 
@@ -159,7 +186,9 @@ A future operational specification must be selected through an explicit, version
 
 Whichever route is chosen must identify the exact specification path, revision and immutable blob; the current diagnostic manifest hash; each record's ID, assigned stratum, rule ID, canonical identity and rule parameters; the D4 subtype allocation if applicable; the D6 pair identities and ordering; and the relation to the applicable B1 analysis plan and evaluation target. Any change to the B1 statistical structure or outcome target requires a separately reviewed B1 amendment.
 
-This decision does **not** choose among those future routes, create a bank, reconstruct a manifest, or change the current statistical formula.
+Owner route decision (2026-11-21): **a new v0.21-linked operational diagnostic-stratum specification is selected for drafting** rather than adopting BANK_DESIGN v1.0 §6 or ratifying a C9 subset. The new document is a separate draft and does not become current authority until it completes review and is explicitly accepted. It must not amend Rev 1.4 or B1 v1.7 in place.
+
+This decision does **not** create a new diagnostic bank or manifest, reconstruct an allocation, or change the current statistical formula.
 
 ## 8. Source register and provenance
 
@@ -179,6 +208,8 @@ This decision does **not** choose among those future routes, create a bank, reco
 
 ## 9. Pause and authorization boundary
 
-This is a documentation-only authority determination. It does not reopen the paused project and authorizes no bank access, bank generation, oracle access, solver construction or modification, compilation, execution, diagnostic probing, outcome collection, simulation, sampling, predictive fitting, or power analysis. No frozen specification, bank, manifest, or solver was modified by this decision.
+This is a documentation-only authority determination with a later bounded owner GO. On 2026-11-21, the owner authorized the D0.3 identity/provenance comparison for artifact 13210063805, specifically its H80 bank, H80 oracle attachment, H80 rejection sidecar, publication report, and run-manifest fields. That bounded inspection was completed and is recorded in `docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md`. The artifact is to be preserved and was not deleted or modified. The owner also selected drafting of a new v0.21-linked operational diagnostic-stratum specification.
 
-**Final ruling:** accepted authority exists for the symbolic eight-stratum statistical structure and B1 analysis procedure. **No operational D1–D8 specification is presently adopted for v0.21.** The H80-to-B1-78 identity-set relationship is an explicit, untested D0.3 hypothesis; oracle-output and rejection-sidecar reconciliation are also unperformed. Repeated denominations are invalid under the stated input domain. If identity equality is confirmed, the two sets are not independent, although their historical/design roles remain distinct. Gate 0 remains open.
+This bounded GO does not authorize solver construction or modification, compilation, execution, diagnostic outcome collection, access to blind E3 or other protected evaluation records, model fitting, simulation, sampling, power analysis, or confirmatory evaluation. The confirmatory route was selected with consent, but the B1 acceptance record's joint-consent provenance gap remains open; independent custody, trigger-(i) ratification, and a separately reviewed B1 amendment are also still required. No frozen Rev 1.4/B1 specification, bank, manifest, or solver was modified by the H80 audit.
+
+**Final ruling:** accepted authority exists for the symbolic eight-stratum statistical structure and B1 analysis procedure. **No operational D1–D8 specification is presently adopted for v0.21.** H80-to-oracle reconciliation is complete: 80 raw rows, 78 unique canonical identities, and 78 matching oracle objects; the H80 sidecar contains 26 H2 retries and does not explain that cardinality. H80-to-B1 identity equality remains OPEN because the independently attributable B1 78-row source is not established. Repeated denominations are invalid under the stated input domain. The owner selected the new v0.21 specification route; drafting/review remains separate from adoption. Confirmatory evaluation remains blocked on consent/custody/amendment gates. Gate 0 remains open.
