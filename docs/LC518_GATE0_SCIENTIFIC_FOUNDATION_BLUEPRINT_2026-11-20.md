@@ -1,7 +1,7 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.8  
+**Version:** 0.9  
 **Date:** 2026-11-21  
 **Status:** DRAFT FOR INDEPENDENT REVIEW; H80-TO-ORACLE RECONCILIATION PASS; H80-TO-B1 IDENTITY OPEN; NEW v0.21 OPERATIONAL-STRATA SPEC v0.3 DRAFTED BUT NOT ADOPTED; MEASUREMENT VALIDITY OPEN  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
@@ -169,7 +169,7 @@ A candidate mechanism may involve persistent input-sensitive weaknesses. That ph
 - H80 result: 80 raw rows, 78 unique canonical keys, two duplicate groups (the H6 reorder pairs), 78 exact oracle keys, complete row-to-oracle resolution, and no missing or extra oracle keys.
 - H80's 26 H2 retries all have reason `H2_ORACLE_BELOW_TWO` and end in accepted candidate slots. The accepted H2 rows have (W\ge2). This is oracle-answer-conditioned construction of the finite H2 target, not selection on solver PASS/FAIL. The H80 target is its fixed 80-record list, not all small-amount LC518 inputs. The H2 filter does not explain the 80-to-78 raw/oracle cardinality difference.
 - H80-to-B1 result: OPEN. The accepted B1 v1.7 source set has not been independently identified by canonical keys. Do not equate the two 78-count sets. The next documentary requirement is an independently attributable B1 78-row identity manifest or an authoritative contemporaneous record linking B1 to the H80 oracle artifact, including its immutable hash and provenance.
-- The canonical identity is `(amount, tuple(sorted(coins))`. Repeated denominations are invalid under the historical task contract; the tuple preserves multiplicity and must not be replaced by set normalization.
+- The canonical identity is `(amount, tuple(sorted(coins)))`. Repeated denominations are invalid under the historical task contract; the tuple preserves multiplicity and must not be replaced by set normalization.
 - The one-oracle-object-per-distinct-canonical-identity rule is verified for H80. Each H6 reorder pair's two raw rows resolve to one shared oracle object.
 - Rejection sidecars are candidate-attempt history, not missing accepted rows. Future sidecar checks must reconcile each attempt to accepted slot identities and the publication report; event counts alone do not explain oracle-object cardinality.
 - Any later H80-to-B1 comparison must use exact manifest provenance and normalized keys, and report equality, partial intersection or disjointness without assuming any of these outcomes. The separate blind E3 claim requires its own identity/custody evidence; H80/B1 equality alone does not prove E3 contamination.
@@ -924,14 +924,14 @@ The following records were retrieved from the repository. Branch and blob identi
 | lc518-150/review-v1.2/b1-population-design/POPULATION_AND_EXPERIMENTAL_DESIGN_2026-11-16_v0.21.md | gpt/lc518-m1si-audit-2026-11-17 | 8af908f6b0ad4cd060194a0a63f4914939f07756 | Current population-design draft, conditional claim, q/a distinction, M1-si support, non-authorization |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md | gpt/lc518-m1si-audit-2026-11-17 | 8c666e501a31726c728447d155045c0b20adc178 | Symbolic B1 analysis plan; interpret with separate acceptance record |
 | lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md | gpt/lc518-m1si-audit-2026-11-17 | ea51d72f4f85c5d832d72add561b4c93472c364a | Authoritative acceptance/freeze of symbolic B1 v1.7; explicitly not execution GO |
-| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 21404fbe4a6c7c4dc5c03f69c95a46f1d7610882 | GPT source-adjudication v1.3: H80-to-oracle reconciliation PASS; B1 identity source missing; no operational D1–D8 authority yet |
+| docs/LC518_DIAGNOSTIC_AUTHORITY_DECISION_2026-11-20.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | f87dd10143cc0cc04768b342f4b2ebbc44ac4f3e | GPT source-adjudication v1.3: H80-to-oracle reconciliation PASS; B1 identity source missing; no operational D1–D8 authority yet |
 | lc518-150/review-v1.2/analysis-revision-2026-11-02/C9_GENERATION_SPEC_REVIEW.md | gpt/lc518-claim-b1-primary-2026-11-05 | bd9f13fee63ee2716345447461bf3b8bcd904eaa | Earlier bank-generation review and identified construction issues; not by itself proof of current bank authority |
 | lc518-150/glm-handoff/ANALYSIS_SPEC_REVIEW_DRAFT.md | gpt/lc518-claim-b1-primary-2026-11-05 | c47760b1ca9121291f600db87b1e90665d57b8f6 | Review-only analysis draft; corroborates D1–D8 input-category interpretation and D6 pair-dependence treatment; not a frozen analysis authority |
 | lc518-150/engineering/README.md | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | M1-si utility scope and limits; does not establish scientific validity or authorize execution |
 | docs/LC518_D0_3_OWNER_GO_AND_HASH_INVENTORY_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ae4ac9708ebde91fd7981f9587806d068294cb1d | Owner D0.3 GO, archive digest and 15 member hashes frozen before parsing; bounded scope and limits |
 | docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ec81a3a6c6d15eb7fbe9db12a8047c99554f15b7 | H80 80/78/78 reconciliation; 26 H2 retries; B1 identity source not established |
-| docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 299464b2057d352416ddd6db1ee489ac09617394 |
-| docs/LC518_V021_SPEC_REVIEW_ADJUDICATION_2026-11-21.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | c03cf8b8d27730ef4186a36c836d6c3f3cda98cc | GPT's direct adjudication of provisional Claude summary-based comments; not a direct Claude file review | New owner-selected operational taxonomy draft; not accepted, frozen, or generation-authorizing |
+| docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | dfda8661e3252d6fa898a28cd82b3d3a648d068e | New owner-selected operational taxonomy draft v0.3; not accepted, frozen, or generation-authorizing |
+| docs/LC518_V021_SPEC_REVIEW_ADJUDICATION_2026-11-21.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 75c61952586201718e248b42c1aedab4b736e081 | GPT's direct adjudication of provisional Claude summary-based comments; not a direct Claude file review |
 | reviews/AI_REVIEW_2026-11-10_MUTATION_ALLOCATION_SEARCH.md | master | 51bff158b28da12d005675b29545274c582fc1f8 | Bounded review of five supplied conversation PDFs; complete allocation not established within reviewed scope |
 | engineered-study/09_CONCENTRATION_MATHEMATICAL_SPEC.md | research/concentration-math-spec | 9da18a096ef6ae9c53fa96fe85121c7727cd9dac | Historical six-family parenthesis-task math-only document; not the current eight-stratum Coin Change task |
 | docs/SCIENTIFIC_ROADMAP_AUDIT_2026-11-18.md | docs/scientific-roadmap-audit-2026-11-18 | e6c1a21815794a20f08bad45342fd6cff3858ee6 | Existing documentation-only repository roadmap |
@@ -954,7 +954,7 @@ This document remains a blueprint for critique and is not accepted merely becaus
 
 The next review work is ordered, not open-ended.
 
-The current authority state and D0.3 results are recorded in the v1.3 authority decision, owner-GO inventory and D0.3 reconciliation result. H80 is reconciled internally: 80 raw rows, 78 canonical identities, 78 matching oracle objects, and 26 H2 retry events that do not explain the output count. The H80-to-B1 identity relationship remains OPEN because no independently attributable B1 78-row identity source has been located.
+The current authority state and D0.3 results are recorded in the v1.6 authority decision, owner-GO inventory, D0.3 reconciliation result and v0.21 review-adjudication record. H80 is reconciled internally: 80 raw rows, 78 canonical identities, 78 matching oracle objects, and 26 H2 retry events that do not explain the output count. The H80-to-B1 identity relationship remains OPEN because no independently attributable B1 78-row identity source has been located.
 
 The owner selected a new v0.21 operational-specification route. Draft v0.3 is in a separate branch and requires direct independent review before acceptance. Claude's first comments were summary-based; it has not yet reviewed v0.3 directly. GLM's direct review remains pending. Review order:
 
