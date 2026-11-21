@@ -1513,3 +1513,85 @@ systematic backward/forward citation checks are incomplete. Foued's conditional 
 Sections 27.3–27.4 are design proposals for review, not Gate 1 amendments. No freeze or
 implementation authorization follows. Rev 11, B1 v1.7, and the existing measurement
 specification remain unchanged; no outcome or bank access, fitting, or solver execution occurred.
+
+---
+
+## 28. B1 78-row identity recovered; Wu ASE DOI resolved (2026-11-21)
+
+**Trigger:** the owner's direct question whether any file identifies B1 v1.7's actual 78
+development-bank rows, and the Wu et al. (2004) ASE DOI left open in §26 and register §9.7/§9.9.
+Sections 25–27 and register §9 already record the round-2 literature additions, the two exposure
+bases, the full-population and fold-level B1 eligibility rules, the Gate 4 relocation of
+power/MDE, and the candidate contribution statement. This entry does not re-add those items. It
+records only the identity-source recovery and one bibliography resolution.
+
+### 28.1 The B1 78-row identity source is recoverable
+
+The full record is `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`.
+
+**What B1 v1.7 says.** Only the symbolic index `r = 1,…,78`. It does not enumerate keys or cite a
+bank path or hash. Its change table item 7 deliberately removed the 138/144/6 erratum counts, so the
+chain does not run through the erratum.
+
+**What the record supplies.** Rev 1.1 §1.4 — inherited by Rev 1.4 §1 and carried into B1 v1.7 §1
+item 1 — defines the outcome population as "78 unique canonical records of the fixed, publicly
+exposed held-out bank." The B1 decision reconciliation §6.1 pins the artifact
+(`lc518-bank-run-41591572358-1.zip`, 75,523 B, SHA-256
+`6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2`, equal to GitHub artifact
+`13210063805`, run `41591572358`), and §6.5 records that the artifact containing
+`bank/heldout_bank.json` and its oracle answers was publicly downloadable. The erratum §3 pins the
+same hash to the same artifact ID.
+
+**What the artifact contains.** `bank/heldout_bank.json` (40,218 bytes, `b273c053…26d6`) has 80 raw
+records and 78 unique canonical identities. `bank/heldout_oracle_outputs.json` (15,262 bytes,
+`eaae8104…e244`) has 78 objects and an equal key set. The collapse is exactly the two H6 reorder
+pairs `H057`/`H058` (`H6-P01`) and `H059`/`H060` (`H6-P02`). The 78 B1 rows are the **78 canonical
+identities**, not the 80 raw rows. The sorted key set hashes to `01bb0e4c…3cccd`; the sorted
+`(amount, sorted(coins))` payload set hashes to `8b67d1f0…e48fa`.
+
+**Provenance caution.** The Git copy of the ZIP is a later upload (commit `2d5f9c3`, 2026-11-18) on
+`origin/foued2-patch-3`. It is not a post-B1 reconstruction: its hash is the hash of the 2026-11-03
+artifact, and the erratum pins that hash. The Git upload date is not the generation date.
+
+**Measurement caution.** Identity recovery is not outcome coding. The artifact supplies one oracle
+answer per `canonical_id`, but B1 v1.7 does not fix how two raw execution statuses collapse to one
+`Y`; §27.3–§27.4 already record that as an open Gate 1 measurement gap. This entry neither adopts an
+aggregation rule nor resolves unresolved-status handling.
+
+**Disposition.** The identity source is **RECOVERED**; the B1 identity gate moves from
+**source-missing** to **source-recovered / adjudication pending**. This is not a `78 = 78` inference:
+it is B1's own definition of its outcome population plus the contemporaneous identification of the
+bank. It is not a B1 v1.7 citation, and it does not fix a historical enumeration order; `ω_r` is a
+free record effect, so any order is a reporting convention. The gate is not closed unilaterally. The
+two lawful paths are: (a) the owner/GPT accepts the chain and records the path/hash in a dated B1
+addendum; or (b) a contemporaneous B1-issued manifest is supplied, or B1 design is reopened. No third
+path substitutes H80 by cardinality.
+
+### 28.2 Wu et al. (2004), ASE: the withheld DOI is resolved
+
+Section 26 and register §9.7/§9.9 withheld the DOI for "A Statistical Model to Locate Faults at
+Input Level" (ASE 2004, pp. 274–277) because third-party records disagreed. The primary registration
+record resolves it:
+
+- Crossref `10.1109/ASE.2004.1342745` returns the matching title, authors (Wu Ji, Jia Xiao-xia, Liu
+  Chang, Yang Hai-yan, Liu Chao, Jin Mao-zhong), proceedings, pages 274–277, publisher IEEE.
+- The DOI handle resolves to `http://ieeexplore.ieee.org/document/1342745/`.
+- The competing strings do not identify this paper: `10.1109/ASE.2004.1342763` is a different ASE
+  2004 paper (Choi & Heimdahl, "Combination model checking", pp. 354–357);
+  `10.1109/ASE.2004.10008` and `10.1109/ASE.2004.7` do not resolve.
+
+Row 8c now carries `10.1109/ASE.2004.1342745`. The verification level remains a bibliographic record
+plus DOI handle; the full text was not reviewed, and the paper is not evidence for `P`.
+
+### 28.3 Effect on the record
+
+- `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` §10 is the dated amendment; §1–§9 are unchanged.
+- `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md` is the standalone provenance record.
+- **Gate 0 remains OPEN. `P` remains unproven.** No novelty claim is licensed.
+- **B1 v1.7 is unchanged and is not amended.** The identity gate is source-recovered, not closed.
+- **No execution, fitting, sampling, solver construction, calibration, or outcome model.** The only
+  bank access was read-only identity inspection of the held-out artifact; the project pause remains in
+  force.
+- The next Gate 0 deliverable remains the scoping review (comparison groups, evidence matrix,
+  citation sweep), not a solver plan. The first Gate 1 action on reopening remains the design-only
+  support census, on both bases and with the full-population and fold-level B1 audit reproduced.
