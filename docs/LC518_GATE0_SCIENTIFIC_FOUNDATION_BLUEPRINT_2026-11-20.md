@@ -1,9 +1,9 @@
 # LC518 Gate 0: Scientific Foundation and Measurement-Validity Blueprint
 
 **Document ID:** LC518-G0-SFB-2026-11-20  
-**Version:** 0.9  
+**Version:** 1.0  
 **Date:** 2026-11-21  
-**Status:** DRAFT FOR INDEPENDENT REVIEW; H80-TO-ORACLE RECONCILIATION PASS; H80-TO-B1 IDENTITY OPEN; NEW v0.21 OPERATIONAL-STRATA SPEC v0.3 DRAFTED BUT NOT ADOPTED; MEASUREMENT VALIDITY OPEN  
+**Status:** DRAFT FOR INDEPENDENT REVIEW; H80-TO-ORACLE RECONCILIATION PASS; H80 ARTIFACT PRIVATE-COPY SHA-256 VERIFIED; v0.21 OPERATIONAL TAXONOMY v0.4 OWNER-ACCEPTED AT PINNED BLOB; H80-TO-B1 IDENTITY OPEN; MEASUREMENT VALIDITY AND GATE 0 OPEN; NO EXECUTION GO  
 **Base branch:** docs/scientific-roadmap-audit-2026-11-18  
 **Base commit:** 26cba397e06fbb72560dda3b68e09b2396300d3b  
 **Scope:** Documentation-only scientific review. This is not a protocol amendment, bank specification, mutation allocation, freeze, statistical decision, or execution authorization.
@@ -454,6 +454,28 @@ The source register and evidence trail are in [LC518_DIAGNOSTIC_AUTHORITY_DECISI
 | Do the proposed mutations actually expose the intended behaviour? | This requires a later, separately authorized empirical validation design with frozen source/inputs and an independent outcome oracle | No execution evidence; or a claimed effect that does not follow from the operator semantics and declared input conditions |
 
 The last row is deliberately not a Gate 0 documentary result. It identifies a future evidence requirement and does not authorize the required execution.
+
+
+### 5.8 Superseding operational-strata disposition after owner acceptance (2026-11-21)
+
+The owner has now accepted the exact v0.4 operational taxonomy document. This subsection updates the current Gate 0 position without rewriting the historical 2026-11-20 review record in §§5.6.6–5.6.8 or changing accepted B1 v1.7 / Rev 1.4.
+
+**Accepted taxonomy object:**
+- Path: `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.4.md`
+- Branch: `gpt/lc518-v021-operational-strata-spec-2026-11-21`
+- Content blob: `8873389a0b38a7c9a1307f1c4f9fe4f7dee13def`
+- Owner acceptance record: `docs/LC518_V021_V04_OWNER_ACCEPTANCE_2026-11-21.md`, blob `472b7f1f94ee6fa1792f3f833a5418a77e93e9e9`.
+
+The owner acceptance applies to the D1–D8 taxonomy and its stated counting/reporting rules only. It is not a generation-protocol freeze, diagnostic manifest, bank-generation GO, solver GO, or execution GO.
+
+The current D4/D5/D6 interpretation is therefore:
+- **D4:** v0.4's homogeneous modular/parity category: all denominations even, gcd exactly 2, odd target at or above the smallest denomination, with oracle answer (W=0). The earlier §5.6.6 concern about C9's three-subtype D4 composite and proposed 2:2:4 allocation is historical C9-specific analysis, not a remaining defect in the accepted v0.4 D4 rule.
+- **D5:** v0.4 defines an LC518 repeat-use multiplicity category using (W\ge2) and (W>N_0), with the declared target and denomination constraints. The previous C9-specific greedy minimum-coin check (G\ne W) is not part of this accepted D5 definition and must not be imported into it. Every eventual D5 input still requires exact pre-outcome oracle computation of (W) and (N_0).
+- **D6:** primary (f_6) and (C_D) remain record-weighted as required by the accepted B1/Rev 1.4 interface. The v0.4 canonical-identity-weighted sensitivity is descriptive only. No B1 formula amendment has been made.
+
+The v0.4 predicates and pairwise exclusivity checks were reviewed by Claude and independently recomputed by GLM; the corrected D5 witness and its exact predicate compliance were verified. This closes the specified v0.4 taxonomy review defects. It does not establish the diagnostic-to-evaluation crosswalk, baseline-difficulty calibration, operator mapping, generator feasibility, or predictive validity.
+
+**Next Stage 2 evidence remains required:** authoritative diagnostic manifest and deterministic reconstruction; D6 pair manifest; operator-class semantics and pre-outcome mapping; design-only generator feasibility review; and the diagnostic-to-evaluation property crosswalk. No manifest or diagnostic bank is asserted to exist.
 
 ## 6. Step 2 — Establish what the mutation/operator design changes
 
@@ -932,6 +954,11 @@ The following records were retrieved from the repository. Branch and blob identi
 | docs/LC518_D0_3_RECONCILIATION_RESULT_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ec81a3a6c6d15eb7fbe9db12a8047c99554f15b7 | H80 80/78/78 reconciliation; 26 H2 retries; B1 identity source not established |
 | docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | dfda8661e3252d6fa898a28cd82b3d3a648d068e | New owner-selected operational taxonomy draft v0.3; not accepted, frozen, or generation-authorizing |
 | docs/LC518_V021_SPEC_REVIEW_ADJUDICATION_2026-11-21.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 75c61952586201718e248b42c1aedab4b736e081 | GPT's direct adjudication of provisional Claude summary-based comments; not a direct Claude file review |
+| docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.4.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 8873389a0b38a7c9a1307f1c4f9fe4f7dee13def | Owner-accepted exact v0.4 D1–D8 operational taxonomy; taxonomy acceptance only, no generation/execution GO |
+| docs/LC518_V021_V04_OWNER_ACCEPTANCE_2026-11-21.md | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 472b7f1f94ee6fa1792f3f833a5418a77e93e9e9 | Exact-hash owner acceptance record; explicitly excludes generation-protocol freeze and execution GO |
+| docs/LC518_D0_3_ARTIFACT_PRESERVATION_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | ad1cd30ef6c8ec7116a89802a225208c435d9ee3 | Private Library preservation copy of artifact 13210063805; source and rematerialized copy SHA-256 verified |
+| docs/LC518_B1_78_ROW_IDENTITY_SOURCE_SEARCH_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 17a95f71a9dbd9ca82a5cdca5cb3e196cf70a576 | Repository search did not locate attributable B1 78-row identity source; H80-to-B1 comparison remains OPEN |
+| docs/LC518_GATE0_PRELIMINARY_LITERATURE_AND_CITATION_SWEEP_2026-11-21.md | gpt/gate0-scientific-foundation-blueprint-2026-11-20 | 21b0d7800d4e45656f6dd01ab4b45e5837e49978 | Preliminary literature scan; backward/forward citation sweep and novelty decision remain OPEN |
 | reviews/AI_REVIEW_2026-11-10_MUTATION_ALLOCATION_SEARCH.md | master | 51bff158b28da12d005675b29545274c582fc1f8 | Bounded review of five supplied conversation PDFs; complete allocation not established within reviewed scope |
 | engineered-study/09_CONCENTRATION_MATHEMATICAL_SPEC.md | research/concentration-math-spec | 9da18a096ef6ae9c53fa96fe85121c7727cd9dac | Historical six-family parenthesis-task math-only document; not the current eight-stratum Coin Change task |
 | docs/SCIENTIFIC_ROADMAP_AUDIT_2026-11-18.md | docs/scientific-roadmap-audit-2026-11-18 | e6c1a21815794a20f08bad45342fd6cff3858ee6 | Existing documentation-only repository roadmap |
@@ -949,6 +976,8 @@ These are relevant motivation and limitation sources. Their measurement units an
 ---
 
 ## 16. Review disposition
+
+**Historical review snapshot:** this section records the status when blueprint v0.9 was drafted, before the v0.4 taxonomy was completed and accepted by the owner. The current status and outstanding closure sequence are set out in §17 below.
 
 This document remains a blueprint for critique and is not accepted merely because the cross-review has converged on several findings. The convergence recorded in §5.6.6 is technical agreement on the identified issues and closure conditions, not a formal joint sign-off or owner ratification.
 
@@ -969,5 +998,75 @@ D4/D5/D6 are explicitly addressed in the new v0.1 proposal but remain open to ch
 The mutation-to-stratum map remains blocked until actual operator classes are authoritatively specified. No mapping may be invented from stratum names. The exact closure evidence and stop conditions are in §§5.6.6–5.7.
 
 **Current status: Gate 0 remains OPEN. H80-to-oracle reconciliation is PASS; H80-to-B1 identity is OPEN / NOT ESTABLISHED because the B1 identity source is missing. A new v0.21 D1–D8 specification is drafted as v0.3 on a separate branch and is NOT ACCEPTED or FROZEN. D4/D5/D6 and the diagnostic-to-evaluation crosswalk remain subject to independent review. Confirmatory evaluation remains blocked on consent/custody/trigger-(i)/B1-amendment/execution gates. No solver or outcome work is authorized.**
+
+
+## 17. Current status after v0.4 owner acceptance and five-priority action (2026-11-21)
+
+This section supersedes earlier status snapshots in this blueprint where they refer to v0.3 as the current draft or say that owner adoption of an operational D1–D8 specification is still pending.
+
+### 17.1 Priority 1: H80 artifact preservation
+
+**COMPLETE.** Artifact `13210063805` was re-fetched from GitHub Actions on 2026-11-21. GitHub reported it unexpired with expiry `2027-02-01T06:42:22Z`, size 75,523 bytes, and digest `sha256:6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2`. A private copy is stored in the user's ChatGPT Library at `/LC518_Preserved_Artifacts/lc518-bank-run-41591572358-1-preserved-2026-11-21.zip`. Both the source download and a separately rematerialized Library copy were 75,523 bytes and independently hashed to the same SHA-256. The ZIP was not placed in the public repository. The preservation record is `docs/LC518_D0_3_ARTIFACT_PRESERVATION_2026-11-21.md`. This operation did not re-inspect the archive members; the earlier bounded D0.3 reconciliation remains the member-level audit record.
+
+### 17.2 Priority 2: v0.4 owner acceptance
+
+**COMPLETE, TAXONOMY ONLY.** The owner accepted the exact v0.4 object:
+- Path: `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.4.md`
+- Branch: `gpt/lc518-v021-operational-strata-spec-2026-11-21`
+- Content blob SHA-1: `8873389a0b38a7c9a1307f1c4f9fe4f7dee13def`
+- Acceptance record: `docs/LC518_V021_V04_OWNER_ACCEPTANCE_2026-11-21.md`, blob `472b7f1f94ee6fa1792f3f833a5418a77e93e9e9`.
+
+Acceptance adopts the D1–D8 taxonomy. It does not freeze the deterministic generation protocol, produce a manifest, authorize bank generation, authorize solver work, authorize access to protected evaluation inputs, or issue an execution GO.
+
+### 17.3 Priority 3: B1 78-row identity source
+
+**OPEN / NOT ESTABLISHED.** The accepted B1 v1.7 plan and acceptance record name the fixed 78-record publicly exposed development population symbolically as (r=1,\ldots,78), but do not supply its canonical keys or cite H80 by immutable artifact identity. Repository tree searches covered the accepted B1 tree and the identified computational-plan, primary-review, earlier B1 design, and transfer snapshots. No independently attributable B1 78-row manifest, canonical-record table or oracle attachment was located. The evidence and search limits are recorded in `docs/LC518_B1_78_ROW_IDENTITY_SOURCE_SEARCH_2026-11-21.md`.
+
+No identity intersection was calculated. H80's 78 unique keys must not be substituted for B1's 78 symbolic rows. Equality, partial overlap and disjointness remain open until an authoritative B1 source with provenance and immutable hash is supplied. This search did not inspect local/offline owner archives, private mutation annexes, blind E3, or external unindexed storage.
+
+### 17.4 Priority 4: remaining Gate 0 scientific and documentary requirements
+
+**PARTLY ADVANCED; GATE 0 REMAINS OPEN.**
+
+The v0.4 owner acceptance closes the choice of operational D1–D8 taxonomy for the v0.21 route. It does not close the other scientific steps:
+
+1. **Diagnostic manifest and reproducibility:** no 64-record diagnostic manifest exists under v0.4; no per-record IDs, rule parameters, canonical identities, D6 pair identities, or deterministic reconstruction record have been frozen. A design-only feasibility review is still required before any generator is implemented or executed.
+2. **Operator semantics and mutation mapping:** the owner-authoritative operator-class catalogue, full fingerprints/preconditions/effects, source-parent identities and pre-outcome operator-to-input-property map remain unestablished. No mapping may be inferred from stratum names or aggregate counts.
+3. **Diagnostic-to-evaluation crosswalk:** the property-level crosswalk, authoritative evaluation population and target weights, coverage gaps, and transport rationale remain open. Exact-record or canonical disjointness alone does not prove behavioural transport.
+4. **Measurement validity:** v0.4 now states that the eight strata are not calibrated or equated for baseline difficulty and that (C_D) is unadjusted and conditional on this engineered finite mix. The scientific justification for the maximum-share summary, its loss relative to the full failure vector, dominant-stratum identity, and the implications of difficulty/composition remain open. No difficulty adjustment has been added.
+5. **Literature and novelty:** `docs/LC518_GATE0_PRELIMINARY_LITERATURE_AND_CITATION_SWEEP_2026-11-21.md` records an initial source-verified scan. It identifies close execution-profile, failure-clustering and anomaly-oracle precedents. The complete backward/forward citation sweep, comprehensive functional-equivalent search, full source-verified comparison matrix and novelty verdict remain open. No novelty claim is authorized from the preliminary scan.
+6. **Correctness and incompleteness decisions:** the canonical correctness predicate, incomplete-evidence freeze, mechanical `NOT_ESTIMABLE` trigger, and explicit primary-sample decision require a source-specific, versioned adjudication. The current accepted B1 v1.7 plan describes a 78-record public development set, but the separate new protected evaluation proposal is not silently substituted.
+7. **Aggregation and availability:** aggregation definitions and availability/unavailability handling must be mutually consistent and co-frozen in the governing analysis amendment before a future confirmatory use. No rule is selected by this status update.
+
+The historical C9-specific D4 three-subtype / 2:2:4 discussion and greedy-output (G\ne W) requirement are not current v0.4 acceptance conditions. The current D4, D5 and D6 definitions are the v0.4 definitions in §5.8 above. The historical discussion remains for provenance, not as an extra unadopted predicate.
+
+The Gate 0 outcome must eventually be one of the explicit decisions in §10.3: pass candidate, pass narrowed, revise measurement, fail novelty, or blocked evidence. The present evidence supports **G0-BLOCKED-EVIDENCE / OPEN**, not a pass or novelty finding.
+
+### 17.5 Priority 5: confirmatory-evaluation gates
+
+**OPEN; CONFIRMATORY EVALUATION NOT AUTHORIZED.**
+
+The owner previously selected the confirmatory route with consent. The accepted B1 v1.7 acceptance record nevertheless says joint-consent provenance remains open. The following evidence and decisions remain required before any confirmatory evaluation:
+- verified contemporaneous consent record identifying the parties, scope, date and authority relevant to the B1 decision;
+- appointment of an independent protected-set custodian, with documented access controls and custody responsibilities;
+- ratification of the trigger-(i) interpretation;
+- a separate B1 amendment defining the new evaluation population, canonical identity and outcome rows, scoring denominator, folds/test definitions, support and rank checks, computational burden, availability and custody rules; and
+- independent review/adjudication of that amendment and a further explicit execution GO.
+
+No protected E3/evaluation records were accessed to prepare this status update. No consent, custodian appointment, trigger ratification or B1 amendment is fabricated by this document.
+
+### 17.6 Overall disposition and authorization boundary
+
+- **Taxonomy:** v0.4 owner-accepted at the exact path/hash above.
+- **H80 preservation:** private Library copy created and SHA-256 verified.
+- **H80-to-B1 identity:** OPEN / NOT ESTABLISHED.
+- **Gate 0:** OPEN / BLOCKED ON REMAINING EVIDENCE.
+- **Confirmatory route:** selected, but not authorized.
+- **Generation protocol:** not frozen.
+- **Diagnostic bank / manifest:** not generated or frozen.
+- **Solver construction or execution:** not authorized.
+- **Project pause:** remains in force.
+
+This update is documentary only. It does not amend accepted B1 v1.7 or Rev 1.4, does not create a diagnostic/evaluation bank, and does not authorize bank generation, solver construction/modification/compilation/execution, outcome collection, protected-set access, model fitting, simulation, sampling, power analysis or confirmatory evaluation.
 
 **End of blueprint.**
