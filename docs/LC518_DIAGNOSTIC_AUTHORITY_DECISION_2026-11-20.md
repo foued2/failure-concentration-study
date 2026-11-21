@@ -1,10 +1,10 @@
 # LC518 diagnostic-specification authority decision
 
 **Decision ID:** LC518-DIAG-AUTH-2026-11-20  
-**Version:** 1.5  
+**Version:** 1.6  
 **Decision date:** 2026-11-20  
 **Revision date:** 2026-11-21  
-**Revision note:** v1.5 records the GPT adjudication of the first v0.21 specification challenges, the resulting v0.3 draft and its updated hash, the exact C_D feasibility envelope and k=0 convention from accepted Rev 1.4, D6 canonical-key sensitivity, and the H80 H2 oracle-answer-conditioned filter interpretation. H80-to-B1 identity remains open.  
+**Revision note:** v1.6 refreshes the exact v0.3 specification and review-record blobs after section-order cleanup. The scientific dispositions from v1.5 remain: explicit mutual-exclusivity proof, C_D finite feasibility and undefined k=0 convention, D6 canonical-identity-weighted descriptive sensitivity, H2 oracle-answer selection disclosure, and open H80-to-B1 identity.  
 **Status:** GPT SOURCE-ADJUDICATION RECORDED; NO CURRENT OPERATIONAL D1–D8 SPECIFICATION ADOPTED  
 **Repository:** `foued2/failure-concentration-study`  
 **Scope:** Documentary authority determination for the current v0.21 population-design route. Not a bank specification, protocol amendment, owner ratification of new strata, freeze, or execution authorization.
@@ -186,7 +186,7 @@ A future operational specification must be selected through an explicit, version
 
 Whichever route is chosen must identify the exact specification path, revision and immutable blob; the current diagnostic manifest hash; each record's ID, assigned stratum, rule ID, canonical identity and rule parameters; the D4 subtype allocation if applicable; the D6 pair identities and ordering; and the relation to the applicable B1 analysis plan and evaluation target. Any change to the B1 statistical structure or outcome target requires a separately reviewed B1 amendment.
 
-Owner route decision (2026-11-21): **a new v0.21-linked operational diagnostic-stratum specification is selected** rather than adopting BANK_DESIGN v1.0 §6 or ratifying a C9 subset. Draft `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md` is on branch `gpt/lc518-v021-operational-strata-spec-2026-11-21`, current revision v0.3, blob SHA-1 `299464b2057d352416ddd6db1ee489ac09617394`. It preserves the accepted symbolic eight-stratum/eight-record interface and proposes new input-property rules, but remains **DRAFT FOR INDEPENDENT REVIEW; NOT ADOPTED; NOT FROZEN; NO BANK-GENERATION OR EXECUTION GO**. GPT has adjudicated the summary-based first comments; Claude has not yet conducted a direct file-level review of v0.3 and GLM's review remains pending. The draft requires direct independent challenge, GPT adjudication, and explicit owner acceptance of an exact reviewed hash. It must not amend Rev 1.4 or B1 v1.7 in place.
+Owner route decision (2026-11-21): **a new v0.21-linked operational diagnostic-stratum specification is selected** rather than adopting BANK_DESIGN v1.0 §6 or ratifying a C9 subset. Draft `docs/LC518_V0_21_OPERATIONAL_DIAGNOSTIC_STRATA_SPEC_2026-11-21_v0.1.md` is on branch `gpt/lc518-v021-operational-strata-spec-2026-11-21`, current revision v0.3, blob SHA-1 `dfda8661e3252d6fa898a28cd82b3d3a648d068e`. It preserves the accepted symbolic eight-stratum/eight-record interface and proposes new input-property rules, but remains **DRAFT FOR INDEPENDENT REVIEW; NOT ADOPTED; NOT FROZEN; NO BANK-GENERATION OR EXECUTION GO**. GPT has adjudicated the summary-based first comments; Claude has not yet conducted a direct file-level review of v0.3 and GLM's review remains pending. The draft requires direct independent challenge, GPT adjudication, and explicit owner acceptance of an exact reviewed hash. It must not amend Rev 1.4 or B1 v1.7 in place.
 
 This decision does **not** create a new diagnostic bank or manifest, reconstruct an allocation, or change the current statistical formula.
 
@@ -203,8 +203,8 @@ This decision does **not** create a new diagnostic bank or manifest, reconstruct
 | BANK_DESIGN v1.0 | `gpt/lc518-claim-b1-primary-2026-11-05` | `d91b8dcee05808926262c3636a891b776c03ab44` | Frozen historical 64/80 bank design for earlier 150-body package; not adopted by v0.21 |
 | C9 generation spec review rev 2.6 | `gpt/lc518-claim-b1-primary-2026-11-05` | `bd9f13fee63ee2716345447461bf3b8bcd904eaa` | Detailed but unratified/unfrozen replacement proposal |
 | Analysis spec review draft | `gpt/lc518-claim-b1-primary-2026-11-05` | `c47760b1ca9121291f600db87b1e90665d57b8f6` | Review-only analysis draft; no authority to adopt D1–D8 |
-| New v0.21 operational diagnostic-strata spec v0.3 | `gpt/lc518-v021-operational-strata-spec-2026-11-21` | `299464b2057d352416ddd6db1ee489ac09617394` | Owner-selected new route; GPT review amendments; still draft only, not adopted or frozen |
-| First-review adjudication record | `gpt/lc518-v021-operational-strata-spec-2026-11-21` | `c03cf8b8d27730ef4186a36c836d6c3f3cda98cc` | GPT adjudication of provisional Claude summary-based comments; not independent Claude file review |
+| New v0.21 operational diagnostic-strata spec v0.3 | `gpt/lc518-v021-operational-strata-spec-2026-11-21` | `dfda8661e3252d6fa898a28cd82b3d3a648d068e` | Owner-selected new route; GPT review amendments; still draft only, not adopted or frozen |
+| First-review adjudication record | `gpt/lc518-v021-operational-strata-spec-2026-11-21` | `75c61952586201718e248b42c1aedab4b736e081` | GPT adjudication of provisional Claude summary-based comments; not independent Claude file review |
 
 **Review/provenance limitation:** This is GPT's documentary source adjudication under the instruction to start the authority decision. Claude's earlier supplied comments agreed that no current D1–D8 operational specification had been adopted, but those comments did not represent a separate direct inspection of every source listed here. This record is not represented as a formal joint GPT/Claude sign-off or as a new owner ratification of a bank specification.
 
