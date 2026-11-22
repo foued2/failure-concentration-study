@@ -74,7 +74,7 @@ These must not be conflated, and the order is a dependency order, not a preferen
 
 | Gate | What must be demonstrated | Current position | Deciding record |
 |---|---|---|---|
-| **0. Position** | The proposition is not already tested, and its statistic is not presented as novel | **Open.** Index is Berger–Parker 1970; failure clustering and execution-based correctness prediction are established; the exact proposition is untested on a non-systematic search | `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` |
+| **0. Position** | The proposition is not already tested, and its statistic is not presented as novel | **Closed for position and contribution definition only (2026-11-22).** The index is Berger–Parker 1970; failure clustering and execution-based correctness prediction are established; no direct or partial match was identified among records screened in the bounded OpenAlex pass. The owner adopted the contribution statement in register §13.4. This is not a novelty finding; P remains unproven. | `NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` |
 | **1. Measurement** | The partition captures a reproducible failure pattern; `C` is not merely an artefact of the chosen strata or of the noisy maximum | **Unresolved**, now specified: exposure, unresolved handling, and the two counting bases are recorded; no solver evidence exists | `CD_MEASUREMENT_SPEC_2026-11-19.md` |
 | **2. Mechanism** | Dominant diagnostic failures recur on corresponding held-out inputs | **Not demonstrated** | proposed only (§5 below) |
 | **3. Identification** | `C` contributes beyond competing explanations (family, defect identity, realization setting) and beyond the exact cell `(q, Z, k, ℓ)`; conditioning on `F` is excluded because it makes the estimand identically zero | **Not demonstrated**; fold machinery and coverage gate now specified; operating count open | `LOPO_ESTIMABILITY_RECONCILIATION_2026-11-19.md`; v0.21 `a(v)` confound admitted |
@@ -384,3 +384,13 @@ The v0.6 precision section states the MCSE and 95% half-width multipliers at 2,0
 Review-object provenance was checked by comparing Git blob sources. The v0.5 candidate blob was \`6210f8b95a2f9dbceea3606a7aa1f4dad7cb7e21\`; its v0.4 predecessor was \`dfca5d9f23b1d42557c0ea1fc4a4bdc0cdad5075\`. Their §7.3 sections are byte-for-byte identical and contain the MCSE formulas, intervals and inconclusive rules. The v0.5 per-\(J\) false-positive reference table was added in §7.2. DeepSeek did not provide the Git blob SHA of the exact object it examined, so the review-copy identity remains unconfirmed. A missing-formula defect is not supported by the committed source evidence.
 
 No code has been written, no pilot or confirmatory simulation has been run, no model has been fitted, no bank has been reused, and no execution GO has been requested or inferred.
+
+---
+
+## 18. Gate 0 status update — 2026-11-22
+
+The owner adopted the contribution statement in register §13.4 as written. The scoping search was previously accepted as a bounded deliverable (register §12; reviewer-ledger §30), and the contribution decision is now recorded in register §14 and reviewer-ledger §32.
+
+**Gate 0 is CLOSED for position and contribution definition only.** This closure means that the programme has a bounded account of the closest prior work, a fixed inferential scope, and an owner-adopted contribution statement. It does **not** establish novelty or prove the predictive proposition. The supported search conclusion remains limited to the records screened in the OpenAlex pass; P remains **unproven**.
+
+This status update does not change the fundamental goal, the order or definitions of the four gates, or any frozen protocol. Gate 1 remains not started; its design-only support census is not authorised. Gate 4 power and operating characteristics remain unestablished. The project pause remains in force, and no solver construction, execution, measurement, outcome labelling, or modelling is authorised.
