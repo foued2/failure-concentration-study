@@ -273,7 +273,7 @@ oracle attachment. The two H6 pairs are the entire explanation of the collapse.
 
 ---
 
-## 6. What this settles and what it does not
+## 6. What this recovery record settled and left open at issue on 2026-11-21
 
 ### Settled
 
@@ -321,7 +321,9 @@ by cardinality" remains correct: the substitution is rejected, and the definitio
 the reason the 78 keys are B1's, not the coincidence of counts. The gate is not unilaterally closed
 by this audit; closure is an owner/GPT act.
 
-The two lawful paths remain:
+The following two paths describe the options open when this recovery record was issued on 2026-11-21; they are not a current action list. Path (a) was completed by the owner's 2026-11-22 acceptance recorded in `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`. Path (b) is not required for the accepted identity attribution.
+
+The two lawful paths at the time were:
 
 - **(a) Accept the documentary chain.** The owner/GPT records the artifact path, hash, and the
   Rev 1.1 §1.4 → Rev 1.4 §1 → B1 v1.7 §1 chain in a dated B1 addendum, and the identity gate
