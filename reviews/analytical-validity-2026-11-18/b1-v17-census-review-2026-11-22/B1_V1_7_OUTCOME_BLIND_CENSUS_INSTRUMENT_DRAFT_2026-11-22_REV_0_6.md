@@ -1,9 +1,9 @@
 # LC518 B1 v1.7 outcome-blind support census instrument
 
-**Document ID:** LC518-B1-V1.7-CENSUS-INSTRUMENT-DRAFT-2026-11-22  
-**Version:** 0.5-draft  
+**Document ID:** LC518-B1-V1.7-CENSUS-INSTRUMENT-DRAFT-2026-11-22-0.6  
+**Version:** 0.6-draft  
 **Prepared:** 2026-11-22  
-**Status:** REVISED AFTER TARGETED EXPOSURE AND ROW-COUNT REVIEW; AWAITING READ-ONLY RE-REVIEW; NOT OWNER-ACCEPTED; NOT FROZEN; NOT EXECUTABLE  
+**Status:** REVISION 0.6; AWAITING CLAUDE REVIEW; NOT OWNER-ACCEPTED; NOT FROZEN; NOT EXECUTABLE  
 **Scope:** B1 v1.7 outcome-blind full-population and leave-one-parent-out (LOPO) predictor-support census.  
 **Reporting mode:** DESCRIPTIVE ONLY. No numeric coverage floors are adopted. For complete validated inputs, the coverage field is `NO COVERAGE VERDICT — DESCRIPTIVE ONLY; THRESHOLDS NOT SET`; `NOT ASSESSABLE` is reserved for incomplete, invalid or contradictory input/instrument conditions. No overall Gate 1 PASS or FAIL is permitted.
 
@@ -79,7 +79,7 @@ For every support or coverage decision, use exact arithmetic. Represent each `C_
 
 ## 3. Proposed input schema
 
-The companion `B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_5.json` is a machine-readable JSON Schema draft, not an accepted or frozen schema. It constrains the manifest shape and, for `VALID` variants, the 64-record / eight-per-stratum structure. It does not replace the semantic validator: cross-file identity matching, unique record IDs, complete variant-inventory matching, status logic, exclusion timing, exposure-history interpretation and derived-count checks require explicit semantic tests. The JSON Schema draft and this specification must be reviewed together; both remain unfrozen.
+The companion `B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_6.json` is a machine-readable JSON Schema draft, not an accepted or frozen schema. It constrains the manifest shape and, for `VALID` variants, the 64-record / eight-per-stratum structure. It does not replace the semantic validator: cross-file identity matching, unique record IDs, complete variant-inventory matching, status logic, exclusion timing, exposure-history interpretation and derived-count checks require explicit semantic tests. The JSON Schema draft and this specification must be reviewed together; both remain unfrozen.
 
 ### 3.1 Manifest envelope
 
@@ -92,7 +92,7 @@ The manifest should contain:
 | `analysis_plan` | B1 v1.7 identifier, version, Git blob SHA and SHA-256. |
 | `measurement_spec` | Rev 11 / measurement-spec identifier and exact version/hash. |
 | `measurement_basis` | Literal `record_level_64`; no per-row switching of basis. |
-| `evaluation_row_basis` | Frozen reference to the B1 v1.7 development evaluation-row configuration, with `row_count` fixed at exactly 78 for this analysis-plan version. A different row count is not valid under B1 v1.7 and requires a formal B1 amendment plus a new reviewed instrument/schema before any realised manifest exists. This is a count rule, not a confirmatory-route designation. |
+| `evaluation_row_basis` | `N_eval_rows` is fixed at 78 by this instrument version. The referenced frozen B1 v1.7 development evaluation-row configuration must confirm 78 in `row_count`. Executable logic must read the validated `evaluation_row_basis.row_count`; it must not hardcode an independent constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema before any realised diagnostic manifest exists. This is a design-count rule only and does not designate the evaluation route as confirmatory. |
 | `diagnostic_bank` | Bank ID, version, content SHA-256, record-manifest hash, exact D1–D8 labels and eight-record-per-stratum exposure vector. |
 | `diagnostic_exposure_disclosure` | Historical H80 fields are fixed: `PUBLICLY_EXPOSED` and `historical_used_for_candidate_filtering = true`; the future generation-protocol selection choice is a separate field. Retain evidence for both; `independence_claim_permitted` is always false. |
 | `parent_roster_ref` | Frozen parent-roster file/version/hash, including all roster parents whether or not they yield an eligible variant. |
@@ -211,9 +211,9 @@ If a fold-cell fails any condition, it is excluded from that fold's scored set w
 
 ### 5.3 Scored parents and test-row counts
 
-A held-out parent is a scored parent if at least one of its primary-sample variants belongs to a fold-cell that passes all three training estimability conditions. All eligible variants for that parent in supported fold-cells are retained. Under the current B1 v1.7 development configuration, each such variant contributes N_eval_rows = 78 expected canonical-record test rows to the eventual predictive scoring rule. N_eval_rows is supplied by the frozen evaluation-row configuration, not hardcoded as a universal constant.
+A held-out parent is a scored parent if at least one of its primary-sample variants belongs to a fold-cell that passes all three training estimability conditions. All eligible variants for that parent in supported fold-cells are retained. Each such variant contributes `N_eval_rows = 78` expected canonical-record test rows to the eventual predictive scoring rule. `N_eval_rows` is fixed at 78 by this instrument version. The referenced frozen B1 v1.7 development evaluation-row configuration must confirm 78 in `evaluation_row_basis.row_count`.
 
-For census reporting, count expected test rows as N_eval_rows × number_of_scored_variants in the fold. Under this B1 v1.7 instrument, N_eval_rows is fixed at exactly 78 and the schema rejects any other value; the referenced source must identify the frozen 78-canonical-row B1 v1.7 development configuration. A different evaluation target or row count is not a configuration-only change: it requires a formal B1 analysis-plan amendment and a new reviewed/frozen instrument and schema before any realised diagnostic manifest exists. This is a design count only, not evidence that correctness outcomes were read, available or successfully scored, and it does not designate the evaluation route as confirmatory. Executable logic must still read the fixed value from the validated evaluation_row_basis field rather than hardcode an independent constant. Any later outcome-completeness checks belong to the separately authorised outcome-analysis stage.
+For census reporting, count expected test rows as `N_eval_rows × number_of_scored_variants` in the fold. Executable logic must read `evaluation_row_basis.row_count` from the validated manifest; it must not hardcode an independent constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema before any realised diagnostic manifest exists. This is a design-count input only, not evidence that correctness outcomes were read, available or successfully scored, and it does not designate the evaluation route as confirmatory. Any later outcome-completeness checks belong to the separately authorised outcome-analysis stage.
 
 Report every LOPO fold, including folds with no scoreable test variant. Report every fold-cell, including those excluded by training support. Do not silently omit a parent or fold because its support is poor.
 
@@ -245,11 +245,11 @@ For held-out parent `g`:
 
 For held-out parent `g`:
 
-`rho_rec(g) = R_score(g) / R_candidate(g)`, where the frozen configuration supplies N_eval_rows.
+`rho_rec(g) = R_score(g) / R_candidate(g)`, where `N_eval_rows = 78` is fixed by this instrument version and confirmed by the referenced frozen B1 v1.7 development evaluation-row configuration.
 
 - R_candidate(g) = N_eval_rows × V_candidate(g), where V_candidate(g) is the number of that parent's variants in full-population B1-eligible cells before fold-level exclusions.
 - R_score(g) = N_eval_rows × V_score(g), where V_score(g) is the number of that parent's variants in fold-cells that pass all three training estimability conditions.
-- N_eval_rows is fixed at exactly 78 by the B1 v1.7 census schema, and `evaluation_row_basis.source_ref` must identify the frozen 78-canonical-row B1 v1.7 development configuration. A different count is invalid under B1 v1.7; a changed evaluation target requires a formal B1 amendment and a new reviewed/frozen instrument and schema before any realised manifest exists. This count describes expected version-by-record rows only; it does not label the evaluation route as confirmatory. These are expected rows, not observed correctness outcomes.
+- `N_eval_rows` is fixed at 78 by this instrument version; `evaluation_row_basis.source_ref` must identify the referenced frozen B1 v1.7 development evaluation-row configuration and confirm 78. Executable logic reads the validated `evaluation_row_basis.row_count`, not an independent hardcoded constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema before any realised diagnostic manifest exists. This count describes expected version-by-record rows only; it does not designate the evaluation route as confirmatory. These are expected rows, not observed correctness outcomes.
 - Because every variant contributes the same fixed 78 expected rows, `rho_rec(g)` reduces algebraically to `V_score(g) / V_candidate(g)`. It is a variant-weighted companion to `rho_cell(g)`: it weights each candidate cell by its number of variants rather than counting each cell equally. It is not an independent source of coverage evidence and must not be described as one.
 - Report numerator, denominator, fraction, and variant/cell exclusions.
 - If `R_candidate(g) = 0`, report `NOT DEFINED`, not zero.
@@ -262,7 +262,7 @@ All three measures are descriptive only in this version. Do not set, infer, tune
 
 A future valid census run must produce a versioned, hash-identified output package with these sections or equivalent machine-readable tables:
 
-1. **Run identity:** instrument, schema, validator, runtime/dependencies, input manifest, diagnostic-bank, q/family-register and evaluation_row_basis source hashes; exact N_eval_rows value; timestamp; frozen diagnostic run-start ledger reference/hash, its snapshot timestamp, first-execution timestamp (or null if no run started), and per-variant run-state reconciliation; census mode DESCRIPTIVE_ONLY; separate historical candidate-screening disclosure and actual future bank-generation selection status/protocol reference.
+1. **Run identity:** instrument, schema, validator, runtime/dependencies, input manifest, diagnostic-bank, q/family-register and evaluation_row_basis source hashes; the fixed `N_eval_rows = 78` value and validated source reference; timestamp; frozen diagnostic run-start ledger reference/hash, its snapshot timestamp, first-execution timestamp (or null if no run started), and per-variant run-state reconciliation; census mode DESCRIPTIVE_ONLY; separate historical candidate-screening disclosure and actual future bank-generation selection status/protocol reference.
 2. **Input integrity:** expected versus received parent/variant counts; status counts; missing/duplicate records; identity collisions; hash mismatches; all incomplete, expected-not-run, invalid and excluded items with reasons.
 3. **Variant measurement table:** parent, Z, q, variant ID, any available source/artifact digests (required for `VALID` variants), validity status, `f_1..f_8`, `u_1..u_8` where results exist, derived `k_fail`, `k_unresolved`, exact `C_D` or `NO OBSERVED FAILURES` for complete valid diagnostic vectors, and relevant exclusion/incomplete state.
 4. **Full-population cell table:** every exact cell, variant count, distinct-parent count `G_c`, distinct-concentration count `D_c`, each B1 eligibility condition and final cell eligibility.
@@ -426,3 +426,31 @@ Revision 0.5 makes two previously permissive schema fields match fixed facts/rul
 2. **B1 v1.7 evaluation-row count:** `evaluation_row_basis.row_count` is fixed to 78. The `source_ref` must identify the corresponding frozen B1 v1.7 development configuration. A different row count cannot be introduced by changing the manifest/configuration alone; it requires a formal B1 analysis-plan amendment and a new reviewed, versioned and hash-frozen instrument/schema before any realised manifest exists.
 
 The first census remains descriptive-only. No coverage floors, confirmatory route, resource ceilings or production GOs are decided by this revision. Revision 0.5 is a draft, not owner-accepted, frozen or executable.
+
+## 16. Revision 0.6: row-count wording and schema identity
+
+Revision 0.6 makes only the agreed editorial and version-identity corrections. It does not change a B1 support rule, measurement definition, coverage denominator, status rule, or scientific target.
+
+### 16.1 Superseded row-count wording
+
+The following wording is quoted verbatim from the §14.2 Opus finding 6 adjudication row:
+
+> §§3.1, 5.3, 6.3 and 7 use N_eval_rows supplied by a frozen, referenced evaluation-row configuration. The current B1 v1.7 development value is 78; this does not designate a confirmatory route. Executable logic must not hardcode 78.
+
+**Replacement wording for operative use in revision 0.6:**
+
+> `N_eval_rows` is fixed at 78 by this instrument version. The referenced frozen B1 v1.7 development evaluation-row configuration must confirm 78. Executable logic must read `evaluation_row_basis.row_count` from the validated manifest; it must not hardcode an independent constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema before any realised diagnostic manifest exists. This is a design-count input only; it does not designate the evaluation route as confirmatory.
+
+The replacement rule is applied to the four operative locations: §3.1 (manifest envelope), §5.3 (scored parents and test-row counts), §6.3 (records-scored fraction), and §7 (required output package). The schema root description and `evaluation_row_basis.description` carry the same fixed-78 rule. The historical §14.2 row is **superseded for operative purposes by revision 0.6 effective 2026-11-22, but is not altered**. It remains an accurate point-in-time record of the earlier adjudication and is retained verbatim.
+
+### 16.2 Schema revision-identity convention
+
+The JSON Schema `$id` carries the same revision identifier as `schema_version`; both are updated together for every versioned schema revision. The schema `title` and versioned filename carry that same revision identifier. A consistency check must confirm that the revision component in `$id`, the title, `schema_version`, and the schema filename all identify revision 0.6 for this draft. Earlier revision identifiers remain unchanged in their historical Git commits.
+
+### 16.3 Confirmed status rule and exact revision scope
+
+Claude's additional check is satisfied without a text change: §3.3 item 7 and §8.1 already treat `EXPECTED_NOT_RUN` alongside `INCOMPLETE`, blocking final full-population cell eligibility, final LOPO estimability/scored-set declarations, and all three coverage fractions. No status or schema logic is changed for this item.
+
+The five instrument edit locations are exactly: §3.1, §5.3, §6.3, §7, and this new §16 record. The companion schema is updated only for revision identity and the fixed-78 description. The two revision-0.5 filenames are superseded by revision-0.6 filenames; the earlier files remain in Git history. This five-location scope implements Claude's agreed four operative locations plus the required dated supersession record; it explicitly supersedes the earlier proposed three-site boundary rather than exceeding it silently.
+
+Revision 0.6 remains a draft awaiting Claude's independent PASS or NOT PASS. It is not owner-accepted, frozen or executable. It adopts no coverage threshold, evaluation route, operating ceiling or production authorization. It authorizes no parent selection, mutation allocation, diagnostic-bank generation, solver construction/build, diagnostic execution, outcome collection, modelling or census execution.

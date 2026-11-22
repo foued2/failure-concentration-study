@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:lc518:b1-v1.7:census-manifest:0.3-draft",
-  "title": "LC518 B1 v1.7 outcome-blind census manifest schema (draft 0.5)",
-  "description": "B1 v1.7-specific outcome-blind manifest schema. H80 historical exposure facts and the B1 v1.7 evaluation-row count are fixed. Future bank-generation selection policy is a separate field. Cross-file identity and run-ledger checks remain semantic-validator responsibilities.",
+  "$id": "urn:lc518:b1-v1.7:census-manifest:0.6-draft",
+  "title": "LC518 B1 v1.7 outcome-blind census manifest schema (draft 0.6)",
+  "description": "B1 v1.7-specific outcome-blind manifest schema draft 0.6. The schema $id carries the same revision identifier as schema_version and must be updated with it for every versioned schema revision. N_eval_rows is fixed at 78 by this instrument version; the referenced frozen B1 v1.7 development evaluation-row configuration must confirm 78. Executable logic must read evaluation_row_basis.row_count from the validated manifest and must not hardcode an independent constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema. This is a design-count input only and does not designate the evaluation route as confirmatory. Cross-file identity and run-ledger checks remain semantic-validator responsibilities. Historical public-bank exposure is separate from future bank-generation selection policy.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -26,7 +26,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.5-draft"
+      "const": "0.6-draft"
     },
     "study_id": {
       "const": "LC518"
@@ -320,7 +320,7 @@
     "evaluation_row_basis": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Frozen evaluation-row configuration reference for this B1 v1.7 census. The row_count is fixed at 78 under B1 v1.7; any other count requires a formal B1 amendment and a new reviewed schema/instrument version before a realised manifest exists.",
+      "description": "N_eval_rows is fixed at 78 by this instrument version. The referenced frozen B1 v1.7 development evaluation-row configuration must confirm 78 through this object's source_ref. Executable logic must read the validated row_count field and must not hardcode an independent constant. Any different evaluation target or row count requires a formal B1 analysis-plan amendment and a new reviewed, frozen, versioned and hash-identified instrument and schema. This is a design-count input only and does not designate the evaluation route as confirmatory.",
       "required": [
         "row_count",
         "source_ref"
