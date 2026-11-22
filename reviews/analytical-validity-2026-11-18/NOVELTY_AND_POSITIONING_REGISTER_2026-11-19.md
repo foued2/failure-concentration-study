@@ -893,3 +893,37 @@ This population decision does not settle the remaining measurement details:
 - B1 v1.7 and the frozen Rev 11 definitions are unchanged. No parent acquisition, solver construction, generation, mutation allocation, solver execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis is authorised by this clarification.
 
 This section supersedes only the disputed current use of “natural solver population” as the research target. It preserves the earlier documents as historical records and does not silently rewrite or retroactively reinterpret their results.
+
+---
+
+## 16. Dated amendment — 2026-11-22 (strategic reset: the blueprint is not the experiment)
+
+**Provenance.** This records a strategic message forwarded from the owner, written by GPT. It is reported, not verified from this branch: PR #9 and revision 0.6 live on other lines of work, and this branch contains no artifact against which their state could be checked.
+
+### 16.1 The distinction accepted
+
+- **PR #9 is a GitHub review workspace. Revision 0.6 is a draft specification** for counting diagnostic support in a future dataset; its JSON Schema describes the structure of records a census would inspect.
+- **A PASS on that specification means the agreed blueprint corrections are sound.** It is not a scientific result, not a census result, and not evidence about `P`.
+- The programme has been checking the blueprint rather than building the machine, and review has become the dominant activity rather than a means to an experiment.
+
+This register's §§11–15 and the ledger's §§29–33 belong to that paperwork layer. They settled positioning, identity, population scope and gate status; they did not advance any scientific milestone.
+
+### 16.2 Where the scientific presentation already lives
+
+This section deliberately does **not** duplicate the status tables. The scientific question, why it is difficult, population/measurement boundaries, gate status, Gate 1 preflight and the null rule are already presented in the repository root `README.md` ("LC518: Diagnostic failure concentration and solver correctness", 2026-11-22), with the decisions in register §§14–15, ledger §§32–33 and goal §§18–19. That README records Gate 1 preflight as **BLOCKED / NOT ASSESSABLE** until a per-variant eight-stratum diagnostic manifest exists, and limits the owner's instruction to a design-only census once that manifest exists.
+
+### 16.3 Working-approach decisions recorded from the message
+
+1. **Stop expanding review paperwork.** Keep revision 0.6 as reviewed; no further cosmetic revisions from this line of work.
+2. **Make implementation serve the experiment.** A semantic validator is justified only insofar as it gets real diagnostic records safely and reproducibly into the census; engineering detached from that objective is not.
+3. **Measure progress in scientific outputs.** The milestones are, in order: parent roster; runnable variants; diagnostic bank; diagnostic measurements; validated manifest; census results; held-out predictive results. PRs, review comments, schema revisions and this register's sections are supporting evidence only, not milestones.
+
+This amendment is itself paperwork and claims no scientific progress.
+
+### 16.4 Authorisation boundary
+
+This section creates **no** authorisation. It neither grants nor narrows the limited Gate 1 preflight/census scope recorded in the root README. Parent acquisition, mutation allocation, solver construction, diagnostic execution to create the missing manifest, outcome collection and predictive analysis still require their own explicit GO. `P` remains unproven; B1 v1.7 unchanged; the pause remains in force outside the recorded preflight scope.
+
+### 16.5 Effect
+
+No verdict in §§1–15 changes. Gate 0 remains CLOSED for position and contribution only; Gate 1 not started; `P` unproven. No bank access, solver work, diagnostics, census, fitting or scientific output was produced in this round.

@@ -1797,3 +1797,25 @@ Gate 0 remains CLOSED for position and contribution definition only; the populat
 B1 v1.7 and Rev 11 remain unchanged. The project pause remains in force. This entry authorizes no parent acquisition, solver construction, generation, mutation allocation, execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis. Any reopening requires separate explicit owner authorization.
 
 The earlier conversational acceptance/adoption provenance caveats remain as recorded in the register. This entry records the population decision from the current conversation; it does not create an independent authentication artifact for the prior decisions.
+
+---
+
+## 34. Strategic reset reported — blueprint is not evidence (2026-11-22)
+
+### 34.1 Reported, not verified
+
+The owner forwarded GPT's strategic message on 2026-11-22. PR #9 and revision 0.6 are on other lines of work; this branch contains no artifact against which their state could be checked, so nothing here is independently verified.
+
+### 34.2 Accepted distinction and working approach
+
+- PR #9 is a GitHub review workspace; revision 0.6 is a draft specification for counting diagnostic support, with a JSON Schema describing record structure. A PASS is agreement that the blueprint corrections are sound — not a scientific result, census result, or evidence about `P`.
+- The programme has been checking the blueprint rather than building the machine. This ledger's §§29–33 and the register's §§11–15 belong to the paperwork layer; they changed no scientific milestone.
+- Working approach recorded: keep 0.6 as reviewed and stop cosmetic revision cycles; scope the semantic validator to getting real diagnostic records safely into the census; measure progress in scientific outputs — parent roster, runnable variants, diagnostic bank, diagnostic measurements, validated manifest, census results, held-out predictive results — not PRs or review comments.
+
+### 34.3 Where the status is already recorded
+
+The scientific presentation and Gate 1 preflight status are in the repository root `README.md`, updated 2026-11-22. It records Gate 1 preflight as **BLOCKED / NOT ASSESSABLE** until a per-variant eight-stratum diagnostic manifest exists, with the owner's instruction limited to the design-only census once that manifest exists. This entry adds no second status table.
+
+### 34.4 Boundary and effect
+
+No authorisation is created here. No parent acquisition, solver work, diagnostic execution, manifest production, outcome collection or predictive analysis was performed. `P` remains unproven; B1 v1.7 unchanged; Gate 0 closed for position and contribution only; Gate 1 not started; pause in force outside the recorded preflight scope. No verdict in §§1–33 changes.
