@@ -1595,3 +1595,10 @@ plus DOI handle; the full text was not reviewed, and the paper is not evidence f
 - The next Gate 0 deliverable remains the scoping review (comparison groups, evidence matrix,
   citation sweep), not a solver plan. The first Gate 1 action on reopening remains the design-only
   support census, on both bases and with the full-population and fold-level B1 audit reproduced.
+
+
+### 28.4 Subsequent owner adjudication (2026-11-22)
+
+The owner accepted the documentary chain on 2026-11-22. The controlling dated decision is `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`. The full recovery reasoning remains in `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`; the v3 audit and its CSV/JSON manifests provide the reconstructed identities and derived-file checksums.
+
+Section 28.1's **source recovered / adjudication pending** language records the position before the owner act and is retained as history. Current identity status is **source-recovered / owner-accepted**. This resolves identity attribution only: historical B1 row ordering, H6 primary presentation/aggregation, unresolved-status handling, and outcome coding remain open. No (Y_{v,r}) matrix exists or is authorized by this acceptance. B1 execution remains unauthorized; Gate 0 remains OPEN; (P) remains unproven. B1 v1.7 is unchanged.
