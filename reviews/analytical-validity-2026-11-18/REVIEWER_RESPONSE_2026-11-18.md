@@ -1868,3 +1868,9 @@ Population-design v0.21 §0.2 and §§5.1-5.5 instead propose a newly generated 
 
 The accepted contribution paragraph and proposed protected-set route therefore do not yet identify one reconciled evaluation target. This must be resolved in a separately reviewed B1 amendment and a consistent update to the contribution/claim scope before confirmatory evaluation. Until then, the public 78-record target remains the scope of the adopted contribution paragraph, and it must not be described as a protected independent evaluation set. This mismatch blocks the confirmatory claim but does not alter the mathematical B1 diagnostic support-cell conditions.
 
+
+
+### 34.7 Mutation-allocation evidence remains unestablished
+
+The existence and contents of any standalone 2026-11-06 mutation-allocation artifact remain **unproven** in the available record. The allocation is **not established** for the current design. This entry does not claim that such an artifact was lost, recovered, destroyed, or never created. No allocation is reconstructed from nominal parent, mechanism, or variant totals. This is an evidence limitation, not a finding that the proposed allocation design scientifically failed.
+
