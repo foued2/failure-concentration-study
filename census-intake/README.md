@@ -121,3 +121,8 @@ provides the intake check that such a manifest would have to pass before the cen
 under a separate authorization.
 
 Rationale: register §16 and reviewer-ledger §34.
+
+**Review status (2026-11-22): HELD PENDING INDEPENDENT REVIEW.** GPT raised four findings; the local
+fact-check confirmed them. See `REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md` for the findings, reproduction
+commands and the requested PASS / NOT PASS. This prototype must not be used to admit real LC518
+records, must not be merged, and must not be corrected before Claude's verdict.
