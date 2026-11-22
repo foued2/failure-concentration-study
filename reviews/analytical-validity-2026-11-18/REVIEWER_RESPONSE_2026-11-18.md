@@ -1754,3 +1754,46 @@ This disposition does not close the wider research programme or certify empirica
 ### 32.5 Record effect
 
 This entry supersedes the statements in §§30–31 that the contribution decision remained outstanding and Gate 0 remained open. Those entries are preserved as accurate historical snapshots before the owner's decision. The search record's limits, the unproven status of P, and all non-authorisations remain unchanged.
+
+---
+
+## 33. Owner settles the study population as engineered solvers (2026-11-22)
+
+### 33.1 Direct owner decision
+
+The owner explicitly states that the study is to be framed as a study of **engineered solvers**, rejecting “natural solvers” as a distinct target-population category. The owner's reasoning is that every solver has some authoring, design, construction, or transformation history, including human-authored implementations.
+
+This decision is present directly in the 2026-11-22 project conversation. It supersedes the disputed use of “natural solver population” as the current target label. The decision is not inferred from Claude's recollection or from DeepSeek's report.
+
+### 33.2 Scientific interpretation
+
+For current B1, the target units are engineered solver variants deliberately constructed or modified under a declared study process, nested within selected real parent solver implementations. The parent implementations are source/grouping units; the engineered variants are the tested study units.
+
+The intended inferential scope remains conditional on the selected and observed parents. The study does not thereby claim to represent every solver, all human-authored or model-produced implementations, or a superpopulation of independently developed parents.
+
+This reconciles the current engineered B1 line with the owner's decision without pretending the October natural-solver feasibility exercises never occurred. Those exercises retain their historical results about the specific procedures and samples they tested. “Natural” is not used to describe a separate current target population.
+
+### 33.3 Parent provenance retained as a requirement
+
+The terminology decision does not waive provenance. Before future parent acquisition or selection, source identity, authorship/origin where known, lineage, transformations, outcome-blind selection, family assignment, hashes, permissions, and custody/consent status must be recorded.
+
+Where a parent is specifically claimed to be model-generated, the six-point provenance gate in the 2026-11-21 master-branch adjudication §6 applies before relying on that claim. It requires independently verifiable generation-session evidence, exact model and settings, ordered raw outputs, body/file identity, a reproducible event-to-file manifest, and a fail-closed pre-freeze gate. This is a prerequisite, not authorization to acquire parents or generate solvers.
+
+### 33.4 Notation clarification
+
+The aliases in the adopted contribution statement map to the frozen Rev 11 support cell as follows: q = m (mutation mechanism/operator identity); Z = z (parent algorithm family); k = k_fail (definite failures); ℓ = k_unresolved (unresolved outcomes). The underlying support cell remains (m, z, k_fail, k_unresolved). No statistical variable or conditioning rule is changed.
+
+### 33.5 Measurement questions not decided
+
+- Rev 11 defines the diagnostic counting unit as a bank record, not a unique mathematical input, with N = 64 and eight records per stratum. This remains the protocol-prescribed record-level C_D unless an explicit protocol amendment is adopted. A canonical-level C_D is a distinct recomputed sensitivity, not an alternative to be selected after results.
+- The H6 raw-pair-to-canonical correctness aggregation rule remains open. No rule is adopted in this entry. It must be settled before constructing or interpreting the canonical Y matrix.
+- That H6 outcome rule is not itself required to compute a strictly outcome-free support census from diagnostic predictor tables. Such a census remains unauthorised while the project pause is in force.
+- Unresolved-status handling, final outcome coding, and historical row numbering remain open.
+
+### 33.6 Gate status and authority
+
+Gate 0 remains CLOSED for position and contribution definition only; the population terminology is now explicit. This is not a novelty finding and does not establish P, predictive value, feasibility, or operational readiness. Gate 1 remains NOT STARTED and its census is NOT AUTHORIZED. Gate 4 remains NOT STARTED; MDE and power are unestablished.
+
+B1 v1.7 and Rev 11 remain unchanged. The project pause remains in force. This entry authorizes no parent acquisition, solver construction, generation, mutation allocation, execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis. Any reopening requires separate explicit owner authorization.
+
+The earlier conversational acceptance/adoption provenance caveats remain as recorded in the register. This entry records the population decision from the current conversation; it does not create an independent authentication artifact for the prior decisions.
