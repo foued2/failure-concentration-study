@@ -100,3 +100,6 @@ not evidence that the concentration hypothesis is resolved in either direction.
 - `reviews/analytical-validity-2026-11-18/B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md` — owner acceptance of the 78-record B1 documentary identity chain, with historical row numbering, H6 aggregation, unresolved handling, outcome coding, and execution explicitly left open.
 - `reviews/analytical-validity-2026-11-18/B1_78_IDENTITY_AUDIT_2026-11-21_v3.md` — byte-level reconstruction and audit of the 78 canonical identities.
 - `reviews/analytical-validity-2026-11-18/B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.csv` and `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.json` — derived identity manifests; join by `canonical_id`, not reporting index.
+
+- `reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md` §§14–15 — adopted Gate 0 contribution and the 2026-11-22 owner clarification that the target is engineered solver variants nested within selected parent implementations. The result is conditional on the observed parents; no new-parent or general solver-population claim is made.
+- `FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md` §19 and reviewer-ledger §33 record the same owner decision. Parent provenance remains required; the project pause and all execution restrictions remain in force.
