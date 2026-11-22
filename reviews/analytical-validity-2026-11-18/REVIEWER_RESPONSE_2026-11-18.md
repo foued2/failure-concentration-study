@@ -1813,7 +1813,7 @@ On 2026-11-22, the owner instructed: "OK STAT IMPLEMENTING THEM". In context, "t
 4. establish population and operating constraints without reviving the retired 150 / 30 x 5 proposal; and
 5. consider the outcome-blind support census only after the required owner authorization and evidence are in place.
 
-This is a direct conversational owner instruction. It authorizes the preparatory documentary/design work in items 1-4 and the documentary determination of the conditions governing item 5. It does not authorize the census itself, nor any work needed to create missing inputs for that census.
+This is a direct conversational owner instruction to implement the five-step sequence as stated. GPT's conservative interpretation is that items 1-4 authorize preparatory documentary/design work, while item 5 is conditional: the census is only to be considered after the required owner authorization and evidence are in place. The distinction between preparatory work and census authorization is GPT's interpretation of the surrounding text, not a separate owner-authored statement about the fifth step. No census GO is inferred, including when a manifest later becomes available.
 
 ### 34.2 Narrow supersession of §33.6
 
@@ -1860,17 +1860,47 @@ The unresolved H6 raw-pair-to-canonical correctness aggregation rule remains a p
 No experiment, census, bank generation, solver construction, execution, diagnostic collection, outcome labelling, model fitting, sampling, simulation or power analysis was performed under this instruction.
 
 
-### 34.6 Evaluation-target mismatch remains unresolved
+### 34.6 Current adopted evaluation target; earlier protected route not silently substituted
 
-The adopted Gate 0 contribution paragraph in positioning register §14.2 names the fixed, publicly exposed 78-record B1 development bank. B1 v1.7 also fixes those 78 records as public development data, not a sealed confirmatory set.
+The dated owner acts have a clear order. The D0.3 "CONFIRMATORY, WITH CONSENT" route selection was recorded on 2026-11-21. On 2026-11-22, the owner adopted positioning-register §14.2 as written, and that exact contribution statement names the fixed, publicly exposed 78-record B1 development bank. The later, more specific adopted contribution statement therefore controls the current contribution/claim target: the public 78-record development set. The earlier protected-set route remains in the decision history, but it does not silently displace the later adopted statement or convert the public bank into a protected set.
 
-Population-design v0.21 §0.2 and §§5.1-5.5 instead propose a newly generated protected evaluation set, exclude the existing 78 records from confirmatory use, and require a separate B1 amendment, non-overlap procedure, and independent custodian. The owner separately selected the confirmatory route with consent in the 2026-11-21 D0.3 decision. That route choice does not itself supply historical consent evidence, appoint a custodian, or amend B1 v1.7.
+The current claim must remain bounded to the public development bank and must not be described as a protected-confirmatory evaluation. The D0.3 route is not currently executable and should not be treated as the active evaluation target unless the owner explicitly renews or amends it. A future shift to the protected set requires an explicit owner act superseding or amending the adopted contribution statement, a separately reviewed B1 amendment, a new set and non-overlap procedure, valid consent provenance, independent custody, trigger-(i) ratification, and separate GOs. This is a route change, not merely a documentation reconciliation.
 
-The accepted contribution paragraph and proposed protected-set route therefore do not yet identify one reconciled evaluation target. This must be resolved in a separately reviewed B1 amendment and a consistent update to the contribution/claim scope before confirmatory evaluation. Until then, the public 78-record target remains the scope of the adopted contribution paragraph, and it must not be described as a protected independent evaluation set. This mismatch blocks the confirmatory claim but does not alter the mathematical B1 diagnostic support-cell conditions.
-
-
+This evaluation-target decision does not alter the mathematical B1 diagnostic support-cell conditions and is not an input to a strictly outcome-free B1 support count.
 
 ### 34.7 Mutation-allocation evidence remains unestablished
 
 The existence and contents of any standalone 2026-11-06 mutation-allocation artifact remain **unproven** in the available record. The allocation is **not established** for the current design. This entry does not claim that such an artifact was lost, recovered, destroyed, or never created. No allocation is reconstructed from nominal parent, mechanism, or variant totals. This is an evidence limitation, not a finding that the proposed allocation design scientifically failed.
+
+
+
+### 34.8 Provenance of the over-broad README wording
+
+The audit-branch commit history identifies two README-only commits:
+- dfac025ea46d24e1a165d73b63f8f2ce42584559 (2026-11-22 09:55:36 UTC) first introduced the claim that the owner's instruction authorized the census when diagnostic tables existed.
+- cffaf9b34cd9e412ab7b46eb8205ab00058a311a (2026-11-22 09:58:29 UTC) narrowed that claim to when the manifest exists, but still over-read the conditional wording.
+
+These commits establish the wording and timing, not the author's intent or the source of the paraphrase. The actual owner instruction and its preceding five-step sequence are the evidence for scope. README paraphrases are not independent owner authorizations.
+
+### 34.9 M1-si / a(v) coupling
+
+M1-si requires within each qualifying parent-cell both distinct realization settings a(v) and distinct realized C_D values. Under the intended deterministic construction, a complete fixed parent/q/a identity should identify the same transformation and therefore the same runnable artifact and diagnostic failure vector. A different C_D at the same complete parent/q/a identity would require an identified additional source of variation or would indicate an unrecorded setting, altered diagnostic instrument, nondeterministic behaviour, or integrity failure.
+
+Therefore M1-si does not create a within-parent C_D contrast independent of a(v). Leaving a(v) outside the primary baseline produces the proxy-inclusive Option B estimand. Adjusting for a(v) removes the designed within-parent contrast at fixed a; it does not mathematically rule out every possible cross-parent residual C_D difference at a common setting, but the current design does not guarantee such common support or estimability. Holding a(v) fixed within parent would fail the M1-si rule. Any future B1 amendment must state this trade-off explicitly and must not claim a direct or realization-independent concentration effect from Option B.
+
+### 34.10 Operator-identity evidence and the old mutation-allocation lead
+
+The owner-accepted D1-D8 v0.4 taxonomy classifies diagnostic input records; it does not define mutation-operator q identities. The 2026-11-10 mutation-allocation search review (blob 51bff158b28da12d005675b29545274c582fc1f8) records E1, the proposed eight-mechanism taxonomy, as C, qualified: no named candidate list or actual definitions were found in the five screened conversation PDFs; its appendix reports no M01-M08 / M1-M8 identifiers. The review is bounded to those sources and does not prove that no other conversation or record contains relevant content. The 257-mechanism audit is from an earlier engineered-study line and is not an LC518 operator inventory.
+
+The same search review reports filename-level hits for PROV-001/mutation_manifest_original.json and generator_assignment_v1.json, with reported June 2026 metadata, but says their contents were not read. The PROV-001 directory is not present at the repository root on master or the current review branch. These are local/recovered-workspace leads only. No content inspection was performed under this authorization. Even if read, those files would need source provenance, completeness, exact allocation rows, and relevance to the current LC518 design verified before they could establish q or an allocation.
+
+The current q operator inventory is therefore NOT ESTABLISHED. A new operator-class inventory could be defined prospectively under v0.21 §4.1, but that would be a new design decision, not recovery of the November 6 allocation. The standalone allocation's existence remains unproven; the two evidence problems may overlap, but they are not proven to be the same missing object.
+
+### 34.11 Correction of the earlier Rev 2.6 attribution
+
+GPT withdraws its earlier attribution of a binding M1 minimum to "Rev 2.6 §5.2". The historical analysis revision 2.6 is a review-only draft, not an accepted B1 rule. The current M1-si proposal appears in population-design v0.21 §3.4, which remains a design-only draft and is not an amendment to B1 v1.7.
+
+### 34.12 Remaining review limits
+
+This reconciliation has now checked the seven dated Gate 0 closure commits at patch level and compared positioning-register §§14-15 with reviewer-ledger §§32-33. The substantive Gate 0 closure, engineered-population decision, q/m notation alias, Rev 11 record-level measurement statement, H6 non-decision, and Gate 1 restriction are aligned across those records. This check does not independently authenticate the conversational owner acts. The new owner-scope interpretation in §34.1 remains GPT's conservative reading; if a future action depends on a different reading, the owner must state that scope directly before the action.
 
