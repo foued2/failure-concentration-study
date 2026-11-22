@@ -665,7 +665,7 @@ Eighteen informative OpenAlex queries and two discarded queries were run on 2026
 | Register ID | Work and DOI | What it establishes | What it pre-empts | What it does not pre-empt | Verification level |
 |---|---|---|---|---|---|
 | 20 | Parry, Kapfhammer, Hilton & McMinn (2025), “Systemic Flakiness: An Empirical Analysis of Co-Occurring Flaky Test Failures,” EASE 2025, pp. 476–487. [10.1145/3756681.3756945](https://doi.org/10.1145/3756681.3756945) | Flaky tests occur in clusters with co-occurring failures sharing root causes ("systemic flakiness"); 10,000 runs, 24 Java projects, 810 flaky tests | Failure co-occurrence as an object of study; clustering of failures by shared cause | A concentration statistic, per-record correctness prediction, an exact-cell baseline, or parent-grouped evaluation | Abstract read; full text not read |
-| 21 | Parry, Kapfhammer, Hilton & McMinn (2026), “Systemic Flakiness: A Study of Flaky Test Failure Co-Occurrence Using Java and Python Projects,” *IEEE Transactions on Software Engineering*, pp. 1–21. [10.1109/TSE.2026.3750452](https://doi.org/10.1109/TSE.2026.3750452) | Extended study; predicts failure co-occurrence from static test-distance measures across Java and Python projects | Predictive modelling of co-occurrence from test distance | The response is pairwise co-occurrence (Jaccard), not individual input correctness; no concentration covariate; no parent grouping | Crossref and OpenAlex record (Crossref created 2026-11-03; IEEE Xplore 11773385); abstract unavailable from the index; full text not read |
+| 21 | Parry, Kapfhammer, Hilton & McMinn (2026), “Systemic Flakiness: A Study of Flaky Test Failure Co-Occurrence Using Java and Python Projects,” *IEEE Transactions on Software Engineering*, pp. 1–21. [10.1109/TSE.2026.3750452](https://doi.org/10.1109/TSE.2026.3750452) | Extended study of flaky-test failure co-occurrence; the title extends the scope from the EASE record's Java-only corpus to Java and Python projects | Failure co-occurrence as an object of study, extended beyond the EASE corpus | The response appears to be co-occurrence structure, not individual input correctness; no concentration covariate; no parent grouping. **Method and results unverified** — Crossref deposits no abstract and the full text is inaccessible, so only title, authorship, venue and early-access status are citable | Crossref record only (created 2026-11-03; early access, pp. 1–21, no volume or issue assigned; Xplore 11773385); abstract unavailable; full text not read |
 
 These are two publications of one research line, not a preprint and its version of record. Both should be cited separately where the line matters.
 
@@ -720,3 +720,69 @@ Acceptance means these are now the repository's account of the Gate 0 search. It
 ### 12.5 Consequence
 
 No action beyond this acceptance is authorised. The next step, whenever the owner chooses to take it, is the contribution decision in §11.4 — whether the programme adopts the design as the contribution object. That is the second condition for Gate 0 closure and the only remaining item that requires no data access. The census remains the first Gate 1 action and remains blocked until separately authorised.
+
+---
+
+## 13. Dated amendment — 2026-11-22 (review round: GPT and Claude)
+
+**Trigger:** GPT's Gate 0 review and Claude's response to it, both dated 2026-11-22. They converge on four corrections and divide on one question of gate structure. This section applies the corrections, resolves the structural question against the repository's own frozen gate definitions, and reduces the open work to one decision. It changes no verdict: Gate 0 remains **OPEN**, `P` remains **unproven**, nothing is authorised.
+
+### 13.1 Corrections both reviews are right about, now applied
+
+**a. The screening count.** GPT is correct and exact: 431 is the sum of the per-query first pages (17 × 25 + 6), not a deduplicated count. The search record's §2, §3 and §8 now say so, and §3 states the arithmetic explicitly. The unique union across the 18 result pages was never computed or stored and is not claimed. Claude's accompanying point also stands and is now stated: only the first page of each expression was screened, so counts of 3,178, 14,484 and 20,362 were examined to 25 records each. The supported sentence is unchanged but now bounded in the record itself:
+
+> No direct or partial match was identified among the records screened in this OpenAlex pass.
+
+**b. The TSE record's scope.** Claude is right that the indexed content describing 24 Java projects cannot be the TSE article's scope. Crossref resolves the two records separately: the EASE 2025 paper (`10.1145/3756681.3756945`, pp. 476–487, published 2025-06-17) is the Java-only study, and the TSE title explicitly extends to "Java and Python Projects" (`10.1109/TSE.2026.3750452`, early access, pp. 1–21, Crossref record created 2026-11-03, no volume or issue assigned). The apparent mismatch is therefore between two publications, not inside one. But Claude's underlying caution is accepted and now governs the record: the TSE article's method, results, and project count are **unverified**, because Crossref deposits no abstract and the full text is inaccessible. Only its title, authorship, venue and early-access status are citable, and register row 21 now says so.
+
+**c. The acceptance's authentication limit.** Claude cannot find the owner's acceptance in the transcript it holds. The decision was made through an explicit owner selection among stated options in the project session on 2026-11-22, and §§12.1 and 30.1 already record it as conversational rather than documentary. That limit is now stated in the stronger form Claude asks for: a reader who does not hold that session cannot authenticate the act, and nothing in this repository supplies an independent record of it. If the owner wants the acceptance to be citable without that caveat, a one-line confirmation in the owner's own words, added as a dated note to `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md` or a new file, would do it. This register does not manufacture one.
+
+**d. Disclosure is not endorsement of the deviation.** Both reviewers accept the search with its deviations disclosed. That is the correct disposition and it is already §12.2. Disclosure does not upgrade a scoping pass into a systematic review.
+
+### 13.2 The structural question: does Gate 0 need splitting?
+
+GPT proposes two decisions — **A**, close Gate 0 on scoping plus contribution; **B**, a new feasibility gate holding support, estimability, MDE and power. Claude proposes that the census precede any adoption, on the ground that a null is uninformative without established power.
+
+The repository already contains the separation GPT is proposing, and it is worth naming precisely because both reviews write as though it does not.
+
+| Function | Where it already sits | Source |
+|---|---|---|
+| Is the proposition already tested? | Gate 0 | `FUNDAMENTAL_GOAL` §3 |
+| Is the statistic presented as novel? | Gate 0 | `FUNDAMENTAL_GOAL` §3 |
+| Is there a precise contribution paragraph, a shown difference from the closest prior work, and a fixed inferential scope? | Gate 0 | §9.5, §9.8 |
+| Can the frozen support conditions be satisfied, and is there a scoreable LOPO fold? | Gate 1, first action: the design-only support census | §9.3 |
+| MDE, power, operating characteristics of the frozen pipeline | Gate 4 | §9.4 |
+
+So GPT's Decision B is **Gate 1 plus Gate 4**, not a missing gate. Creating a third gate to hold them would duplicate the structure and leave the frozen goal document contradicted. No such amendment is made here, and none should be made without the owner explicitly changing `FUNDAMENTAL_GOAL` §3.
+
+What GPT is right about is narrower and more useful: **Gate 0 is being asked to wait for feasibility, which is not its question.** Under §9.5 and §9.8, Gate 0 needs the contribution paragraph adopted; it does not need the census. Claude's objection does not overturn that, because Claude is making a claim about *interpretation of a future null*, not about *whether to ask the question*. Those are separable, and the separation is the substance of the resolution below.
+
+### 13.3 Claude's constraint, kept
+
+Claude's power argument is accepted as a constraint on what a null would mean, and it is not softened:
+
+- The bank's diagnostic exposure is 64 records on the record basis and 60 on the canonical basis, with per-stratum capacity `R = (8,8,8,8,8,4,8,8)` canonically. At most eight distinct `C_D` values exist at any fixed `k` (§9.3), so the covariate is coarse by construction, and Claude's "8 strata of 8 records" is the record-basis reading of the same fact.
+- The one executed world retained about 0.25 % of the full vector's gain with an interval spanning zero (§3.4). That is a warning about the likely result, not a refutation.
+- Therefore a null is **not automatically informative**. It is informative only if the design could have detected a stated effect. Establishing that is Gate 1 (support) and Gate 4 (power), in that order.
+
+The consequence for the contribution decision is a reporting rule, not a delay: the adopted statement must pre-commit that an observed null will be reported as **inconclusive** unless the feasibility work establishes an MDE and the design's power against it. A null obtained without that is a support failure, not a scientific finding. This is how GPT's "a null is not automatically informative" and Claude's "a null is only legitimate with power" become the same sentence instead of two positions.
+
+### 13.4 The one remaining Gate 0 item
+
+Under §9.5, Gate 0 closes when the contribution is stated in one precise paragraph, its difference from the closest prior work is shown, its inferential scope is fixed, and no priority claim rests on the absence of a search hit. Four of the five are done. The missing item is adoption of the paragraph. The exact text proposed for adoption, with the reporting rule of §13.3 attached, is:
+
+> This study tests whether a version-level maximum-share summary of a prespecified eight-stratum diagnostic failure profile adds incremental predictive information about record-level correctness for engineered solver variants on the fixed, publicly exposed 78-record B1 development bank, beyond the exact-cell baseline `(q, Z, k, ℓ)`, under leave-one-parent-out evaluation with the parent as the independent unit.
+>
+> The index is Berger–Parker dominance (1970) and is not claimed as new. Failure concentration as a phenomenon is established (Almaghairbe & Roper 2015, 2017) and is not claimed as new. Execution-derived signals predicting correctness are established (register §4 rows 9–14) and are not claimed as new. The contribution claimed is the controlled, null-capable test of incremental value in this design.
+>
+> No claim is made about a new parent population, about information superiority over the full failure vector, or about identifying which stratum dominates. A null result will be reported as inconclusive unless Gate 1 support and Gate 4 power establish that the design could have detected a stated effect; a null obtained without that is a support failure.
+
+Adoption of this paragraph would satisfy the last Gate 0 condition. It would not authorise the census, any measurement work, or any solver activity.
+
+### 13.5 Status
+
+- **Gate 0: OPEN.** One item remains, and it needs no data access.
+- **`P`: unproven.** No novelty claim. The supported sentence remains "no direct or partial match among the records screened in this OpenAlex pass".
+- **Census: not authorised.** Pause in force.
+- **Operational items: open.** H6 presentation and aggregation, unresolved-status handling, outcome coding, historical row numbering. None can be settled by adopting a contribution statement, and none is settled here.
+- **Records corrected:** search record §§2, 3, 4, 8; register row 21.

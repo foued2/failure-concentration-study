@@ -1686,3 +1686,32 @@ Acceptance does not convert this into a systematic review. Record §8's limits a
 - **Unchanged:** Gate 0 OPEN; `P` unproven; B1 execution unauthorised; B1 v1.7 unchanged; pause in force.
 
 The only remaining Gate 0 item that needs no data access is the contribution decision. The census stays the first Gate 1 action and stays blocked.
+
+---
+
+## 31. Two reviews; four corrections; one open decision (2026-11-22)
+
+### 31.1 What arrived
+
+GPT's Gate 0 review and Claude's response to it, both dated 2026-11-22. GPT resolves the DOI dispute in the record's favour, accepts the search as a bounded scoping deliverable, and proposes splitting Gate 0 into a scoping/contribution decision and a new feasibility gate. Claude concedes the TSE DOI question, disputes the TSE article's scope, questions the authenticability of the owner acceptance, and argues that the support census must precede adoption because a null is uninformative without power.
+
+The applied corrections and the reasoning are in register §13. This section records the ledger-side effect only.
+
+### 31.2 Corrections now in the record
+
+1. **431 is a sum, not a union.** Search record §§2, 3 and 8 now state that 431 is the total of 18 first pages (17 × 25 + 6), that the unique union was never computed, and that only page one of each expression was screened. The supported sentence is bounded accordingly.
+2. **The TSE record is title-level only.** Crossref confirms title, four authors, IEEE TSE, pp. 1–21, record created 2026-11-03, no volume or issue. It deposits no abstract. The "24 Java projects" scope belongs to the EASE 2025 paper, which is a separate publication; the TSE title extends to Java and Python. Register row 21 no longer attributes a method or a project count to the TSE article.
+3. **The acceptance's authentication limit is stated plainly.** §30.1 already recorded the decision as conversational. Register §13.1(c) now adds that no repository artifact independently attests it and names what would: a dated owner note in the owner's own words. None is manufactured.
+4. **The unsupported-sentence bound is restated.** "No such work exists" is not supported, was not claimed, and is now explicitly excluded in both the search record and register §13.1(a).
+
+### 31.3 The structural disagreement, resolved against the frozen gates
+
+GPT proposes a new feasibility gate. The goal document already separates the three questions: Gate 0 holds the tested/novel question and the contribution paragraph; Gate 1 holds support and estimability, beginning with the design-only census; Gate 4 holds power, MDE and operating characteristics. Adding a gate would duplicate Gate 1 plus Gate 4 and contradict `FUNDAMENTAL_GOAL` §3, so no such change is made. The correct statement of GPT's point is that Gate 0 is being asked to wait for feasibility, which is not its question.
+
+Claude's constraint survives in a narrower and stronger form: a null is not automatically informative, and the adopted statement must pre-commit to reporting a null as **inconclusive** unless Gate 1 support and Gate 4 power establish a detectable effect. That is a reporting rule, not a reason to withhold the question.
+
+### 31.4 What remains
+
+Exactly one Gate 0 item: adoption of the contribution paragraph in register §13.4, with the null-interpretation rule attached. It requires no data access and authorises nothing. The census remains unauthorised; the pause remains in force; `P` remains unproven; Gate 0 remains **OPEN**.
+
+No solver construction, execution, fitting, sampling, calibration, or outcome model was performed in this round. The only external calls were two Crossref metadata lookups used to settle the TSE/EASE scope question.

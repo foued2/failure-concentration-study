@@ -27,7 +27,9 @@ The 12-query protocol was approved in principle but not executed verbatim. The d
 | Query count | 12 | 18 informative + 2 discarded | The 12 approved strings collide badly in a Boolean index; four were split and two added to cover the same four themes |
 | Query wording | Verbatim strings | Boolean/phrase expressions on `title_and_abstract.search` | Index syntax; mappings are listed in §3 |
 | Date filter | 1990-01-01 → 2026-11-22 | None applied; retrieved records span 1958–2026 | No pre-1990 record was judged relevant; the filter would only have hidden the collision behaviour |
-| Screening | Titles + abstracts | Title-level on 431 records; abstracts for 7 candidates | See §4; full text reachable for none of the closest four |
+| Screening | Titles + abstracts | Title-level on the first page of each query; abstracts for 7 candidates | See §4; full text reachable for none of the closest four |
+| Pagination | All hits | First result page only (25 records per query) | Relevance order was used; no exhaustive pagination |
+| Count basis | Deduplicated union | **Sum of per-query screening slots (431), not deduplicated** | Unique-record union was not computed; the same record can appear under several expressions |
 | Citation chasing | Backward + forward | Forward for 3 works; backward for 2 | §5 |
 | Databases | Not specified | OpenAlex only (Crossref for DOI verification) | No Scopus, Web of Science, ACM DL, or IEEE Xplore subscription access |
 
@@ -38,6 +40,8 @@ The 12-query protocol was approved in principle but not executed verbatim. The d
 ## 3. Query log
 
 Source: `https://api.openalex.org/works`, `filter=title_and_abstract.search:…`, relevance order, 25 records per page. Retrieved 2026-11-22. Counts are OpenAlex's index counts for that expression and will drift.
+
+**What the `Screened` column sums to.** 17 pages of 25 plus one page of 6 gives **431 screening slots**, and that is the only figure the log supports. It is **not** a count of unique publications: the same record can be returned by more than one expression, and the unique union across the 18 result pages was not computed or stored. Nor does it describe the queries' full result sets — counts of 3,178, 14,484 and 20,362 were screened to 25 records each. Both limits are repeated in §8 and both are part of the accepted deliverable.
 
 | # | Expression (as executed) | Count | Screened | What the first page was |
 |---|---|---|---|---|
@@ -62,7 +66,7 @@ Source: `https://api.openalex.org/works`, `filter=title_and_abstract.search:…`
 | — | `"concentration index"` AND (`"software"` OR `"test"`) | 18,411,191 | 0 | **Discarded:** Boolean grouping error; the `OR "test"` term swallowed the query |
 | — | `"execution outcomes"` OR (`"correctness"` AND `"execution results"` AND `"predict"`) | 247,339 | 0 | **Discarded:** over-broad; returned predictor–corrector numerics |
 
-Approximately **431 titles** were screened. Abstracts were retrieved for seven candidates; the TSE record indexes none. No full text was read in this pass.
+Approximately **431 screening slots** were examined — the sum of the per-query first pages, not a deduplicated count. Abstracts were retrieved for seven candidates; the IEEE TSE record indexes none. No full text was read in this pass.
 
 **Reproducibility.** Replace spaces with `%20` and quotes with `%22` in the `filter` value, e.g.
 `https://api.openalex.org/works?filter=title_and_abstract.search:%22failure%20clustering%22&per-page=25`
@@ -88,7 +92,7 @@ Decision vocabulary: **DIRECT** = tests the full conjunction in `P`; **PARTIAL**
 | *Failure clustering without coverage* 2019, ISSTA, `10.1145/3293882.3330561` | Abstract | Groups failing hardware-in-the-loop tests by non-code features and selects representatives; 8,743 failing tests, 1,531 faults. Clustering for triage, no correctness model | ADJACENT |
 | SURE 2024, `10.1145/3676958` | Record | Failure indexing by program memory spectrum; root-cause similarity. Not prediction of correctness | ADJACENT |
 | ReClues 2024, `10.1145/3597503.3639098` | Record | Failure representation/indexing for parallel debugging | ADJACENT |
-| Systemic Flakiness, EASE 2025 `10.1145/3756681.3756945`; IEEE TSE 2026 `10.1109/TSE.2026.3750452` | Crossref for both; abstract for EASE | Predicts *co-occurrence* of flaky failures using static test distance. Different response variable (pairwise co-occurrence, Jaccard), not individual input correctness; no concentration statistic | ADJACENT |
+| Systemic Flakiness, EASE 2025 `10.1145/3756681.3756945`; IEEE TSE 2026 `10.1109/TSE.2026.3750452` | Crossref for both; abstract for EASE; **TSE title only** | Studies co-occurrence of flaky test failures, with failures clustered by shared cause; the TSE title extends the scope to Java and Python projects. The TSE article's method and results are **not verified**: Crossref deposits no abstract and the full text is not accessible, so only its title, authorship, venue and early-access status are known. Different response structure (pairwise co-occurrence), not individual input correctness; no concentration statistic | ADJACENT |
 | Failure proximity: `10.1145/1181775.1181782` (2006); `10.1109/tse.2008.66` (2008); `10.1145/3551349.3556922` (2022) | Records | Proximity of failures for fault isolation. Response is fault ranking, not record correctness | ADJACENT |
 | Boland, Proschan & Tong 1987, `10.1017/s0269964800000383`; Chen & May 2016, `10.1109/tr.2015.2503335` | Register rows 2–3 | Distributional/fault diversity as a reliability input. No prediction of per-record correctness, no prespecified diagnostic strata | ADJACENT |
 | Gini/inequality indices in software | Q03 | Code-structure or model-uncertainty inequality. Different measured object | EXCLUDED |
@@ -139,7 +143,9 @@ The EASE 2025 paper (`10.1145/3756681.3756945`, pp. 476–487, "An Empirical Ana
 
 - It does **not** establish novelty. A documented non-finding on one index with stated limits is a scoping result, not a priority claim.
 - It does **not** establish that `P` is untested outside OpenAlex's coverage: no Scopus, Web of Science, IEEE Xplore, or ACM DL; English-language bias; abstract-level for four closest candidates; no full text for any.
+- It does **not** support any statement about records beyond the first result page of each expression, and it does **not** report a deduplicated count of unique publications. The supported sentence is: *no direct or partial match was identified among the records screened in this OpenAlex pass.*
 - It does **not** decide the contribution question. Whether a one-parameter incremental gain is worth reporting is a positioning and design judgement, not a literature fact.
+- It does **not** touch any measurement decision: H6 aggregation, unresolved handling, and outcome coding remain open.
 - It does **not** touch any measurement decision: H6 aggregation, unresolved handling, and outcome coding remain open.
 
 ---
