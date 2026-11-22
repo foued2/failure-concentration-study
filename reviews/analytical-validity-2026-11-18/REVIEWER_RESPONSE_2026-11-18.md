@@ -1858,3 +1858,13 @@ The unresolved H6 raw-pair-to-canonical correctness aggregation rule remains a p
 **Project pause: remains in force outside the bounded preparatory work authorized here.**
 
 No experiment, census, bank generation, solver construction, execution, diagnostic collection, outcome labelling, model fitting, sampling, simulation or power analysis was performed under this instruction.
+
+
+### 34.6 Evaluation-target mismatch remains unresolved
+
+The adopted Gate 0 contribution paragraph in positioning register §14.2 names the fixed, publicly exposed 78-record B1 development bank. B1 v1.7 also fixes those 78 records as public development data, not a sealed confirmatory set.
+
+Population-design v0.21 §0.2 and §§5.1-5.5 instead propose a newly generated protected evaluation set, exclude the existing 78 records from confirmatory use, and require a separate B1 amendment, non-overlap procedure, and independent custodian. The owner separately selected the confirmatory route with consent in the 2026-11-21 D0.3 decision. That route choice does not itself supply historical consent evidence, appoint a custodian, or amend B1 v1.7.
+
+The accepted contribution paragraph and proposed protected-set route therefore do not yet identify one reconciled evaluation target. This must be resolved in a separately reviewed B1 amendment and a consistent update to the contribution/claim scope before confirmatory evaluation. Until then, the public 78-record target remains the scope of the adopted contribution paragraph, and it must not be described as a protected independent evaluation set. This mismatch blocks the confirmatory claim but does not alter the mathematical B1 diagnostic support-cell conditions.
+
