@@ -89,6 +89,7 @@ We invite researchers in software testing, program analysis, algorithm engineeri
 
 ## Key records
 
+- [B1 census intake validator](census-intake/README.md) — step-1 infrastructure authorized on 2026-11-22: a narrow semantic check for admitting per-variant diagnostic records to the outcome-free census, with synthetic tests only. Its [authorization and result record](census-intake/AUTHORIZATION_AND_RESULT_2026-11-22.md) reports 18/18 synthetic tests passing. It does not supply a diagnostic manifest and does not change Gate 1 preflight status.
 - [Novelty and positioning register](reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md) — adopted contribution, bounded prior-work comparison, support arithmetic and remaining challenges.
 - [Reviewer response ledger](reviews/analytical-validity-2026-11-18/REVIEWER_RESPONSE_2026-11-18.md) — owner decisions, provenance caveats, population scope and gate status.
 - [Fundamental research goal](FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md) — research question and gate structure.

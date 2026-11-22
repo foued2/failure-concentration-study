@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/foued2/failure-concentration-study/census-intake/record_schema/v0.1.json",
+  "schema_version": "0.1",
+  "title": "B1 census intake diagnostic record",
+  "description": "Descriptive structural contract for per-variant diagnostic records admitted to the Gate 1 outcome-free support census. Semantic rules are documented in README.md and enforced by validate_records.py. This schema is not enforced by a partial JSON Schema implementation.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "variant_id",
+      "parent_id",
+      "parent_family",
+      "mutation_id",
+      "exposure_basis",
+      "f",
+      "u",
+      "strata_record_ids",
+      "source_digest"
+    ],
+    "properties": {
+      "variant_id": { "type": "string", "minLength": 1 },
+      "parent_id": { "type": "string", "minLength": 1 },
+      "parent_family": { "type": "string", "minLength": 1 },
+      "mutation_id": { "type": "string", "minLength": 1 },
+      "exposure_basis": { "type": "string", "enum": ["record", "canonical"] },
+      "f": {
+        "type": "array",
+        "minItems": 8,
+        "maxItems": 8,
+        "items": { "type": "integer", "minimum": 0 }
+      },
+      "u": {
+        "type": "array",
+        "minItems": 8,
+        "maxItems": 8,
+        "items": { "type": "integer", "minimum": 0 }
+      },
+      "strata_record_ids": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"],
+        "properties": {
+          "D1": { "$ref": "#/$defs/recordIds" },
+          "D2": { "$ref": "#/$defs/recordIds" },
+          "D3": { "$ref": "#/$defs/recordIds" },
+          "D4": { "$ref": "#/$defs/recordIds" },
+          "D5": { "$ref": "#/$defs/recordIds" },
+          "D6": { "$ref": "#/$defs/recordIds" },
+          "D7": { "$ref": "#/$defs/recordIds" },
+          "D8": { "$ref": "#/$defs/recordIds" }
+        }
+      },
+      "source_digest": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "notes": { "type": "string" }
+    },
+    "$defs": {
+      "recordIds": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 8,
+        "items": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
