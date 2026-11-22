@@ -2,7 +2,8 @@
 
 **Record ID:** B1-78-IDENTITY-RECOVERY-2026-11-21
 **Date:** 2026-11-21
-**Status:** SOURCE RECOVERED BY DOCUMENTARY CHAIN; B1 ADJUDICATION PENDING.
+**Status at issue (2026-11-21):** SOURCE RECOVERED BY DOCUMENTARY CHAIN; B1 ADJUDICATION PENDING AT THAT DATE.
+**Current identity status (2026-11-22):** SOURCE-RECOVERED / OWNER-ACCEPTED. The earlier pending disposition is historical and superseded by the owner's decision in `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`.
 **Scope:** Read-only identity inspection of the pinned LC518 held-out bank artifact. No solver,
 no fitting, no sampling, no outcome model, no protected E3 record. The bank remains development
 data, publicly exposed, never sealed.
@@ -314,7 +315,7 @@ oracle attachment. The two H6 pairs are the entire explanation of the collapse.
 ### Disposition
 
 **Identity source: RECOVERED.**
-**B1 identity gate: SOURCE-RECOVERED / ADJUDICATION PENDING.**
+**B1 identity gate at issue on 2026-11-21: SOURCE-RECOVERED / ADJUDICATION PENDING.** This records the status before owner adjudication. The current identity status is **SOURCE-RECOVERED / OWNER-ACCEPTED**, as recorded in `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`.
 The prior status "source missing" is no longer accurate. The prior warning "do not substitute H80
 by cardinality" remains correct: the substitution is rejected, and the definitional chain above is
 the reason the 78 keys are B1's, not the coincidence of counts. The gate is not unilaterally closed
