@@ -89,7 +89,7 @@ We invite researchers in software testing, program analysis, algorithm engineeri
 
 ## Key records
 
-- [B1 census intake validator](census-intake/README.md) — step-1 infrastructure authorized on 2026-11-22: a narrow semantic check for admitting per-variant diagnostic records to the outcome-free census, with synthetic tests only. Its [authorization and result record](census-intake/AUTHORIZATION_AND_RESULT_2026-11-22.md) reports 18/18 synthetic tests passing. It does not supply a diagnostic manifest and does not change Gate 1 preflight status.
+- [B1 census intake validator v0.2](census-intake/README.md) — successor implementation on an unmerged branch after Claude's NOT PASS on the held prototype `0060e7b`. It validates individual `diagnostic_record_results` under `record_level_64`, derives f/u/p and C_D from terminal statuses, and is labelled `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED`. The [correction record](census-intake/CORRECTION_RECORD_2026-11-22.md) reports 25/25 synthetic tests passing; [Claude's review packet with its dated 4(b) correction](census-intake/REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md) is awaiting an independent verdict on the successor. No real manifest exists, and Gate 1 preflight status is unchanged.
 - [Novelty and positioning register](reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md) — adopted contribution, bounded prior-work comparison, support arithmetic and remaining challenges.
 - [Reviewer response ledger](reviews/analytical-validity-2026-11-18/REVIEWER_RESPONSE_2026-11-18.md) — owner decisions, provenance caveats, population scope and gate status.
 - [Fundamental research goal](FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md) — research question and gate structure.

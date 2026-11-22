@@ -1,128 +1,119 @@
-# B1 census intake — record validator and synthetic tests
+# B1 v1.7 census intake validator — v0.2 successor
 
-**Version:** 0.1
-**Status:** step-1 infrastructure only. No scientific result. No census performed.
+**SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED**
+
+**Version:** 0.2 (successor to the held `0060e7b` prototype)
+**Status:** implementation complete on a separate, unmerged successor branch; independent review pending.
 **Date:** 2026-11-22
 
-This folder provides a narrow semantic validator for **per-variant diagnostic records** whose only
-purpose is to decide whether such records may be admitted to the Gate 1 design-only support census.
+This folder validates the per-variant `diagnostic_record_results` structure of a B1 v1.7 outcome-blind
+census manifest. The individual terminal records are the source of truth. It admits or rejects records
+for a design-only census; it does not compute census support, LOPO coverage, or any scientific result.
 
-## 1. Authorization scope
+## 1. Exact scope label
 
-The owner authorized step 1 only on 2026-11-22: make the B1 measurement instrument executable by
-building the B1-specific semantic validator and synthetic tests, scoped to getting real diagnostic
-records safely and reproducibly into the census.
+The label `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED` appears in the validator's output header and
+in this README. The validator checks syntax and structural consistency only. It does **not** verify:
 
-**Provenance.** This authorization was an explicit owner selection among stated options in the
-project session. It is a conversational act; this repository does not independently attest it.
+- frozen diagnostic-bank membership of any record ID;
+- diagnostic artifact provenance;
+- source-artifact integrity or record-to-bank identity;
+- any external evidence not available to this task.
 
-**This folder does not authorize, perform, or enable by itself:**
+A digest string is a syntactic field, not provenance verification.
 
-- parent acquisition or selection;
-- mutation allocation or solver construction/generation;
-- diagnostic execution, bank generation, or bank access;
-- outcome collection, correctness labelling, or construction of a `Y` matrix;
-- the Gate 1 support census, model fitting, or predictive analysis;
-- any change to B1 v1.7, Rev 11, or the frozen `C_D` definition.
+## 2. Authorization and repository handling
 
-The project pause remains in force outside this step-1 scope. An admitted record is an input that the
-census *may* read once separately authorized; admission is not a support finding, a Gate 1 PASS, or
-evidence about `P`.
+The owner authorized step 1: a B1-specific semantic validator and synthetic tests. GPT accepted Claude's
+NOT PASS verdict on `0060e7b` and the two-reviewer correction scope; that agreement authorizes this
+correction within Step 1 only.
 
-## 2. Frozen definitions used
+- Prototype commit `0060e7b` is preserved unchanged in history. This is a successor commit on a separate
+  branch; no history was rewritten and nothing was merged into master.
+- No bank access, parent acquisition, mutation allocation, solver construction, diagnostic execution,
+  outcome collection, `Y`-matrix construction, census execution, fitting or predictive analysis occurred.
+- The project pause remains in force outside the Step 1 scope. Whether an earlier conditional census
+  authorization remains operative is **unanswered** and is deliberately not interpreted here.
+- `P` remains unproven; B1 v1.7 and the reviewed instrument are unchanged.
 
-Taken from `LC518_A2_AUDIT_PROTOCOL_DRAFT_2026-11-06.md` Rev 11 as recorded in
-`reviews/analytical-validity-2026-11-18/CD_MEASUREMENT_SPEC_2026-11-19.md` §1–§3:
+## 3. Record structure enforced
 
-- eight diagnostic strata `D1..D8`, which are input categories, not mechanisms;
-- `f_j` counts **definite** diagnostic failures in stratum `j`;
-- `k_fail = Σ_j f_j`; `C_D = max_j f_j / k_fail`, with `C_D = 0` and status
-  `NO_OBSERVED_FAILURES` when `k_fail = 0`;
-- `u_j` counts **unresolved** diagnostic outcomes. It is mandatory evidence, all eight entries
-  supplied, and may never be converted into a failure or an implicit zero;
-- `k_unresolved = Σ_j u_j` belongs to the exact cell, not to `C_D`;
-- the frozen cell is `(m, z, k_fail, k_unresolved)`, aliased in the adopted contribution statement
-  as `(q, Z, k, ℓ)`. Here `q = m` is mutation identity and `Z = z` is parent family.
+The manifest is a JSON object using the B1 v1.7 field names:
 
-**Exposure basis** is a required, explicit field. Two bases exist and are not interchangeable:
+| Field | Rule |
+|---|---|
+| `schema_version` | must be `0.6-draft` |
+| `study_id` | must be `LC518` |
+| `measurement_basis` | must be the string `record_level_64`; the canonical-60 basis has no path and is rejected |
+| `diagnostic_bank` | `stratum_ids` = D1…D8, `records_per_stratum` = 8, `total_records` = 64 |
+| `parent_roster` | non-empty; each `parent_id` / `Z_id` pair unique and consistent with variants |
+| `variants` | non-empty list |
+| `outcome_exclusion_assertion` | all three declared values must be `false` |
 
-| Basis | `N` | Per-stratum capacity `R_j` |
-|---|---:|---|
-| `record` | 64 | `(8,8,8,8,8,8,8,8)` |
-| `canonical` | 60 | `(8,8,8,8,8,4,8,8)` |
+Each variant requires `variant_id`, `parent_id`, `Z_id`, `q_id`, `validity_status` and
+`diagnostic_record_results`. Each result requires `diagnostic_record_id`, `stratum_id` in D1–D8, and
+`terminal_status` in `DEFINITE_PASS`, `DEFINITE_FAILURE`, `UNRESOLVED`.
 
-Canonical `C_D` must be recomputed from canonical failure counts; it is never obtained by averaging
-or selecting record-level values. This validator checks basis-consistent capacity but does not
-translate between bases.
+### Status-specific rules
 
-## 3. Record contract
-
-A manifest is a JSON array of records. Each record has these fields:
-
-| Field | Type | Requirement |
+| Status | Results | Additional requirements |
 |---|---|---|
-| `variant_id` | string | non-empty; unique in the manifest |
-| `parent_id` | string | non-empty |
-| `parent_family` | string | non-empty; the `Z`/`z` cell coordinate |
-| `mutation_id` | string | non-empty; the `q`/`m` cell coordinate |
-| `exposure_basis` | string | exactly `record` or `canonical` |
-| `f` | array of 8 integers | each `>= 0`; definite failures only |
-| `u` | array of 8 integers | each `>= 0`; **mandatory** even when all zero |
-| `strata_record_ids` | object | keys exactly `D1`–`D8`; each an array of distinct non-empty strings of length `R_j` for the declared basis; no identifier reused across strata |
-| `source_digest` | string | 64-character lowercase hex SHA-256 of the upstream diagnostic manifest from which the record was derived |
-| `notes` | string | optional |
+| `VALID` | exactly 64; exactly 8 per stratum; IDs unique within the variant | `diagnostic_evidence_ref`, `semantic_source_digest`, `runnable_artifact_digest` |
+| `INCOMPLETE` | 0–63 | `status_reason`, `status_decision` with `POSTRUN_COMPLETENESS_AUDIT` and identity metadata consulted, `diagnostic_evidence_ref` |
+| `INVALID` | 0 | `status_reason`, status decision with `PREDIAGNOSTIC_OBJECTIVE_INVALIDITY` |
+| `EXCLUDED_BEFORE_DIAGNOSTICS` | 0 | `status_reason`, status decision with `PREDIAGNOSTIC_DESIGN_EXCLUSION` |
+| `EXPECTED_NOT_RUN` | 0 | `status_reason`, status decision with `EXPECTED_NOT_RUN_INVENTORY_AUDIT`; no record receipt metadata consulted |
 
-Any other top-level field is rejected. In particular a correctness/outcome field (`correctness`,
-`Y`, `outcome`, `pass`, `fail`, or a field whose name begins with `y_`) is rejected with
-`OUTCOME_FIELD_PRESENT`: the census is outcome-free by construction.
+Partial and zero-result statuses are not forced to a 64-ID set.
 
-Derived by the validator for each admitted record: `k_fail`, `k_unresolved`, `C_D` as an exact
-integer ratio string (or `"0"` with `NO_OBSERVED_FAILURES`), and the cell tuple
-`(mutation_id, parent_family, k_fail, k_unresolved)`.
+### Derivation
 
-## 4. Structural schema convention
+Per stratum: `f_j` = count of `DEFINITE_FAILURE`, `u_j` = count of `UNRESOLVED`, `p_j` = count of
+`DEFINITE_PASS`. With eight results per stratum, `f_j + u_j + p_j = 8` by construction. Then
+`k_fail = Σ f_j`, `k_unresolved = Σ u_j`.
 
-`record_schema.json` is JSON Schema draft 2020-12 and is the **descriptive** structural contract.
-`validate_records.py` implements the structural and semantic checks explicitly in the standard
-library; it is **not** a JSON Schema evaluator and does not claim general draft 2020-12 coverage.
-If tooling cross-checks the schema, it must use a conforming external implementation.
+`C_D = max_j f_j / k_fail` when `k_fail > 0`, emitted as an exact rational string. Unresolved outcomes
+never enter its numerator or denominator. When `k_fail = 0`, the emitted label is exactly
+`NO OBSERVED FAILURES`, with no numeric value.
 
-The schema `$id` is **per revision**: it carries the version identifier and must change with every
-versioned revision. The mechanical check is `$id` endswith `/v{schema_version}.json`, where
-`schema_version` is the schema's own field. A stale `$id` is a defect, not a cosmetic detail.
+### Aggregates are non-authoritative
 
-## 5. Use
+`f`, `u` and `p` fields are optional consistency checks. If absent, the vectors are derived. If present
+and equal to the derived vectors, they are retained only as checks. If present and unequal, the variant
+is rejected with `AGGREGATE_MISMATCH`; a structurally malformed vector gets `MALFORMED_AGGREGATE`.
+
+These three fields are an intake extension for the consistency check and are not part of the reviewed
+revision 0.6 schema. This validator does not claim full 0.6 structural conformance.
+
+### Cross-variant record IDs
+
+The frozen bank is expected to be reused. The same IDs across complete `VALID` variants are accepted;
+IDs duplicated within one variant are rejected. All complete `VALID` variants must carry an identical
+ID set, otherwise `CROSS_VARIANT_ID_SET_MISMATCH`. This is an ID-set check only — not a bank-membership
+or source-artifact check.
+
+## 4. Use
 
 ```powershell
 py census-intake/validate_records.py --manifest path/to/manifest.json --report path/to/report.json
 ```
 
-Exit codes: `0` all records admitted; `2` at least one record rejected; `3` input/JSON error.
-The report records the SHA-256 of the manifest bytes, counts, per-record decisions with reason
-codes, and derived values for admitted records. It is deterministic for identical input bytes.
+Exit codes: `0` all admitted with no manifest-level findings; `2` any rejection or `EMPTY_MANIFEST`;
+`3` input/JSON error. The report is deterministic for identical bytes and carries the manifest SHA-256.
+It contains no census verdict, no eligibility flag, no gate decision and no outcome data.
 
-The report contains **no** census decision: no eligibility flag, no LOPO fold, no PASS/FAIL gate
-verdict, and no outcome data.
+## 5. Tests
 
-## 6. Tests
+`tests/test_b1_census_intake.py` contains 25 synthetic tests with invented identifiers. They cover the
+case table in the correction brief, every non-string basis type, status-specific rules, aggregate
+handling, the exact zero-failure label, cross-variant ID sets, determinism, and CLI exit codes. Passing
+them establishes validator behaviour on synthetic fixtures only; it does not establish that a real
+manifest exists, is admissible, or supports a census.
 
-`tests/test_b1_census_intake.py` contains synthetic software tests only. They use constructed
-fixtures with invented identifiers; no bank, solver, or outcome data is read. They cover valid
-record and canonical bases, mandatory unresolved vectors, capacity and length violations, duplicate
-identifiers and variants, unknown strata, outcome-field rejection, the zero-failure convention,
-report determinism, and input hashing. Passing them establishes validator behaviour, not the
-existence of any LC518 diagnostic manifest.
+## 6. Review status
 
-## 7. Relation to the scientific record
+Claude's independent review applies to this successor, not to the held prototype. The earlier review and
+its dated 4(b) correction are in `REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md`. See
+`CORRECTION_RECORD_2026-11-22.md` for the implementation scope and non-authorizations.
 
-The root `README.md` records Gate 1 preflight as BLOCKED / NOT ASSESSABLE because no LC518
-per-variant eight-stratum diagnostic manifest exists. This folder does not change that status. It
-provides the intake check that such a manifest would have to pass before the census could be run
-under a separate authorization.
-
-Rationale: register §16 and reviewer-ledger §34.
-
-**Review status (2026-11-22): HELD PENDING INDEPENDENT REVIEW.** GPT raised four findings; the local
-fact-check confirmed them. See `REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md` for the findings, reproduction
-commands and the requested PASS / NOT PASS. This prototype must not be used to admit real LC518
-records, must not be merged, and must not be corrected before Claude's verdict.
+Rationale in the scientific record: register §17 and reviewer-ledger §35.

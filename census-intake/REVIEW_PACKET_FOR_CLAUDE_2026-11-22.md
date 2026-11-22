@@ -113,3 +113,28 @@ GPT's instruction is explicit: preserve the branch, do not merge it, do not run 
 and implement no correction before Claude's agreement. The local agent has complied: no code change
 was made after the review findings were received; this packet and the dated record entry are the
 only additions. No bank access, solver work, diagnostics, or census activity occurred.
+
+---
+
+## 6. Dated correction to the 4(b) reproduction — 2026-11-22
+
+**This section appends to the original review; it does not rewrite it.** The 4(b) reproduction in §2 was
+incomplete as stated, and the distinction matters for the corrected implementation.
+
+The local agent re-executed the old prototype (`639ee3f`) against the exact cases:
+
+| Input to the old prototype | Observed result |
+|---|---|
+| Minimal object with only `exposure_basis` as a list | `MISSING_FIELD`, `MISSING_UNRESOLVED_VECTOR` — the basis check was never reached |
+| Complete record with `exposure_basis` as a **list** | `TypeError: cannot use 'list' as a dict key` |
+| Complete record with `exposure_basis` as a **dictionary** | `TypeError: cannot use 'dict' as a dict key` |
+| Complete record with `exposure_basis` as a **number**, **Boolean** or **null** | Controlled `INVALID_EXPOSURE_BASIS` rejection (no exception) |
+
+So the original claim was directionally right but over-broad: the uncaught `TypeError` requires a
+complete record and applies specifically to unhashable types (list, dictionary). Number, Boolean and
+null take a different, already-controlled path. The original minimal reproduction could not reach the
+basis check because required fields were absent.
+
+This correction was reproduced before the successor implementation was written. The successor checks
+`isinstance(basis, str)` before any dictionary lookup, so all five non-string types produce the
+controlled reason `NON_STRING_EXPOSURE_BASIS`, and tests cover each type separately.
