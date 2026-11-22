@@ -152,3 +152,20 @@ reviews/analytical-validity-2026-11-18/S1_KNOWN_GAIN_SPEC_2026-11-18.md is a des
 The active independent reviewer for S1 is **DeepSeek in the web chat**. No local agent is part of this review handoff. Claude supplied additional critiques but is not the S1 reviewer. DeepSeek's direct v0.3, v0.4 and v0.5 reviews are recorded in §§10-12 of the reviewer ledger. Version 0.6 is awaiting DeepSeek's next direct review.
 
 The first-round S1 response is recorded in \`DEEPSEEK_S1_REVIEW_RESPONSE_2026-11-18.md\`; the provisional summary-based second-round adjudication is recorded in §9 of \`REVIEWER_RESPONSE_2026-11-18.md\`, and the direct DeepSeek reviews of v0.3, v0.4 and v0.5 are in §§10-12. The separate Gate 0/B1 follow-up adjudication from 2026-11-20 is recorded in §§25–27 of \`REVIEWER_RESPONSE_2026-11-18.md\`; the 2026-11-21 identity-source and DOI correction is §28. The 2026-11-22 owner acceptance is recorded in reviewer-ledger §28.4 and register §10.4, with the controlling decision in \`B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md\`. The executed Gate 0 search is reviewer-ledger §29 and register §11, with the full log in \`GATE0_LITERATURE_SEARCH_2026-11-22.md\`; the owner's acceptance of that search record, and the retained pause, are reviewer-ledger §30 and register §12. The 2026-11-22 GPT and Claude review round, its four corrections, and the gate-structure ruling are reviewer-ledger §31 and register §13. The owner's adoption of register §13.4 and the bounded Gate 0 closure are reviewer-ledger §32 and register §14. The current specification is \`S1_KNOWN_GAIN_SPEC_2026-11-18.md\`, version 0.6. It remains a draft, not frozen and not executable.
+
+---
+
+## Current population decision — 2026-11-22
+
+The owner has settled the study framing as **engineered solvers**. For B1, the tested units are engineered variants nested within selected real parent solver implementations; the inferential scope is conditional on the observed parents. “Natural solver population” is not the current target label and must not be used to imply a separate ontological class. Historical natural-solver feasibility records remain historical evidence about the particular sampling procedures they tested.
+
+Controlling records:
+- Novelty and positioning register §15: owner decision, operational population, inferential limits, parent-provenance requirements, exact-cell notation, and remaining measurement boundaries.
+- Reviewer ledger §33: adjudication and non-authorisations.
+- Fundamental goal §19: project-level status.
+
+The exact-cell aliases are q = m (mutation mechanism/operator), Z = z (parent family), k = k_fail (definite failures), and ℓ = k_unresolved (unresolved outcomes). The frozen support cell remains (m, z, k_fail, k_unresolved).
+
+Parent origin and lineage must be documented before future acquisition or selection. If a parent is explicitly represented as model-generated, the six-point model-generation provenance gate in the 2026-11-21 master-branch adjudication applies.
+
+Rev 11's record-level diagnostic counting unit remains the protocol-prescribed C_D basis unless formally amended. The H6 raw-pair-to-canonical correctness rule remains open; it is required before outcome-matrix construction but is not itself an input to a strictly outcome-free support census. The census remains unauthorised because the project pause is in force. Gate 0 remains closed only for position and contribution definition; novelty and P remain unproven. Gate 1 and Gate 4 remain open.
