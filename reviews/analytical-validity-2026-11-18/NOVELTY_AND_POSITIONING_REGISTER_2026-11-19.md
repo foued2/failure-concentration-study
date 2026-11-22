@@ -646,3 +646,37 @@ text was not reviewed in this pass, and the paper is still not evidence for `P`.
 On 2026-11-22, the repository owner accepted the B1 78-record documentary identity chain. The dated decision is recorded in `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`; the detailed source reconstruction is `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`, with its byte-level v3 audit and derived manifests listed in the review-bundle README.
 
 Accordingly, §10.1's **source recovered / adjudication pending** disposition is a historical snapshot as of 2026-11-21 and is superseded for current identity status by **source-recovered / owner-accepted**. This acceptance is limited to identity and documentary attribution. Historical row numbering, H6 primary-outcome aggregation, unresolved-status handling, and outcome coding remain undecided. B1 execution remains unauthorized; Gate 0 remains OPEN; (P) remains unproven; no novelty or predictive claim is licensed. B1 v1.7 remains unchanged.
+
+---
+
+## 11. Dated amendment — 2026-11-22 (Gate 0 search executed)
+
+**Trigger:** the owner's instruction to run the literature search rather than request another approval cycle. The full log, counts, query expressions, candidate decisions, citation chasing, and limits are in `GATE0_LITERATURE_SEARCH_2026-11-22.md`. This section records only the result and the two bibliographic additions. It changes no verdict: Gate 0 remains **OPEN** and `P` remains **unproven**.
+
+### 11.1 Executed search
+
+Eighteen informative OpenAlex queries and two discarded queries were run on 2026-11-22, with three forward and two backward citation chases; approximately 431 titles were screened and abstracts were read for seven candidates. Deviations from the planned twelve-query protocol — chat web search unavailable, index syntax, no date filter, no full text — are recorded in the search record §2.
+
+**Result:** no direct match and no partial match to `P`. Four adjacent-close works share either the prediction target or the concentration observation, never the conjunction: Almaghairbe & Roper (2017, 2019), the 2026 LLM trace-outcome study, BASHIRI (2025), and *Striving for Failure* (2015). The corpus contains a mature concentration observation, a mature clustering-for-debugging literature, and a mature per-input outcome-prediction literature; it does not contain a prespecified-partition maximum share evaluated against an exact-cell baseline with parents held out.
+
+### 11.2 Rows 20–21 — Systemic Flakiness, two distinct records
+
+| Register ID | Work and DOI | What it establishes | What it pre-empts | What it does not pre-empt | Verification level |
+|---|---|---|---|---|---|
+| 20 | Parry, Kapfhammer, Hilton & McMinn (2025), “Systemic Flakiness: An Empirical Analysis of Co-Occurring Flaky Test Failures,” EASE 2025, pp. 476–487. [10.1145/3756681.3756945](https://doi.org/10.1145/3756681.3756945) | Flaky tests occur in clusters with co-occurring failures sharing root causes ("systemic flakiness"); 10,000 runs, 24 Java projects, 810 flaky tests | Failure co-occurrence as an object of study; clustering of failures by shared cause | A concentration statistic, per-record correctness prediction, an exact-cell baseline, or parent-grouped evaluation | Abstract read; full text not read |
+| 21 | Parry, Kapfhammer, Hilton & McMinn (2026), “Systemic Flakiness: A Study of Flaky Test Failure Co-Occurrence Using Java and Python Projects,” *IEEE Transactions on Software Engineering*, pp. 1–21. [10.1109/TSE.2026.3750452](https://doi.org/10.1109/TSE.2026.3750452) | Extended study; predicts failure co-occurrence from static test-distance measures across Java and Python projects | Predictive modelling of co-occurrence from test distance | The response is pairwise co-occurrence (Jaccard), not individual input correctness; no concentration covariate; no parent grouping | Crossref and OpenAlex record (Crossref created 2026-11-03; IEEE Xplore 11773385); abstract unavailable from the index; full text not read |
+
+These are two publications of one research line, not a preprint and its version of record. Both should be cited separately where the line matters.
+
+**Correction.** The 2026-11-22 statement that no TSE 2026 version exists is wrong. `10.1109/TSE.2026.3750452` resolves in Crossref and OpenAlex to the IEEE TSE article above. The caution that generated the statement — do not cite an unverified DOI — was right in principle and is now satisfied by the publisher record.
+
+### 11.3 Effect on the record
+
+- **Added:** `GATE0_LITERATURE_SEARCH_2026-11-22.md`; rows 20–21 above.
+- **Unchanged:** §8 verdict table, the exposure-basis arithmetic, the two-level B1 eligibility rule, the Gate 4 relocation of power/MDE, and the candidate contribution statement.
+- **Gate 0 remains OPEN; `P` remains unproven.** The search is a scoping deliverable with stated limits, not a systematic review and not a novelty finding.
+- **Not done:** no solver construction, execution, fitting, sampling, or bank access.
+
+### 11.4 Consequence for the programme
+
+The literature is no longer the binding constraint. The defensible contribution object is the **design** — a prespecified-partition dominance covariate tested against an exact-cell, failure-count-conditioned baseline under parent-held-out evaluation — not the index (Berger–Parker 1970) and not the phenomenon (Almaghairbe 2015/2017). The next decisions are, in order: accept or reject the search record; state that contribution explicitly; authorize the design-only support census before any solver budget; and treat a null B1 result as the prior-consistent outcome rather than a failure of execution.
