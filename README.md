@@ -97,3 +97,6 @@ not evidence that the concentration hypothesis is resolved in either direction.
   census (Appendix A), and the claim-status vocabulary.
 - `CLAIM_AUDIT_MATRIX_2026-11-05.csv` — 77 sourced claims with evidence pointers and
   explicit non-support notes.
+- `reviews/analytical-validity-2026-11-18/B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md` — owner acceptance of the 78-record B1 documentary identity chain, with historical row numbering, H6 aggregation, unresolved handling, outcome coding, and execution explicitly left open.
+- `reviews/analytical-validity-2026-11-18/B1_78_IDENTITY_AUDIT_2026-11-21_v3.md` — byte-level reconstruction and audit of the 78 canonical identities.
+- `reviews/analytical-validity-2026-11-18/B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.csv` and `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.json` — derived identity manifests; join by `canonical_id`, not reporting index.
