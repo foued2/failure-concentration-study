@@ -8,7 +8,7 @@
 
 On 2026-11-22, the repository owner expressly accepted the documentary chain identifying the fixed 78-record B1 development bank and authorized this documentation-only addendum.
 
-**Decision provenance.** The basis for this owner decision is the owner's explicit instruction in the project conversation on 2026-11-22: “ACCEPT AND PROCEED FOR THE REST. LET US END THIS.” This addendum records that owner decision. It is not an independent reviewer finding or external authentication; the documentary and byte-level evidence supporting the identity is recorded separately below.
+**Decision provenance.** This decision records the owner's explicit written instruction in the project conversation on 2026-11-22: “ACCEPT AND PROCEED FOR THE REST. LET US END THIS.” The instruction is an owner-authored conversational authorization, not a repository artifact. A reviewer whose accessible transcript does not include that earlier owner message cannot independently authenticate the quotation from this repository alone. This addendum records the owner's decision; it does not present the quotation as independent corroboration or as a scientific finding.
 
 The accepted status is **source-recovered and owner-accepted**. This accepts the identity and documentary attribution of the 78-record population. It does not assert that B1 v1.7 itself enumerates the canonical IDs; the IDs are reconstructed from the preserved source artifact and recorded in the v3 derived manifest.
 
@@ -89,7 +89,13 @@ The following member hashes and sizes were recomputed from that ZIP:
 
 GPT independently recomputed the canonical ID from each raw record using the exact payload `{"amount": amount, "coins": sorted(coins)}`, sorted-key compact UTF-8 JSON, and SHA-256 with the `C-` prefix. All 80 raw records passed their record-hash check; the 80 raw rows yielded 78 unique canonical IDs; the 78 oracle objects had an exact one-to-one canonical-key-set match; and all 80 raw records referenced the correct oracle-member digest.
 
-The recomputed sorted canonical-ID set digest was `01bb0e4c8edb2c4a0678d1b6c65c4295bdaf59c9baf2436d793f25c740c3cccd`. The recomputed sorted canonical-payload set digest was `8b67d1f0193d85838a98486ae4fbf7ef17d948b1cca4abdfc4c0180ae61e48fa`. Both match the values in the v3 identity audit. The two canonical duplicate groups are exactly H6-P01 (`H057`/`H058`) and H6-P02 (`H059`/`H060`).
+The recomputed sorted canonical-ID set digest was `01bb0e4c8edb2c4a0678d1b6c65c4295bdaf59c9baf2436d793f25c740c3cccd`, matching the 5,226-byte LF-terminated ID-list digest recorded in v3 identity audit §4. The two canonical duplicate groups are exactly H6-P01 (`H057`/`H058`) and H6-P02 (`H059`/`H060`). No aggregate canonical-payload set digest is asserted here.
 
 **Scope of this revalidation.** This is a fresh GPT-side byte-level check of the source ZIP, its listed members, record hashes, canonical identities, and oracle key set. It is not a claim that Claude independently performed the same raw-byte reconstruction. Claude's supplied read-only review separately reports that the CSV and JSON manifest file checksums match the actual repository files; this revalidation did not independently recompute those two complete file checksums or repeat a CSV/JSON row-by-row comparison. No solver outcomes, (Y_{v,r}) labels, H6 primary rule, or unresolved-status rule were created or decided.
+
+## 9. Correction to the earlier payload-set digest statement
+
+An earlier version of this addendum stated that the aggregate canonical-payload set digest `8b67d1f0193d85838a98486ae4fbf7ef17d948b1cca4abdfc4c0180ae61e48fa` had been reproduced and matched the v3 identity audit. That statement is withdrawn. The v3 audit does not report this aggregate digest, and the serialization convention that would produce it has not been established reproducibly. The value must not be cited as a verified result.
+
+This withdrawal does not affect the verified canonical-ID rule, the 80/80 raw-record checks, the 78 unique canonical identities, the exact 78/78 oracle-key-set match, the 5,226-byte sorted-ID digest, or the per-row canonical-payload checks used to recompute each canonical ID. The accepted identity set rests on those checks and the documentary chain, not on an aggregate payload-set digest.
 
