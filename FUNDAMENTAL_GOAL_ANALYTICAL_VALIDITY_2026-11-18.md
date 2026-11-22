@@ -394,3 +394,26 @@ The owner adopted the contribution statement in register §13.4 as written. The 
 **Gate 0 is CLOSED for position and contribution definition only.** This closure means that the programme has a bounded account of the closest prior work, a fixed inferential scope, and an owner-adopted contribution statement. It does **not** establish novelty or prove the predictive proposition. The supported search conclusion remains limited to the records screened in the OpenAlex pass; P remains **unproven**.
 
 This status update does not change the fundamental goal, the order or definitions of the four gates, or any frozen protocol. Gate 1 remains not started; its design-only support census is not authorised. Gate 4 power and operating characteristics remain unestablished. The project pause remains in force, and no solver construction, execution, measurement, outcome labelling, or modelling is authorised.
+
+---
+
+## 19. Owner clarification of the study population — engineered solvers (2026-11-22)
+
+The owner has settled the target terminology: this programme is framed as a study of **engineered solvers**. “Natural solvers” are not treated as a separate target-population category. Every solver has an authoring, design, construction, or transformation history, including human-authored implementations.
+
+For the current B1 design, the study units are engineered solver variants constructed or modified under a declared study process and nested within selected real parent solver implementations. The parents provide source identity and grouping; the variants are the tested units. The inferential target remains conditional on the selected and observed parents. No claim about all solvers or a superpopulation of independently developed parents is made.
+
+This decision resolves the current population-label dispute and clarifies the engineered-variant language already adopted in register §14.2. Earlier documents and feasibility studies that used “natural” terminology remain historical records of the specific sampling and generation procedures they examined. They are not rewritten or retroactively reclassified.
+
+Parent provenance remains mandatory. Before any future parent acquisition or selection, the project must record origin and source identity, authorship or generation route where known, lineage and transformations, outcome-blind selection, family assignment, hashes, permissions, and custody/consent. If a parent is specifically claimed to be model-generated, the six-point provenance gate in the 2026-11-21 master-branch adjudication §6 applies. This is a requirement for substantiating an origin claim, not a requirement to classify the study as “natural.”
+
+The adopted exact-cell aliases are clarified in register §15.4: q = m (mutation mechanism/operator identity), Z = z (parent family), k = k_fail (definite diagnostic failures), and ℓ = k_unresolved (unresolved outcomes). The frozen cell remains (m, z, k_fail, k_unresolved).
+
+The remaining measurement and authorization boundaries are unchanged:
+- Rev 11's diagnostic counting unit remains the bank record (N = 64; eight records per stratum) unless changed by an explicit protocol amendment. A canonical-level statistic is a separately recomputed sensitivity, not a substitute selected after results.
+- The H6 raw-pair-to-canonical correctness rule remains open and must be settled before constructing or interpreting the canonical Y matrix.
+- The H6 outcome rule is not itself needed for a strictly outcome-free support census. That census nevertheless remains unauthorised while the project pause is in force.
+- Gate 1 remains NOT STARTED; Gate 4 remains NOT STARTED; P remains UNPROVEN.
+- B1 v1.7 and Rev 11 are unchanged. No parent acquisition, solver construction, generation, mutation allocation, solver execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis is authorised.
+
+The controlling decision and fuller scope/provenance details are in the novelty register §15 and reviewer ledger §33. The Gate 0 closure remains limited to position and contribution definition; it is not a novelty finding or execution authorization.
