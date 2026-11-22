@@ -636,6 +636,7 @@ text was not reviewed in this pass, and the paper is still not evidence for `P`.
   Gate 4 relocation of power/MDE, and the candidate contribution statement.
 - **Gate 0 remains OPEN. `P` remains unproven.** No novelty claim is licensed.
 - **B1 v1.7 is unchanged and is not amended.** The identity gate is source-recovered, not closed.
+  *(Superseded for current status by §10.4; retained as the 2026-11-21 position.)*
 - **Not done:** no solver construction, execution, fitting, sampling, calibration, or outcome model. The
   only bank access was read-only identity inspection of the held-out artifact; the project pause remains
   in force.

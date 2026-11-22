@@ -1589,6 +1589,7 @@ plus DOI handle; the full text was not reviewed, and the paper is not evidence f
 - `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md` is the standalone provenance record.
 - **Gate 0 remains OPEN. `P` remains unproven.** No novelty claim is licensed.
 - **B1 v1.7 is unchanged and is not amended.** The identity gate is source-recovered, not closed.
+  *(Superseded for current status by §28.4; retained as the 2026-11-21 position.)*
 - **No execution, fitting, sampling, solver construction, calibration, or outcome model.** The only
   bank access was read-only identity inspection of the held-out artifact; the project pause remains in
   force.
@@ -1602,3 +1603,53 @@ plus DOI handle; the full text was not reviewed, and the paper is not evidence f
 The owner accepted the documentary chain on 2026-11-22. The controlling dated decision is `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`. The full recovery reasoning remains in `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`; the v3 audit and its CSV/JSON manifests provide the reconstructed identities and derived-file checksums.
 
 Section 28.1's **source recovered / adjudication pending** language records the position before the owner act and is retained as history. Current identity status is **source-recovered / owner-accepted**. This resolves identity attribution only: historical B1 row ordering, H6 primary presentation/aggregation, unresolved-status handling, and outcome coding remain open. No (Y_{v,r}) matrix exists or is authorized by this acceptance. B1 execution remains unauthorized; Gate 0 remains OPEN; (P) remains unproven. B1 v1.7 is unchanged.
+
+---
+
+## 29. Gate 0 scoping search executed; no direct match to (P) (2026-11-22)
+
+### 29.1 What was executed, and what was not
+
+The approved twelve-query protocol was **not** executed verbatim, and the deviation is recorded here for the same reason the earlier three-query screening was rejected: an unrecorded protocol cannot be audited.
+
+- **Instrument:** the web-search connector returned HTTP 402 on every call. Queries were therefore translated to OpenAlex `title_and_abstract.search` phrase/Boolean expressions, with Crossref used only for DOI verification. The translation is a documented deviation, not a silent substitution.
+- **Queries:** 18 informative expressions plus 2 discarded. Two planned strings collided in the Boolean index (one swallowed by an ungrouped `OR "test"`, one returning predictor–corrector numerics), so the four themes were covered by 18 expressions instead. The query log with counts is in the search record §3.
+- **Dates:** the 1990-01-01 to 2026-11-22 window was not applied as a filter. No pre-1990 record was judged relevant; the omission is stated rather than assumed harmless.
+- **Screening:** title-level on approximately 431 records. Abstracts were retrieved for seven candidates; the IEEE TSE record indexes none. **No full text was read in this pass.**
+- **Citation chasing:** forward for three works (Almaghairbe 2017, Song 2022, Hybiscus 2021); backward for two (Song 2022, 98 references; Almaghairbe 2017, 26 references). The TSE 2026 record deposits no references, so its backward chase is not possible from the index.
+- **Coverage:** OpenAlex only. No Scopus, Web of Science, ACM DL, or IEEE Xplore subscription access; English-language bias.
+
+### 29.2 Result
+
+**No direct match. No partial match.** Four works are adjacent-close in the defined sense: they share either the per-input correctness target or the failure-concentration observation, never the conjunction.
+
+- Almaghairbe & Roper (2017, *SQJ*, `10.1007/s11219-016-9339-1`): learned clusters, cluster composition, no maximum-share covariate, no held-out per-record model, no parent grouping.
+- Almaghairbe & Roper (2019, AITest, `10.1109/aitest.2019.00009`): concentration used as an inspection-ordering device, not as a predictor in a correctness model.
+- *Can Open-Weight LLMs Predict Test Outcomes from Traces?* (2026, `10.1145/3843782.3844663`): predicts per-test pass/fail on held-out subjects, but the predictor is a fine-tuned LLM over traces, with no exact-cell baseline and no parent grouping.
+- BASHIRI (2025, ASE, `10.1109/ase63991.2025.00372`) and *Striving for Failure* (2015, ICSE, `10.1109/icse.2015.134`): outcome prediction and pre-run failure prediction respectively; neither uses failure composition, neither is a record-level bank, neither is parent-held-out.
+
+The corpus contains a mature concentration *observation*, a mature clustering-for-debugging literature, and a mature per-input outcome-prediction literature. It does not contain a prespecified-partition maximum share evaluated against an exact-cell, failure-count-conditioned baseline with parents held out.
+
+### 29.3 Records added
+
+Register §11 and the search record §6 add the two Systemic Flakiness publications as **distinct** records (EASE 2025 `10.1145/3756681.3756945`, pp. 476–487; IEEE TSE 2026 `10.1109/TSE.2026.3750452`, pp. 1–21, Crossref record created 2026-11-03, Xplore 11773385). Both resolve through Crossref and OpenAlex.
+
+**Correction carried forward.** The 2026-11-22 statement that no IEEE TSE version exists is wrong. The caution behind it — do not cite an unverified DOI — was correct in principle and is now satisfied by the publisher record, not waived.
+
+### 29.4 Effect on the record
+
+- **Added:** `GATE0_LITERATURE_SEARCH_2026-11-22.md`; register §11; rows 20–21.
+- **Unchanged:** register §8 verdict, the exposure-basis arithmetic, the two-level B1 eligibility rule, the Gate 4 relocation of power/MDE, and the candidate contribution statement.
+- **Gate 0 remains OPEN. `P` remains unproven. No novelty claim is licensed.** A documented non-finding on one index with stated limits is a scoping result, not a priority claim.
+- **B1 v1.7 is unchanged.** No solver construction, execution, fitting, sampling, calibration, or outcome model. No bank access in this pass.
+- **Superseded language noted:** the sentence in §28.3 reading "The identity gate is source-recovered, not closed" is the 2026-11-21 position and is superseded for current status by §28.4 (**source-recovered / owner-accepted**). It is annotated in place rather than rewritten; register §10.3 carries the same annotation.
+
+### 29.5 What follows
+
+The literature is no longer the binding constraint. The remaining sequence is:
+
+1. **Accept or reject this search record** as the Gate 0 scoping deliverable. Do not describe it as a systematic review.
+2. **State the contribution object plainly:** the design — a prespecified-partition dominance covariate tested against an exact-cell, failure-count-conditioned baseline under parent-held-out evaluation, with a pre-registered null-capable outcome. The index is borrowed (Berger–Parker 1970) and the phenomenon is known (Almaghairbe 2015/2017). Register §9.8 already moves this way.
+3. **Authorize the design-only support census** — the last Gate 1 prerequisite. It needs the LC518 diagnostic tables, which the pause currently forbids, uses no outcomes, and answers whether B1 has any eligible cell and any scoreable LOPO fold at all.
+4. **Do not fund a 150-solver programme before step 3.** The one executed world retained about 0.25 percent of the full vector's gain, with an interval spanning zero. That does not refute `C_D`; it sets the prior that the most likely B1 outcome is a well-identified null.
+5. **Do not run further keyword searches over the same object and call the result novelty.** Do not reopen the identity documentation. This section is not an execution GO.
