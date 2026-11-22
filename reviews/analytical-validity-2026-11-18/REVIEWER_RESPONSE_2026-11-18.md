@@ -1904,3 +1904,62 @@ GPT withdraws its earlier attribution of a binding M1 minimum to "Rev 2.6 §5.2"
 
 This reconciliation has now checked the seven dated Gate 0 closure commits at patch level and compared positioning-register §§14-15 with reviewer-ledger §§32-33. The substantive Gate 0 closure, engineered-population decision, q/m notation alias, Rev 11 record-level measurement statement, H6 non-decision, and Gate 1 restriction are aligned across those records. This check does not independently authenticate the conversational owner acts. The new owner-scope interpretation in §34.1 remains GPT's conservative reading; if a future action depends on a different reading, the owner must state that scope directly before the action.
 
+
+
+---
+
+## 35. Owner confirms conditional authorization for the outcome-blind support census (2026-11-22)
+
+### 35.1 Direct owner clarification
+
+GPT asked whether the 22 November instruction “OK STAT IMPLEMENTING THEM” authorized the outcome-blind census itself once its prerequisites were met, or only preparatory work before a separate census GO. The owner answered: **“YES START.”**
+
+This is a direct owner clarification. It confirms that the earlier instruction authorized the outcome-blind support census itself, conditional on its prerequisites being met. **The census is AUTHORIZED CONDITIONALLY. No additional census-specific owner GO is required after all stated prerequisites are satisfied.**
+
+This clarification supersedes the earlier GPT-only interpretation in §34.1 and the “NOT AUTHORIZED” census wording in §§34.2, 34.4 and 34.5. Those entries are retained as the accurate record before this subsequent owner clarification.
+
+### 35.2 Scope boundary
+
+The authorization applies to the outcome-blind B1 support census under the governing B1 v1.7 rules, once a valid and complete set of inputs exists. It does not waive the conditions that make the census valid and executable.
+
+It does **not** authorize the upstream actions needed to create missing inputs: parent acquisition or selection, mutation allocation, diagnostic-bank generation, solver construction or modification, compilation, solver execution, diagnostic probing, or any other activity that requires its own review, controls, or GO. Those separate authorizations remain necessary. The census authorization is not a general reopening of the project pause.
+
+If M1-si is to be evaluated as an additional construction requirement, the v0.21 q/a proposal must first be adopted through a separately reviewed B1 amendment. It is not silently imported into B1 v1.7. A B1-only support census remains governed by the frozen v1.7 exact-cell and LOPO rules, using a prospectively operationalized q identity consistent with that plan.
+
+### 35.3 Read-only census-readiness inspection
+
+A read-only recursive tree inspection was performed at branch `gpt/gate1-preparatory-reconciliation-2026-11-22`, commit `ea2712b343bd02ad3be596d15d3052c66aba858a`, tree `93818b14a4c88d7423eab214fb58694ef31ed3e1`. The returned tree contained 3,086 entries and was not truncated.
+
+The inspected files do not establish a current LC518 per-variant diagnostic manifest or its eight-stratum failure/unresolved vectors:
+
+- The B1 78-record canonical identity CSV/JSON manifests identify the public evaluation bank; they do not identify solver variants or contain per-variant diagnostic vectors.
+- `next-task/banks/diagnostic.json` is the `expression_eval_v1` bank: 30 records in six expression-parser families.
+- `engineered-study/banks/MANIFEST.json` and `diagnostic.json` belong to `paren7_min_insertions`: 30 probes in six input families and zero generated solvers.
+- `natural-feasibility-pilot` manifests and diagnostic outputs belong to the earlier graph/SSSP feasibility work.
+- `manifest-validator/fixtures` are synthetic tests. The validator README describes the utility as an auditor for an already-produced M1-si manifest and says it contains no study data. Its `OC-A`–`OC-D` operator-class schema is not an owner-accepted LC518 q inventory.
+- The historical `generation/pilot_pack` and `generation_v02/pack` source files do not establish a selected current LC518 parent/variant roster or current q assignments.
+
+None of these files was substituted for LC518 study data. The synthetic fixtures were not treated as observations or run as a census. The inspection did not open the owner-local PROV-001 leads and did not reopen the closed mutation-allocation search.
+
+### 35.4 Remaining preconditions
+
+The census remains **NOT RUN / BLOCKED** until all of the following are satisfied:
+
+1. A current parent and variant roster, provenance/lineage, family assignments, and actual q mutation identities are established under the applicable authorizations.
+2. q is operationalized consistently with B1 v1.7. The ledger’s q/m notation alias is not itself a q inventory or a set of assignments.
+3. The diagnostic-bank generation protocol is completed, frozen and separately authorized. Protocol v0.2.1 remains DRAFT / NOT FROZEN / NO GENERATION OR EXECUTION GO; its open PRNG, seed, runtime and external-preflight decisions are not waived here. The accepted B1 78-record identity chain does not itself freeze or authorize that protocol.
+4. Bank generation, solver construction/build, and diagnostic execution each receive their own applicable GO.
+5. A complete, provenance-linked per-variant diagnostic manifest is produced and validated. It must include the exact diagnostic-bank identity, all eight record-level definite-failure counts, unresolved count, lifecycle/exclusion status, q and family assignments, unique variant/parent identities, and source/runnable-artifact digests.
+6. The design-only census is executed using B1 v1.7’s exact-cell and LOPO support rules, with all eligible/excluded cells, fold-cell decisions, scored parents, test rows, and coverage reported. The current M1-si validator must not be assumed to implement B1 v1.7 without source-fidelity review.
+
+The unresolved H6 raw-pair-to-canonical correctness aggregation is required for the canonical outcome matrix, not for this outcome-free support census. The public-versus-protected evaluation-target decision likewise does not change the support-cell arithmetic, although the current generation-protocol draft has protected-frame/custody preflight requirements that must be reconciled before relying on it to generate a diagnostic bank.
+
+### 35.5 Current disposition
+
+**Owner authorization for outcome-blind support census:** CONDITIONALLY GRANTED.  
+**Additional census-specific owner GO after prerequisites:** NOT REQUIRED.  
+**Upstream parent/variant acquisition, mutation allocation, bank generation, solver construction/build, and diagnostic execution:** NOT AUTHORIZED by this clarification; their separate GOs remain outstanding.  
+**Gate 1 census:** NOT RUN / BLOCKED PENDING INPUTS.  
+**Gate 4:** NOT STARTED.
+
+No eligible cells, support counts, LOPO decisions, scored-parent set, or coverage results have been computed. The absence of those results is an input-readiness blocker, not evidence for or against the scientific proposition.
