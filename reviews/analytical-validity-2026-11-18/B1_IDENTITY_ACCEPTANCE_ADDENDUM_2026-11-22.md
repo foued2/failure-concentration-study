@@ -8,6 +8,8 @@
 
 On 2026-11-22, the repository owner expressly accepted the documentary chain identifying the fixed 78-record B1 development bank and authorized this documentation-only addendum.
 
+**Decision provenance.** The basis for this owner decision is the owner's explicit instruction in the project conversation on 2026-11-22: “ACCEPT AND PROCEED FOR THE REST. LET US END THIS.” This addendum records that owner decision. It is not an independent reviewer finding or external authentication; the documentary and byte-level evidence supporting the identity is recorded separately below.
+
 The accepted status is **source-recovered and owner-accepted**. This accepts the identity and documentary attribution of the 78-record population. It does not assert that B1 v1.7 itself enumerates the canonical IDs; the IDs are reconstructed from the preserved source artifact and recorded in the v3 derived manifest.
 
 ## 2. Accepted source identity
@@ -70,3 +72,24 @@ B1 execution remains **NOT AUTHORIZED**. Gate 0 remains **OPEN**; (P) remains un
 - `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.csv`
 - `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.json`
 - `B1_DECISION_RECONCILIATION_2026-11-11.md`
+
+## 8. 2026-11-22 byte-level revalidation of the source archive
+
+A fresh copy of the original GitHub Actions artifact was downloaded directly by GPT on 2026-11-22 from artifact ID `13210063805` (workflow run `41591572358`). The archive was 75,523 bytes and its recomputed SHA-256 was:
+
+`6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2`
+
+The following member hashes and sizes were recomputed from that ZIP:
+
+| Member | Bytes | Recomputed SHA-256 |
+|---|---:|---|
+| `bank/heldout_bank.json` | 40,218 | `b273c053e874f212f060ff23791f9be445a48203cbbde0ca1b285192093d26d6` |
+| `bank/heldout_oracle_outputs.json` | 15,262 | `eaae81040424881cc9939e7415a8a5a0328fa870bd2a790d0b4409babd03e244` |
+| `lc518_generator.py` | 56,845 | `848984cac427547955a04b2e5c379762149ad94a37711a6483008fd55f2c161b` |
+
+GPT independently recomputed the canonical ID from each raw record using the exact payload `{"amount": amount, "coins": sorted(coins)}`, sorted-key compact UTF-8 JSON, and SHA-256 with the `C-` prefix. All 80 raw records passed their record-hash check; the 80 raw rows yielded 78 unique canonical IDs; the 78 oracle objects had an exact one-to-one canonical-key-set match; and all 80 raw records referenced the correct oracle-member digest.
+
+The recomputed sorted canonical-ID set digest was `01bb0e4c8edb2c4a0678d1b6c65c4295bdaf59c9baf2436d793f25c740c3cccd`. The recomputed sorted canonical-payload set digest was `8b67d1f0193d85838a98486ae4fbf7ef17d948b1cca4abdfc4c0180ae61e48fa`. Both match the values in the v3 identity audit. The two canonical duplicate groups are exactly H6-P01 (`H057`/`H058`) and H6-P02 (`H059`/`H060`).
+
+**Scope of this revalidation.** This is a fresh GPT-side byte-level check of the source ZIP, its listed members, record hashes, canonical identities, and oracle key set. It is not a claim that Claude independently performed the same raw-byte reconstruction. Claude's supplied read-only review separately reports that the CSV and JSON manifest file checksums match the actual repository files; this revalidation did not independently recompute those two complete file checksums or repeat a CSV/JSON row-by-row comparison. No solver outcomes, (Y_{v,r}) labels, H6 primary rule, or unresolved-status rule were created or decided.
+
