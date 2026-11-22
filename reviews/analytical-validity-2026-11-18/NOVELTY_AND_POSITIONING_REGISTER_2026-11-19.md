@@ -977,3 +977,40 @@ for want of a per-variant eight-stratum diagnostic manifest. No parent roster, v
 manifest, census or predictive result exists. `P` remains unproven; Gate 0 closed for position and
 contribution only; B1 v1.7 unchanged; pause in force outside the recorded preflight scope. No
 verdict in §§1–16 changes.
+
+---
+
+## 18. Dated amendment — 2026-11-22 (v0.2 intake successor implemented; review pending)
+
+**Trigger.** GPT accepted Claude's NOT PASS on prototype `0060e7b` and the two-reviewer correction
+scope, and authorized implementation of that scope within Step 1.
+
+### 18.1 What was done
+
+A successor was implemented on the separate, unmerged branch
+`work/b1-census-intake-validator-v02-2026-11-22` (commit `fd0b34b`). Prototype `0060e7b` is unchanged
+in history; no history was rewritten and nothing was merged into master. The v0.2 validator validates
+individual `diagnostic_record_results` under `measurement_basis = record_level_64`, derives f/u/p and
+`C_D` from terminal statuses, treats supplied aggregates as non-authoritative consistency checks,
+enforces identical record-ID sets across complete `VALID` variants, and emits the exact label
+`SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED`. The zero-failure state is `NO OBSERVED FAILURES`,
+never a numeric zero. Twenty-five synthetic tests pass. The earlier review packet's 4(b) reproduction
+was corrected by an **appendix** (§6), leaving the original review intact.
+
+Details and hashes: `census-intake/CORRECTION_RECORD_2026-11-22.md`.
+
+### 18.2 Boundaries explicitly not decided
+
+Claude's independent review of the successor has **not** been rendered; the synthetic suite is not that
+review. No bank membership, artifact provenance or source integrity was verified. No real manifest was
+validated. No parents, solvers, diagnostics, census, fitting or predictive analysis occurred.
+
+The question whether an earlier conditional census authorization remains operative, or was intended to
+be revoked, is **left unanswered** by this amendment and by the correction scope. Neither interpretation
+is written into this record.
+
+### 18.3 Effect
+
+No verdict in §§1–17 changes. Gate 0 closed for position and contribution only; Gate 1 preflight
+remains **BLOCKED / NOT ASSESSABLE**; `P` unproven; B1 v1.7 unchanged; pause in force outside the
+recorded preflight scope. No scientific output was produced.
