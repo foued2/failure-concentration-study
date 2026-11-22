@@ -343,6 +343,17 @@ The two lawful paths remain:
 - The Git copy is a later upload of the pre-B1 artifact; the hash, not the upload date, is the
   provenance link.
 
+
+## 8. Subsequent owner adjudication (2026-11-22)
+
+The disposition above records the status of this recovery audit on 2026-11-21. On 2026-11-22, the repository owner accepted the documentary chain in the dated addendum:
+
+`B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`.
+
+The current identity status is therefore **SOURCE-RECOVERED / OWNER-ACCEPTED**. This later act accepts the documentary identity and attribution of the 78 canonical records; it does not alter the source evidence or claim that B1 v1.7 itself enumerates the keys.
+
+The historical B1 row ordering, H6 primary presentation and aggregation, unresolved-status handling, and outcome coding remain open. The addendum is not an execution GO: B1 execution remains unauthorized, Gate 0 remains open, and no predictive or novelty claim is licensed.
+
 ---
 
 **End of record.**
