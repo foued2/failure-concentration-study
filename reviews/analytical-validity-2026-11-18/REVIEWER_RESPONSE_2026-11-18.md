@@ -1715,3 +1715,42 @@ Claude's constraint survives in a narrower and stronger form: a null is not auto
 Exactly one Gate 0 item: adoption of the contribution paragraph in register §13.4, with the null-interpretation rule attached. It requires no data access and authorises nothing. The census remains unauthorised; the pause remains in force; `P` remains unproven; Gate 0 remains **OPEN**.
 
 No solver construction, execution, fitting, sampling, calibration, or outcome model was performed in this round. The only external calls were two Crossref metadata lookups used to settle the TSE/EASE scope question.
+
+---
+
+## 32. Owner adopts the contribution statement; Gate 0 closed (2026-11-22)
+
+### 32.1 Owner decision
+
+The owner explicitly confirmed adoption of register §13.4 **as written** in the 2026-11-22 project conversation. The owner also declined an additional authentication artifact for the earlier search-record acceptance, leaving the provenance caveat in register §§12.1 and 13.1(c) unchanged.
+
+The adoption is therefore a direct owner decision, not an inference from DeepSeek's pasted report. The earlier search acceptance remains recorded with its existing conversational-provenance limitation.
+
+### 32.2 What was adopted
+
+The complete contribution paragraph in register §13.4 was adopted without modification. It defines the intended contribution as the controlled, null-capable test of incremental predictive value for the version-level maximum-share summary, against the exact-cell baseline, on the fixed publicly exposed B1 development bank under leave-one-parent-out evaluation.
+
+The statement explicitly disclaims novelty for the Berger–Parker index, failure concentration as a phenomenon, and execution-derived correctness prediction. It also disclaims a new-parent-population claim and information superiority over the full failure vector. Its null rule is binding: a null is inconclusive unless Gate 1 support and Gate 4 power establish that a stated effect could have been detected.
+
+The exact adopted wording is controlled by register §13.4; this ledger does not create a second paraphrased version.
+
+### 32.3 Gate 0 disposition
+
+**Gate 0: CLOSED, limited to position and contribution definition.**
+
+The scoping deliverable was accepted in §30; the bounded literature comparison and its limitations are recorded in register §§11–13; the inferential scope is fixed; and the owner has adopted the contribution paragraph. The closure is not a novelty finding. P remains **UNPROVEN**, and the supported search statement remains limited to records screened in the OpenAlex pass.
+
+This disposition does not close the wider research programme or certify empirical feasibility.
+
+### 32.4 What remains open or unauthorised
+
+- **Gate 1:** not started. The design-only support census remains unauthorised and blocked by the project pause.
+- **Gate 4:** not started. MDE, power, and operating characteristics remain unestablished.
+- A null without adequate Gate 1 support and Gate 4 power must be reported as inconclusive.
+- H6 presentation/aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open.
+- B1 v1.7 remains unchanged. No solver construction, execution, diagnostic collection, outcome labelling, Y matrix, sampling, fitting, or predictive analysis is authorised.
+- The project pause remains in force. Any reopening or Gate 1 work requires a separate explicit owner authorization.
+
+### 32.5 Record effect
+
+This entry supersedes the statements in §§30–31 that the contribution decision remained outstanding and Gate 0 remained open. Those entries are preserved as accurate historical snapshots before the owner's decision. The search record's limits, the unproven status of P, and all non-authorisations remain unchanged.
