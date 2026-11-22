@@ -161,6 +161,8 @@ The current target is engineered solver variants nested within selected real par
 
 No parent roster is selected. Before any separate parent-acquisition decision, provenance must cover source identity, origin/authorship where known, lineage, transformations, outcome-blind selection, family assignment, hashes, permissions, and custody/consent. A claim that a parent is model-generated requires the separate provenance gate identified in reviewer ledger §33.3.
 
+The existence and contents of any standalone 2026-11-06 mutation-allocation artifact remain **unproven** in the available record; the allocation is **not established** for this design. Do not describe that artifact as lost, recovered, destroyed, or never created. Do not reconstruct an allocation from nominal parent, mechanism, or variant totals. This status is an evidence limitation, not a finding that the proposed allocation design scientifically failed.
+
 ### 5.2 Counts that are known, and counts that are not
 
 - B1 full-population support floor: at least three distinct parents in a qualifying exact cell.
