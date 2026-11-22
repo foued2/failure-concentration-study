@@ -21,6 +21,13 @@ The source is the preserved GitHub Actions artifact:
 
 The v3 identity audit records the archive-member hashes, the 80 raw presentations, the 78 unique canonical identities, and the one-to-one match between the 78 canonical identities and 78 oracle records. The v3 JSON and CSV manifests are derived reporting artifacts, not B1-issued enumerations.
 
+Their exact derived-file identities are:
+
+- CSV SHA-256: `af9c0d5adc2977cc8f3c0dc5053ab80c808bdb38bccf388416362fa6ac2bf95f`
+- JSON SHA-256: `f3289fec5749b76ec4abc743e23f61b889d8831fc055590b034656f4d6bd1989`
+
+These checksums are recorded in v3 audit §10 and are repeated here to make the accepted source-to-manifest chain directly traceable.
+
 ## 3. Accepted documentary chain
 
 The owner accepts the following chain as sufficient documentary attribution for the fixed 78-record B1 development population:
@@ -36,7 +43,7 @@ This acceptance concerns documentary identity and attribution. It does not conve
 ## 4. Row-joining and reporting convention
 
 - `canonical_id` is the authoritative key for joining any future record-level tables to the reconstructed 78 identities.
-- `B1_identity_reporting_index` is a deterministic lexicographic reporting index from 1 to 78. It is **not** recovered historical B1 row numbering and must not be represented as historical (r=1,ldots,78).
+- `B1_identity_reporting_index` is a deterministic lexicographic reporting index from 1 to 78. It is **not** recovered historical B1 row numbering and must not be represented as historical \\(r = 1,\\ldots,78\\).
 - The v3 CSV and JSON manifests are derived views of the accepted source identities. They do not amend or replace B1 v1.7.
 
 ## 5. Explicitly unresolved decisions
@@ -59,6 +66,7 @@ B1 execution remains **NOT AUTHORIZED**. Gate 0 remains **OPEN**; (P) remains un
 ## 7. Related records
 
 - `B1_78_IDENTITY_AUDIT_2026-11-21_v3.md`
+- `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`
 - `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.csv`
 - `B1_78_CANONICAL_ID_MANIFEST_2026-11-21_v3.json`
 - `B1_DECISION_RECONCILIATION_2026-11-11.md`
