@@ -1,0 +1,5372 @@
+{
+  "title": "B1 78 canonical development-bank identity manifest",
+  "version": "3.0",
+  "created_date": "2026-11-21",
+  "status": "IDENTITY RECONSTRUCTION VERIFIED; H6 PRIMARY OUTCOME RULE NOT DECIDED",
+  "scope": "Identity/provenance only. No solver output, Y_vr outcome labels, diagnostic exposure, or fitting.",
+  "source_archive": {
+    "filename": "lc518-bank-run-41591572358-1-preserved-2026-11-21.zip",
+    "size_bytes": 75523,
+    "sha256": "6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2",
+    "github_actions_run": "41591572358",
+    "github_artifact_id": "13210063805",
+    "artifact_sha256": "6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2"
+  },
+  "source_members": {
+    "bank/heldout_bank.json": {
+      "size_bytes": 40218,
+      "sha256": "b273c053e874f212f060ff23791f9be445a48203cbbde0ca1b285192093d26d6",
+      "raw_records": 80
+    },
+    "bank/heldout_oracle_outputs.json": {
+      "size_bytes": 15262,
+      "sha256": "eaae81040424881cc9939e7415a8a5a0328fa870bd2a790d0b4409babd03e244",
+      "oracle_rows": 78
+    },
+    "lc518_generator.py": {
+      "sha256": "848984cac427547955a04b2e5c379762149ad94a37711a6483008fd55f2c161b",
+      "role": "source used only to inspect canonical ID and D6/H6 ordering semantics; not executed"
+    }
+  },
+  "canonical_identity_definition": {
+    "function": "canonical_id(amount, coins) = \"C-\" + SHA256(UTF-8(compact sorted-key JSON))",
+    "exact_payload_object": "{\"amount\": amount, \"coins\": sorted(coins)}",
+    "json_parameters": {
+      "sort_keys": true,
+      "separators": [
+        ",",
+        ":"
+      ],
+      "ensure_ascii": false,
+      "allow_nan": false
+    },
+    "important": "canonical_payload now uses the exact key \"coins\" that is hashed; coins_sorted remains a separate convenience field. This repairs v2 payload-display ambiguity."
+  },
+  "b1_documentary_chain": {
+    "b1_v17_plan_blob": "8c666e501a31726c728447d155045c0b20adc178",
+    "b1_v17_sha256": "797bd9f72cf94fdc0eff4a03b1544823d4042f8e530b27f4fb70cbd7f2baca7c",
+    "rev14_spec_blob": "3728146356a74363a94fe75a87fd06c483954ee2",
+    "b1_decision_reconciliation_blob": "977f136fe53e5e4f78b699327e0e6dffe60a23fd",
+    "b1_definition": "78 unique canonical records of the fixed, publicly exposed held-out development bank; B1 v1.7 uses per-record correctness Y_vr; same bank across versions; not sealed.",
+    "attribution_limit": "B1 specifications define the population symbolically and do not themselves enumerate the 78 keys. Reconciliation record pins the fixed bank to the artifact; this manifest reconstructs its keys from that archive."
+  },
+  "counts": {
+    "raw_bank_records": 80,
+    "unique_raw_input_ids": 80,
+    "canonical_ids": 78,
+    "oracle_rows": 78,
+    "canonical_groups_singleton": 76,
+    "canonical_groups_pair": 2,
+    "oracle_key_missing": 0,
+    "oracle_key_extra": 0,
+    "oracle_key_duplicate": 0,
+    "oracle_answers_zero": 36,
+    "oracle_answers_one": 8,
+    "oracle_answers_other": 34,
+    "sorted_id_text_bytes": 5226,
+    "sorted_id_text_sha256": "01bb0e4c8edb2c4a0678d1b6c65c4295bdaf59c9baf2436d793f25c740c3cccd",
+    "stratum_raw_record_counts": {
+      "H1": 12,
+      "H2": 12,
+      "H3": 8,
+      "H4": 8,
+      "H5": 10,
+      "H6": 10,
+      "H7": 8,
+      "H8": 12
+    },
+    "stratum_canonical_identity_counts": {
+      "H1": 12,
+      "H2": 12,
+      "H3": 8,
+      "H4": 8,
+      "H5": 10,
+      "H6": 8,
+      "H7": 8,
+      "H8": 12
+    }
+  },
+  "checks": {
+    "raw_canonical_ids_recomputed": 80,
+    "raw_record_sha256_recomputed": 80,
+    "canonical_groups": 78,
+    "oracle_keyset_exact_match": true,
+    "oracle_answers_independently_recomputed": 78,
+    "oracle_order_matches_first_canonical_occurrence": true,
+    "sorted_id_digest_matches": true,
+    "h6_pair_metadata_and_order_verified": true,
+    "primary_outcome_selection_applied": false
+  },
+  "reporting_index_note": "B1_identity_reporting_index is a new deterministic 1-based lexicographic index over canonical_id. It is not claimed to recover a historical r ordering. Join all outcomes by canonical_id.",
+  "h6_measurement_status": {
+    "status": "OWNER DECISION REQUIRED / NOT SELECTED",
+    "fact": "The generator labels each paired raw presentation original then permutation and the validator checks this order, same canonical identity, amount, sorted coin set, and non-identical order.",
+    "not_implied": "Generator construction order does not determine which raw presentation is the scientifically appropriate primary correctness measurement.",
+    "options_not_adjudicated": [
+      "Select original presentation as the canonical-record primary input and use permutation as order-sensitivity diagnostic.",
+      "Define a canonical sorted-input execution as the primary presentation.",
+      "Define an explicit robustness outcome requiring both raw presentations to pass, which changes the operational meaning of Y.",
+      "Retain two raw-order outcomes and formally change the B1 outcome unit/model; this is not the frozen 78-row Y_vr design."
+    ],
+    "pairs": [
+      {
+        "pair_id": "H6-P01",
+        "canonical_id": "C-22b6be364c68bfb475d20ac4e6111547c34188805fbee30ef94405471526fc9c",
+        "raw_input_ids": [
+          "H057",
+          "H058"
+        ],
+        "roles": [
+          "original",
+          "permutation"
+        ],
+        "amount": 4758,
+        "coins_sorted": [
+          16,
+          534,
+          1083,
+          1784,
+          2422,
+          3194,
+          3201,
+          3565,
+          3741,
+          3870,
+          4341,
+          4392,
+          4849,
+          4913
+        ],
+        "raw_orders": [
+          [
+            2422,
+            3201,
+            1784,
+            4341,
+            3870,
+            4913,
+            16,
+            3194,
+            4849,
+            534,
+            4392,
+            3565,
+            3741,
+            1083
+          ],
+          [
+            534,
+            4849,
+            16,
+            2422,
+            4392,
+            4341,
+            4913,
+            3194,
+            3201,
+            3870,
+            1083,
+            1784,
+            3741,
+            3565
+          ]
+        ]
+      },
+      {
+        "pair_id": "H6-P02",
+        "canonical_id": "C-188a2a3c0b6404b5f4b11943eb68e1a6355f45a8d35cbb987f4cca6f3af61a92",
+        "raw_input_ids": [
+          "H059",
+          "H060"
+        ],
+        "roles": [
+          "original",
+          "permutation"
+        ],
+        "amount": 4949,
+        "coins_sorted": [
+          931,
+          2623,
+          2797,
+          3231,
+          4707
+        ],
+        "raw_orders": [
+          [
+            2797,
+            931,
+            4707,
+            2623,
+            3231
+          ],
+          [
+            931,
+            3231,
+            2623,
+            4707,
+            2797
+          ]
+        ]
+      }
+    ]
+  },
+  "taxonomy_warning": "H1-H8 are historical held-out-bank strata. They are not v0.21 diagnostic strata D1-D8.",
+  "rows": [
+    {
+      "B1_identity_reporting_index": 1,
+      "canonical_id": "C-0937b3095d549b0eb17e20821a02a3d4e8a072d2956eeca7c570436d5c772233",
+      "canonical_payload": {
+        "amount": 31,
+        "coins": [
+          4,
+          5,
+          11,
+          33,
+          42,
+          52
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":31,\"coins\":[4,5,11,33,42,52]}",
+      "canonical_payload_sha256": "0937b3095d549b0eb17e20821a02a3d4e8a072d2956eeca7c570436d5c772233",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 24,
+      "bank_first_raw_array_position_1based": 24,
+      "raw_bank_array_positions_1based": [
+        24
+      ],
+      "oracle_array_position_1based": 24,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 31,
+      "coins_sorted": [
+        4,
+        5,
+        11,
+        33,
+        42,
+        52
+      ],
+      "raw_input_ids": [
+        "H024"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "3a39518ec944b284635070b7bc5a797e5c5bf2648fba651788fe038383bf33b8"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 4,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 2,
+      "canonical_id": "C-09c27a1c02e1881db947c1a8decbee0c79cd01c945531a233e06c0b82a72c66c",
+      "canonical_payload": {
+        "amount": 3586,
+        "coins": [
+          50
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3586,\"coins\":[50]}",
+      "canonical_payload_sha256": "09c27a1c02e1881db947c1a8decbee0c79cd01c945531a233e06c0b82a72c66c",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 28,
+      "bank_first_raw_array_position_1based": 28,
+      "raw_bank_array_positions_1based": [
+        28
+      ],
+      "oracle_array_position_1based": 28,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 3586,
+      "coins_sorted": [
+        50
+      ],
+      "raw_input_ids": [
+        "H028"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "5ba26fb9a5d75566e6434937b24ba933653a05a9dabad8d4f5ddd5f08416483c"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 3,
+      "canonical_id": "C-0a7298dcc72393ab0952d9fe4f2129f4eafe2302993b977951d47d12af1df6b0",
+      "canonical_payload": {
+        "amount": 30,
+        "coins": [
+          5,
+          11,
+          19,
+          40,
+          41,
+          60
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":30,\"coins\":[5,11,19,40,41,60]}",
+      "canonical_payload_sha256": "0a7298dcc72393ab0952d9fe4f2129f4eafe2302993b977951d47d12af1df6b0",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 20,
+      "bank_first_raw_array_position_1based": 20,
+      "raw_bank_array_positions_1based": [
+        20
+      ],
+      "oracle_array_position_1based": 20,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 30,
+      "coins_sorted": [
+        5,
+        11,
+        19,
+        40,
+        41,
+        60
+      ],
+      "raw_input_ids": [
+        "H020"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "76e42eccc3437a9a3db6be74f7faffea6ac153ca5e9b1c6bcc50cfe7779e42c7"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 2,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 4,
+      "canonical_id": "C-0b6e49d9ed4c3003e4b907fb79ac8785911d77f0a06a6be9e77cfa5674d1e352",
+      "canonical_payload": {
+        "amount": 0,
+        "coins": [
+          5,
+          11,
+          15
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":0,\"coins\":[5,11,15]}",
+      "canonical_payload_sha256": "0b6e49d9ed4c3003e4b907fb79ac8785911d77f0a06a6be9e77cfa5674d1e352",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 3,
+      "bank_first_raw_array_position_1based": 3,
+      "raw_bank_array_positions_1based": [
+        3
+      ],
+      "oracle_array_position_1based": 3,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 0,
+      "coins_sorted": [
+        5,
+        11,
+        15
+      ],
+      "raw_input_ids": [
+        "H003"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "926c89d9d6b9ba661019bb945993293854bdebedbe4253d6d0faea058b591c37"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 5,
+      "canonical_id": "C-0bb9f28f2265af7459fe8d50241dec02594ab1e6302b159f47d73f20c696b0ba",
+      "canonical_payload": {
+        "amount": 2817,
+        "coins": [
+          1594,
+          1934,
+          2082,
+          4154
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":2817,\"coins\":[1594,1934,2082,4154]}",
+      "canonical_payload_sha256": "0bb9f28f2265af7459fe8d50241dec02594ab1e6302b159f47d73f20c696b0ba",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 64,
+      "bank_first_raw_array_position_1based": 66,
+      "raw_bank_array_positions_1based": [
+        66
+      ],
+      "oracle_array_position_1based": 64,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 2817,
+      "coins_sorted": [
+        1594,
+        1934,
+        2082,
+        4154
+      ],
+      "raw_input_ids": [
+        "H066"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "9c98a753ee204ac1925f3fa647a8aff7b99054ec31c0647e9b640d3770ba2ab8"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 6,
+      "canonical_id": "C-0d046c0c020f21b258f7e36546af3107a07a316c4e9506dc4fb4ccadfad1c055",
+      "canonical_payload": {
+        "amount": 1759,
+        "coins": [
+          978,
+          1566,
+          1632,
+          2790,
+          3594,
+          4362
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1759,\"coins\":[978,1566,1632,2790,3594,4362]}",
+      "canonical_payload_sha256": "0d046c0c020f21b258f7e36546af3107a07a316c4e9506dc4fb4ccadfad1c055",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 65,
+      "bank_first_raw_array_position_1based": 67,
+      "raw_bank_array_positions_1based": [
+        67
+      ],
+      "oracle_array_position_1based": 65,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 1759,
+      "coins_sorted": [
+        978,
+        1566,
+        1632,
+        2790,
+        3594,
+        4362
+      ],
+      "raw_input_ids": [
+        "H067"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "feb9da2e035c7183638c2b55dd006c8e1c7d0b2d806def8466afffd0be2737b1"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 7,
+      "canonical_id": "C-10df40efbe6b899c2482f92ad0c1c460202e741332e85dad341b7f79e9ce14d3",
+      "canonical_payload": {
+        "amount": 56,
+        "coins": [
+          3,
+          11,
+          34,
+          48,
+          53,
+          60
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":56,\"coins\":[3,11,34,48,53,60]}",
+      "canonical_payload_sha256": "10df40efbe6b899c2482f92ad0c1c460202e741332e85dad341b7f79e9ce14d3",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 19,
+      "bank_first_raw_array_position_1based": 19,
+      "raw_bank_array_positions_1based": [
+        19
+      ],
+      "oracle_array_position_1based": 19,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 56,
+      "coins_sorted": [
+        3,
+        11,
+        34,
+        48,
+        53,
+        60
+      ],
+      "raw_input_ids": [
+        "H019"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "85ff338b9a617fee7b54925eca3f1a5113a8739d7370d78791b7453a7c9419c0"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 4,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 8,
+      "canonical_id": "C-12d8185b4fd93d7c2b4db55473c164b56b4d49b4e71b630ec4e632a1838d4f74",
+      "canonical_payload": {
+        "amount": 46,
+        "coins": [
+          2,
+          3,
+          18,
+          33,
+          52
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":46,\"coins\":[2,3,18,33,52]}",
+      "canonical_payload_sha256": "12d8185b4fd93d7c2b4db55473c164b56b4d49b4e71b630ec4e632a1838d4f74",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 23,
+      "bank_first_raw_array_position_1based": 23,
+      "raw_bank_array_positions_1based": [
+        23
+      ],
+      "oracle_array_position_1based": 23,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 46,
+      "coins_sorted": [
+        2,
+        3,
+        18,
+        33,
+        52
+      ],
+      "raw_input_ids": [
+        "H023"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "7baa2f914d149a9387c101498cff65e0b9917155e79a57db1e6c4985433945c0"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 17,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 9,
+      "canonical_id": "C-1885e71b5e2156d07830d8c42013c639ec94785418bdd7ce6a6fb00ef7ef9c15",
+      "canonical_payload": {
+        "amount": 436,
+        "coins": [
+          27,
+          156,
+          186,
+          267,
+          310,
+          411,
+          424,
+          431,
+          459,
+          512,
+          625,
+          714,
+          734,
+          738,
+          799,
+          887,
+          1089,
+          1140,
+          1299,
+          1531,
+          1588,
+          1905,
+          1911,
+          1982,
+          2067,
+          2095,
+          2192,
+          2271,
+          2466,
+          2533,
+          2789,
+          2901,
+          2998,
+          3204,
+          3268,
+          3375,
+          3447,
+          3471,
+          3536,
+          3667,
+          3775,
+          4159,
+          4194,
+          4296,
+          4407,
+          4524,
+          4552,
+          4752,
+          4800,
+          4896,
+          4970
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":436,\"coins\":[27,156,186,267,310,411,424,431,459,512,625,714,734,738,799,887,1089,1140,1299,1531,1588,1905,1911,1982,2067,2095,2192,2271,2466,2533,2789,2901,2998,3204,3268,3375,3447,3471,3536,3667,3775,4159,4194,4296,4407,4524,4552,4752,4800,4896,4970]}",
+      "canonical_payload_sha256": "1885e71b5e2156d07830d8c42013c639ec94785418bdd7ce6a6fb00ef7ef9c15",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 46,
+      "bank_first_raw_array_position_1based": 46,
+      "raw_bank_array_positions_1based": [
+        46
+      ],
+      "oracle_array_position_1based": 46,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 436,
+      "coins_sorted": [
+        27,
+        156,
+        186,
+        267,
+        310,
+        411,
+        424,
+        431,
+        459,
+        512,
+        625,
+        714,
+        734,
+        738,
+        799,
+        887,
+        1089,
+        1140,
+        1299,
+        1531,
+        1588,
+        1905,
+        1911,
+        1982,
+        2067,
+        2095,
+        2192,
+        2271,
+        2466,
+        2533,
+        2789,
+        2901,
+        2998,
+        3204,
+        3268,
+        3375,
+        3447,
+        3471,
+        3536,
+        3667,
+        3775,
+        4159,
+        4194,
+        4296,
+        4407,
+        4524,
+        4552,
+        4752,
+        4800,
+        4896,
+        4970
+      ],
+      "raw_input_ids": [
+        "H046"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "7ecea6880d34abbfc071906f1067c82bd0bae0d61392b2a1d45b82a79701b8be"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 10,
+      "canonical_id": "C-188a2a3c0b6404b5f4b11943eb68e1a6355f45a8d35cbb987f4cca6f3af61a92",
+      "canonical_payload": {
+        "amount": 4949,
+        "coins": [
+          931,
+          2623,
+          2797,
+          3231,
+          4707
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4949,\"coins\":[931,2623,2797,3231,4707]}",
+      "canonical_payload_sha256": "188a2a3c0b6404b5f4b11943eb68e1a6355f45a8d35cbb987f4cca6f3af61a92",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 58,
+      "bank_first_raw_array_position_1based": 59,
+      "raw_bank_array_positions_1based": [
+        59,
+        60
+      ],
+      "oracle_array_position_1based": 58,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 4949,
+      "coins_sorted": [
+        931,
+        2623,
+        2797,
+        3231,
+        4707
+      ],
+      "raw_input_ids": [
+        "H059",
+        "H060"
+      ],
+      "raw_ordering_roles": [
+        "original",
+        "permutation"
+      ],
+      "raw_record_sha256s": [
+        "db7442c0f04147352f6e10c37ac41ca143ae09a6ab30f2d0f29db90d2f7185f2",
+        "cd5a11a564e9b80d662e851be158971eced47524e3d4c25e84cef48617c817ce"
+      ],
+      "raw_row_count": 2,
+      "pair_ids": [
+        "H6-P02"
+      ],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 11,
+      "canonical_id": "C-22b6be364c68bfb475d20ac4e6111547c34188805fbee30ef94405471526fc9c",
+      "canonical_payload": {
+        "amount": 4758,
+        "coins": [
+          16,
+          534,
+          1083,
+          1784,
+          2422,
+          3194,
+          3201,
+          3565,
+          3741,
+          3870,
+          4341,
+          4392,
+          4849,
+          4913
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4758,\"coins\":[16,534,1083,1784,2422,3194,3201,3565,3741,3870,4341,4392,4849,4913]}",
+      "canonical_payload_sha256": "22b6be364c68bfb475d20ac4e6111547c34188805fbee30ef94405471526fc9c",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 57,
+      "bank_first_raw_array_position_1based": 57,
+      "raw_bank_array_positions_1based": [
+        57,
+        58
+      ],
+      "oracle_array_position_1based": 57,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 4758,
+      "coins_sorted": [
+        16,
+        534,
+        1083,
+        1784,
+        2422,
+        3194,
+        3201,
+        3565,
+        3741,
+        3870,
+        4341,
+        4392,
+        4849,
+        4913
+      ],
+      "raw_input_ids": [
+        "H057",
+        "H058"
+      ],
+      "raw_ordering_roles": [
+        "original",
+        "permutation"
+      ],
+      "raw_record_sha256s": [
+        "855fa710cfed6f4b304d34e27eda136172781867012dcf525452080f2d02201e",
+        "f4ac62f17103ff04a1a4d22672041423041b37b45287da8ba5968458e4217207"
+      ],
+      "raw_row_count": 2,
+      "pair_ids": [
+        "H6-P01"
+      ],
+      "oracle_answer_integer": 6,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 12,
+      "canonical_id": "C-2537d384f2532591b684f50bfcec0b4758826d77b98198c7602b2f70b4226fe5",
+      "canonical_payload": {
+        "amount": 428,
+        "coins": [
+          33,
+          111,
+          147,
+          170,
+          175,
+          227,
+          348,
+          380,
+          397,
+          620,
+          701,
+          716,
+          787,
+          833,
+          866,
+          867,
+          868,
+          1076,
+          1081,
+          1084,
+          1112,
+          1154,
+          1168,
+          1261,
+          1263,
+          1279,
+          1286,
+          1395,
+          1413,
+          1458,
+          1467,
+          1468,
+          1538,
+          1544,
+          1564,
+          1574,
+          1630,
+          1660,
+          1726,
+          1867,
+          1880,
+          1909,
+          2011,
+          2020,
+          2043,
+          2067,
+          2068,
+          2238,
+          2253,
+          2280,
+          2312,
+          2319,
+          2351,
+          2389,
+          2417,
+          2430,
+          2519,
+          2528,
+          2535,
+          2612,
+          2622,
+          2683,
+          2694,
+          2702,
+          2710,
+          2866,
+          2900,
+          3052,
+          3148,
+          3191,
+          3205,
+          3299,
+          3307,
+          3314,
+          3385,
+          3424,
+          3432,
+          3518,
+          3545,
+          3613,
+          3636,
+          3671,
+          3690,
+          3909,
+          3939,
+          4054,
+          4081,
+          4102,
+          4188,
+          4334,
+          4446,
+          4575,
+          4663,
+          4739,
+          4827,
+          4919,
+          4935,
+          4950,
+          4982
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":428,\"coins\":[33,111,147,170,175,227,348,380,397,620,701,716,787,833,866,867,868,1076,1081,1084,1112,1154,1168,1261,1263,1279,1286,1395,1413,1458,1467,1468,1538,1544,1564,1574,1630,1660,1726,1867,1880,1909,2011,2020,2043,2067,2068,2238,2253,2280,2312,2319,2351,2389,2417,2430,2519,2528,2535,2612,2622,2683,2694,2702,2710,2866,2900,3052,3148,3191,3205,3299,3307,3314,3385,3424,3432,3518,3545,3613,3636,3671,3690,3909,3939,4054,4081,4102,4188,4334,4446,4575,4663,4739,4827,4919,4935,4950,4982]}",
+      "canonical_payload_sha256": "2537d384f2532591b684f50bfcec0b4758826d77b98198c7602b2f70b4226fe5",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 44,
+      "bank_first_raw_array_position_1based": 44,
+      "raw_bank_array_positions_1based": [
+        44
+      ],
+      "oracle_array_position_1based": 44,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 428,
+      "coins_sorted": [
+        33,
+        111,
+        147,
+        170,
+        175,
+        227,
+        348,
+        380,
+        397,
+        620,
+        701,
+        716,
+        787,
+        833,
+        866,
+        867,
+        868,
+        1076,
+        1081,
+        1084,
+        1112,
+        1154,
+        1168,
+        1261,
+        1263,
+        1279,
+        1286,
+        1395,
+        1413,
+        1458,
+        1467,
+        1468,
+        1538,
+        1544,
+        1564,
+        1574,
+        1630,
+        1660,
+        1726,
+        1867,
+        1880,
+        1909,
+        2011,
+        2020,
+        2043,
+        2067,
+        2068,
+        2238,
+        2253,
+        2280,
+        2312,
+        2319,
+        2351,
+        2389,
+        2417,
+        2430,
+        2519,
+        2528,
+        2535,
+        2612,
+        2622,
+        2683,
+        2694,
+        2702,
+        2710,
+        2866,
+        2900,
+        3052,
+        3148,
+        3191,
+        3205,
+        3299,
+        3307,
+        3314,
+        3385,
+        3424,
+        3432,
+        3518,
+        3545,
+        3613,
+        3636,
+        3671,
+        3690,
+        3909,
+        3939,
+        4054,
+        4081,
+        4102,
+        4188,
+        4334,
+        4446,
+        4575,
+        4663,
+        4739,
+        4827,
+        4919,
+        4935,
+        4950,
+        4982
+      ],
+      "raw_input_ids": [
+        "H044"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "7657bd053bb1cc0acd112b8ecc03a2349764f1504f4fdd694e62d0d408bab163"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 13,
+      "canonical_id": "C-2bea6555b1c0b3ab9063a205642fe6e36f0ce5124427c9657a868bdecc5ce1f0",
+      "canonical_payload": {
+        "amount": 1894,
+        "coins": [
+          9,
+          86,
+          147,
+          286,
+          291,
+          308,
+          396,
+          413,
+          423,
+          454,
+          460,
+          473,
+          590,
+          658,
+          681,
+          873,
+          977,
+          996,
+          1047,
+          1055,
+          1059,
+          1155,
+          1161,
+          1226,
+          1239,
+          1285,
+          1305,
+          1372,
+          1397,
+          1409,
+          1479,
+          1533,
+          1675,
+          1708,
+          1729,
+          1859,
+          1895,
+          1955,
+          2021,
+          2051,
+          2096,
+          2205,
+          2303,
+          2414,
+          2450,
+          2488,
+          2515,
+          2544,
+          2555,
+          2584,
+          2586,
+          2609,
+          2678,
+          2689,
+          2744,
+          2756,
+          2760,
+          2782,
+          2796,
+          2813,
+          2829,
+          2832,
+          2923,
+          2954,
+          2990,
+          3048,
+          3072,
+          3092,
+          3182,
+          3186,
+          3216,
+          3281,
+          3333,
+          3345,
+          3392,
+          3431,
+          3441,
+          3523,
+          3531,
+          3561,
+          3612,
+          3649,
+          3683,
+          3713,
+          3715,
+          3818,
+          3820,
+          3884,
+          3908,
+          4001,
+          4036,
+          4044,
+          4244,
+          4248,
+          4389,
+          4399,
+          4506,
+          4592,
+          4598,
+          4649,
+          4650,
+          4698,
+          4702,
+          4808,
+          4821,
+          4834,
+          4840,
+          4921,
+          4923,
+          4961
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1894,\"coins\":[9,86,147,286,291,308,396,413,423,454,460,473,590,658,681,873,977,996,1047,1055,1059,1155,1161,1226,1239,1285,1305,1372,1397,1409,1479,1533,1675,1708,1729,1859,1895,1955,2021,2051,2096,2205,2303,2414,2450,2488,2515,2544,2555,2584,2586,2609,2678,2689,2744,2756,2760,2782,2796,2813,2829,2832,2923,2954,2990,3048,3072,3092,3182,3186,3216,3281,3333,3345,3392,3431,3441,3523,3531,3561,3612,3649,3683,3713,3715,3818,3820,3884,3908,4001,4036,4044,4244,4248,4389,4399,4506,4592,4598,4649,4650,4698,4702,4808,4821,4834,4840,4921,4923,4961]}",
+      "canonical_payload_sha256": "2bea6555b1c0b3ab9063a205642fe6e36f0ce5124427c9657a868bdecc5ce1f0",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 41,
+      "bank_first_raw_array_position_1based": 41,
+      "raw_bank_array_positions_1based": [
+        41
+      ],
+      "oracle_array_position_1based": 41,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 1894,
+      "coins_sorted": [
+        9,
+        86,
+        147,
+        286,
+        291,
+        308,
+        396,
+        413,
+        423,
+        454,
+        460,
+        473,
+        590,
+        658,
+        681,
+        873,
+        977,
+        996,
+        1047,
+        1055,
+        1059,
+        1155,
+        1161,
+        1226,
+        1239,
+        1285,
+        1305,
+        1372,
+        1397,
+        1409,
+        1479,
+        1533,
+        1675,
+        1708,
+        1729,
+        1859,
+        1895,
+        1955,
+        2021,
+        2051,
+        2096,
+        2205,
+        2303,
+        2414,
+        2450,
+        2488,
+        2515,
+        2544,
+        2555,
+        2584,
+        2586,
+        2609,
+        2678,
+        2689,
+        2744,
+        2756,
+        2760,
+        2782,
+        2796,
+        2813,
+        2829,
+        2832,
+        2923,
+        2954,
+        2990,
+        3048,
+        3072,
+        3092,
+        3182,
+        3186,
+        3216,
+        3281,
+        3333,
+        3345,
+        3392,
+        3431,
+        3441,
+        3523,
+        3531,
+        3561,
+        3612,
+        3649,
+        3683,
+        3713,
+        3715,
+        3818,
+        3820,
+        3884,
+        3908,
+        4001,
+        4036,
+        4044,
+        4244,
+        4248,
+        4389,
+        4399,
+        4506,
+        4592,
+        4598,
+        4649,
+        4650,
+        4698,
+        4702,
+        4808,
+        4821,
+        4834,
+        4840,
+        4921,
+        4923,
+        4961
+      ],
+      "raw_input_ids": [
+        "H041"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "845476ca0bebad62478a4a06f1037921f1d1a17073bd84bbec38903fc670acc1"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 2473,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 14,
+      "canonical_id": "C-2ce9c541706bb27434a24b1d217c7fa67c30f6a94f52ac06e70b895e26e52de4",
+      "canonical_payload": {
+        "amount": 100,
+        "coins": [
+          4,
+          96
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":100,\"coins\":[4,96]}",
+      "canonical_payload_sha256": "2ce9c541706bb27434a24b1d217c7fa67c30f6a94f52ac06e70b895e26e52de4",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 35,
+      "bank_first_raw_array_position_1based": 35,
+      "raw_bank_array_positions_1based": [
+        35
+      ],
+      "oracle_array_position_1based": 35,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 100,
+      "coins_sorted": [
+        4,
+        96
+      ],
+      "raw_input_ids": [
+        "H035"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "b0b12c994110eb615c2a22c692cf31952f47ea5465be381715c168c06a9d32ea"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 2,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 15,
+      "canonical_id": "C-31ee69248e4d3c8771625ca4b0f133443a1a47968eb048dd688d78e0bc339610",
+      "canonical_payload": {
+        "amount": 4305,
+        "coins": [
+          270,
+          4514
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4305,\"coins\":[270,4514]}",
+      "canonical_payload_sha256": "31ee69248e4d3c8771625ca4b0f133443a1a47968eb048dd688d78e0bc339610",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 40,
+      "bank_first_raw_array_position_1based": 40,
+      "raw_bank_array_positions_1based": [
+        40
+      ],
+      "oracle_array_position_1based": 40,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 4305,
+      "coins_sorted": [
+        270,
+        4514
+      ],
+      "raw_input_ids": [
+        "H040"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "3e7c51e076cb9571d2b44f00e8421959f2658fc8577b7c9fbb8b00e6f0c49c60"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 16,
+      "canonical_id": "C-335f2198a598ce1f3c691b7b8cf08b76015ab6d466c4e15e63fd7979145a9bf4",
+      "canonical_payload": {
+        "amount": 3164,
+        "coins": [
+          44
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3164,\"coins\":[44]}",
+      "canonical_payload_sha256": "335f2198a598ce1f3c691b7b8cf08b76015ab6d466c4e15e63fd7979145a9bf4",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 29,
+      "bank_first_raw_array_position_1based": 29,
+      "raw_bank_array_positions_1based": [
+        29
+      ],
+      "oracle_array_position_1based": 29,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 3164,
+      "coins_sorted": [
+        44
+      ],
+      "raw_input_ids": [
+        "H029"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8f6209fe9053cf9cd327e3099df44c45c487f6f0f79e8ce2f8dcf55b36ab1ab2"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 17,
+      "canonical_id": "C-34a1d87be80a0f87cf7baca040ce451d9c00cec09ee1d6068ec1b16b0a421cf8",
+      "canonical_payload": {
+        "amount": 538,
+        "coins": [
+          19,
+          197,
+          235,
+          242,
+          255,
+          274,
+          319,
+          436,
+          459,
+          472,
+          488,
+          546,
+          747,
+          805,
+          928,
+          980,
+          983,
+          1029,
+          1124,
+          1125,
+          1378,
+          1456,
+          1522,
+          1527,
+          1569,
+          1580,
+          1660,
+          1730,
+          1754,
+          1803,
+          1818,
+          1834,
+          1866,
+          1910,
+          1989,
+          1998,
+          2056,
+          2171,
+          2203,
+          2306,
+          2326,
+          2377,
+          2380,
+          2398,
+          2407,
+          2410,
+          2438,
+          2444,
+          2467,
+          2489,
+          2577,
+          2589,
+          2597,
+          2604,
+          2802,
+          2874,
+          3064,
+          3091,
+          3202,
+          3206,
+          3215,
+          3252,
+          3301,
+          3408,
+          3483,
+          3551,
+          3561,
+          3813,
+          3819,
+          3840,
+          3909,
+          3925,
+          3961,
+          4010,
+          4047,
+          4082,
+          4186,
+          4290,
+          4291,
+          4365,
+          4377,
+          4404,
+          4504,
+          4589,
+          4607,
+          4666,
+          4696,
+          4753,
+          4817,
+          4892,
+          4965
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":538,\"coins\":[19,197,235,242,255,274,319,436,459,472,488,546,747,805,928,980,983,1029,1124,1125,1378,1456,1522,1527,1569,1580,1660,1730,1754,1803,1818,1834,1866,1910,1989,1998,2056,2171,2203,2306,2326,2377,2380,2398,2407,2410,2438,2444,2467,2489,2577,2589,2597,2604,2802,2874,3064,3091,3202,3206,3215,3252,3301,3408,3483,3551,3561,3813,3819,3840,3909,3925,3961,4010,4047,4082,4186,4290,4291,4365,4377,4404,4504,4589,4607,4666,4696,4753,4817,4892,4965]}",
+      "canonical_payload_sha256": "34a1d87be80a0f87cf7baca040ce451d9c00cec09ee1d6068ec1b16b0a421cf8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 48,
+      "bank_first_raw_array_position_1based": 48,
+      "raw_bank_array_positions_1based": [
+        48
+      ],
+      "oracle_array_position_1based": 48,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 538,
+      "coins_sorted": [
+        19,
+        197,
+        235,
+        242,
+        255,
+        274,
+        319,
+        436,
+        459,
+        472,
+        488,
+        546,
+        747,
+        805,
+        928,
+        980,
+        983,
+        1029,
+        1124,
+        1125,
+        1378,
+        1456,
+        1522,
+        1527,
+        1569,
+        1580,
+        1660,
+        1730,
+        1754,
+        1803,
+        1818,
+        1834,
+        1866,
+        1910,
+        1989,
+        1998,
+        2056,
+        2171,
+        2203,
+        2306,
+        2326,
+        2377,
+        2380,
+        2398,
+        2407,
+        2410,
+        2438,
+        2444,
+        2467,
+        2489,
+        2577,
+        2589,
+        2597,
+        2604,
+        2802,
+        2874,
+        3064,
+        3091,
+        3202,
+        3206,
+        3215,
+        3252,
+        3301,
+        3408,
+        3483,
+        3551,
+        3561,
+        3813,
+        3819,
+        3840,
+        3909,
+        3925,
+        3961,
+        4010,
+        4047,
+        4082,
+        4186,
+        4290,
+        4291,
+        4365,
+        4377,
+        4404,
+        4504,
+        4589,
+        4607,
+        4666,
+        4696,
+        4753,
+        4817,
+        4892,
+        4965
+      ],
+      "raw_input_ids": [
+        "H048"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "2ea4824c38fee9c1755c469f33398439c9f3efddc608f3cb6e3af1c7320042ae"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 18,
+      "canonical_id": "C-38ef1a0eb48c40c555e2d9deacd98c9495f57a81ebb5393f549ce65c063adf87",
+      "canonical_payload": {
+        "amount": 3395,
+        "coins": [
+          25
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3395,\"coins\":[25]}",
+      "canonical_payload_sha256": "38ef1a0eb48c40c555e2d9deacd98c9495f57a81ebb5393f549ce65c063adf87",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 32,
+      "bank_first_raw_array_position_1based": 32,
+      "raw_bank_array_positions_1based": [
+        32
+      ],
+      "oracle_array_position_1based": 32,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 3395,
+      "coins_sorted": [
+        25
+      ],
+      "raw_input_ids": [
+        "H032"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "b2de215fb3d8da91b924516a11eccfb70be6476c6798b3acdc8e68bc7d805149"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 19,
+      "canonical_id": "C-3c0d4337536e7c911c2342b47bcaecb08ceb069c493c3294dcac7e9c0ec0c89e",
+      "canonical_payload": {
+        "amount": 395,
+        "coins": [
+          136,
+          229,
+          320,
+          498,
+          655,
+          680,
+          704,
+          748,
+          756,
+          784,
+          834,
+          965,
+          1047,
+          1162,
+          1201,
+          1284,
+          1289,
+          1291,
+          1353,
+          1366,
+          1409,
+          1483,
+          1542,
+          1563,
+          1573,
+          1688,
+          1774,
+          1844,
+          1892,
+          1943,
+          1950,
+          2028,
+          2201,
+          2211,
+          2238,
+          2280,
+          2456,
+          2500,
+          2693,
+          2711,
+          2755,
+          2796,
+          2805,
+          2830,
+          2991,
+          3044,
+          3088,
+          3093,
+          3112,
+          3170,
+          3230,
+          3259,
+          3262,
+          3301,
+          3424,
+          3574,
+          3584,
+          3602,
+          3633,
+          3648,
+          3654,
+          3747,
+          3749,
+          3862,
+          3912,
+          3971,
+          4008,
+          4016,
+          4050,
+          4132,
+          4190,
+          4238,
+          4249,
+          4336,
+          4413,
+          4444,
+          4517,
+          4555,
+          4636,
+          4701,
+          4709,
+          4748,
+          4753,
+          4783,
+          4830,
+          4981,
+          4994
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":395,\"coins\":[136,229,320,498,655,680,704,748,756,784,834,965,1047,1162,1201,1284,1289,1291,1353,1366,1409,1483,1542,1563,1573,1688,1774,1844,1892,1943,1950,2028,2201,2211,2238,2280,2456,2500,2693,2711,2755,2796,2805,2830,2991,3044,3088,3093,3112,3170,3230,3259,3262,3301,3424,3574,3584,3602,3633,3648,3654,3747,3749,3862,3912,3971,4008,4016,4050,4132,4190,4238,4249,4336,4413,4444,4517,4555,4636,4701,4709,4748,4753,4783,4830,4981,4994]}",
+      "canonical_payload_sha256": "3c0d4337536e7c911c2342b47bcaecb08ceb069c493c3294dcac7e9c0ec0c89e",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 49,
+      "bank_first_raw_array_position_1based": 49,
+      "raw_bank_array_positions_1based": [
+        49
+      ],
+      "oracle_array_position_1based": 49,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 395,
+      "coins_sorted": [
+        136,
+        229,
+        320,
+        498,
+        655,
+        680,
+        704,
+        748,
+        756,
+        784,
+        834,
+        965,
+        1047,
+        1162,
+        1201,
+        1284,
+        1289,
+        1291,
+        1353,
+        1366,
+        1409,
+        1483,
+        1542,
+        1563,
+        1573,
+        1688,
+        1774,
+        1844,
+        1892,
+        1943,
+        1950,
+        2028,
+        2201,
+        2211,
+        2238,
+        2280,
+        2456,
+        2500,
+        2693,
+        2711,
+        2755,
+        2796,
+        2805,
+        2830,
+        2991,
+        3044,
+        3088,
+        3093,
+        3112,
+        3170,
+        3230,
+        3259,
+        3262,
+        3301,
+        3424,
+        3574,
+        3584,
+        3602,
+        3633,
+        3648,
+        3654,
+        3747,
+        3749,
+        3862,
+        3912,
+        3971,
+        4008,
+        4016,
+        4050,
+        4132,
+        4190,
+        4238,
+        4249,
+        4336,
+        4413,
+        4444,
+        4517,
+        4555,
+        4636,
+        4701,
+        4709,
+        4748,
+        4753,
+        4783,
+        4830,
+        4981,
+        4994
+      ],
+      "raw_input_ids": [
+        "H049"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "598efcffb130bd8c9b8878f31b1c901f9920cb345be69ab612c6781eab4d5008"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 20,
+      "canonical_id": "C-3c7c7715b724cb159046ce9b925bc2ae1204cafd826c0d9fc7f403fc9fd81f51",
+      "canonical_payload": {
+        "amount": 4966,
+        "coins": [
+          114,
+          118,
+          780,
+          870,
+          1060,
+          1555,
+          2130,
+          2163,
+          2180,
+          2328,
+          2459,
+          3053,
+          3807,
+          4207,
+          4301,
+          4724,
+          4749,
+          4904
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4966,\"coins\":[114,118,780,870,1060,1555,2130,2163,2180,2328,2459,3053,3807,4207,4301,4724,4749,4904]}",
+      "canonical_payload_sha256": "3c7c7715b724cb159046ce9b925bc2ae1204cafd826c0d9fc7f403fc9fd81f51",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 53,
+      "bank_first_raw_array_position_1based": 53,
+      "raw_bank_array_positions_1based": [
+        53
+      ],
+      "oracle_array_position_1based": 53,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 4966,
+      "coins_sorted": [
+        114,
+        118,
+        780,
+        870,
+        1060,
+        1555,
+        2130,
+        2163,
+        2180,
+        2328,
+        2459,
+        3053,
+        3807,
+        4207,
+        4301,
+        4724,
+        4749,
+        4904
+      ],
+      "raw_input_ids": [
+        "H053"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "b626363c1f9fea6f958ab9bcbf9c1968d3522c3857857c2403240418ef85b06f"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 25,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 21,
+      "canonical_id": "C-44a493f7a918d6389afdb48a305ec76e3e6630fc03d4473620f8cdf49dcc0b9e",
+      "canonical_payload": {
+        "amount": 4566,
+        "coins": [
+          134,
+          344,
+          391,
+          519,
+          1155,
+          1165,
+          1395,
+          1700,
+          1711,
+          1769,
+          1984,
+          3808,
+          3818,
+          3944,
+          4915
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4566,\"coins\":[134,344,391,519,1155,1165,1395,1700,1711,1769,1984,3808,3818,3944,4915]}",
+      "canonical_payload_sha256": "44a493f7a918d6389afdb48a305ec76e3e6630fc03d4473620f8cdf49dcc0b9e",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 54,
+      "bank_first_raw_array_position_1based": 54,
+      "raw_bank_array_positions_1based": [
+        54
+      ],
+      "oracle_array_position_1based": 54,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 4566,
+      "coins_sorted": [
+        134,
+        344,
+        391,
+        519,
+        1155,
+        1165,
+        1395,
+        1700,
+        1711,
+        1769,
+        1984,
+        3808,
+        3818,
+        3944,
+        4915
+      ],
+      "raw_input_ids": [
+        "H054"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "7420ef31031ffa9fdb0d88c9fbb028206b931ba76b68bbab57610326ab468081"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 20,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 22,
+      "canonical_id": "C-47cb7e86ff95261700fc90030f9ba5e4128612df117cb2e79a1f6f492fa964d6",
+      "canonical_payload": {
+        "amount": 337,
+        "coins": [
+          1,
+          2,
+          3,
+          1537,
+          2046,
+          4079
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":337,\"coins\":[1,2,3,1537,2046,4079]}",
+      "canonical_payload_sha256": "47cb7e86ff95261700fc90030f9ba5e4128612df117cb2e79a1f6f492fa964d6",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 72,
+      "bank_first_raw_array_position_1based": 74,
+      "raw_bank_array_positions_1based": [
+        74
+      ],
+      "oracle_array_position_1based": 72,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 337,
+      "coins_sorted": [
+        1,
+        2,
+        3,
+        1537,
+        2046,
+        4079
+      ],
+      "raw_input_ids": [
+        "H074"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "efacf4a8bd991643857904232bb033f58c1b5f2fa615b26019ba0e7b4108b6b4"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 9633,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 23,
+      "canonical_id": "C-48fe90bdbacf5a68cc59e785d00ba7dfdbb8cc5e558223a77a02f6c90abedb26",
+      "canonical_payload": {
+        "amount": 277,
+        "coins": [
+          1,
+          2,
+          3,
+          587,
+          1860,
+          2032,
+          4532,
+          4805
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":277,\"coins\":[1,2,3,587,1860,2032,4532,4805]}",
+      "canonical_payload_sha256": "48fe90bdbacf5a68cc59e785d00ba7dfdbb8cc5e558223a77a02f6c90abedb26",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 70,
+      "bank_first_raw_array_position_1based": 72,
+      "raw_bank_array_positions_1based": [
+        72
+      ],
+      "oracle_array_position_1based": 70,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 277,
+      "coins_sorted": [
+        1,
+        2,
+        3,
+        587,
+        1860,
+        2032,
+        4532,
+        4805
+      ],
+      "raw_input_ids": [
+        "H072"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "e986558290f0474385dc922efd8ad6ed0f14b5a36b353e3cd4e4ef2884982393"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 6533,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 24,
+      "canonical_id": "C-4949d8cfa43e23f736ce4775a3593c8477398e88798922bac7089ebbdaee6a26",
+      "canonical_payload": {
+        "amount": 702,
+        "coins": [
+          2265,
+          2999,
+          3375,
+          3441
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":702,\"coins\":[2265,2999,3375,3441]}",
+      "canonical_payload_sha256": "4949d8cfa43e23f736ce4775a3593c8477398e88798922bac7089ebbdaee6a26",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 60,
+      "bank_first_raw_array_position_1based": 62,
+      "raw_bank_array_positions_1based": [
+        62
+      ],
+      "oracle_array_position_1based": 60,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 702,
+      "coins_sorted": [
+        2265,
+        2999,
+        3375,
+        3441
+      ],
+      "raw_input_ids": [
+        "H062"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "6c922b9ea27a92997aeddd0e3eaf152aa9eec0e7ee9c9291d1a4a879cb817bdb"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 25,
+      "canonical_id": "C-51c263562045b82e1ac93000785a650a3295066de0e83ac5fb4af7dcc5c857e8",
+      "canonical_payload": {
+        "amount": 386,
+        "coins": [
+          96,
+          134,
+          207,
+          256,
+          263,
+          407,
+          510,
+          557,
+          564,
+          565,
+          567,
+          577,
+          613,
+          658,
+          831,
+          883,
+          973,
+          1048,
+          1095,
+          1104,
+          1109,
+          1178,
+          1223,
+          1229,
+          1254,
+          1304,
+          1324,
+          1335,
+          1341,
+          1344,
+          1452,
+          1472,
+          1591,
+          1593,
+          1652,
+          1746,
+          1768,
+          1914,
+          1924,
+          2064,
+          2174,
+          2192,
+          2212,
+          2221,
+          2224,
+          2263,
+          2279,
+          2305,
+          2321,
+          2326,
+          2333,
+          2339,
+          2345,
+          2361,
+          2362,
+          2371,
+          2453,
+          2531,
+          2558,
+          2698,
+          2785,
+          2819,
+          2869,
+          2882,
+          2885,
+          2901,
+          2933,
+          2989,
+          3043,
+          3105,
+          3141,
+          3156,
+          3169,
+          3240,
+          3288,
+          3289,
+          3312,
+          3317,
+          3391,
+          3441,
+          3447,
+          3507,
+          3571,
+          3633,
+          3663,
+          3729,
+          3826,
+          3874,
+          3879,
+          4002,
+          4106,
+          4172,
+          4177,
+          4225,
+          4237,
+          4318,
+          4326,
+          4436,
+          4451,
+          4480,
+          4504,
+          4641,
+          4656,
+          4718,
+          4785,
+          4846,
+          4863,
+          4872,
+          4927
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":386,\"coins\":[96,134,207,256,263,407,510,557,564,565,567,577,613,658,831,883,973,1048,1095,1104,1109,1178,1223,1229,1254,1304,1324,1335,1341,1344,1452,1472,1591,1593,1652,1746,1768,1914,1924,2064,2174,2192,2212,2221,2224,2263,2279,2305,2321,2326,2333,2339,2345,2361,2362,2371,2453,2531,2558,2698,2785,2819,2869,2882,2885,2901,2933,2989,3043,3105,3141,3156,3169,3240,3288,3289,3312,3317,3391,3441,3447,3507,3571,3633,3663,3729,3826,3874,3879,4002,4106,4172,4177,4225,4237,4318,4326,4436,4451,4480,4504,4641,4656,4718,4785,4846,4863,4872,4927]}",
+      "canonical_payload_sha256": "51c263562045b82e1ac93000785a650a3295066de0e83ac5fb4af7dcc5c857e8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 50,
+      "bank_first_raw_array_position_1based": 50,
+      "raw_bank_array_positions_1based": [
+        50
+      ],
+      "oracle_array_position_1based": 50,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 386,
+      "coins_sorted": [
+        96,
+        134,
+        207,
+        256,
+        263,
+        407,
+        510,
+        557,
+        564,
+        565,
+        567,
+        577,
+        613,
+        658,
+        831,
+        883,
+        973,
+        1048,
+        1095,
+        1104,
+        1109,
+        1178,
+        1223,
+        1229,
+        1254,
+        1304,
+        1324,
+        1335,
+        1341,
+        1344,
+        1452,
+        1472,
+        1591,
+        1593,
+        1652,
+        1746,
+        1768,
+        1914,
+        1924,
+        2064,
+        2174,
+        2192,
+        2212,
+        2221,
+        2224,
+        2263,
+        2279,
+        2305,
+        2321,
+        2326,
+        2333,
+        2339,
+        2345,
+        2361,
+        2362,
+        2371,
+        2453,
+        2531,
+        2558,
+        2698,
+        2785,
+        2819,
+        2869,
+        2882,
+        2885,
+        2901,
+        2933,
+        2989,
+        3043,
+        3105,
+        3141,
+        3156,
+        3169,
+        3240,
+        3288,
+        3289,
+        3312,
+        3317,
+        3391,
+        3441,
+        3447,
+        3507,
+        3571,
+        3633,
+        3663,
+        3729,
+        3826,
+        3874,
+        3879,
+        4002,
+        4106,
+        4172,
+        4177,
+        4225,
+        4237,
+        4318,
+        4326,
+        4436,
+        4451,
+        4480,
+        4504,
+        4641,
+        4656,
+        4718,
+        4785,
+        4846,
+        4863,
+        4872,
+        4927
+      ],
+      "raw_input_ids": [
+        "H050"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "2286759a7affd191e526653058df88517cd8b61b55c2e0390c817d2bc764ad38"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 26,
+      "canonical_id": "C-5553a91d04b9762d6c6785443383868ce5415d4c3939961c8cbb7705019ae4cd",
+      "canonical_payload": {
+        "amount": 414,
+        "coins": [
+          1,
+          3,
+          4,
+          3330,
+          3377,
+          3821,
+          4232
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":414,\"coins\":[1,3,4,3330,3377,3821,4232]}",
+      "canonical_payload_sha256": "5553a91d04b9762d6c6785443383868ce5415d4c3939961c8cbb7705019ae4cd",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 77,
+      "bank_first_raw_array_position_1based": 79,
+      "raw_bank_array_positions_1based": [
+        79
+      ],
+      "oracle_array_position_1based": 77,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 414,
+      "coins_sorted": [
+        1,
+        3,
+        4,
+        3330,
+        3377,
+        3821,
+        4232
+      ],
+      "raw_input_ids": [
+        "H079"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "09ca6328792d404ca18243e5542d2340c9fa306d7f335e8fb7836db765f46a29"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 7280,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 27,
+      "canonical_id": "C-55554f2d8aeee5c779d53dba2961fa50faa93a21526a275dce1083244c195089",
+      "canonical_payload": {
+        "amount": 187,
+        "coins": [
+          38,
+          125,
+          182,
+          225,
+          247,
+          611,
+          626,
+          688,
+          705,
+          718,
+          810,
+          812,
+          853,
+          924,
+          932,
+          1028,
+          1058,
+          1075,
+          1078,
+          1185,
+          1197,
+          1269,
+          1335,
+          1343,
+          1429,
+          1478,
+          1541,
+          1617,
+          1638,
+          1711,
+          1735,
+          1876,
+          2008,
+          2083,
+          2186,
+          2234,
+          2245,
+          2269,
+          2287,
+          2363,
+          2543,
+          2544,
+          2554,
+          2657,
+          2658,
+          2675,
+          2777,
+          2847,
+          2856,
+          2870,
+          2879,
+          2909,
+          3014,
+          3023,
+          3114,
+          3200,
+          3272,
+          3277,
+          3285,
+          3318,
+          3328,
+          3337,
+          3369,
+          3447,
+          3537,
+          3636,
+          3735,
+          3772,
+          3785,
+          3917,
+          3926,
+          3967,
+          4184,
+          4194,
+          4206,
+          4217,
+          4275,
+          4290,
+          4311,
+          4388,
+          4430,
+          4447,
+          4520,
+          4521,
+          4621,
+          4751,
+          4783
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":187,\"coins\":[38,125,182,225,247,611,626,688,705,718,810,812,853,924,932,1028,1058,1075,1078,1185,1197,1269,1335,1343,1429,1478,1541,1617,1638,1711,1735,1876,2008,2083,2186,2234,2245,2269,2287,2363,2543,2544,2554,2657,2658,2675,2777,2847,2856,2870,2879,2909,3014,3023,3114,3200,3272,3277,3285,3318,3328,3337,3369,3447,3537,3636,3735,3772,3785,3917,3926,3967,4184,4194,4206,4217,4275,4290,4311,4388,4430,4447,4520,4521,4621,4751,4783]}",
+      "canonical_payload_sha256": "55554f2d8aeee5c779d53dba2961fa50faa93a21526a275dce1083244c195089",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 43,
+      "bank_first_raw_array_position_1based": 43,
+      "raw_bank_array_positions_1based": [
+        43
+      ],
+      "oracle_array_position_1based": 43,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 187,
+      "coins_sorted": [
+        38,
+        125,
+        182,
+        225,
+        247,
+        611,
+        626,
+        688,
+        705,
+        718,
+        810,
+        812,
+        853,
+        924,
+        932,
+        1028,
+        1058,
+        1075,
+        1078,
+        1185,
+        1197,
+        1269,
+        1335,
+        1343,
+        1429,
+        1478,
+        1541,
+        1617,
+        1638,
+        1711,
+        1735,
+        1876,
+        2008,
+        2083,
+        2186,
+        2234,
+        2245,
+        2269,
+        2287,
+        2363,
+        2543,
+        2544,
+        2554,
+        2657,
+        2658,
+        2675,
+        2777,
+        2847,
+        2856,
+        2870,
+        2879,
+        2909,
+        3014,
+        3023,
+        3114,
+        3200,
+        3272,
+        3277,
+        3285,
+        3318,
+        3328,
+        3337,
+        3369,
+        3447,
+        3537,
+        3636,
+        3735,
+        3772,
+        3785,
+        3917,
+        3926,
+        3967,
+        4184,
+        4194,
+        4206,
+        4217,
+        4275,
+        4290,
+        4311,
+        4388,
+        4430,
+        4447,
+        4520,
+        4521,
+        4621,
+        4751,
+        4783
+      ],
+      "raw_input_ids": [
+        "H043"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "280ffe4cfb2a417a13a3025256ab00bd1489f74d17d7743a6315be5013e01812"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 28,
+      "canonical_id": "C-56288a3176ac78c42fa1fd660741e2b2dd52343d3fa7a3499612d1ce1ac87f63",
+      "canonical_payload": {
+        "amount": 4513,
+        "coins": [
+          17
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4513,\"coins\":[17]}",
+      "canonical_payload_sha256": "56288a3176ac78c42fa1fd660741e2b2dd52343d3fa7a3499612d1ce1ac87f63",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 30,
+      "bank_first_raw_array_position_1based": 30,
+      "raw_bank_array_positions_1based": [
+        30
+      ],
+      "oracle_array_position_1based": 30,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 4513,
+      "coins_sorted": [
+        17
+      ],
+      "raw_input_ids": [
+        "H030"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "2b92ed1e3890db0e27a1545f6673211d267a6197569581b939d71594e5dc9751"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 29,
+      "canonical_id": "C-5cc9ad5a7002c7fa1759446c433d539c9f6960b9d3293a6d90a4d501bcd5d765",
+      "canonical_payload": {
+        "amount": 0,
+        "coins": [
+          13
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":0,\"coins\":[13]}",
+      "canonical_payload_sha256": "5cc9ad5a7002c7fa1759446c433d539c9f6960b9d3293a6d90a4d501bcd5d765",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 1,
+      "bank_first_raw_array_position_1based": 1,
+      "raw_bank_array_positions_1based": [
+        1
+      ],
+      "oracle_array_position_1based": 1,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 0,
+      "coins_sorted": [
+        13
+      ],
+      "raw_input_ids": [
+        "H001"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "84eacadc39e87ed7b8e3f6b89aad51970cc63f3f29cf55535a3b13334640a0aa"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 30,
+      "canonical_id": "C-64629d80344ccaa0427ccd65a9c54d861db7e866990337ce0e3fdcfb4fd38f30",
+      "canonical_payload": {
+        "amount": 3354,
+        "coins": [
+          2566,
+          2700
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3354,\"coins\":[2566,2700]}",
+      "canonical_payload_sha256": "64629d80344ccaa0427ccd65a9c54d861db7e866990337ce0e3fdcfb4fd38f30",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 38,
+      "bank_first_raw_array_position_1based": 38,
+      "raw_bank_array_positions_1based": [
+        38
+      ],
+      "oracle_array_position_1based": 38,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 3354,
+      "coins_sorted": [
+        2566,
+        2700
+      ],
+      "raw_input_ids": [
+        "H038"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "cfd7713a08635c285aa74ae0f55ec767c2504d5d3b1a10ecdb5855751a06ca64"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 31,
+      "canonical_id": "C-64db49d6cb067bd47dc66cfe87932cd44f43903942a7c61ff0462a5156b9b6a4",
+      "canonical_payload": {
+        "amount": 2754,
+        "coins": [
+          2565,
+          4069
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":2754,\"coins\":[2565,4069]}",
+      "canonical_payload_sha256": "64db49d6cb067bd47dc66cfe87932cd44f43903942a7c61ff0462a5156b9b6a4",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 37,
+      "bank_first_raw_array_position_1based": 37,
+      "raw_bank_array_positions_1based": [
+        37
+      ],
+      "oracle_array_position_1based": 37,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 2754,
+      "coins_sorted": [
+        2565,
+        4069
+      ],
+      "raw_input_ids": [
+        "H037"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "af6c7c7447602ed1603e3b3f0e6dca7f4173ebacbe0ed5a9a399a2d83fc74377"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 32,
+      "canonical_id": "C-6aa775bb35714691bd9a4369c2caa2de87e019aec7625b3d5eed407f340f8523",
+      "canonical_payload": {
+        "amount": 1223,
+        "coins": [
+          31
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1223,\"coins\":[31]}",
+      "canonical_payload_sha256": "6aa775bb35714691bd9a4369c2caa2de87e019aec7625b3d5eed407f340f8523",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 26,
+      "bank_first_raw_array_position_1based": 26,
+      "raw_bank_array_positions_1based": [
+        26
+      ],
+      "oracle_array_position_1based": 26,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 1223,
+      "coins_sorted": [
+        31
+      ],
+      "raw_input_ids": [
+        "H026"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8a020e8ed3bc124d1edd9a64a61b6b3b658502e3b5d919e7678b3de2de472ce5"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 33,
+      "canonical_id": "C-6c0643d497ea495bea9848ea2357404fcae9b3e4ff0cfc28c8c37bb82106ecb3",
+      "canonical_payload": {
+        "amount": 3797,
+        "coins": [
+          42
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3797,\"coins\":[42]}",
+      "canonical_payload_sha256": "6c0643d497ea495bea9848ea2357404fcae9b3e4ff0cfc28c8c37bb82106ecb3",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 27,
+      "bank_first_raw_array_position_1based": 27,
+      "raw_bank_array_positions_1based": [
+        27
+      ],
+      "oracle_array_position_1based": 27,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 3797,
+      "coins_sorted": [
+        42
+      ],
+      "raw_input_ids": [
+        "H027"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "37661e08da01b3cc35b756e53b5d51ae22a2a2003f50cbd35b6bd556ed7281df"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 34,
+      "canonical_id": "C-6c9e9a6ac6058644ee02e2985595065f536bfebc841c6cd6da417f660dba9269",
+      "canonical_payload": {
+        "amount": 100,
+        "coins": [
+          50
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":100,\"coins\":[50]}",
+      "canonical_payload_sha256": "6c9e9a6ac6058644ee02e2985595065f536bfebc841c6cd6da417f660dba9269",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 25,
+      "bank_first_raw_array_position_1based": 25,
+      "raw_bank_array_positions_1based": [
+        25
+      ],
+      "oracle_array_position_1based": 25,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 100,
+      "coins_sorted": [
+        50
+      ],
+      "raw_input_ids": [
+        "H025"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "1e38d5c8538b4ca5af634718b5650148f84eb1a7d29e8b59006f51ca52b16dd5"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 35,
+      "canonical_id": "C-6dd19b1b5a979c2b2dc9888ca98cc42607f34c9a543b8d285bff027741e87480",
+      "canonical_payload": {
+        "amount": 704,
+        "coins": [
+          1,
+          2,
+          3,
+          829,
+          2176
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":704,\"coins\":[1,2,3,829,2176]}",
+      "canonical_payload_sha256": "6dd19b1b5a979c2b2dc9888ca98cc42607f34c9a543b8d285bff027741e87480",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 71,
+      "bank_first_raw_array_position_1based": 73,
+      "raw_bank_array_positions_1based": [
+        73
+      ],
+      "oracle_array_position_1based": 71,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 704,
+      "coins_sorted": [
+        1,
+        2,
+        3,
+        829,
+        2176
+      ],
+      "raw_input_ids": [
+        "H073"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "0b99662fe09d5d698a9f3fa568b8a27fc503ff81da00d3c6b18c43ebeb563ebd"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 41654,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 36,
+      "canonical_id": "C-72749ef2d2229dab5c545824e26f3fc331bbaecf0634aac36de3b3649553362a",
+      "canonical_payload": {
+        "amount": 59,
+        "coins": [
+          1,
+          33,
+          39,
+          42,
+          52,
+          54
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":59,\"coins\":[1,33,39,42,52,54]}",
+      "canonical_payload_sha256": "72749ef2d2229dab5c545824e26f3fc331bbaecf0634aac36de3b3649553362a",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 16,
+      "bank_first_raw_array_position_1based": 16,
+      "raw_bank_array_positions_1based": [
+        16
+      ],
+      "oracle_array_position_1based": 16,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 59,
+      "coins_sorted": [
+        1,
+        33,
+        39,
+        42,
+        52,
+        54
+      ],
+      "raw_input_ids": [
+        "H016"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "918150c68ef330393e8d80b2083243a5963c9993d4e645a3df6d293a1bd30586"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 6,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 37,
+      "canonical_id": "C-76ae916775a57c5b17d7d1eda40f4a43454d0c0be4144a91f90416ac4d63f537",
+      "canonical_payload": {
+        "amount": 6,
+        "coins": [
+          8,
+          14,
+          15
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":6,\"coins\":[8,14,15]}",
+      "canonical_payload_sha256": "76ae916775a57c5b17d7d1eda40f4a43454d0c0be4144a91f90416ac4d63f537",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 11,
+      "bank_first_raw_array_position_1based": 11,
+      "raw_bank_array_positions_1based": [
+        11
+      ],
+      "oracle_array_position_1based": 11,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 6,
+      "coins_sorted": [
+        8,
+        14,
+        15
+      ],
+      "raw_input_ids": [
+        "H011"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "9502ca8560cce7687d7020ae7df83e781afa9985f226cc7191b3196a3c08c11f"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 38,
+      "canonical_id": "C-76ed07b4d0050d59be14fc396aae30a47294884f65f06a0a0f19322506648e2a",
+      "canonical_payload": {
+        "amount": 28,
+        "coins": [
+          173,
+          1152,
+          2384,
+          3750,
+          4254,
+          4320
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":28,\"coins\":[173,1152,2384,3750,4254,4320]}",
+      "canonical_payload_sha256": "76ed07b4d0050d59be14fc396aae30a47294884f65f06a0a0f19322506648e2a",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 62,
+      "bank_first_raw_array_position_1based": 64,
+      "raw_bank_array_positions_1based": [
+        64
+      ],
+      "oracle_array_position_1based": 62,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 28,
+      "coins_sorted": [
+        173,
+        1152,
+        2384,
+        3750,
+        4254,
+        4320
+      ],
+      "raw_input_ids": [
+        "H064"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "96ee76365384ee59b7e302a27dc51c65279e695053d1300cc1a06d274d8525a4"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 39,
+      "canonical_id": "C-7772f64a6bad09567a23257128675b075ccdbd338209c469bae5a1dbe729e622",
+      "canonical_payload": {
+        "amount": 24,
+        "coins": [
+          1,
+          12,
+          23,
+          33,
+          43
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":24,\"coins\":[1,12,23,33,43]}",
+      "canonical_payload_sha256": "7772f64a6bad09567a23257128675b075ccdbd338209c469bae5a1dbe729e622",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 14,
+      "bank_first_raw_array_position_1based": 14,
+      "raw_bank_array_positions_1based": [
+        14
+      ],
+      "oracle_array_position_1based": 14,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 24,
+      "coins_sorted": [
+        1,
+        12,
+        23,
+        33,
+        43
+      ],
+      "raw_input_ids": [
+        "H014"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "40e7c193777a3c3b2c8efdf629ffd89692009cc33f43ef32ab004017ccce5f13"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 4,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 40,
+      "canonical_id": "C-7c89ad0bdb8a13827babbce4526bd1c2ce09f5e254bcb5715fc44f44352c4c86",
+      "canonical_payload": {
+        "amount": 3838,
+        "coins": [
+          399,
+          1277,
+          1533,
+          1556,
+          1601,
+          3764,
+          3924,
+          4093,
+          4628,
+          4709
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3838,\"coins\":[399,1277,1533,1556,1601,3764,3924,4093,4628,4709]}",
+      "canonical_payload_sha256": "7c89ad0bdb8a13827babbce4526bd1c2ce09f5e254bcb5715fc44f44352c4c86",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 51,
+      "bank_first_raw_array_position_1based": 51,
+      "raw_bank_array_positions_1based": [
+        51
+      ],
+      "oracle_array_position_1based": 51,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 3838,
+      "coins_sorted": [
+        399,
+        1277,
+        1533,
+        1556,
+        1601,
+        3764,
+        3924,
+        4093,
+        4628,
+        4709
+      ],
+      "raw_input_ids": [
+        "H051"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "bc23927a81dd8909b5be82e59848ab96f0c20a5ee8e53fd35c4d593b33591c76"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 41,
+      "canonical_id": "C-81a88ff91fdb87741602ed8605a91b980b4f58f161f4132e9ded44f188bf9abf",
+      "canonical_payload": {
+        "amount": 686,
+        "coins": [
+          1,
+          3,
+          4,
+          289,
+          2355,
+          2844,
+          3498
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":686,\"coins\":[1,3,4,289,2355,2844,3498]}",
+      "canonical_payload_sha256": "81a88ff91fdb87741602ed8605a91b980b4f58f161f4132e9ded44f188bf9abf",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 75,
+      "bank_first_raw_array_position_1based": 77,
+      "raw_bank_array_positions_1based": [
+        77
+      ],
+      "oracle_array_position_1based": 75,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 686,
+      "coins_sorted": [
+        1,
+        3,
+        4,
+        289,
+        2355,
+        2844,
+        3498
+      ],
+      "raw_input_ids": [
+        "H077"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "fd319c748c9d89cee0e2f6db713321d3353758683e3648457aa997e60920dc49"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 27060,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 42,
+      "canonical_id": "C-82f4ab934c0b9c946b8dc385cccbfc0842b5f665e0537cf50b34d14ea04103d3",
+      "canonical_payload": {
+        "amount": 0,
+        "coins": [
+          2
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":0,\"coins\":[2]}",
+      "canonical_payload_sha256": "82f4ab934c0b9c946b8dc385cccbfc0842b5f665e0537cf50b34d14ea04103d3",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 2,
+      "bank_first_raw_array_position_1based": 2,
+      "raw_bank_array_positions_1based": [
+        2
+      ],
+      "oracle_array_position_1based": 2,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 0,
+      "coins_sorted": [
+        2
+      ],
+      "raw_input_ids": [
+        "H002"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "d3a48f1975d9a09adf6634d8377ad09315c84ba115dc793c2abfdf2b06e13ff1"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 43,
+      "canonical_id": "C-842b7f4d01692b3e035809dc9b333f2249c6403e30bda2176a7e0d091e647522",
+      "canonical_payload": {
+        "amount": 7,
+        "coins": [
+          16
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":7,\"coins\":[16]}",
+      "canonical_payload_sha256": "842b7f4d01692b3e035809dc9b333f2249c6403e30bda2176a7e0d091e647522",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 6,
+      "bank_first_raw_array_position_1based": 6,
+      "raw_bank_array_positions_1based": [
+        6
+      ],
+      "oracle_array_position_1based": 6,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 7,
+      "coins_sorted": [
+        16
+      ],
+      "raw_input_ids": [
+        "H006"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "969bdab8db82e5bbca78b40d50e818a84c2c8cbe1ef162ad522e6a5ed76bfe87"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 44,
+      "canonical_id": "C-86c00f1eb7421d38b1f6c038191af205d28c5b79445a1fb2f2859e6891053d82",
+      "canonical_payload": {
+        "amount": 10,
+        "coins": [
+          20
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":10,\"coins\":[20]}",
+      "canonical_payload_sha256": "86c00f1eb7421d38b1f6c038191af205d28c5b79445a1fb2f2859e6891053d82",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 12,
+      "bank_first_raw_array_position_1based": 12,
+      "raw_bank_array_positions_1based": [
+        12
+      ],
+      "oracle_array_position_1based": 12,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 10,
+      "coins_sorted": [
+        20
+      ],
+      "raw_input_ids": [
+        "H012"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "714c219bafe83026cf0fd4e60da646816e09d329ffd525672af6cb2c7b17facf"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 45,
+      "canonical_id": "C-87f7045fbf69e462dacef46bc62c4a8b0cdf2a12a2671e4a5a69d38c02bf6fb8",
+      "canonical_payload": {
+        "amount": 3891,
+        "coins": [
+          530,
+          1580,
+          1730,
+          2360,
+          4040
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3891,\"coins\":[530,1580,1730,2360,4040]}",
+      "canonical_payload_sha256": "87f7045fbf69e462dacef46bc62c4a8b0cdf2a12a2671e4a5a69d38c02bf6fb8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 63,
+      "bank_first_raw_array_position_1based": 65,
+      "raw_bank_array_positions_1based": [
+        65
+      ],
+      "oracle_array_position_1based": 63,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 3891,
+      "coins_sorted": [
+        530,
+        1580,
+        1730,
+        2360,
+        4040
+      ],
+      "raw_input_ids": [
+        "H065"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "f588a0094f3cb56be779ecfa939291218dc13f49562d97819835df436b8660d6"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 46,
+      "canonical_id": "C-8a4c12b9c9f1fb7c00ca3dc233aba2242c8837e6bda12cb64cc0f91cc719911a",
+      "canonical_payload": {
+        "amount": 22,
+        "coins": [
+          1,
+          8,
+          26,
+          31,
+          47
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":22,\"coins\":[1,8,26,31,47]}",
+      "canonical_payload_sha256": "8a4c12b9c9f1fb7c00ca3dc233aba2242c8837e6bda12cb64cc0f91cc719911a",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 15,
+      "bank_first_raw_array_position_1based": 15,
+      "raw_bank_array_positions_1based": [
+        15
+      ],
+      "oracle_array_position_1based": 15,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 22,
+      "coins_sorted": [
+        1,
+        8,
+        26,
+        31,
+        47
+      ],
+      "raw_input_ids": [
+        "H015"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "45c197014bfc09659995c3cc72f9e2113ed8333ff9cddb6cbe620516166002cd"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 3,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 47,
+      "canonical_id": "C-8bf20eb403eea8a58fae8368aa3981538e1178bf1a37e76e29e16fec825b89c8",
+      "canonical_payload": {
+        "amount": 578,
+        "coins": [
+          135,
+          259,
+          346,
+          350,
+          435,
+          543,
+          829,
+          938,
+          1049,
+          1144,
+          1174,
+          1227,
+          1293,
+          1343,
+          1424,
+          1716,
+          1908,
+          1951,
+          2198,
+          2252,
+          2445,
+          2463,
+          2763,
+          2770,
+          2896,
+          2990,
+          3029,
+          3070,
+          3110,
+          3192,
+          3505,
+          3510,
+          3782,
+          3835,
+          4101,
+          4245,
+          4466,
+          4571,
+          4628,
+          4752,
+          4830,
+          4925
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":578,\"coins\":[135,259,346,350,435,543,829,938,1049,1144,1174,1227,1293,1343,1424,1716,1908,1951,2198,2252,2445,2463,2763,2770,2896,2990,3029,3070,3110,3192,3505,3510,3782,3835,4101,4245,4466,4571,4628,4752,4830,4925]}",
+      "canonical_payload_sha256": "8bf20eb403eea8a58fae8368aa3981538e1178bf1a37e76e29e16fec825b89c8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 47,
+      "bank_first_raw_array_position_1based": 47,
+      "raw_bank_array_positions_1based": [
+        47
+      ],
+      "oracle_array_position_1based": 47,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 578,
+      "coins_sorted": [
+        135,
+        259,
+        346,
+        350,
+        435,
+        543,
+        829,
+        938,
+        1049,
+        1144,
+        1174,
+        1227,
+        1293,
+        1343,
+        1424,
+        1716,
+        1908,
+        1951,
+        2198,
+        2252,
+        2445,
+        2463,
+        2763,
+        2770,
+        2896,
+        2990,
+        3029,
+        3070,
+        3110,
+        3192,
+        3505,
+        3510,
+        3782,
+        3835,
+        4101,
+        4245,
+        4466,
+        4571,
+        4628,
+        4752,
+        4830,
+        4925
+      ],
+      "raw_input_ids": [
+        "H047"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "5bc30b54edee160ad1f2a3086b2244f70dc44a923e30667f7299109cbe2eebd1"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 48,
+      "canonical_id": "C-91548816519c202e664d5655f5f429fcfd2239c7c87196d21d880d1536895ff0",
+      "canonical_payload": {
+        "amount": 2677,
+        "coins": [
+          480,
+          1122,
+          1158,
+          3012
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":2677,\"coins\":[480,1122,1158,3012]}",
+      "canonical_payload_sha256": "91548816519c202e664d5655f5f429fcfd2239c7c87196d21d880d1536895ff0",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 66,
+      "bank_first_raw_array_position_1based": 68,
+      "raw_bank_array_positions_1based": [
+        68
+      ],
+      "oracle_array_position_1based": 66,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 2677,
+      "coins_sorted": [
+        480,
+        1122,
+        1158,
+        3012
+      ],
+      "raw_input_ids": [
+        "H068"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "df162bd617b3566c2f5c68685e06c1e648895147afc810f152903ad244d21d54"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 49,
+      "canonical_id": "C-91a735e8997f071a7e47404ff5179d0f882ff10a2ccd217d3e247f945dc8215b",
+      "canonical_payload": {
+        "amount": 8,
+        "coins": [
+          16
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":8,\"coins\":[16]}",
+      "canonical_payload_sha256": "91a735e8997f071a7e47404ff5179d0f882ff10a2ccd217d3e247f945dc8215b",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 7,
+      "bank_first_raw_array_position_1based": 7,
+      "raw_bank_array_positions_1based": [
+        7
+      ],
+      "oracle_array_position_1based": 7,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 8,
+      "coins_sorted": [
+        16
+      ],
+      "raw_input_ids": [
+        "H007"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "a247906bbebb0293f381de5341ba42de1866ac1037612ab8f826df75b3d86653"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 50,
+      "canonical_id": "C-96022af4646cf5192344df5a8ec3d86d7097c1405baedd07b1c214908996dd9e",
+      "canonical_payload": {
+        "amount": 593,
+        "coins": [
+          1,
+          3,
+          4,
+          2836,
+          3982
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":593,\"coins\":[1,3,4,2836,3982]}",
+      "canonical_payload_sha256": "96022af4646cf5192344df5a8ec3d86d7097c1405baedd07b1c214908996dd9e",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 74,
+      "bank_first_raw_array_position_1based": 76,
+      "raw_bank_array_positions_1based": [
+        76
+      ],
+      "oracle_array_position_1based": 74,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 593,
+      "coins_sorted": [
+        1,
+        3,
+        4,
+        2836,
+        3982
+      ],
+      "raw_input_ids": [
+        "H076"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "5e5f81445bc3c2c1b5025f684f2ba0a5cad52b3eb53bc171eb1e8a4bd29809b2"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 14850,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 51,
+      "canonical_id": "C-962109e4950e01f83462883fe0394fe3d46d4f08ce0b7ce8f7f98a161743330b",
+      "canonical_payload": {
+        "amount": 4582,
+        "coins": [
+          394,
+          987,
+          1365,
+          2008,
+          2152,
+          2458,
+          2638,
+          3086,
+          4113,
+          4672
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4582,\"coins\":[394,987,1365,2008,2152,2458,2638,3086,4113,4672]}",
+      "canonical_payload_sha256": "962109e4950e01f83462883fe0394fe3d46d4f08ce0b7ce8f7f98a161743330b",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 52,
+      "bank_first_raw_array_position_1based": 52,
+      "raw_bank_array_positions_1based": [
+        52
+      ],
+      "oracle_array_position_1based": 52,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 4582,
+      "coins_sorted": [
+        394,
+        987,
+        1365,
+        2008,
+        2152,
+        2458,
+        2638,
+        3086,
+        4113,
+        4672
+      ],
+      "raw_input_ids": [
+        "H052"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "74a618554db1c4a273517fa9459cc6115144ea8a41bbf677b1250365b7b3ad5c"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 52,
+      "canonical_id": "C-965796408ca89f5332f65fd3a5f96834dc316aec35250ec35cf70212eb135ea8",
+      "canonical_payload": {
+        "amount": 3628,
+        "coins": [
+          3412,
+          3628
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3628,\"coins\":[3412,3628]}",
+      "canonical_payload_sha256": "965796408ca89f5332f65fd3a5f96834dc316aec35250ec35cf70212eb135ea8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 33,
+      "bank_first_raw_array_position_1based": 33,
+      "raw_bank_array_positions_1based": [
+        33
+      ],
+      "oracle_array_position_1based": 33,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 3628,
+      "coins_sorted": [
+        3412,
+        3628
+      ],
+      "raw_input_ids": [
+        "H033"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8e0363dcae31db004f7e26d40737b9fda460ec0835a728cca20e7db1c813f263"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 53,
+      "canonical_id": "C-9ade4f332419d755dbddce317ed6b211eb2a185471566d49154e82dc9242d890",
+      "canonical_payload": {
+        "amount": 6,
+        "coins": [
+          1,
+          3,
+          4
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":6,\"coins\":[1,3,4]}",
+      "canonical_payload_sha256": "9ade4f332419d755dbddce317ed6b211eb2a185471566d49154e82dc9242d890",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 73,
+      "bank_first_raw_array_position_1based": 75,
+      "raw_bank_array_positions_1based": [
+        75
+      ],
+      "oracle_array_position_1based": 73,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 6,
+      "coins_sorted": [
+        1,
+        3,
+        4
+      ],
+      "raw_input_ids": [
+        "H075"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "aedbb6d7bb6221f3e5e2fdbfa8d47f9455d902060dc80602fd28282f00bfb04e"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 4,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 54,
+      "canonical_id": "C-9ce4be5aeaf88ba31d985b654d9b1ac1f84693bb9f8c0b7df0076ae93fd04b24",
+      "canonical_payload": {
+        "amount": 4100,
+        "coins": [
+          3441,
+          4100
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4100,\"coins\":[3441,4100]}",
+      "canonical_payload_sha256": "9ce4be5aeaf88ba31d985b654d9b1ac1f84693bb9f8c0b7df0076ae93fd04b24",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 34,
+      "bank_first_raw_array_position_1based": 34,
+      "raw_bank_array_positions_1based": [
+        34
+      ],
+      "oracle_array_position_1based": 34,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 4100,
+      "coins_sorted": [
+        3441,
+        4100
+      ],
+      "raw_input_ids": [
+        "H034"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "5cccbd9ac5c8cb229f196de53a0b8df6417970d6f91a3719ee3f9a0e52aea085"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 55,
+      "canonical_id": "C-a0621265d260222775e59fedeb389aee1acadc393e755facb0105dd06b375978",
+      "canonical_payload": {
+        "amount": 702,
+        "coins": [
+          1,
+          2,
+          3,
+          37,
+          780,
+          4042
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":702,\"coins\":[1,2,3,37,780,4042]}",
+      "canonical_payload_sha256": "a0621265d260222775e59fedeb389aee1acadc393e755facb0105dd06b375978",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 68,
+      "bank_first_raw_array_position_1based": 70,
+      "raw_bank_array_positions_1based": [
+        70
+      ],
+      "oracle_array_position_1based": 68,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 702,
+      "coins_sorted": [
+        1,
+        2,
+        3,
+        37,
+        780,
+        4042
+      ],
+      "raw_input_ids": [
+        "H070"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "0ce42f77caca81034372576312b951c1207a26dd9fe00dd1fcac6dcb7ec889e0"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 284134,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 56,
+      "canonical_id": "C-a237744c2a4a6816529f054870fbba3e5c9488f00ecfdb3b8372ccac55b0692e",
+      "canonical_payload": {
+        "amount": 288,
+        "coins": [
+          1,
+          2,
+          3
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":288,\"coins\":[1,2,3]}",
+      "canonical_payload_sha256": "a237744c2a4a6816529f054870fbba3e5c9488f00ecfdb3b8372ccac55b0692e",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 67,
+      "bank_first_raw_array_position_1based": 69,
+      "raw_bank_array_positions_1based": [
+        69
+      ],
+      "oracle_array_position_1based": 67,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 288,
+      "coins_sorted": [
+        1,
+        2,
+        3
+      ],
+      "raw_input_ids": [
+        "H069"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "457e1559858794442bae1531638dd55fa81e2105e4a2474111479f8ee4f25160"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 7057,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 57,
+      "canonical_id": "C-a2cb0b820dbbc2ce4d25b92351adcbabdf6b5911daa8d2418e700465ce38301c",
+      "canonical_payload": {
+        "amount": 60,
+        "coins": [
+          2,
+          58
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":60,\"coins\":[2,58]}",
+      "canonical_payload_sha256": "a2cb0b820dbbc2ce4d25b92351adcbabdf6b5911daa8d2418e700465ce38301c",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 17,
+      "bank_first_raw_array_position_1based": 17,
+      "raw_bank_array_positions_1based": [
+        17
+      ],
+      "oracle_array_position_1based": 17,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 60,
+      "coins_sorted": [
+        2,
+        58
+      ],
+      "raw_input_ids": [
+        "H017"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "210d15ccba8e847d346e3048f86934b5775bd64ae03eaa2fd1f907ecf9ebdeb7"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 2,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 58,
+      "canonical_id": "C-a41a4ba6cc5e1ca1abbfc5165c3efa738d894df83492fa464011b0db170689ef",
+      "canonical_payload": {
+        "amount": 606,
+        "coins": [
+          1,
+          2,
+          3,
+          675,
+          4700
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":606,\"coins\":[1,2,3,675,4700]}",
+      "canonical_payload_sha256": "a41a4ba6cc5e1ca1abbfc5165c3efa738d894df83492fa464011b0db170689ef",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 69,
+      "bank_first_raw_array_position_1based": 71,
+      "raw_bank_array_positions_1based": [
+        71
+      ],
+      "oracle_array_position_1based": 69,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 606,
+      "coins_sorted": [
+        1,
+        2,
+        3,
+        675,
+        4700
+      ],
+      "raw_input_ids": [
+        "H071"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "57434598edde909744b830c795282f513a9d201e79c85dc8e6ce0b642f50d55e"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 30907,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 59,
+      "canonical_id": "C-a4a1e5f9d70b7df663347e4e1d3a18b1a2e0fe184a65a8c7624d2b28bb84d819",
+      "canonical_payload": {
+        "amount": 10,
+        "coins": [
+          1,
+          3,
+          5,
+          20
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":10,\"coins\":[1,3,5,20]}",
+      "canonical_payload_sha256": "a4a1e5f9d70b7df663347e4e1d3a18b1a2e0fe184a65a8c7624d2b28bb84d819",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 5,
+      "bank_first_raw_array_position_1based": 5,
+      "raw_bank_array_positions_1based": [
+        5
+      ],
+      "oracle_array_position_1based": 5,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 10,
+      "coins_sorted": [
+        1,
+        3,
+        5,
+        20
+      ],
+      "raw_input_ids": [
+        "H005"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "d18fea050a12989858e7066e6f6fbd40762bed3dcc3ba68e3083829d33db1669"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 7,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 60,
+      "canonical_id": "C-a528d44bdb3193afaf8635138d7c9f3cb743828c5f4856a26a6edaebfd4586e2",
+      "canonical_payload": {
+        "amount": 546,
+        "coins": [
+          481,
+          1356
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":546,\"coins\":[481,1356]}",
+      "canonical_payload_sha256": "a528d44bdb3193afaf8635138d7c9f3cb743828c5f4856a26a6edaebfd4586e2",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 39,
+      "bank_first_raw_array_position_1based": 39,
+      "raw_bank_array_positions_1based": [
+        39
+      ],
+      "oracle_array_position_1based": 39,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 546,
+      "coins_sorted": [
+        481,
+        1356
+      ],
+      "raw_input_ids": [
+        "H039"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "fd466e78976f0e9b629e0fcfa2aa24767126ffcd74aed1bc8207ae57bab292c4"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 61,
+      "canonical_id": "C-ad6ab3cd2fe7b1c13f74063179049f70260fad8275586b19b7d092818e36b802",
+      "canonical_payload": {
+        "amount": 678,
+        "coins": [
+          1,
+          3,
+          4,
+          90,
+          505,
+          1905,
+          3454
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":678,\"coins\":[1,3,4,90,505,1905,3454]}",
+      "canonical_payload_sha256": "ad6ab3cd2fe7b1c13f74063179049f70260fad8275586b19b7d092818e36b802",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 76,
+      "bank_first_raw_array_position_1based": 78,
+      "raw_bank_array_positions_1based": [
+        78
+      ],
+      "oracle_array_position_1based": 76,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 678,
+      "coins_sorted": [
+        1,
+        3,
+        4,
+        90,
+        505,
+        1905,
+        3454
+      ],
+      "raw_input_ids": [
+        "H078"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "576803fe037e4e249cd20e0fdd3d455e441b04265ea7403078d721a6a5868c3b"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 60692,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 62,
+      "canonical_id": "C-ae507e49a4ebd4ca6b070508551af965d5913e8f5099819c1b01987a57358b65",
+      "canonical_payload": {
+        "amount": 3771,
+        "coins": [
+          23,
+          249,
+          399,
+          847,
+          1037,
+          1277,
+          1359,
+          1379,
+          1400,
+          1415,
+          1571,
+          1878,
+          1985,
+          2207,
+          2712,
+          2810,
+          2934,
+          2991,
+          3107,
+          3214,
+          3250,
+          3288,
+          3312,
+          3391,
+          3822,
+          3891,
+          3998,
+          4086,
+          4326,
+          4495
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3771,\"coins\":[23,249,399,847,1037,1277,1359,1379,1400,1415,1571,1878,1985,2207,2712,2810,2934,2991,3107,3214,3250,3288,3312,3391,3822,3891,3998,4086,4326,4495]}",
+      "canonical_payload_sha256": "ae507e49a4ebd4ca6b070508551af965d5913e8f5099819c1b01987a57358b65",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 55,
+      "bank_first_raw_array_position_1based": 55,
+      "raw_bank_array_positions_1based": [
+        55
+      ],
+      "oracle_array_position_1based": 55,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 3771,
+      "coins_sorted": [
+        23,
+        249,
+        399,
+        847,
+        1037,
+        1277,
+        1359,
+        1379,
+        1400,
+        1415,
+        1571,
+        1878,
+        1985,
+        2207,
+        2712,
+        2810,
+        2934,
+        2991,
+        3107,
+        3214,
+        3250,
+        3288,
+        3312,
+        3391,
+        3822,
+        3891,
+        3998,
+        4086,
+        4326,
+        4495
+      ],
+      "raw_input_ids": [
+        "H055"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "235e0cb68285e0cb82e164978609c3fa39a33929a418f433e357f22917d2ab25"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 56,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 63,
+      "canonical_id": "C-b91e539d8a05a210855957b3f445e53011b5496bc81a5b76fe6ec95617f9874d",
+      "canonical_payload": {
+        "amount": 186,
+        "coins": [
+          1,
+          3,
+          4,
+          774,
+          2037
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":186,\"coins\":[1,3,4,774,2037]}",
+      "canonical_payload_sha256": "b91e539d8a05a210855957b3f445e53011b5496bc81a5b76fe6ec95617f9874d",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 78,
+      "bank_first_raw_array_position_1based": 80,
+      "raw_bank_array_positions_1based": [
+        80
+      ],
+      "oracle_array_position_1based": 78,
+      "stratum": "H8",
+      "rule_id": "H8",
+      "amount": 186,
+      "coins_sorted": [
+        1,
+        3,
+        4,
+        774,
+        2037
+      ],
+      "raw_input_ids": [
+        "H080"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "278acb73d89ad2837bcf2635beaffdfa096e1d7c768c27d9553a116b60d976d1"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1504,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 64,
+      "canonical_id": "C-bb158187edbc312fdf0d2dab7f020e62b45021186fe617e58a28d934d140ce46",
+      "canonical_payload": {
+        "amount": 1150,
+        "coins": [
+          2451,
+          3766
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1150,\"coins\":[2451,3766]}",
+      "canonical_payload_sha256": "bb158187edbc312fdf0d2dab7f020e62b45021186fe617e58a28d934d140ce46",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 59,
+      "bank_first_raw_array_position_1based": 61,
+      "raw_bank_array_positions_1based": [
+        61
+      ],
+      "oracle_array_position_1based": 59,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 1150,
+      "coins_sorted": [
+        2451,
+        3766
+      ],
+      "raw_input_ids": [
+        "H061"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8e6dff87e2b973a4c8ff64e8f36016af75743baad47a91e67cef7e5a6eb801fe"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 65,
+      "canonical_id": "C-bbedfe42bd8085eae34ab8ddc69781faaf203141045bfe71274fa487684097f0",
+      "canonical_payload": {
+        "amount": 4729,
+        "coins": [
+          18
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":4729,\"coins\":[18]}",
+      "canonical_payload_sha256": "bbedfe42bd8085eae34ab8ddc69781faaf203141045bfe71274fa487684097f0",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 31,
+      "bank_first_raw_array_position_1based": 31,
+      "raw_bank_array_positions_1based": [
+        31
+      ],
+      "oracle_array_position_1based": 31,
+      "stratum": "H3",
+      "rule_id": "H3",
+      "amount": 4729,
+      "coins_sorted": [
+        18
+      ],
+      "raw_input_ids": [
+        "H031"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "491ddf1fc09544f258903af1005dc06a13c4c9b8d140099c41354a4b937ff3d0"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 66,
+      "canonical_id": "C-c205615beec92bc102ba9bd55ae52538bb2e6f9b3fa8f76d5d731238e3f31ff5",
+      "canonical_payload": {
+        "amount": 2,
+        "coins": [
+          4,
+          11
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":2,\"coins\":[4,11]}",
+      "canonical_payload_sha256": "c205615beec92bc102ba9bd55ae52538bb2e6f9b3fa8f76d5d731238e3f31ff5",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 8,
+      "bank_first_raw_array_position_1based": 8,
+      "raw_bank_array_positions_1based": [
+        8
+      ],
+      "oracle_array_position_1based": 8,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 2,
+      "coins_sorted": [
+        4,
+        11
+      ],
+      "raw_input_ids": [
+        "H008"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "d4b115e35f37c98cd2e3be00978de08858c119ee25e510e500adb417ac641fc8"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 67,
+      "canonical_id": "C-c215b1546159e06545be9fef19d6584eceb9e65214efa2205787bcceef7be3c8",
+      "canonical_payload": {
+        "amount": 2,
+        "coins": [
+          8,
+          14
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":2,\"coins\":[8,14]}",
+      "canonical_payload_sha256": "c215b1546159e06545be9fef19d6584eceb9e65214efa2205787bcceef7be3c8",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 10,
+      "bank_first_raw_array_position_1based": 10,
+      "raw_bank_array_positions_1based": [
+        10
+      ],
+      "oracle_array_position_1based": 10,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 2,
+      "coins_sorted": [
+        8,
+        14
+      ],
+      "raw_input_ids": [
+        "H010"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8f7a2cdf0cf7dcfd21a98793b8474db58553b2444df65b79d020e02a768150aa"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 68,
+      "canonical_id": "C-c47bd35ff18d728597430b3be95b930ba1aa729ff291a06b7bd87556a1ca94ee",
+      "canonical_payload": {
+        "amount": 3974,
+        "coins": [
+          72,
+          78,
+          223,
+          278,
+          366,
+          389,
+          444,
+          447,
+          462,
+          548,
+          660,
+          812,
+          934,
+          1035,
+          1073,
+          1492,
+          1566,
+          1746,
+          1799,
+          2222,
+          2274,
+          2805,
+          3184,
+          3197,
+          3454,
+          3597,
+          3852,
+          3866,
+          4031,
+          4192,
+          4262,
+          4290,
+          4430,
+          4496,
+          4770,
+          4825,
+          4835,
+          4949,
+          4982
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":3974,\"coins\":[72,78,223,278,366,389,444,447,462,548,660,812,934,1035,1073,1492,1566,1746,1799,2222,2274,2805,3184,3197,3454,3597,3852,3866,4031,4192,4262,4290,4430,4496,4770,4825,4835,4949,4982]}",
+      "canonical_payload_sha256": "c47bd35ff18d728597430b3be95b930ba1aa729ff291a06b7bd87556a1ca94ee",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 56,
+      "bank_first_raw_array_position_1based": 56,
+      "raw_bank_array_positions_1based": [
+        56
+      ],
+      "oracle_array_position_1based": 56,
+      "stratum": "H6",
+      "rule_id": "H6",
+      "amount": 3974,
+      "coins_sorted": [
+        72,
+        78,
+        223,
+        278,
+        366,
+        389,
+        444,
+        447,
+        462,
+        548,
+        660,
+        812,
+        934,
+        1035,
+        1073,
+        1492,
+        1566,
+        1746,
+        1799,
+        2222,
+        2274,
+        2805,
+        3184,
+        3197,
+        3454,
+        3597,
+        3852,
+        3866,
+        4031,
+        4192,
+        4262,
+        4290,
+        4430,
+        4496,
+        4770,
+        4825,
+        4835,
+        4949,
+        4982
+      ],
+      "raw_input_ids": [
+        "H056"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "743931af38b6d905ea12529692358fe7779839d99efae9654e7de2011de416cf"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 15955,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 69,
+      "canonical_id": "C-c68c2c5f6011f955ae178f447d5d4f9af70c3ae0019552f9bc8e92d55a848ce6",
+      "canonical_payload": {
+        "amount": 1054,
+        "coins": [
+          136,
+          1731
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1054,\"coins\":[136,1731]}",
+      "canonical_payload_sha256": "c68c2c5f6011f955ae178f447d5d4f9af70c3ae0019552f9bc8e92d55a848ce6",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 36,
+      "bank_first_raw_array_position_1based": 36,
+      "raw_bank_array_positions_1based": [
+        36
+      ],
+      "oracle_array_position_1based": 36,
+      "stratum": "H4",
+      "rule_id": "H4",
+      "amount": 1054,
+      "coins_sorted": [
+        136,
+        1731
+      ],
+      "raw_input_ids": [
+        "H036"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "9842f5e3b10bfe88704a3d0dd41d309f8607b4f83652e19cde557a4e260a7c56"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 70,
+      "canonical_id": "C-ce71cdd6f84ffe42d57ed28192d0f6904069ce303c984e1ba851ae4db82b7775",
+      "canonical_payload": {
+        "amount": 637,
+        "coins": [
+          40,
+          96,
+          107,
+          182,
+          295,
+          337,
+          391,
+          460,
+          506,
+          571,
+          591,
+          609,
+          610,
+          737,
+          969,
+          1057,
+          1104,
+          1116,
+          1135,
+          1211,
+          1229,
+          1379,
+          1394,
+          1541,
+          1544,
+          1594,
+          1699,
+          1710,
+          1811,
+          1844,
+          1924,
+          1930,
+          1975,
+          2022,
+          2032,
+          2104,
+          2119,
+          2150,
+          2189,
+          2231,
+          2311,
+          2361,
+          2373,
+          2545,
+          2590,
+          2636,
+          2660,
+          2667,
+          2810,
+          2984,
+          3003,
+          3076,
+          3216,
+          3255,
+          3331,
+          3346,
+          3363,
+          3521,
+          3523,
+          3544,
+          3551,
+          3656,
+          3673,
+          3752,
+          3793,
+          3808,
+          3873,
+          3898,
+          3971,
+          4250,
+          4418,
+          4531,
+          4554,
+          4589,
+          4717,
+          4736,
+          4755,
+          4800,
+          4805,
+          4854,
+          4897,
+          4908,
+          4970
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":637,\"coins\":[40,96,107,182,295,337,391,460,506,571,591,609,610,737,969,1057,1104,1116,1135,1211,1229,1379,1394,1541,1544,1594,1699,1710,1811,1844,1924,1930,1975,2022,2032,2104,2119,2150,2189,2231,2311,2361,2373,2545,2590,2636,2660,2667,2810,2984,3003,3076,3216,3255,3331,3346,3363,3521,3523,3544,3551,3656,3673,3752,3793,3808,3873,3898,3971,4250,4418,4531,4554,4589,4717,4736,4755,4800,4805,4854,4897,4908,4970]}",
+      "canonical_payload_sha256": "ce71cdd6f84ffe42d57ed28192d0f6904069ce303c984e1ba851ae4db82b7775",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 45,
+      "bank_first_raw_array_position_1based": 45,
+      "raw_bank_array_positions_1based": [
+        45
+      ],
+      "oracle_array_position_1based": 45,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 637,
+      "coins_sorted": [
+        40,
+        96,
+        107,
+        182,
+        295,
+        337,
+        391,
+        460,
+        506,
+        571,
+        591,
+        609,
+        610,
+        737,
+        969,
+        1057,
+        1104,
+        1116,
+        1135,
+        1211,
+        1229,
+        1379,
+        1394,
+        1541,
+        1544,
+        1594,
+        1699,
+        1710,
+        1811,
+        1844,
+        1924,
+        1930,
+        1975,
+        2022,
+        2032,
+        2104,
+        2119,
+        2150,
+        2189,
+        2231,
+        2311,
+        2361,
+        2373,
+        2545,
+        2590,
+        2636,
+        2660,
+        2667,
+        2810,
+        2984,
+        3003,
+        3076,
+        3216,
+        3255,
+        3331,
+        3346,
+        3363,
+        3521,
+        3523,
+        3544,
+        3551,
+        3656,
+        3673,
+        3752,
+        3793,
+        3808,
+        3873,
+        3898,
+        3971,
+        4250,
+        4418,
+        4531,
+        4554,
+        4589,
+        4717,
+        4736,
+        4755,
+        4800,
+        4805,
+        4854,
+        4897,
+        4908,
+        4970
+      ],
+      "raw_input_ids": [
+        "H045"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "a9bfc8dcab55b38dfbcaf4f639b7be4f981c1177b1bf2a6512630dc8ee395469"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 1,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 71,
+      "canonical_id": "C-d2e3430d200402cdf16465468c6695ccad0bcab4f18200bd84d0000ce8f13241",
+      "canonical_payload": {
+        "amount": 70,
+        "coins": [
+          268,
+          522,
+          3785
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":70,\"coins\":[268,522,3785]}",
+      "canonical_payload_sha256": "d2e3430d200402cdf16465468c6695ccad0bcab4f18200bd84d0000ce8f13241",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 61,
+      "bank_first_raw_array_position_1based": 63,
+      "raw_bank_array_positions_1based": [
+        63
+      ],
+      "oracle_array_position_1based": 61,
+      "stratum": "H7",
+      "rule_id": "H7",
+      "amount": 70,
+      "coins_sorted": [
+        268,
+        522,
+        3785
+      ],
+      "raw_input_ids": [
+        "H063"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "beb2239dad6a78d83b9440abc8176ad3f3e67fc0c2b79aab191c598bde15e4fd"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 72,
+      "canonical_id": "C-e0cf8bb5424893229cd7b75877ee78c4a2649ea2f30f8051c5a2b2e5a2815164",
+      "canonical_payload": {
+        "amount": 12,
+        "coins": [
+          2,
+          3
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":12,\"coins\":[2,3]}",
+      "canonical_payload_sha256": "e0cf8bb5424893229cd7b75877ee78c4a2649ea2f30f8051c5a2b2e5a2815164",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 4,
+      "bank_first_raw_array_position_1based": 4,
+      "raw_bank_array_positions_1based": [
+        4
+      ],
+      "oracle_array_position_1based": 4,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 12,
+      "coins_sorted": [
+        2,
+        3
+      ],
+      "raw_input_ids": [
+        "H004"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "726ec14ceded77fc355d9641fd19eac8e79a14a305b748f0d4161d5a06fd7ab8"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 3,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 73,
+      "canonical_id": "C-e0eb46941bb0b176ab90daf9c44830fa55b60cb9e03759b2a14ead2618ef220c",
+      "canonical_payload": {
+        "amount": 35,
+        "coins": [
+          1,
+          20,
+          23,
+          37
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":35,\"coins\":[1,20,23,37]}",
+      "canonical_payload_sha256": "e0eb46941bb0b176ab90daf9c44830fa55b60cb9e03759b2a14ead2618ef220c",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 18,
+      "bank_first_raw_array_position_1based": 18,
+      "raw_bank_array_positions_1based": [
+        18
+      ],
+      "oracle_array_position_1based": 18,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 35,
+      "coins_sorted": [
+        1,
+        20,
+        23,
+        37
+      ],
+      "raw_input_ids": [
+        "H018"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "057649992fcba522c39d783f33a98b0cf0f41231d0f58486e0b4f00c77057774"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 3,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 74,
+      "canonical_id": "C-e2ee324bbe04b67d2b5feeadfc41c3691f98e9594547172ade7fb36c3db52618",
+      "canonical_payload": {
+        "amount": 22,
+        "coins": [
+          1,
+          3,
+          12,
+          14,
+          32,
+          41
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":22,\"coins\":[1,3,12,14,32,41]}",
+      "canonical_payload_sha256": "e2ee324bbe04b67d2b5feeadfc41c3691f98e9594547172ade7fb36c3db52618",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 22,
+      "bank_first_raw_array_position_1based": 22,
+      "raw_bank_array_positions_1based": [
+        22
+      ],
+      "oracle_array_position_1based": 22,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 22,
+      "coins_sorted": [
+        1,
+        3,
+        12,
+        14,
+        32,
+        41
+      ],
+      "raw_input_ids": [
+        "H022"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "e1baee0b225b3e78ab105a2ab07a5586179f21421edd7811e503bce289a5a777"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 15,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 75,
+      "canonical_id": "C-f22ee575e620e2d827a0f8d827a79f6960c0fc0e83a329c1db66312b0a8a1a1c",
+      "canonical_payload": {
+        "amount": 5,
+        "coins": [
+          10,
+          11
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":5,\"coins\":[10,11]}",
+      "canonical_payload_sha256": "f22ee575e620e2d827a0f8d827a79f6960c0fc0e83a329c1db66312b0a8a1a1c",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 9,
+      "bank_first_raw_array_position_1based": 9,
+      "raw_bank_array_positions_1based": [
+        9
+      ],
+      "oracle_array_position_1based": 9,
+      "stratum": "H1",
+      "rule_id": "H1",
+      "amount": 5,
+      "coins_sorted": [
+        10,
+        11
+      ],
+      "raw_input_ids": [
+        "H009"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "77501412acc8307c823dad3b4309283667b6d2b4c561f0b8dacf5967bf29f81c"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 0,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 76,
+      "canonical_id": "C-f3c0f2114d15f44e24fa00844e2e7b6bac356ed7dd8bc3a22a09113e0a23ef4f",
+      "canonical_payload": {
+        "amount": 33,
+        "coins": [
+          1,
+          12,
+          26,
+          40,
+          50,
+          60
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":33,\"coins\":[1,12,26,40,50,60]}",
+      "canonical_payload_sha256": "f3c0f2114d15f44e24fa00844e2e7b6bac356ed7dd8bc3a22a09113e0a23ef4f",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 21,
+      "bank_first_raw_array_position_1based": 21,
+      "raw_bank_array_positions_1based": [
+        21
+      ],
+      "oracle_array_position_1based": 21,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 33,
+      "coins_sorted": [
+        1,
+        12,
+        26,
+        40,
+        50,
+        60
+      ],
+      "raw_input_ids": [
+        "H021"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "98a425e2d99aceeee6d343bbca07007435cc53effb1eb9db06869d7964ca7662"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 4,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 77,
+      "canonical_id": "C-fa5270d52721ed7700ada4f9f208fc95fecd3e1f955b266741f5ea208214a80f",
+      "canonical_payload": {
+        "amount": 1916,
+        "coins": [
+          147,
+          306,
+          410,
+          538,
+          567,
+          576,
+          661,
+          730,
+          838,
+          897,
+          1010,
+          1098,
+          1179,
+          1202,
+          1254,
+          1321,
+          1433,
+          1466,
+          1507,
+          1569,
+          1614,
+          1688,
+          1735,
+          1923,
+          1927,
+          2091,
+          2143,
+          2170,
+          2336,
+          2504,
+          2583,
+          2699,
+          2873,
+          3074,
+          3176,
+          3189,
+          3264,
+          3309,
+          3407,
+          3477,
+          3614,
+          3729,
+          3764,
+          3813,
+          4021,
+          4070,
+          4112,
+          4146,
+          4328,
+          4334,
+          4421,
+          4471,
+          4529,
+          4549,
+          4640,
+          4672,
+          4699,
+          4734,
+          4781,
+          4897,
+          4988
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":1916,\"coins\":[147,306,410,538,567,576,661,730,838,897,1010,1098,1179,1202,1254,1321,1433,1466,1507,1569,1614,1688,1735,1923,1927,2091,2143,2170,2336,2504,2583,2699,2873,3074,3176,3189,3264,3309,3407,3477,3614,3729,3764,3813,4021,4070,4112,4146,4328,4334,4421,4471,4529,4549,4640,4672,4699,4734,4781,4897,4988]}",
+      "canonical_payload_sha256": "fa5270d52721ed7700ada4f9f208fc95fecd3e1f955b266741f5ea208214a80f",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 42,
+      "bank_first_raw_array_position_1based": 42,
+      "raw_bank_array_positions_1based": [
+        42
+      ],
+      "oracle_array_position_1based": 42,
+      "stratum": "H5",
+      "rule_id": "H5",
+      "amount": 1916,
+      "coins_sorted": [
+        147,
+        306,
+        410,
+        538,
+        567,
+        576,
+        661,
+        730,
+        838,
+        897,
+        1010,
+        1098,
+        1179,
+        1202,
+        1254,
+        1321,
+        1433,
+        1466,
+        1507,
+        1569,
+        1614,
+        1688,
+        1735,
+        1923,
+        1927,
+        2091,
+        2143,
+        2170,
+        2336,
+        2504,
+        2583,
+        2699,
+        2873,
+        3074,
+        3176,
+        3189,
+        3264,
+        3309,
+        3407,
+        3477,
+        3614,
+        3729,
+        3764,
+        3813,
+        4021,
+        4070,
+        4112,
+        4146,
+        4328,
+        4334,
+        4421,
+        4471,
+        4529,
+        4549,
+        4640,
+        4672,
+        4699,
+        4734,
+        4781,
+        4897,
+        4988
+      ],
+      "raw_input_ids": [
+        "H042"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "8e231c1574ce0c590baf040b815f42c99313e61d05027336f5a595704ac85cd4"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 3,
+      "oracle_answer_is_binary_label": false
+    },
+    {
+      "B1_identity_reporting_index": 78,
+      "canonical_id": "C-ff4bf61644e8149a6c4198f3c8ae6ce3b99f0edf49719f038a930765c0dce293",
+      "canonical_payload": {
+        "amount": 30,
+        "coins": [
+          1,
+          30
+        ]
+      },
+      "canonical_payload_compact_json": "{\"amount\":30,\"coins\":[1,30]}",
+      "canonical_payload_sha256": "ff4bf61644e8149a6c4198f3c8ae6ce3b99f0edf49719f038a930765c0dce293",
+      "canonical_id_hash_rule": "C- + SHA256(UTF-8(json.dumps({\"amount\": amount, \"coins\": sorted(coins)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False)))",
+      "bank_first_canonical_ordinal_1based": 13,
+      "bank_first_raw_array_position_1based": 13,
+      "raw_bank_array_positions_1based": [
+        13
+      ],
+      "oracle_array_position_1based": 13,
+      "stratum": "H2",
+      "rule_id": "H2",
+      "amount": 30,
+      "coins_sorted": [
+        1,
+        30
+      ],
+      "raw_input_ids": [
+        "H013"
+      ],
+      "raw_ordering_roles": [
+        "singleton"
+      ],
+      "raw_record_sha256s": [
+        "4fbb8fd060000567347b8d2db946d3bfea5dbc4eb9486e8af0e7df2fca39920e"
+      ],
+      "raw_row_count": 1,
+      "pair_ids": [],
+      "oracle_answer_integer": 2,
+      "oracle_answer_is_binary_label": false
+    }
+  ]
+}
