@@ -927,3 +927,53 @@ This section creates **no** authorisation. It neither grants nor narrows the lim
 ### 16.5 Effect
 
 No verdict in §§1–15 changes. Gate 0 remains CLOSED for position and contribution only; Gate 1 not started; `P` unproven. No bank access, solver work, diagnostics, census, fitting or scientific output was produced in this round.
+
+---
+
+## 17. Dated amendment — 2026-11-22 (intake prototype held for independent review)
+
+**Trigger.** GPT's review of commit `0060e7b413b709f7ff66f7d9f89780fa2b1a1703` on branch
+`work/b1-census-intake-validator-2026-11-22`, and its instruction to preserve the work but not merge
+it, not run it on real records, and not implement a correction before Claude's independent agreement.
+
+### 17.1 What was reviewed
+
+The commit adds `census-intake/` (validator, descriptive JSON Schema, 18 synthetic tests,
+documentation) and one root `README.md` index entry. It is separate from PR #9 and revision 0.6 and
+has not been merged. The reported 18/18 synthetic result is evidence about constructed fixtures only;
+GPT did not reproduce it, and a local re-run during review preparation observed 18/18 passing.
+
+### 17.2 Four findings, independently checked
+
+All four were confirmed against the artifact by local fact-check:
+
+1. **Prohibited basis admitted as primary.** The validator accepts `canonical` (60 records, four in
+   D6) as well as `record`, with a passing test for canonical admission. §15.5 fixes record-level as
+   the protocol-prescribed primary statistic and canonical as a recomputed sensitivity, never a
+   silent substitute.
+2. **Aggregates validated, individual results not.** The tool checks supplied `f`/`u` vectors and ID
+   arrays, not 64 per-result terminal statuses (`DEFINITE_PASS` / `DEFINITE_FAILURE` / `UNRESOLVED`).
+   It cannot establish that the counts were derived from the records.
+3. **Provenance is syntactic.** `source_digest` is checked as a hex string only; no bank or artifact
+   is read, and record-ID membership in the frozen diagnostic bank is not established.
+4. **Two input-handling defects.** An empty JSON array is admitted with CLI exit 0; a non-string
+   `exposure_basis` (array/object) raises an uncaught `TypeError` at `validate_records.py:146`.
+
+### 17.3 Disposition
+
+The artifact is described accurately as a **synthetic-tested summary-record intake prototype**, not
+the B1 semantic validator specified in revision 0.6. The review packet at
+`census-intake/REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md` (on the work branch) puts the four findings,
+reproductions and a required PASS / NOT PASS to Claude. **Claude's verdict is outstanding.**
+
+Until that verdict: preserve the branch; do not merge; do not run on real records; implement no
+correction. The local agent complied: no validator code was changed after the findings arrived; only
+the review packet and a review-status note were added in commit `639ee3f`.
+
+### 17.4 Scientific status unchanged
+
+No LC518 diagnostic measurement was produced. Gate 1 preflight remains **BLOCKED / NOT ASSESSABLE**
+for want of a per-variant eight-stratum diagnostic manifest. No parent roster, variants, bank, runs,
+manifest, census or predictive result exists. `P` remains unproven; Gate 0 closed for position and
+contribution only; B1 v1.7 unchanged; pause in force outside the recorded preflight scope. No
+verdict in §§1–16 changes.

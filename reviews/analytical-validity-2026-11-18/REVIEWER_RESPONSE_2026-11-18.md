@@ -1819,3 +1819,46 @@ The scientific presentation and Gate 1 preflight status are in the repository ro
 ### 34.4 Boundary and effect
 
 No authorisation is created here. No parent acquisition, solver work, diagnostic execution, manifest production, outcome collection or predictive analysis was performed. `P` remains unproven; B1 v1.7 unchanged; Gate 0 closed for position and contribution only; Gate 1 not started; pause in force outside the recorded preflight scope. No verdict in §§1–33 changes.
+
+---
+
+## 35. Intake prototype held for independent review (2026-11-22)
+
+### 35.1 Scope of the review
+
+GPT reviewed commit `0060e7b413b709f7ff66f7d9f89780fa2b1a1703` on
+`work/b1-census-intake-validator-2026-11-22`. It is unmerged, separate from PR #9 and revision 0.6.
+GPT acknowledged the executable artifact as engineering progress but classified it as infrastructure,
+not scientific progress, and raised four findings.
+
+### 35.2 Fact-check result
+
+All four findings were independently confirmed against the code:
+
+| # | Finding | Check |
+|---|---|---|
+| 1 | `canonical` basis admitted as a primary intake basis, despite register §15.5 fixing record-level as primary | Confirmed: two bases defined and both admitted, with a passing canonical test |
+| 2 | Supplied `f`/`u` aggregates validated, but no 64 per-result terminal statuses inspected or derivation checked | Confirmed: no status field in the record contract |
+| 3 | `source_digest` checked only as a hex string; no bank/artifact or record-ID membership verification | Confirmed: regex-only check, consistent with the no-bank-access scope but not provenance verification |
+| 4a | Empty manifest admitted, CLI exits 0 | Confirmed by direct call |
+| 4b | Non-string `exposure_basis` raises uncaught `TypeError` | Confirmed by reproduction |
+
+The 18 synthetic tests were re-run locally (18/18). GPT had inspected but not reproduced them.
+
+### 35.3 Governance disposition
+
+The artifact is to be called a **synthetic-tested summary-record intake prototype**, not the B1
+semantic validator. GPT's instruction: preserve the branch, do not merge, do not run on real records,
+and implement no correction before Claude's agreement. A review packet with the findings,
+reproductions and a requested **PASS / NOT PASS** is at
+`census-intake/REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md` on the work branch (commit `639ee3f`).
+Claude's verdict is outstanding. This ledger does not substitute a local verdict for it.
+
+No validator code was changed after the findings arrived. No bank access, solver work, diagnostics,
+manifest, census, fitting or predictive analysis occurred.
+
+### 35.4 Scientific position unchanged
+
+No new LC518 diagnostic measurement exists. Gate 1 preflight remains BLOCKED / NOT ASSESSABLE.
+`P` unproven; Gate 0 closed for position and contribution only; B1 v1.7 unchanged; pause in force.
+No verdict in §§1–34 changes.
