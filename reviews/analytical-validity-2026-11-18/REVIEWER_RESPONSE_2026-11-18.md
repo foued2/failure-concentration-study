@@ -1653,3 +1653,36 @@ The literature is no longer the binding constraint. The remaining sequence is:
 3. **Authorize the design-only support census** — the last Gate 1 prerequisite. It needs the LC518 diagnostic tables, which the pause currently forbids, uses no outcomes, and answers whether B1 has any eligible cell and any scoreable LOPO fold at all.
 4. **Do not fund a 150-solver programme before step 3.** The one executed world retained about 0.25 percent of the full vector's gain, with an interval spanning zero. That does not refute `C_D`; it sets the prior that the most likely B1 outcome is a well-identified null.
 5. **Do not run further keyword searches over the same object and call the result novelty.** Do not reopen the identity documentation. This section is not an execution GO.
+
+---
+
+## 30. Owner accepts the Gate 0 search record; pause retained (2026-11-22)
+
+### 30.1 The decision, and its provenance
+
+On 2026-11-22 the owner accepted `GATE0_LITERATURE_SEARCH_2026-11-22.md` as the Gate 0 scoping deliverable, and selected the narrower of the available options: **accept the search only**. The design-only support census was **not** authorised and continues to wait on a separate decision.
+
+**Provenance.** This is an owner-authored conversational decision in the project session on 2026-11-22, not a repository artifact. As with the identity acceptance in §28.4, a reviewer who does not hold that conversation cannot authenticate it from the repository alone. It is recorded here as the owner's act, not as corroboration.
+
+### 30.2 Accepted scope
+
+The record is accepted with its protocol deviations and limits intact: substituted instrument (OpenAlex via API; chat web search returned HTTP 402), 18 informative expressions plus 2 discarded, no date filter applied, title-level screening of ~431 records, abstracts for 7, no full-text reading, forward chasing for 3 works and backward for 2, OpenAlex-only coverage with Crossref for DOI verification.
+
+Acceptance does not convert this into a systematic review. Record §8's limits and §9's verdict stand unmodified, including the statement that the search does not establish novelty.
+
+### 30.3 What the acceptance does not do
+
+1. **Not a novelty finding.** `P` remains unproven; register §8 is unchanged.
+2. **Not Gate 0 closure.** Closure requires a documented scoping review **and** an adopted contribution decision. The first is now recorded; the second is not. Gate 0 remains **OPEN**.
+3. **No census.** The design-only census on the LC518 diagnostic tables remains unauthorised and the project pause remains in force in full.
+4. **No downstream authorisation.** No solver construction, execution, diagnostic collection, outcome labelling, `Y` matrix, sampling, fitting, or predictive analysis.
+5. **No measurement decision.** H6 primary aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open.
+6. **No adopted contribution object.** Register §11.4's statement that the design is the defensible contribution is a recommendation until separately decided.
+
+### 30.4 Effect
+
+- **Added:** register §12; this section.
+- **Changed:** nothing in §§1–29, and nothing in the search record itself.
+- **Unchanged:** Gate 0 OPEN; `P` unproven; B1 execution unauthorised; B1 v1.7 unchanged; pause in force.
+
+The only remaining Gate 0 item that needs no data access is the contribution decision. The census stays the first Gate 1 action and stays blocked.

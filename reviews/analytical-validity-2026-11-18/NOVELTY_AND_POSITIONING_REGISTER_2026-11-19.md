@@ -681,3 +681,42 @@ These are two publications of one research line, not a preprint and its version 
 ### 11.4 Consequence for the programme
 
 The literature is no longer the binding constraint. The defensible contribution object is the **design** — a prespecified-partition dominance covariate tested against an exact-cell, failure-count-conditioned baseline under parent-held-out evaluation — not the index (Berger–Parker 1970) and not the phenomenon (Almaghairbe 2015/2017). The next decisions are, in order: accept or reject the search record; state that contribution explicitly; authorize the design-only support census before any solver budget; and treat a null B1 result as the prior-consistent outcome rather than a failure of execution.
+
+---
+
+## 12. Dated amendment — 2026-11-22 (search record accepted; pause retained)
+
+### 12.1 The decision
+
+On 2026-11-22 the owner accepted `GATE0_LITERATURE_SEARCH_2026-11-22.md` **as the Gate 0 scoping deliverable**, and declined, at this point, to authorise anything beyond that acceptance. The recorded decision is in reviewer-ledger §30.
+
+The decision is an owner-authored conversational instruction in the project session on 2026-11-22. Like the identity acceptance in §10.4 and its addendum, it is not a repository artifact, and a reviewer reading only this repository cannot independently authenticate it from the repository alone. It is recorded, not presented as corroboration.
+
+### 12.2 What acceptance covers
+
+- The query log in search record §3, including the two discarded expressions and the reason each was discarded.
+- The protocol deviations in §2 — substituted instrument, 18 expressions instead of 12, no date filter, title-level screening, no full text, single database.
+- The candidate decisions in §4, including the distinction between adjacent-close and adjacent, and the exclusions with their reasons.
+- The citation-chasing results in §5, including the failure to chase the IEEE TSE record backward.
+- The limits in §8 and the verdict in §9.
+
+Acceptance means these are now the repository's account of the Gate 0 search. It does not mean the search is complete, exhaustive, or a systematic review, and §8's limits stand unmodified.
+
+### 12.3 What acceptance does not cover, and does not authorise
+
+1. **It is not a novelty finding.** `P` remains unproven. A documented non-finding on one index is not a priority claim, and §8's verdict table is unchanged.
+2. **It is not Gate 0 closure.** Gate 0 closes when a documented scoping review supports closure *and* the contribution decision is made. The first condition is now recorded; the second is not. Gate 0 remains **OPEN**.
+3. **It does not authorise the support census.** The design-only census on the LC518 diagnostic tables remains unrequested and forbidden. The project pause remains in force in full.
+4. **It does not authorise anything downstream.** No solver construction, execution, diagnostic collection, outcome labelling, `Y` matrix, sampling, fitting, or predictive analysis. Were the census later authorised, it would use no outcomes and would still not be an execution GO.
+5. **It does not decide the contribution object.** §11.4 states the design as the defensible object; that statement is a recommendation, not an adopted position, until it is separately decided.
+6. **It does not touch measurement.** H6 primary aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open exactly as §10.4 left them.
+
+### 12.4 Effect on the record
+
+- **Added:** this section; reviewer-ledger §30.
+- **Changed:** none of §1–§11. The search record and its index entry are unchanged.
+- **Unchanged:** Gate 0 **OPEN**; `P` **unproven**; B1 execution **not authorised**; B1 v1.7 **unchanged**; pause **in force**.
+
+### 12.5 Consequence
+
+No action beyond this acceptance is authorised. The next step, whenever the owner chooses to take it, is the contribution decision in §11.4 — whether the programme adopts the design as the contribution object. That is the second condition for Gate 0 closure and the only remaining item that requires no data access. The census remains the first Gate 1 action and remains blocked until separately authorised.
