@@ -829,3 +829,67 @@ This decision adopts the research question as the programme's intended contribut
 ### 14.5 Record effect
 
 This section supersedes only the **OPEN** status in §13.5 and the earlier statements that contribution adoption remained outstanding. Those statements are retained as dated history. The search limits, literature verdict, and all scientific non-claims remain unchanged.
+
+---
+
+## 15. Owner clarifies the engineered-solver study population (2026-11-22)
+
+### 15.1 Owner decision
+
+The owner has now explicitly settled the population terminology and intended study direction: the research is to be framed as a study of **engineered solvers**. The owner rejects “natural solver” as a distinct or useful population category for this project: every solver has an authoring, design, construction, or transformation history, including human-authored implementations.
+
+This is a direct owner clarification in the 2026-11-22 project conversation. It resolves the earlier disagreement about whether the current research target should be described as “naturally generated” or “engineered.” It does not rely on a reviewer’s recollection of the 2026-10-31 discussion.
+
+### 15.2 Operational meaning and inferential scope
+
+For the current B1 study, “engineered solvers” means **solver variants deliberately constructed, modified, parameterized, or otherwise produced under a declared study process, nested within selected real parent solver implementations**. Parent implementations are the source and grouping units; the tested study units are the engineered variants.
+
+The adopted contribution in §14.2 already names engineered solver variants. This section clarifies that wording; it does not replace the adopted contribution or change its estimand.
+
+The inferential scope remains conditional on the selected and observed parent implementations and their engineered variants. It does not establish a result for all solvers, all human-authored implementations, all model-produced implementations, or a superpopulation of newly developed parents. It does not establish generalization to an independently sampled parent population.
+
+“Natural solver” and “natural solver population” must not be used as the current target-population label in new scientific claims or plans. Earlier documents using that terminology remain part of the historical record. The earlier feasibility exercises remain evidence about the particular sampling and generation procedures they tested; they are not retroactively reclassified as tests of an ontologically distinct “natural” class. The 2026-10-30/31 doctoral blueprint was explicitly an unapproved reconstructed draft, not an owner-approved replacement target.
+
+### 15.3 Parent origin, lineage, and provenance
+
+Rejecting a natural/engineered dichotomy does **not** remove the need to document parent provenance. Before any future parent acquisition or selection, the record must identify, as applicable:
+
+- source or repository and immutable source identity;
+- authorship or originating process, including any human, model-assisted, model-generated, or other contribution that is known;
+- lineage, edits, repairs, transformations, and derivation relationships;
+- the outcome-blind selection procedure and exclusions;
+- parent-family assignment, source hashes, and reproducible identity mapping; and
+- relevant permission, license, and custody/consent status.
+
+If a parent is specifically represented as an output of a model-generation event, the six-point model-generation provenance gate in reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md §6 applies before that origin claim is used: independently verifiable session/request evidence; exact model/version and generation settings; retained raw outputs in generation order; body/file hashes and mappings; an independently recomputable event-to-file manifest; and a pre-freeze gate that fails closed when evidence is missing. Hashes establish byte identity, not model origin.
+
+These are documentation and eligibility prerequisites for any future parent-acquisition decision. They do not authorize acquisition, selection, generation, mutation, or solver execution.
+
+### 15.4 Exact-cell notation clarification
+
+In the adopted expression (q, Z, k, ℓ), the symbols are aliases for the frozen Rev 11 support-cell coordinates:
+
+- q ≡ m: mutation-mechanism / mutation-operator identity;
+- Z ≡ z: parent algorithm family;
+- k ≡ k_fail: number of definite diagnostic failures; and
+- ℓ ≡ k_unresolved: number of unresolved diagnostic outcomes.
+
+The underlying frozen cell remains (m, z, k_fail, k_unresolved) (Rev 11, line 226). This is a notation clarification only; it does not alter the cell, the conditioning variables, or B1 v1.7.
+
+### 15.5 Measurement and execution boundaries retained
+
+This population decision does not settle the remaining measurement details:
+
+1. **Diagnostic exposure.** Rev 11 defines the diagnostic counting unit as a bank record, not a unique mathematical input, and specifies eight records per stratum (N = 64, R_j = 8). That remains the protocol-prescribed record-level C_D unless changed by an explicit protocol amendment. A canonical-level calculation (N = 60, with four canonical records in stratum 6) is a different statistic and, if reported, must be recomputed from canonical failure counts and labelled as a sensitivity. It must not be averaged with, or silently substituted for, the record-level statistic. The separate measurement audit's warning about alignment between diagnostic exposure and canonical outcome rows remains a documentation reconciliation item; it does not authorize changing the frozen Rev 11 counting unit.
+2. **H6 outcomes.** The two raw reorder pairs in the 78-canonical-record bank still lack an adopted raw-pair-to-canonical correctness rule. No aggregation rule is selected here. This is required before constructing or interpreting the canonical Y_{v,r} outcome matrix.
+3. **Census distinction.** A strictly design-only support census uses diagnostic predictors and exact-cell structure, not the held-out correctness outcomes. Therefore the unresolved H6 outcome rule is a blocker for the outcome matrix and predictive analysis, but is not itself an input to an outcome-free support census. The census remains blocked by the project pause and requires its own explicit authorization.
+4. **Other open measurement matters.** Unresolved-status handling, the final outcome coding rule, and historical B1 row numbering remain open as recorded in the identity and measurement records.
+
+### 15.6 Current gate status and non-authorisations
+
+- **Gate 0 remains CLOSED for position and contribution definition only.** This owner clarification resolves the current population terminology; it does not establish novelty, priority, predictive value, or operational readiness. P remains **UNPROVEN**.
+- **Gate 1 remains NOT STARTED.** The design-only support census remains unauthorised. The project pause remains in force.
+- **Gate 4 remains NOT STARTED.** MDE, power, and operating characteristics remain unestablished.
+- B1 v1.7 and the frozen Rev 11 definitions are unchanged. No parent acquisition, solver construction, generation, mutation allocation, solver execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis is authorised by this clarification.
+
+This section supersedes only the disputed current use of “natural solver population” as the research target. It preserves the earlier documents as historical records and does not silently rewrite or retroactively reinterpret their results.
