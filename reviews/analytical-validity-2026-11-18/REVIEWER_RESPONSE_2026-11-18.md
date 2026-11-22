@@ -1797,3 +1797,64 @@ Gate 0 remains CLOSED for position and contribution definition only; the populat
 B1 v1.7 and Rev 11 remain unchanged. The project pause remains in force. This entry authorizes no parent acquisition, solver construction, generation, mutation allocation, execution, diagnostic collection, outcome labelling, Y-matrix construction, fitting, or predictive analysis. Any reopening requires separate explicit owner authorization.
 
 The earlier conversational acceptance/adoption provenance caveats remain as recorded in the register. This entry records the population decision from the current conversation; it does not create an independent authentication artifact for the prior decisions.
+
+
+---
+
+## 34. Owner authorizes Gate 1 preparatory reconciliation only (2026-11-22)
+
+### 34.1 Owner instruction and scope
+
+On 2026-11-22, the owner instructed: "OK STAT IMPLEMENTING THEM". In context, "them" refers to the five-step sequence presented immediately before the instruction:
+
+1. reconcile the controlling register and reviewer ledger, including latest owner decisions and repository-diff checks;
+2. resolve the relationship between B1 support and the additional M1-si requirement, including q;
+3. establish diagnostic-specification authority;
+4. establish population and operating constraints without reviving the retired 150 / 30 x 5 proposal; and
+5. consider the outcome-blind support census only after the required owner authorization and evidence are in place.
+
+This is a direct conversational owner instruction. It authorizes the preparatory documentary/design work in items 1-4 and the documentary determination of the conditions governing item 5. It does not authorize the census itself, nor any work needed to create missing inputs for that census.
+
+### 34.2 Narrow supersession of §33.6
+
+This entry supersedes §33.6 only to the following extent: the project pause is reopened for the bounded documentary/design reconciliation described in §34.1. The earlier restriction against undertaking that preparatory work no longer applies.
+
+All other limits in §33.6 remain in force. In particular:
+
+- Gate 1 remains **NOT STARTED**.
+- The outcome-blind support census remains **NOT RUN / NOT AUTHORIZED**.
+- Gate 4 remains NOT STARTED; MDE, power and operating characteristics remain unestablished.
+- B1 v1.7 and Rev 11 remain unchanged unless separately amended through their applicable review and acceptance paths.
+- No parent acquisition or selection, mutation allocation, solver construction or modification, bank generation, compilation, execution, diagnostic probing, diagnostic outcome collection, correctness outcome labelling, Y-matrix construction, fitting, sampling, simulation, power analysis or predictive analysis is authorized.
+
+The owner instruction is not a blanket reopening of the project. It is limited to the five-step preparatory sequence, with the fifth step remaining conditional on separate authorization and evidence.
+
+### 34.3 Current documentary resolutions
+
+The preparatory review has determined:
+
+1. Gate 0 is CLOSED for contribution and positioning only; the target population is engineered solver variants nested within selected real parent implementations.
+2. B1 v1.7 supplies the frozen exact-cell and LOPO support requirements. M1-si is a stricter proposed construction requirement in population-design v0.21, not a rule inherited from B1 v1.7.
+3. M1-si requires a stable operator-class q with permitted within-class realization settings a(v) recorded separately. This q/a coding needs a separately reviewed B1 amendment; it must not be silently retrofitted into v1.7. The primary Option B result may include prediction carried through a(v), and cannot be called direct, causal or realization-independent concentration evidence.
+4. The owner accepted the exact v0.21 operational D1-D8 taxonomy v0.4. The separate generation protocol v0.2.1 remains a design-only draft, not frozen or authorized for generation. No generated v0.21 diagnostic bank, manifest or per-variant diagnostic vectors are established.
+5. The B1 support floor is three parents in a qualifying cell. If M1-si is separately adopted and realized, its structural minimum is three parents and six unique runnable variants in one common exact cell. Neither is a total-study sample size. The operating parent count and total variant count remain OPEN. The historical 30 x 5 / 150 proposal is not adopted.
+
+The exact source anchors and full reasoning are recorded in the Gate 1 preparatory reconciliation on branch gpt/gate1-preparatory-reconciliation-2026-11-22.
+
+### 34.4 Census preconditions
+
+The repository does not establish a current LC518 parent roster, variant roster, per-variant diagnostic manifest, or eight-stratum failure/unresolved vectors for this population. The M1-si utility audits an existing manifest; it does not produce one.
+
+The census may be considered only after the applicable B1 q/a and evaluation-target amendments are reviewed and accepted, the population and source/lineage requirements are satisfied under separate authorizations, the diagnostic generation protocol is frozen and its separate generation GO obtained, solver construction/build and diagnostic execution have their own separate authorizations, the complete per-variant diagnostic manifest is produced and validated, and the owner explicitly authorizes the census itself.
+
+The unresolved H6 raw-pair-to-canonical correctness aggregation rule remains a prerequisite for the canonical outcome matrix, but is not an input to a strictly outcome-free diagnostic support census.
+
+### 34.5 Status
+
+**Preparatory documentary/design reconciliation: AUTHORIZED.**  
+**Gate 1: NOT STARTED.**  
+**Outcome-blind support census: NOT RUN / NOT AUTHORIZED.**  
+**Gate 4: NOT STARTED.**  
+**Project pause: remains in force outside the bounded preparatory work authorized here.**
+
+No experiment, census, bank generation, solver construction, execution, diagnostic collection, outcome labelling, model fitting, sampling, simulation or power analysis was performed under this instruction.
