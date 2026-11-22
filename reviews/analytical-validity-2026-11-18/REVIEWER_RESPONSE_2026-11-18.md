@@ -1947,7 +1947,7 @@ None of these files was substituted for LC518 study data. The synthetic fixtures
 
 The census remains **NOT RUN / BLOCKED** until all of the following are satisfied:
 
-1. A current parent and variant roster, provenance/lineage, family assignments, and actual q mutation identities are established under the applicable authorizations.
+1. A current parent and variant roster, provenance/lineage, family assignments, and actual q mutation identities are established under the applicable authorizations. Before separate acquisition/allocation/build GOs, the owner sets and freezes maximum parents, maximum variants per parent, maximum total variants, compute/runtime and monetary ceilings, and stop conditions. These limits are currently unknown; 30×5 / 150 is not adopted.
 2. q is operationalized consistently with B1 v1.7. The ledger’s q/m notation alias is not itself a q inventory or a set of assignments.
 3. The diagnostic-bank generation protocol is completed, frozen and separately authorized. Protocol v0.2.1 remains DRAFT / NOT FROZEN / NO GENERATION OR EXECUTION GO; its open PRNG, seed, runtime and external-preflight decisions are not waived here. The accepted B1 78-record identity chain does not itself freeze or authorize that protocol.
 4. Bank generation, solver construction/build, and diagnostic execution each receive their own applicable GO.
