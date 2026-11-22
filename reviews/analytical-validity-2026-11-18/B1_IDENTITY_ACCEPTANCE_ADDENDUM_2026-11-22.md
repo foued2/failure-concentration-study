@@ -43,7 +43,7 @@ This acceptance concerns documentary identity and attribution. It does not conve
 ## 4. Row-joining and reporting convention
 
 - `canonical_id` is the authoritative key for joining any future record-level tables to the reconstructed 78 identities.
-- `B1_identity_reporting_index` is a deterministic lexicographic reporting index from 1 to 78. It is **not** recovered historical B1 row numbering and must not be represented as historical \\(r = 1,\\ldots,78\\).
+- `B1_identity_reporting_index` is a deterministic lexicographic reporting index from 1 to 78. It is **not** recovered historical B1 row numbering and must not be represented as historical \(r = 1,\ldots,78\).
 - The v3 CSV and JSON manifests are derived views of the accepted source identities. They do not amend or replace B1 v1.7.
 
 ## 5. Explicitly unresolved decisions
