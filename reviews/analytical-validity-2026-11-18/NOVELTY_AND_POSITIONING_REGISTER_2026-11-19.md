@@ -786,3 +786,46 @@ Adoption of this paragraph would satisfy the last Gate 0 condition. It would not
 - **Census: not authorised.** Pause in force.
 - **Operational items: open.** H6 presentation and aggregation, unresolved-status handling, outcome coding, historical row numbering. None can be settled by adopting a contribution statement, and none is settled here.
 - **Records corrected:** search record §§2, 3, 4, 8; register row 21.
+
+---
+
+## 14. Owner adopts the contribution statement; Gate 0 closed (2026-11-22)
+
+### 14.1 The decision and its provenance
+
+On 2026-11-22, the owner explicitly confirmed adoption of the exact contribution paragraph in §13.4 as written. The confirmation was given directly in this project conversation in response to the two decisions presented: adopt §13.4, and leave the separate search-record acceptance authentication caveat unchanged.
+
+This is a direct owner decision in the current conversation. It is not inferred from DeepSeek's report, and it does not authenticate the earlier search-record acceptance beyond the caveat already stated in §§12.1 and 13.1(c).
+
+### 14.2 Adopted contribution statement
+
+The owner adopts the complete three-paragraph statement in §13.4 without textual modification, including its null-interpretation rule:
+
+> This study tests whether a version-level maximum-share summary of a prespecified eight-stratum diagnostic failure profile adds incremental predictive information about record-level correctness for engineered solver variants on the fixed, publicly exposed 78-record B1 development bank, beyond the exact-cell baseline `(q, Z, k, ℓ)`, under leave-one-parent-out evaluation with the parent as the independent unit.
+>
+> The index is Berger–Parker dominance (1970) and is not claimed as new. Failure concentration as a phenomenon is established (Almaghairbe & Roper 2015, 2017) and is not claimed as new. Execution-derived signals predicting correctness are established (register §4 rows 9–14) and are not claimed as new. The contribution claimed is the controlled, null-capable test of incremental value in this design.
+>
+> No claim is made about a new parent population, about information superiority over the full failure vector, or about identifying which stratum dominates. A null result will be reported as inconclusive unless Gate 1 support and Gate 4 power establish that the design could have detected a stated effect; a null obtained without that is a support failure.
+
+### 14.3 Gate 0 disposition
+
+**Gate 0: CLOSED, for position and contribution definition only.**
+
+The documented scoping review was accepted in §12, the closest-work comparison and bounded search result are recorded in §§11–13, the inferential scope is fixed in the adopted statement, and the owner has now adopted that statement. The closure does not rely on absence of a search hit as proof of novelty.
+
+The scientific proposition `P` remains **UNPROVEN**. The supported literature statement remains: *no direct or partial match was identified among the records screened in this OpenAlex pass.* This is not a novelty finding, a priority claim, or evidence that the proposed effect exists.
+
+### 14.4 Scope and non-authorisations
+
+This decision adopts the research question as the programme's intended contribution. It does not make the statement operationally executable and does not alter any frozen protocol.
+
+- Gate 1 remains **NOT STARTED**. Its first action, the design-only support census, remains unauthorised and blocked by the project pause.
+- Gate 4 remains **NOT STARTED**. MDE, power, and operating characteristics remain unestablished.
+- A null without Gate 1 support and Gate 4 power remains **inconclusive**, not evidence against the hypothesis.
+- H6 presentation/aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open.
+- B1 v1.7 is unchanged. No solver construction, execution, diagnostic collection, outcome labelling, `Y)-matrix construction, sampling, fitting, or predictive analysis is authorised.
+- The project pause remains in force. Any Gate 1 work requires a separate explicit reopening and authorization.
+
+### 14.5 Record effect
+
+This section supersedes only the **OPEN** status in §13.5 and the earlier statements that contribution adoption remained outstanding. Those statements are retained as dated history. The search limits, literature verdict, and all scientific non-claims remain unchanged.
