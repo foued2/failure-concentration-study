@@ -16,7 +16,8 @@ The five preparatory items are not all in the same state.
 3. **Mutation identity q:** M1-si is coherent only if q is a stable mutation-operator class and permitted realization settings are recorded separately as a(v). That coding changes the operational meaning of the B1 cell coordinate and therefore requires an explicit, separately reviewed B1 amendment. If each realization is itself a distinct q, the required within-q pairs cannot exist. The frozen B1 v1.7 plan must not be silently reinterpreted.
 4. **Diagnostic authority:** The owner accepted the exact v0.21 D1-D8 operational taxonomy v0.4. The v0.21 generation protocol v0.2.1 remains a design-only draft, not frozen or accepted, and carries no generation GO. No generated v0.21 diagnostic bank, manifest, or per-variant diagnostic vector is established.
 5. **Population and operating count:** No parent roster, operator-class inventory, realization schedule, mutation allocation, variant roster, or operating parent count is adopted. The M1-si lower bound is three qualifying parents and six unique runnable variants in one exact cell, not the total study size. The historical 30-parent by 5-variant / 150-variant layout is not an adopted target.
-6. **Census:** Gate 1 has not started. The outcome-blind support census has not been run and remains unauthorized. It cannot be computed from the symbolic plan or taxonomy alone; it requires the actual per-variant diagnostic vectors and a separate authorization to use them for the census.
+6. **Evaluation target:** the adopted contribution paragraph names the public 78-record B1 development set, while v0.21 proposes a new protected set. The owner-selected confirmatory route has not yet been reconciled with that accepted contribution paragraph and B1 v1.7.
+7. **Census:** Gate 1 has not started. The outcome-blind support census has not been run and remains unauthorized. It cannot be computed from the symbolic plan or taxonomy alone; it requires the actual per-variant diagnostic vectors and a separate authorization to use them for the census.
 
 The present deliverable is therefore a documentary/design reconciliation, not a scientific feasibility result. No diagnostic table, protected bank, solver source, solver output, or correctness outcome was accessed in this work.
 
@@ -51,6 +52,16 @@ At the inspected snapshot:
 The reviewer ledger and positioning register were not updated by those two README-only commits. This explains why the README's Gate 1 authorization sentence diverged from ledger §33.6. This reconciliation corrects the documentary record without changing B1 v1.7, Rev 11, the owner-accepted taxonomy, or the draft generation protocol.
 
 The separate docs/lc518-scientific-presentation-2026-11-22 branch points to the same audit snapshot as its source basis. No claim is made here that every historical LC518 branch has been merged or that the repository has one global branch authority. The source-specific branches and immutable blobs listed in §7 are the authority anchors used for this decision.
+
+### 2.3 Evaluation-target mismatch requiring a later owner amendment
+
+The adopted Gate 0 contribution paragraph in positioning register §14.2 names the fixed, publicly exposed 78-record B1 development bank as the evaluation record set. B1 v1.7 likewise fixes those 78 rows as development data and states that they are never sealed.
+
+That is not the same target as population-design v0.21. Section 0.2 of v0.21 proposes a newly generated protected evaluation set and expressly says it cannot be substituted into v1.7 without a separately reviewed B1 amendment. Sections 5.1-5.5 require a new record-generation procedure, a justified record count, non-overlap checking, an independent custodian, and an amended analysis plan. The existing 78 records are excluded from confirmatory fitting, scoring, calibration, and outcome claims under that proposed route.
+
+The owner separately selected "CONFIRMATORY, WITH CONSENT" as the route in the 2026-11-21 D0.3 owner decision. That selection is not itself historical consent evidence, does not appoint a custodian, and does not amend B1 v1.7. The accepted Gate 0 contribution paragraph and the later v0.21 protected-set route have not yet been reconciled into one owner-accepted evaluation target.
+
+**Current consequence:** do not describe the current B1 v1.7 analysis as protected-confirmatory on the 78 exposed development records. If the owner intends the new protected-set route, a separately reviewed B1 amendment must define the new record population and update the contribution statement/claim scope consistently before confirmatory evaluation. If the owner instead retains the fixed 78-record target, the claim remains bounded to publicly exposed development data and must not be represented as an independent protected evaluation. This target mismatch blocks the confirmatory claim; it does not by itself change the mathematical B1 diagnostic support-cell definitions.
 
 ## 3. B1 v1.7 support and the additional M1-si condition
 
@@ -207,6 +218,7 @@ The reconciliation is based on the following exact source objects:
 | Diagnostic authority decision v1.3 | gpt/lc518-v021-operational-strata-spec-2026-11-21 | 8b702f0490d9eea31a0116d30710cce880a54f98 | Earlier authority state, superseded narrowly on taxonomy adoption |
 | Generation protocol v0.2.1 | gpt/lc518-v021-generation-protocol-2026-11-21 | e0f05509f56b81afe3efefdec525450fc1eb7872 | Remaining generation/freeze/authorization blockers |
 | B1 identity acceptance addendum | audit/analytical-validity-2026-11-18 | b5d8f03dfcb4120c534cbac2ed13de1dee145986 | Owner acceptance of the 78-row development-bank identity chain |
+| D0.3 owner GO and route decision | gpt/lc518-v021-operational-strata-spec-2026-11-21 | c800ef409e8678e21684a8c5365af8df67b54a26 | Owner selected confirmatory route with consent; not consent evidence or a B1 amendment |
 | M1-si audit utility README | gpt/lc518-m1si-audit-2026-11-17 | bd4083bdbfdc099367535aa1effbe8620310e371 | Tool scope: audit existing manifest only |
 
 ## 8. Review and change-control status
