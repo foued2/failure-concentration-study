@@ -1912,7 +1912,9 @@ This reconciliation has now checked the seven dated Gate 0 closure commits at pa
 
 ### 35.1 Direct owner clarification
 
-GPT asked whether the 22 November instruction “OK STAT IMPLEMENTING THEM” authorized the outcome-blind census itself once its prerequisites were met, or only preparatory work before a separate census GO. The owner answered: **“YES START.”**
+**Exact question asked by GPT:** “Did ‘OK STAT IMPLEMENTING THEM’ authorize the census itself once its prerequisites are met, or did it authorize only the preparatory work before a separate explicit census GO?”
+
+**Owner's exact answer:** “YES START.” The earlier owner instruction being clarified was: “OK STAT IMPLEMENTING THEM.” These are conversational owner acts; the repository preserves the quoted text and context but cannot independently authenticate the speaker's identity.
 
 This is a direct owner clarification. It confirms that the earlier instruction authorized the outcome-blind support census itself, conditional on its prerequisites being met. **The census is AUTHORIZED CONDITIONALLY. No additional census-specific owner GO is required after all stated prerequisites are satisfied.**
 
@@ -1950,7 +1952,8 @@ The census remains **NOT RUN / BLOCKED** until all of the following are satisfie
 3. The diagnostic-bank generation protocol is completed, frozen and separately authorized. Protocol v0.2.1 remains DRAFT / NOT FROZEN / NO GENERATION OR EXECUTION GO; its open PRNG, seed, runtime and external-preflight decisions are not waived here. The accepted B1 78-record identity chain does not itself freeze or authorize that protocol.
 4. Bank generation, solver construction/build, and diagnostic execution each receive their own applicable GO.
 5. A complete, provenance-linked per-variant diagnostic manifest is produced and validated. It must include the exact diagnostic-bank identity, all eight record-level definite-failure counts, unresolved count, lifecycle/exclusion status, q and family assignments, unique variant/parent identities, and source/runnable-artifact digests.
-6. The design-only census is executed using B1 v1.7’s exact-cell and LOPO support rules, with all eligible/excluded cells, fold-cell decisions, scored parents, test rows, and coverage reported. The current M1-si validator must not be assumed to implement B1 v1.7 without source-fidelity review.
+6. A B1 v1.7-specific manifest schema/validator and census implementation are developed, reviewed against the frozen plan, tested on labelled synthetic/adversarial fixtures, independently reviewed, and hash-frozen with a pinned runtime before any realised diagnostic manifest exists. The current M1-si validator must not be assumed to implement B1 v1.7 without source-fidelity review.
+7. Before the realised manifest exists, freeze the coverage-gate definitions and denominators, the numeric floors `ρ_min`, `ρ_cell`, `ρ_rec`, and the exact verdict logic. Use the LOPO reconciliation's three-way vocabulary `SUPPORTED` / `NOT SUPPORTED` / `NOT ASSESSABLE`; do not invent threshold values from the resulting data. If the thresholds remain unset, a later census may be descriptive only and cannot receive an overall Gate 1 PASS/FAIL. At execution, use the frozen census implementation and record its source/schema/runtime/input hashes and output hash.
 
 The unresolved H6 raw-pair-to-canonical correctness aggregation is required for the canonical outcome matrix, not for this outcome-free support census. The public-versus-protected evaluation-target decision likewise does not change the support-cell arithmetic, although the current generation-protocol draft has protected-frame/custody preflight requirements that must be reconciled before relying on it to generate a diagnostic bank.
 
@@ -1963,3 +1966,25 @@ The unresolved H6 raw-pair-to-canonical correctness aggregation is required for 
 **Gate 4:** NOT STARTED.
 
 No eligible cells, support counts, LOPO decisions, scored-parent set, or coverage results have been computed. The absence of those results is an input-readiness blocker, not evidence for or against the scientific proposition.
+
+
+### 35.6 Pre-registration correction and status of the earlier evaluation-target interpretation
+
+The LOPO estimability reconciliation dated 2026-11-19 (blob `9aba50d46cbf9c905a4dc121c1b0b1e460ed739f`) makes the coverage issue explicit. B1 v1.7 already supplies full-cell eligibility and fold-level estimability rules, including the no-silent-drop requirement and coverage reporting. It does **not** supply an overall minimum-coverage verdict gate. The LOPO reconciliation proposes the structure `ρ_min` (scored-parent fraction), `ρ_cell` (scored-cell fraction per fold), and `ρ_rec` (records-scored fraction per fold), with a three-way verdict. It expressly leaves numeric thresholds open as owner/adjudicator decisions and warns against inventing them without an estimand/precision basis.
+
+Accordingly, the conditional census authorization must be treated as dormant until these additional pre-data prerequisites are satisfied:
+
+- The definitions and denominators for `ρ_min`, `ρ_cell`, and `ρ_rec`, their numeric floors, and the exact `SUPPORTED` / `NOT SUPPORTED` / `NOT ASSESSABLE` verdict logic are dated and frozen **before a realised diagnostic manifest or its vectors exist**. If values are not chosen, the census output can be descriptive only; no overall Gate 1 PASS/FAIL may be declared.
+- The operational q identity and parent-family mappings are fixed before diagnostic execution and before the realised manifest exists.
+- A B1 v1.7-specific schema, validator and census implementation are reviewed against the exact accepted plan, tested on labelled synthetic/adversarial fixtures, independently reviewed and hash-frozen, with the runtime/dependencies pinned, before the realised manifest exists.
+- The frozen census report must include per-cell full-population eligibility, each LOPO fold-cell's training support, scored-parent/cell/record coverage, all exclusions/reasons, script/schema/runtime/input hashes, and the output hash.
+
+These prerequisites do not require changing B1 v1.7. They prevent the selection of q identities, census implementation, or verdict thresholds from adapting to observed diagnostic vectors. The existing M1-si validator is not the B1 census instrument: its schema encodes `OC-A`–`OC-D`, which are not an owner-accepted B1 q inventory. A new implementation must be source-faithful to B1 v1.7.
+
+**Correction to §34.6:** the earlier statement that the later adoption of positioning-register §14.2 resolved the operational target in favour of the public 78-record bank is withdrawn to the extent that it treated the 21 November D0.3 route selection as superseded without an explicit owner reconciliation. The public 78-record set remains the exact target named in the adopted contribution wording. D0.3 remains an owner-recorded selection of CONFIRMATORY, WITH CONSENT, with its conditions open. The operational confirmatory target remains **UNRESOLVED / NOT CLEARED** until the owner expressly reconciles the two acts. Neither document makes the public bank a protected set.
+
+**Diagnostic/evaluation-bank dependence:** a non-overlap result, if eventually established, is not proof that the diagnostic and public evaluation banks were independently sampled or independently exposed. Any future predictive claim must disclose the actual diagnostic candidate-selection and filtering procedure, the use of public B1 identity information in that process, shared generation lineage, and public exposure. This is a claim-interpretation disclosure, not a calculation input to the strictly outcome-blind support census.
+
+**PROV-001 recommendation:** GPT withdraws its earlier suggestion to inspect the two local PROV-001 files. That inspection is not on the critical path to a prospective B1 q inventory or support census, and no inspection is authorized or performed. The filenames remain unverified local leads only. This withdrawal does not establish that the files never existed and does not change the 6 November allocation status: existence unproven; allocation not established.
+
+**Readiness-search scope:** the 3,086-entry finding is confined to the inspected review-branch snapshot and its recursive Git tree (`truncated=false`). It is not a global statement about other branches, unconnected artifacts, or owner-local workspaces. No additional archive or local-workspace search is implied.
