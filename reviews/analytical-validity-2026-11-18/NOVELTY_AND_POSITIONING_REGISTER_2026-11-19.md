@@ -639,3 +639,10 @@ text was not reviewed in this pass, and the paper is still not evidence for `P`.
 - **Not done:** no solver construction, execution, fitting, sampling, calibration, or outcome model. The
   only bank access was read-only identity inspection of the held-out artifact; the project pause remains
   in force.
+
+
+### 10.4 Subsequent owner adjudication (2026-11-22)
+
+On 2026-11-22, the repository owner accepted the B1 78-record documentary identity chain. The dated decision is recorded in `B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md`; the detailed source reconstruction is `B1_78_ROW_IDENTITY_RECOVERY_2026-11-21.md`, with its byte-level v3 audit and derived manifests listed in the review-bundle README.
+
+Accordingly, §10.1's **source recovered / adjudication pending** disposition is a historical snapshot as of 2026-11-21 and is superseded for current identity status by **source-recovered / owner-accepted**. This acceptance is limited to identity and documentary attribution. Historical row numbering, H6 primary-outcome aggregation, unresolved-status handling, and outcome coding remain undecided. B1 execution remains unauthorized; Gate 0 remains OPEN; (P) remains unproven; no novelty or predictive claim is licensed. B1 v1.7 remains unchanged.
