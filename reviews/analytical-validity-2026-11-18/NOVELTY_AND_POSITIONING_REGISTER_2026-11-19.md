@@ -823,7 +823,7 @@ This decision adopts the research question as the programme's intended contribut
 - Gate 4 remains **NOT STARTED**. MDE, power, and operating characteristics remain unestablished.
 - A null without Gate 1 support and Gate 4 power remains **inconclusive**, not evidence against the hypothesis.
 - H6 presentation/aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open.
-- B1 v1.7 is unchanged. No solver construction, execution, diagnostic collection, outcome labelling, `Y)-matrix construction, sampling, fitting, or predictive analysis is authorised.
+- B1 v1.7 is unchanged. No solver construction, execution, diagnostic collection, outcome labelling, `Y` matrix construction, sampling, fitting, or predictive analysis is authorised.
 - The project pause remains in force. Any Gate 1 work requires a separate explicit reopening and authorization.
 
 ### 14.5 Record effect
