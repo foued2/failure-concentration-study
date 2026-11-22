@@ -1,31 +1,115 @@
-# failure-concentration-study
+# LC518: Diagnostic failure concentration and solver correctness
 
-## Current scientific status and provenance correction (2026-11-21)
+**Scientific presentation and current research status — 22 November 2026**
 
-The repository contains completed historical analyses, but the central population claim in the v0.1 pilot and v0.2 study is not established.
+LC518 is a research programme, not a validated prediction tool. Its question is whether the distribution of diagnostic failures across eight prespecified input strata adds predictive information about engineered solver variants' correctness on a separate development bank, beyond a defined exact-cell baseline.
 
-- **v0.1 pilot:** the terminal INFEASIBLE gate result remains a valid description of the retained 20-file pilot corpus. The repository emitter stores 20 solver bodies as source-code string literals and writes them to files. The repository does not retain independently verifiable provider/session evidence establishing that those bodies were unmodified single-shot outputs of the named LLM. Claims about a population of natural LLM submissions are therefore unsupported.
-- **v0.2:** the frozen decision procedure returned NEGATIVE, but the study did not identify the incremental predictive contribution of concentration beyond failure count. The versioned generator contains 40 literal body templates and deterministically writes three copies of each, producing 120 files. These are 40 distinct function bodies, not 120 distinct solver implementations or 120 evidenced generation events. No provider/session record in this repository verifies their claimed LLM origin.
-- **Diagnostic instrument:** the six probe builders depend on the variant index, not the instance seed. The seed changes a metadata field, but not the probe graphs. For a given solver body, its diagnostic failure vector, k and C are therefore constant across instances. LOIO can still assess hidden-suite performance on other instances for this fixed pack, but it does not test instance-conditional diagnostics or generalization to unseen solver bodies.
-- **v03p:** the Phase 0 document is a design-only preflight. Its natural-single-shot-LLM population assumption is not supported by the v0.1/v0.2 packs. No successor experiment, solver generation, or hidden-outcome collection is authorized by this correction.
-- **RLC-0:** Phase C, the six-seed execution, was never performed. The CBMC evidence records incomplete canary proof attempts (OOM/timeouts), not a completed formal-localization feasibility result. The corrected command includes a per-loop unwindset override for the 10,000-trip harness loop; the failure was resource/proof incompleteness, not an unoverridden global unwind-64 truncation.
-- **LC518 mutation allocation:** the reviewed evidence does not establish the complete eight-mechanism taxonomy or pair/parent/S-extra allocation. The standalone annex's existence is unproven, not disproven. The allocation remains BLOCKED / NOT ASSESSABLE; no allocation is reconstructed here.
+The original Doctor/C_genuine project was terminated. LC518 is a clean-room successor, not a rescue or continuation of that project and does not inherit its scientific validity.
 
-The detailed evidence and correction of Claude's 2026-11-21 full-repository challenge are recorded in reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md.
+## The scientific question
 
-## Repository map
+When two versions of an engineered solver have the same number of definite diagnostic failures, could the way those failures are distributed across diagnostic input categories tell us anything more about their correctness on other inputs?
 
-- PROTOCOL.md and FREEZE.md: historical v0.1 protocol and freeze record.
-- generation/_emit_pilot_pack.py and generation/pilot_pack/: literal-body emitter and retained pilot files.
-- pilot/PILOT_REPORT.md: pilot outcome plus the dated provenance/scope correction.
-- v02/: v0.2 protocol, generator, reports, integrity and interpretability audits.
-- generation_v02/pack/: 120 emitted files representing 40 literal body templates, each repeated three times.
-- v03p/: Phase 0 design-only preflight; not an executed successor experiment.
-- rlc0/: closed archival record; Phase C not performed and full-domain certification not demonstrated.
-- reviews/: independent reviews and dated adjudications, including the full-repository challenge response.
+LC518 represents the largest share of definite failures with the Berger–Parker dominance index:
 
-## Interpretation rule
+`C_D = max_j(f_j) / k_fail`
 
-Hash identity and deterministic reproduction establish what bytes were retained and processed. They do not establish the origin of those bytes, the claimed sampling process, or population representativeness. Statistical classifications must be reported separately from whether the design identified the scientific estimand.
+where `f_j` is the number of definite failures in diagnostic stratum `j`, and `k_fail = Σ_j f_j`. The index is an established statistic from ecology (Berger & Parker, 1970); it is not claimed as new. Unresolved outcomes are not included in `C_D`; their count is retained separately as `k_unresolved`.
 
-No frozen historical protocol, analysis result, solver body, or RLC-0 artifact is changed by the 2026-11-21 documentation corrections.
+The adopted B1 proposition is narrower than the slogan “concentration predicts correctness”. It tests whether a version-level maximum-share summary adds predictive information about record-level correctness beyond the exact-cell baseline:
+
+`(q, Z, k, ℓ) = (mutation mechanism, parent family, k_fail, k_unresolved)`
+
+The evaluation is leave-one-parent-out within the selected and observed parent implementations. The claim is conditional on those parents. It does not claim generalization to all solvers or to a superpopulation of independently developed parents. Nor does it claim that `C_D` contains information unavailable in the complete failure vector: it is a deterministic summary of that vector.
+
+## Why this is a difficult research question
+
+The central identification problem is not hidden: the programme has repeatedly failed to construct the required equal-failure-count, different-concentration contrast independently of other design variables.
+
+- The earlier Option B profile ladder changed the leading carrier failure count as concentration changed, so the intended contrast was confounded with carrier count.
+- A bounded audit examined 257 candidate mechanisms. Fourteen produced the specified five-failure count. Eight cross-mechanism profile matches were found, but all had identical full-domain failure sets. The audit found **zero distinct mechanism matches** under its definition. This is a bounded negative construction result, not proof that no possible mechanism could work. See [the construction-audit result](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/engineered-study/08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md).
+- The later LC518 design also acknowledged that its realization setting and `C_D` varied together rather than establishing independent concentration variation. See the [theory succession audit](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/concentration-theory-succession-audit-2026-11-18.md), especially §4.
+
+There is also a mathematical support ceiling. With eight diagnostic strata, at most eight distinct `C_D` values can occur at any fixed `k_fail` on the record-level exposure basis. For `9 ≤ k_fail ≤ 16`, the record-level upper bound is seven. These are attainable-value limits, not evidence that a study population realizes the required values. The exact attainable set depends on the exposure basis. See [the measurement and support register](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md) §9.3.
+
+These failures do not establish that the scientific hypothesis is false. They establish that the required identifying variation has not yet been demonstrated.
+
+## Population, measurement and provenance
+
+The current target is **engineered solver variants deliberately constructed or modified under a declared study process, nested within selected real parent solver implementations**. The variants are the tested units; parent implementations are the source and grouping units. The inference remains conditional on the selected and observed parents.
+
+The owner clarified this target on 22 November 2026. The decision is recorded in the project conversation and in the repository; the repository does not independently authenticate the conversational act. No parent roster has been selected. The historical feasibility work that used “natural solver” terminology remains part of the record of those particular procedures; it is not a separate current target population. See the [reviewer ledger](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/REVIEWER_RESPONSE_2026-11-18.md) §33 and the [positioning register](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md) §15.
+
+Rev 11 prescribes record-level diagnostic exposure: 64 diagnostic bank records, eight per stratum. A canonical-level calculation using 60 unique inputs is a different statistic and must be recomputed from its own failure vector; it is not an alternative coding to select after results. The held-out bank has 80 raw presentations representing 78 canonical identities. The two H6 reorder pairs still lack an adopted raw-to-canonical correctness aggregation rule. That rule is required before constructing or interpreting the canonical outcome matrix, but it is not an input to a strictly outcome-free diagnostic support census. The held-out bank is publicly exposed development data, not a sealed confirmatory benchmark. See [C_D measurement specification](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/CD_MEASUREMENT_SPEC_2026-11-19.md) and [B1 identity acceptance addendum](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md).
+
+Provenance is a substantive requirement, not administrative decoration. A master-branch audit found that the retained v0.2 emitter deterministically wrote 40 literal source-body templates three times each, producing 120 files. The repository does not independently substantiate the claimed model-generation sessions, raw single-shot outputs, or no-selection/no-edit history. This establishes **unverified origin**, not proven human authorship. Hashes establish byte identity, not model origin. Any future parent acquisition must document source identity, authorship/origin where known, lineage, transformations, outcome-blind selection, family assignment, hashes, permissions and custody. A specifically model-generated origin claim must pass the six-point provenance gate in [the master-branch adjudication](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md) §6.
+
+## Historical record: separate studies, not B1 results
+
+The earlier programme records remain important, but they are not outcomes from the current LC518 B1 proposition:
+
+- **v0.1 pilot:** terminal INFEASIBLE at its frozen feasibility gate. That is a result about the retained pilot corpus and gate, not evidence about a general concentration effect. See the [pilot report](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/pilot/PILOT_REPORT.md).
+- **v0.2 study:** terminal NEGATIVE under its frozen rule, but non-identifying for concentration: every eligible observation had `C = 5/k`, and the eligible support did not vary concentration independently of failure count. This is not evidence against the general hypothesis. See the [v0.2 report](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/v02/REPORT_V02.md).
+- **RLC-0:** full-domain formal-localization certification was not demonstrated; Phase C was not performed. It is not a concentration result.
+- **Earlier engineered-study Option B:** the bounded construction audit failed to demonstrate independent concentration variation across distinct mechanisms, before any study solvers were generated. See the [construction-audit result](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/engineered-study/08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md).
+
+Earlier feasibility exercises that used “natural solver” terminology remain historical records of those particular procedures. They are not a separate current target population and are not retroactively reclassified.
+
+## Gate status
+
+### Gate 0 — CLOSED, limited to positioning and contribution definition
+
+The owner adopted the bounded contribution statement. The scoping review records the closest screened work, the inferential scope and the limits of its search. This is not a systematic review, novelty finding or priority claim. The scientific proposition `P` remains **UNPROVEN**. The supported literature statement is limited to the records screened in the documented OpenAlex pass.
+
+Gate 0 does not establish predictive value, empirical feasibility, statistical power or operational readiness. The owner-adoption and population decisions are recorded as conversational acts; their provenance caveat remains explicit.
+
+### Gate 1 — NEXT: design-only support census
+
+The next prescribed action is an outcome-free census of diagnostic support. For each exact B1 cell, the census must report version count, distinct-parent count, distinct `C_D` values and within-cell variation. Full-population eligibility requires `k_fail ≥ 2`, at least three distinct parents, and at least two distinct `C_D` values. Each leave-one-parent-out training fold must separately meet its frozen estimability conditions. Record-level and canonical-level exposure audits must not be mixed. All exclusions, scored parents, test rows and coverage must be reported. The repository has not established a minimum acceptable overall scored-parent coverage threshold, so finding one eligible cell cannot automatically be called a Gate 1 PASS.
+
+**Gate 1 preflight at the current repository snapshot: BLOCKED / NOT ASSESSABLE.** The current branch contains research plans, bank/identity documentation and historical diagnostic outputs from earlier, different studies. It contains no selected LC518 parent roster, no LC518 variant-level diagnostic manifest, and no per-variant eight-stratum failure/unresolved vectors from which the B1 exact-cell census can be computed. The programme record remains at 0/150 LC518 solver bodies and zero LC518 solver outcomes. Historical diagnostic files from other tasks are not substitutes and must not be pooled or relabelled as LC518 evidence.
+
+The toolchain does not fill this gap. The separate M1-si engineering bundle is an **auditor for an already-produced diagnostic manifest**. Its own README says it does not source/select parents, allocate or generate mutations, build/execute solvers, run diagnostics, access a bank, or fit B1; its bundled tests are synthetic software tests. No actual LC518 manifest is present in the reviewed repository branches. Running this auditor on synthetic fixtures would test software behaviour, not establish realized B1 support.
+
+The upstream design authorities also have distinct limits. B1 analysis plan v1.7 is accepted and frozen as a **symbolic analysis plan**, but its acceptance record explicitly says this is not an execution GO. The v0.21-linked D1–D8 taxonomy v0.4 has an owner-acceptance record for the taxonomy only; its associated diagnostic-bank generation protocol v0.2.1 is not frozen and carries no generation or execution GO. These records do not demonstrate that a current per-variant diagnostic manifest exists.
+
+This is missing input evidence, not a demonstrated scientific failure. The census has not been run. The absence of the H6 outcome-aggregation rule is not the reason it is blocked: H6 gates the canonical outcome matrix, not the outcome-free support census.
+
+The owner's 22 November instruction is treated as authorization to advance to Gate 1 preflight and to perform the design-only census **once its required diagnostic manifest exists**. It does **not** authorize parent acquisition/selection, mutation allocation, solver construction or generation, diagnostic execution to create the missing manifest, outcome collection, modelling or predictive analysis. Those production steps require their own explicit authorization after the relevant population, provenance, isolation and protocol prerequisites are settled. The project pause remains in force outside this limited Gate 1 preflight/census scope.
+
+**What has to happen before the census can be run:** settle the applicable diagnostic-bank generation authority; establish and provenance the selected parent/variant population and its exact cell assignments without reconstructing an unestablished allocation; obtain a separate GO for any construction or diagnostic execution needed to produce the per-variant manifest; then run the outcome-free census and report every eligible/excluded cell, LOPO fold, scored parent, test row and coverage result. Do not call the census a PASS merely because one eligible cell exists; the minimum acceptable overall scored-parent coverage remains unspecified.
+
+### Gate 4 — NOT STARTED
+
+MDE, power and operating characteristics for the actual B1 pipeline remain unestablished. The analytical pipeline has not demonstrated recovery of a known B1 predictive effect under a matching known-truth design. An unpowered or unsupported null must not be presented as evidence against the hypothesis.
+
+## The adopted null-interpretation rule
+
+A null result must be reported as **inconclusive** unless Gate 1 support and Gate 4 power establish that the design could have detected a stated effect. A null without those conditions is a support failure, not a negative scientific finding. This rule is part of the owner's adopted contribution statement; it is a reporting commitment, not evidence that the required power or known-effect recovery has already been demonstrated.
+
+## Questions we invite researchers to challenge
+
+The project itself records two substantial challenges:
+
+1. Is the conjunction of an established index, a fixed diagnostic partition and grouped evaluation a scientific contribution, or a well-specified ablation?
+2. If the exact-cell baseline is beaten, is a one-parameter improvement worth reporting when a flexible model using the full failure vector could perform better? Parsimony, finite-sample stability and interpretability have not yet been measured as practical advantages.
+
+We invite researchers in software testing, program analysis, algorithm engineering and statistical learning to challenge the estimand, measurement alignment, support requirements, provenance controls and contribution claim before any further execution.
+
+**This is an invitation to review a falsifiable research proposition, not a request to buy or adopt a validated tool.**
+
+## Key records
+
+- [Novelty and positioning register](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/NOVELTY_AND_POSITIONING_REGISTER_2026-11-19.md) — adopted contribution, bounded prior-work comparison, support arithmetic and remaining challenges.
+- [Reviewer response ledger](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/REVIEWER_RESPONSE_2026-11-18.md) — owner decisions, provenance caveats, population scope and gate status.
+- [Fundamental research goal](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/FUNDAMENTAL_GOAL_ANALYTICAL_VALIDITY_2026-11-18.md) — research question and gate structure.
+- [C_D measurement specification](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/CD_MEASUREMENT_SPEC_2026-11-19.md) — record/canonical exposure and unresolved-outcome boundaries.
+- [B1 identity acceptance addendum](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/B1_IDENTITY_ACCEPTANCE_ADDENDUM_2026-11-22.md) — accepted 78-canonical identity chain and explicit measurement non-decisions.
+- [Theory succession audit](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/reviews/analytical-validity-2026-11-18/concentration-theory-succession-audit-2026-11-18.md) — history of the identification and construction failures.
+- [Option B construction audit](https://github.com/foued2/failure-concentration-study/blob/cffaf9b34cd9e412ab7b46eb8205ab00058a311a/engineered-study/08_OPTION_B_CONSTRUCTION_AUDIT_RESULT.md) — bounded 257-mechanism audit and zero distinct mechanism matches.
+- [Master provenance adjudication](https://github.com/foued2/failure-concentration-study/blob/master/reviews/CLAUDE_FULL_REPO_CHALLENGE_ADJUDICATION_2026-11-21.md) — v0.1/v0.2 retained-corpus provenance findings and the six-point future gate. 
+- [Accepted B1 v1.7 symbolic analysis plan](https://github.com/foued2/failure-concentration-study/blob/gpt/b1-m1-rev1.2-review-chain-2026-11-14/lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/B1_ANALYSIS_PLAN_2026-11-14_v1.7.md) and [its acceptance record](https://github.com/foued2/failure-concentration-study/blob/gpt/b1-m1-rev1.2-review-chain-2026-11-14/lc518-150/review-v1.2/b1-m1-joint-incidence-feasibility/GPT_ACCEPTANCE_RECORD_B1_ANALYSIS_PLAN_V1.7_2026-11-14.md) — symbolic plan accepted/frozen; not an execution GO.
+- [M1-si audit utility README](https://github.com/foued2/failure-concentration-study/blob/gpt/lc518-m1si-audit-2026-11-17/lc518-150/engineering/README.md) — specifies that the utility audits an existing manifest and does not generate or execute solver data.
+- [Owner acceptance of v0.21 diagnostic-strata taxonomy v0.4](https://github.com/foued2/failure-concentration-study/blob/gpt/lc518-v021-operational-strata-spec-2026-11-21/docs/LC518_V021_V04_OWNER_ACCEPTANCE_2026-11-21.md) and [v0.2.1 generation-protocol amendment](https://github.com/foued2/failure-concentration-study/blob/gpt/lc518-v021-generation-protocol-2026-11-21/docs/LC518_V021_DIAGNOSTIC_BANK_GENERATION_PROTOCOL_2026-11-21_v0.2.1_AMENDMENT.md) — taxonomy acceptance is not a generation-protocol freeze or execution GO.
+
+Source basis: the audit branch at commit `cffaf9b34cd9e412ab7b46eb8205ab00058a311a`, together with the linked B1, v0.21 and master-provenance records. This documentation branch changes `README.md` only; it does not modify frozen protocols, solver sources, banks or experimental data.
