@@ -146,7 +146,6 @@ The EASE 2025 paper (`10.1145/3756681.3756945`, pp. 476–487, "An Empirical Ana
 - It does **not** support any statement about records beyond the first result page of each expression, and it does **not** report a deduplicated count of unique publications. The supported sentence is: *no direct or partial match was identified among the records screened in this OpenAlex pass.*
 - It does **not** decide the contribution question. Whether a one-parameter incremental gain is worth reporting is a positioning and design judgement, not a literature fact.
 - It does **not** touch any measurement decision: H6 aggregation, unresolved handling, and outcome coding remain open.
-- It does **not** touch any measurement decision: H6 aggregation, unresolved handling, and outcome coding remain open.
 
 ---
 
@@ -179,3 +178,23 @@ The literature is no longer the binding constraint. Four decisions and one prohi
 ---
 
 **End of record.**
+
+---
+
+## 11. Subsequent owner decision — contribution adopted; Gate 0 closed (2026-11-22)
+
+This section records a decision made after the search and its initial acceptance. It does not alter the search protocol, retrieved records, candidate classifications, or limitations in §§1–8.
+
+The owner explicitly adopted the contribution paragraph in register §13.4 **as written**. The controlling decision and exact adopted text are recorded in register §14; the corresponding reviewer-ledger entry is §32.
+
+**Effect on the search record's earlier status statements:**
+
+- Section 9's statement that Gate 0 was not yet closed accurately described the position when the search record was completed. It is superseded for current status by register §14: **Gate 0 is CLOSED for position and contribution definition only**.
+- Section 10.1 (accept/reject the search record) was completed by the owner's acceptance recorded in register §12 and reviewer-ledger §30.
+- Section 10.2 (state the contribution object) was completed by the owner's adoption of register §13.4, recorded in register §14 and reviewer-ledger §32.
+- Section 10.3 (authorize the design-only support census) remains **NOT AUTHORIZED**. The project pause remains in force.
+- Section 10.4's warning against funding 150 solvers before the census remains in force. No solver work or execution is authorized.
+
+The search conclusion remains strictly bounded: *no direct or partial match was identified among the records screened in this OpenAlex pass.* It is not a systematic review and does not establish novelty. P remains **UNPROVEN**.
+
+Gate 1 and Gate 4 remain open. Support, estimability, MDE, and power have not been established. A null without the required Gate 1 support and Gate 4 power must be reported as inconclusive. H6 presentation/aggregation, unresolved-status handling, outcome coding, and historical row numbering remain open.
