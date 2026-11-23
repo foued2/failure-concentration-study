@@ -2,13 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:lc518:150:c6-witness-review:1.0",
   "title": "LC518 A2 C6 witness review dossier schema v1.0",
-  "description": "Proposed companion review dossier. It does not alter the pinned owner-annex form schema and is not authorized for use until its relationship to Rev 11 C0 is reviewed and adopted. The version_slot_id is a deterministic pre-construction identity (parent ID + role), not a constructed solver variant ID. The dossier also pins the exact adopted parent-roster bytes independently of the family-map bytes.",
+  "description": "Proposed companion review dossier. It does not alter the pinned owner-annex form schema and is not authorized for use until its relationship to Rev 11 C0 is reviewed and adopted. The version_slot_id is a deterministic pre-construction identity (parent ID + role), not a constructed solver variant ID. The dossier also pins the exact adopted parent-roster bytes independently of the family-map bytes. The dossier pins the frozen A2 Rev 11 protocol digest and the exact owner-annex intake schema Git blob.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "dossier_id",
     "version",
+    "a2_protocol_sha256",
     "annex_sha256",
+    "annex_intake_schema_blob_sha1",
     "parent_identity_manifest_sha256",
     "parent_roster_sha256",
     "family_map_sha256",
@@ -330,6 +332,16 @@
     "parent_roster_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "a2_protocol_sha256": {
+      "type": "string",
+      "const": "530dad4baf77c00a0afa76f91321c567fcbdfe4cf4a5ae6d0bee336c5dfac739",
+      "description": "SHA-256 of frozen LC518 A2/A3 protocol Rev 11."
+    },
+    "annex_intake_schema_blob_sha1": {
+      "type": "string",
+      "const": "1cc7bd81701c7cdb1c6f43c7058f59943c8ca25b",
+      "description": "Git blob SHA-1 of the pinned owner-annex intake schema checked by validate_annex.py."
     }
   }
 }
