@@ -5,9 +5,9 @@
 **Version:** 0.3.0, GPT-authored successor rewrite
 **State:** merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4` via PR #11 (2026-11-23T10:44:42Z, work branch only, not `master`); Claude final verdict PASS for the six-line syntax repair and for v0.3 as a local structural intake check, recorded in PR #11
 **Date:** 2026-11-23
-**Gate 1 inputs machinery:** `gate1-inputs/` plus `ANNEX_INTAKE_FORM_SCHEMA.json`, `ANNEX_INTAKE_FORM_TEMPLATE.json`, `validate_annex.py`, and `build_preregistration_manifest.py` — the remaining-gap map, owner mutation-design annex intake, schema-pinned C1–C7 structural auditor (C4 requires adopted-family-map/hash binding; C6 checks note presence only), and a pre-registration builder that accepts a construction-supplied real inventory without inventing real IDs (see `gate1-inputs/README.md`)
+**Gate 1 inputs machinery:** `gate1-inputs/` plus the annex form, `validate_annex.py`, `build_parent_identity_manifest.py`, and `build_preregistration_manifest.py` — the remaining-gap map, owner mutation-design annex intake, source-blind C1–C7 A2 intake checker, separate source-custody hash-manifest builder, and pre-registration builder. C6 still checks witness-note presence only; adequacy is not assessed.
 
-This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies bounded manifest-local semantic checks. Its owner-annex auditor uses a separate pinned schema and provides structural intake only: C4 requires verified adopted-family-map bytes and parent-source hashes; C6 checks nonblank witness-note presence, not witness adequacy or the full A2 verdict. It is not the Gate 1 census, not a full provenance validator, and not admission to census execution.
+This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies bounded manifest-local semantic checks. Its owner-annex auditor uses a separate pinned schema and provides structural intake only: C4 requires adopted-family-map bytes plus a hash-attested parent-identity manifest; the A2 auditor reads that manifest only and never opens solver source. C6 checks nonblank witness-note presence, not witness adequacy or the full A2 verdict. It is not the Gate 1 census, not a full provenance validator, and not admission to census execution.
 
 ## 1. Controlling schema and measurement definition
 
@@ -81,6 +81,42 @@ This package does not retrieve, read or verify the referenced external artifacts
 - external evidence retrieval, source provenance or artifact integrity.
 
 A digest or reference that is syntactically valid is not a verified artifact. The output repeats this boundary.
+
+## 5A. C4 parent-source identity preparation
+
+The source-custody utility `build_parent_identity_manifest.py` hashes exact bytes from
+an explicitly supplied 30-parent source index. It rejects unsafe paths and symlinks and
+does not import, execute, parse, compile or modify parent source files. It requires an
+ADOPTED family map and exact roster coverage.
+
+**This utility is not an A2 audit and its use is not currently authorized for real
+parent sources.** The proposed S0-only identity-preparation stage requires a separate
+owner authorization after the private mutation allocation has been delivered and the
+two repeated pairs have been preselected. Current automated tests use synthetic files
+only.
+
+Example invocation, for a future separately authorized stage:
+
+```powershell
+py census-intake/build_parent_identity_manifest.py `
+  --roster path/to/PARENT_ROSTER_G01_G30.json `
+  --family-map path/to/ADOPTED_FAMILY_MAP.json `
+  --source-index path/to/PARENT_SOURCE_INDEX.json `
+  --source-root path/to/parent-source-root `
+  --computed-by "recorded source custodian" `
+  --out path/to/PARENT_IDENTITY_MANIFEST.json
+```
+
+The resulting manifest is supplied to `validate_annex.py` through
+`--parent-identities`. The A2 auditor checks the manifest's family binding,
+30-parent coverage, digest syntax and duplicate-hash rules; it does not reopen
+the source files. The source custodian's hash computation is separately attested
+and its manifest must be retained and hash-pinned through the private evidence
+channel.
+
+The current sequencing and C6 witness-review proposal is documented in
+`gate1-inputs/C4_C6_STAGE_RESOLUTION_2026-11-23.md`. It is not adopted and
+does not amend A2 Rev 11.
 
 ## 6. Installation and use
 
