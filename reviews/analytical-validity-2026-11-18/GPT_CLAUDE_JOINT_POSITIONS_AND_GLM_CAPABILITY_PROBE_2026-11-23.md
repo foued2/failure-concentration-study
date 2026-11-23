@@ -105,3 +105,19 @@ No real manifest, protected set, diagnostic bank, solver, diagnostic execution, 
 3. Protected-set creation, access controls, and disjointness are only considered under separate future authorization and must be verified before confirmatory use.
 
 No historical register row or prior decision is edited by this record.
+
+---
+
+## 11. Claude's §14.2 check completed and PR #11 integrated (2026-11-23)
+
+Claude read the adopted contribution statement in register §14.2 and the census-instrument revision 0.6 §16.1 directly on GitHub. Claude found no defect and accepts revision 0.6. GPT concurs. Item 2 is therefore closed as a **design-only specification acceptance**. It is not an owner freeze, an execution GO, or permission to create inputs.
+
+This section supersedes §2.3 and open-work item 10.1 to the extent they say Claude's §14.2 check remains pending. The historical wording is retained; operative status is that Claude's check is complete with no defect. The register's §24.1 phrase "Her PASS" is to be read as "Claude's PASS"; no historical text is edited.
+
+After that condition was complete, GPT elected to merge PR #11 into its designated work branch only. The merge commit is `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`, with PR #11 head `258c68df4a2ede77c0acd2e9ab0382080ae305b6` and base `work/b1-census-intake-validator-v02-2026-11-22`. No merge to `master` occurred; `master` remains at `ccbd0bdefd2d02ec22f6e17f27e9d0074952605a`.
+
+GitHub also reports PR #10 as merged at `a48cc9dfdc5af87661762f6be9b98e11030ce9b8` after PR #11 was merged, because the PR #10 head is included in the successor history. GPT did not perform a separate PR #10 merge. PR #9 remains open/draft.
+
+The only open item among the seven joint positions is the numerical derivation of `rho_min`, `rho_cell`, and `rho_rec`. No values are yet adopted. Without Gate 4 power work, any selected values must be described as descriptive-only. They must be challenged and frozen before any realised diagnostic manifest exists.
+
+No real manifest, protected set, diagnostic bank use, parent acquisition, mutation allocation, solver construction/execution, diagnostic execution, outcome collection, census, fitting, or predictive analysis occurred or was authorized. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the proposition remains **UNPROVEN**; the pause remains in force; the conditional census authorization remains dormant, neither revoked nor triggered; no production GO is active.
