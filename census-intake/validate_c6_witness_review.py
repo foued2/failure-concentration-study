@@ -43,7 +43,7 @@ LABEL = (
     "SEMANTIC REACH AND JOINT ATTAINABILITY REQUIRE INDEPENDENT REVIEW"
 )
 SCHEMA_FILENAME = "C6_WITNESS_REVIEW_SCHEMA.json"
-EXPECTED_SCHEMA_GIT_BLOB_SHA1 = "f20db6122fbe0d9d6d089c2d04bb6d57492ffbbd"
+EXPECTED_SCHEMA_GIT_BLOB_SHA1 = "37d682d9228d7fab70963a4507488c1e4cf5ade5"
 EXPECTED_BANK_DESIGN_SHA256 = "da7f8c1ae3c5e3a582c38d91be2463061bce2acb0a772fac72d34459f4b17843"
 N_RECORDS = 64
 STRATA = [f"D{i}" for i in range(1, 9)]
@@ -144,6 +144,8 @@ def _validate_bindings(
     annex_raw: bytes,
     identity_manifest: dict,
     identity_raw: bytes,
+    roster: dict,
+    roster_raw: bytes,
     family_map: dict,
     family_map_raw: bytes,
     c4_report: dict,
@@ -152,6 +154,7 @@ def _validate_bindings(
     expected = {
         "annex_sha256": _sha256(annex_raw),
         "parent_identity_manifest_sha256": _sha256(identity_raw),
+        "parent_roster_sha256": _sha256(roster_raw),
         "family_map_sha256": _sha256(family_map_raw),
         "c4_report_sha256": _sha256(c4_raw),
     }
@@ -159,8 +162,25 @@ def _validate_bindings(
         if dossier.get(key) != digest:
             raise DossierError(f"C6_DOSSIER_ARTIFACT_BINDING_MISMATCH:{key}")
 
+    if roster.get("status") != "ADOPTED":
+        raise DossierError("C6_PARENT_ROSTER_NOT_ADOPTED")
+    if (
+        not isinstance(roster.get("artifact_id"), str)
+        or not isinstance(roster.get("version"), str)
+    ):
+        raise DossierError("C6_PARENT_ROSTER_IDENTITY_MISSING")
     if family_map.get("status") != "ADOPTED":
         raise DossierError("C6_FAMILY_MAP_NOT_ADOPTED")
+
+    identity_roster_adoption = identity_manifest.get("parent_roster_adoption_ref")
+    if (
+        not isinstance(identity_roster_adoption, dict)
+        or identity_roster_adoption.get("status") != "ADOPTED"
+        or identity_roster_adoption.get("artifact_id") != roster.get("artifact_id")
+        or identity_roster_adoption.get("version") != roster.get("version")
+        or identity_roster_adoption.get("sha256") != expected["parent_roster_sha256"]
+    ):
+        raise DossierError("C6_IDENTITY_MANIFEST_PARENT_ROSTER_BINDING_INVALID")
 
     identity_adoption = identity_manifest.get("family_map_adoption_ref")
     c4 = c4_report.get("C4", {})
@@ -174,7 +194,14 @@ def _validate_bindings(
         raise DossierError("C6_IDENTITY_MANIFEST_FAMILY_BINDING_INVALID")
     if (
         c4_report.get("parent_identity_manifest_sha256") != expected["parent_identity_manifest_sha256"]
+        or c4_report.get("parent_roster_sha256") != expected["parent_roster_sha256"]
         or c4.get("status") != "ASSESSED"
+        or c4.get("parent_roster_sha256_verified") is not True
+        or not isinstance(c4.get("parent_roster_adoption_ref"), dict)
+        or c4.get("parent_roster_adoption_ref", {}).get("status") != "ADOPTED"
+        or c4.get("parent_roster_adoption_ref", {}).get("artifact_id") != roster.get("artifact_id")
+        or c4.get("parent_roster_adoption_ref", {}).get("version") != roster.get("version")
+        or c4.get("parent_roster_adoption_ref", {}).get("sha256") != expected["parent_roster_sha256"]
         or c4.get("family_map_sha256_verified") is not True
         or c4.get("family_map_roster_partition_verified") is not True
         or c4.get("parent_source_hash_attestation_present") is not True
@@ -201,9 +228,12 @@ def _validate_bindings(
     return {
         "annex_sha256_verified": True,
         "parent_identity_manifest_sha256_verified": True,
+        "parent_roster_sha256_verified": True,
+        "parent_roster_adoption_verified": True,
         "family_map_sha256_verified": True,
         "c4_report_sha256_verified": True,
         "c4_status_assessed": True,
+        "parent_roster_adopted": True,
         "family_map_adopted": True,
         "diagnostic_domain_N": N_RECORDS,
         "diagnostic_stratum_record_counts": [8] * 8,
@@ -261,6 +291,12 @@ def _effective_parent_identities(
     roster: dict, identity_manifest: dict
 ) -> tuple[dict[str, dict], dict[str, dict]]:
     roster_rows = roster.get("parents")
+    if (
+        roster.get("status") != "ADOPTED"
+        or not isinstance(roster.get("artifact_id"), str)
+        or not isinstance(roster.get("version"), str)
+    ):
+        raise DossierError("C6_ROSTER_NOT_ADOPTED_OR_IDENTIFIED")
     if not isinstance(roster_rows, list) or len(roster_rows) != 30:
         raise DossierError("C6_ROSTER_NOT_EXACTLY_30_PARENTS")
     roster_by_id: dict[str, dict] = {}
@@ -441,6 +477,8 @@ def validate_c6_dossier(
     annex_raw: bytes,
     identity_manifest: dict,
     identity_raw: bytes,
+    roster: dict,
+    roster_raw: bytes,
     family_map: dict,
     family_map_raw: bytes,
     c4_report: dict,
@@ -464,6 +502,8 @@ def validate_c6_dossier(
         annex_raw=annex_raw,
         identity_manifest=identity_manifest,
         identity_raw=identity_raw,
+        roster=roster,
+        roster_raw=roster_raw,
         family_map=family_map,
         family_map_raw=family_map_raw,
         c4_report=c4_report,
@@ -622,7 +662,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--parent-identities", required=True)
     parser.add_argument("--family-map", required=True)
     parser.add_argument("--c4-report", required=True)
-    parser.add_argument("--roster")
+    parser.add_argument("--roster", required=True, help="exact adopted parent roster JSON whose bytes are pinned by C4")
     parser.add_argument("--report", required=True)
     args = parser.parse_args(argv)
 
@@ -632,12 +672,8 @@ def main(argv: list[str] | None = None) -> int:
         identities, identity_raw = _load_object(Path(args.parent_identities))
         family_map, family_map_raw = _load_object(Path(args.family_map))
         c4_report, c4_raw = _load_object(Path(args.c4_report))
-        roster_path = (
-            Path(args.roster)
-            if args.roster
-            else Path(__file__).resolve().parent / "gate1-inputs" / "PARENT_ROSTER_G01_G30.json"
-        )
-        roster, _roster_raw = _load_object(roster_path)
+        roster_path = Path(args.roster)
+        roster, roster_raw = _load_object(roster_path)
         schema = _load_pinned_dossier_schema()
         annex_schema = (Path(__file__).resolve().parent / "ANNEX_INTAKE_FORM_SCHEMA.json")
         annex_schema_raw = annex_schema.read_bytes()
@@ -660,6 +696,8 @@ def main(argv: list[str] | None = None) -> int:
             annex_raw=annex_raw,
             identity_manifest=identities,
             identity_raw=identity_raw,
+            roster=roster,
+            roster_raw=roster_raw,
             family_map=family_map,
             family_map_raw=family_map_raw,
             c4_report=c4_report,
