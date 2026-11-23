@@ -76,3 +76,56 @@ body has been built and no diagnostic outcome record has been collected. Mutatio
 not established and is not reconstructed here. C4 remains NOT ASSESSABLE until an adopted
 family-map reference and pinned base-source hashes are supplied. C6 checks witness-note presence
 only; adequacy remains unassessed. The no-reconstruction rule and authorization chain remain in force.
+
+
+## 5. GPT C4/C6 workstream update (2026-11-23; append-only)
+
+This dated addendum records subsequent GPT work on the separate branch
+`gpt/gate1-c4-c6-machinery-2026-11-23`. Sections 1–4 above are retained as the
+historical description of the initial package state; this addendum supplies the
+current implementation boundaries.
+
+### C4 source identity
+
+- `validate_annex.py` now requires a source-hash attestation in the parent identity
+  manifest and checks the complete 30-parent identity rows, safe relative source
+  references, exact family-map binding, family consistency and duplicate-hash rules.
+- The A2 auditor is source-blind. It consumes the identity manifest only and does
+  not open, parse, compile, import or execute solver source. This preserves Rev 11
+  §4's static-audit boundary.
+- `build_parent_identity_manifest.py` is a separate source-custody utility. It
+  reads exact bytes from an explicitly supplied parent-source index, computes
+  SHA-256 values and a canonical bundle digest, and emits the C4 identity manifest.
+  It rejects path traversal and symlinks and never executes source.
+- A real run of that utility is **not authorized** by this commit. It requires a
+  separately recorded owner authorization for a narrow S0-only parent identity
+  preparation stage after delivery of the owner allocation and preselection of
+  both repeated pairs. No real parent sources or hashes were produced here.
+- The source-hash attestation is provenance supplied by the source custodian. The
+  A2 auditor verifies the manifest's structure and consistency but does not
+  independently recompute those source hashes, because that would require opening
+  solver source during A2.
+
+### C6 boundary
+
+C6 still has **not** been assessed. The existing owner-annex schema continues to
+require only nonblank `witness_notes`; the auditor reports presence only. The new
+`C4_C6_STAGE_RESOLUTION_2026-11-23.md` records the exact Rev 11 witness requirements,
+the automation-versus-semantic-review split, and the proposed companion-dossier
+boundary. No C6 adequacy verdict, witness vector, mechanism reach, joint-attainability
+finding, or structural-absence finding was created.
+
+### New and revised files
+
+| File | Change |
+|---|---|
+| `../build_parent_identity_manifest.py` | New source-custody hash-manifest tool; hash-only, no import or execution |
+| `../tests/test_parent_identity_builder.py` | New synthetic tests for hash computation, duplicate bytes, path safety, symlink rejection and non-execution |
+| `C4_C6_STAGE_RESOLUTION_2026-11-23.md` | New unadopted stage-sequencing and C6 review proposal |
+| `../validate_annex.py` | C4 consumes a hash-attested identity manifest and remains source-blind |
+| `../tests/test_gate1_inputs.py` | Synthetic C4 fixtures updated to include manifest attestation; no real source files |
+
+The C4/C6 workstream does not adopt the roster or family map, supply or infer the
+owner mutation allocation, create S0 or mutated solver bodies, emit real variant
+IDs or q IDs, execute code, collect outcomes, run the census, fit a model, or
+authorize any experiment. Gate 1 remains **BLOCKED / NOT ASSESSABLE**.
