@@ -56,6 +56,15 @@ def synthetic_parent_identities(family_map, family_map_sha256):
             "artifact_id": family_map["artifact_id"],
             "sha256": family_map_sha256,
         },
+        "source_hash_attestation": {
+            "algorithm": "SHA-256",
+            "hash_subject": "EXACT_BASE_SOURCE_FILE_BYTES",
+            "method": "READ_BYTES_AND_HASH_ONLY_NO_IMPORT_OR_EXECUTION",
+            "computed_by": "SYNTHETIC TEST FIXTURE ONLY",
+            "computed_at_utc": "2026-11-23T00:00:00Z",
+            "source_index_sha256": "a" * 64,
+            "source_bundle_sha256": "b" * 64,
+        },
         "parents": [
             {
                 "parent_id": p["parent_id"],
@@ -143,7 +152,6 @@ class TestAnnexAuditor(unittest.TestCase):
             family_map_sha256,
             family_map,
             family_map_sha256,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(
             report["audit_decision"],
@@ -161,7 +169,6 @@ class TestAnnexAuditor(unittest.TestCase):
             family_map_sha256,
             family_map,
             family_map_sha256,
-            SYNTHETIC_SOURCE_ROOT,
         )
 
     def test_missing_mechanism_fails_schema(self):
@@ -243,7 +250,6 @@ class TestAnnexAuditor(unittest.TestCase):
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
             family_map_sha256, family_map, family_map_sha256,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(report["C4"]["status"], "ASSESSED")
         cell = next(
@@ -252,40 +258,31 @@ class TestAnnexAuditor(unittest.TestCase):
         )
         self.assertEqual(cell["n_effective_parent_groups"], 6)
 
-    def test_c4_without_source_root_is_not_assessable(self):
-        family_map, digest = synthetic_adopted_family_map()
-        report = validate_annex.audit_annex(
-            synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
-            synthetic_parent_identities(family_map, digest),
-            digest, family_map, digest,
-        )
-        self.assertEqual(report["C4"]["status"], "NOT_ASSESSABLE")
-        self.assertIn("C4_PARENT_SOURCE_ROOT_NOT_SUPPLIED", report["C4"]["reason_codes"])
-
-    def test_c4_rejects_declared_hash_not_matching_source_bytes(self):
+    def test_c4_parent_source_manifest_is_consumed_without_opening_source(self):
         family_map, digest = synthetic_adopted_family_map()
         identities = synthetic_parent_identities(family_map, digest)
-        identities["parents"][0]["base_source_sha256"] = "b" * 64
+        identities["parents"][0]["base_source_path"] = "source-file-not-mounted.py"
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
-            identities, digest, family_map, digest, SYNTHETIC_SOURCE_ROOT,
+            identities, digest, family_map, digest,
         )
-        self.assertEqual(report["C4"]["status"], "BLOCKED_UNRESOLVED")
-        self.assertTrue(any(
-            code.startswith("C4_PARENT_SOURCE_HASH_MISMATCH:G01")
-            for code in report["C4"]["reason_codes"]
-        ))
+        self.assertEqual(report["C4"]["status"], "ASSESSED")
+        self.assertEqual(report["C4"]["parent_source_hash_attestation_present"], True)
+        self.assertEqual(report["C4"]["auditor_source_access"], "NONE_STATIC_MANIFEST_ONLY")
 
-    def test_c4_missing_source_file_is_not_assessable(self):
+    def test_c4_missing_source_hash_attestation_is_not_assessable(self):
         family_map, digest = synthetic_adopted_family_map()
         identities = synthetic_parent_identities(family_map, digest)
-        identities["parents"][0]["base_source_path"] = "G01-missing.py"
+        identities.pop("source_hash_attestation")
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
-            identities, digest, family_map, digest, SYNTHETIC_SOURCE_ROOT,
+            identities, digest, family_map, digest,
         )
         self.assertEqual(report["C4"]["status"], "NOT_ASSESSABLE")
-        self.assertIn("C4_PARENT_SOURCE_FILE_MISSING:G01", report["C4"]["reason_codes"])
+        self.assertIn(
+            "C4_PARENT_SOURCE_HASH_ATTESTATION_MISSING_OR_INVALID",
+            report["C4"]["reason_codes"],
+        )
 
     def test_c4_duplicate_hash_across_families_is_blocked(self):
         family_map, family_map_sha256 = synthetic_adopted_family_map()
@@ -295,7 +292,6 @@ class TestAnnexAuditor(unittest.TestCase):
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
             family_map_sha256, family_map, family_map_sha256,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(report["C4"]["status"], "BLOCKED_UNRESOLVED")
         self.assertEqual(report["audit_decision"], "AUDIT_BLOCKED_UNRESOLVED")
@@ -317,7 +313,6 @@ class TestAnnexAuditor(unittest.TestCase):
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
             identities, digest, family_map, digest,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(report["C4"]["status"], "NOT_ASSESSABLE")
         self.assertIn("C4_FAMILY_MAP_ADOPTION_NOT_ESTABLISHED", report["C4"]["reason_codes"])
@@ -330,7 +325,6 @@ class TestAnnexAuditor(unittest.TestCase):
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
             identities, wrong_digest, family_map, digest,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(report["C4"]["status"], "BLOCKED_UNRESOLVED")
         self.assertIn("C4_FAMILY_MAP_HASH_MISMATCH", report["C4"]["reason_codes"])
@@ -489,7 +483,6 @@ class TestPreregistrationBuilderDemo(unittest.TestCase):
             family_map_sha256,
             family_map,
             family_map_sha256,
-            SYNTHETIC_SOURCE_ROOT,
         )
         self.assertEqual(
             allocation_report["audit_decision"],
