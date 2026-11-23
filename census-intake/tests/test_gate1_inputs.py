@@ -30,6 +30,11 @@ def _load(path: Path):
 
 
 ROSTER = _load(CENSUS_INTAKE / "gate1-inputs" / "PARENT_ROSTER_G01_G30.json")
+ROSTER["status"] = "ADOPTED"  # synthetic adoption state for unit fixtures only
+ROSTER_RAW = (
+    json.dumps(ROSTER, indent=2, sort_keys=True, ensure_ascii=False) + chr(10)
+).encode("utf-8")
+ROSTER_SHA256 = hashlib.sha256(ROSTER_RAW).hexdigest()
 FAMILY_MAP = _load(CENSUS_INTAKE / "gate1-inputs" / "FAMILY_MAP.json")
 ANNEX_SCHEMA = validate_annex.load_and_verify_schema()
 def synthetic_adopted_family_map():
@@ -63,6 +68,12 @@ def synthetic_parent_identities(family_map, family_map_sha256):
     return {
         "artifact_id": "SYNTHETIC-PARENT-IDENTITIES",
         "version": "0.0-synthetic",
+        "parent_roster_adoption_ref": {
+            "status": "ADOPTED",
+            "artifact_id": ROSTER["artifact_id"],
+            "version": ROSTER["version"],
+            "sha256": ROSTER_SHA256,
+        },
         "family_map_adoption_ref": {
             "status": "ADOPTED",
             "artifact_id": family_map["artifact_id"],
@@ -173,7 +184,8 @@ class TestAnnexAuditor(unittest.TestCase):
             synthetic_parent_identities(family_map, family_map_sha256),
             family_map_sha256,
             family_map,
-            family_map_sha256,
+            family_map_sha256,,
+            ROSTER_SHA256,
         )
         self.assertEqual(
             report["audit_decision"],
@@ -272,7 +284,8 @@ class TestAnnexAuditor(unittest.TestCase):
         refresh_synthetic_source_bundle_digest(identities)
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
-            family_map_sha256, family_map, family_map_sha256,
+            family_map_sha256, family_map, family_map_sha256,,
+            ROSTER_SHA256,
         )
         self.assertEqual(report["C4"]["status"], "ASSESSED")
         cell = next(
@@ -316,7 +329,8 @@ class TestAnnexAuditor(unittest.TestCase):
         refresh_synthetic_source_bundle_digest(identities)
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
-            family_map_sha256, family_map, family_map_sha256,
+            family_map_sha256, family_map, family_map_sha256,,
+            ROSTER_SHA256,
         )
         self.assertEqual(report["C4"]["status"], "BLOCKED_UNRESOLVED")
         self.assertEqual(report["audit_decision"], "AUDIT_BLOCKED_UNRESOLVED")
@@ -325,10 +339,31 @@ class TestAnnexAuditor(unittest.TestCase):
         family_map, family_map_sha256 = synthetic_adopted_family_map()
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, None,
-            None, family_map, family_map_sha256
+            None, family_map, family_map_sha256, ROSTER_SHA256
         )
         self.assertEqual(report["C4"]["status"], "NOT_ASSESSABLE")
         self.assertEqual(report["audit_decision"], "AUDIT_NOT_ASSESSABLE")
+
+    def test_c4_pending_parent_roster_is_not_assessable(self):
+        pending_roster = json.loads(json.dumps(ROSTER))
+        pending_roster["status"] = "PENDING_ADOPTION"
+        pending_raw = (
+            json.dumps(pending_roster, indent=2, sort_keys=True, ensure_ascii=False) + chr(10)
+        ).encode("utf-8")
+        pending_sha = hashlib.sha256(pending_raw).hexdigest()
+        family_map, digest = synthetic_adopted_family_map()
+        identities = synthetic_parent_identities(family_map, digest)
+        identities["parent_roster_adoption_ref"]["sha256"] = pending_sha
+        report = validate_annex.audit_annex(
+            synthetic_valid_annex(), pending_roster, ANNEX_SCHEMA,
+            identities, hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
+            family_map, digest, pending_sha,
+        )
+        self.assertEqual(report["C4"]["status"], "NOT_ASSESSABLE")
+        self.assertIn(
+            "C4_PARENT_ROSTER_NOT_ADOPTED_OR_HASH_NOT_PINNED",
+            report["C4"]["reason_codes"],
+        )
 
     def test_c4_pending_family_map_is_not_assessable(self):
         family_map = json.loads(json.dumps(FAMILY_MAP))
