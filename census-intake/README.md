@@ -5,9 +5,9 @@
 **Version:** 0.3.0, GPT-authored successor rewrite
 **State:** merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4` via PR #11 (2026-11-23T10:44:42Z, work branch only, not `master`); Claude final verdict PASS for the six-line syntax repair and for v0.3 as a local structural intake check, recorded in PR #11
 **Date:** 2026-11-23
-**Gate 1 inputs machinery:** `gate1-inputs/` plus `ANNEX_INTAKE_FORM_SCHEMA.json`, `ANNEX_INTAKE_FORM_TEMPLATE.json`, `validate_annex.py`, `build_preregistration_manifest.py` — the remaining-gap map, the owner mutation-design annex intake form and mechanical C1–C7 auditor, and the pre-registration manifest builder (see `gate1-inputs/README.md`)
+**Gate 1 inputs machinery:** `gate1-inputs/` plus `ANNEX_INTAKE_FORM_SCHEMA.json`, `ANNEX_INTAKE_FORM_TEMPLATE.json`, `validate_annex.py`, and `build_preregistration_manifest.py` — the remaining-gap map, owner mutation-design annex intake, schema-pinned C1–C7 structural auditor (C4 requires adopted-family-map/hash binding; C6 checks note presence only), and a pre-registration builder that accepts a construction-supplied real inventory without inventing real IDs (see `gate1-inputs/README.md`)
 
-This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies a bounded set of manifest-local semantic checks. It is not the Gate 1 census, not a full provenance validator, and not a decision that an input is ready for census execution.
+This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies bounded manifest-local semantic checks. Its owner-annex auditor uses a separate pinned schema and provides structural intake only: C4 requires verified adopted-family-map bytes and parent-source hashes; C6 checks nonblank witness-note presence, not witness adequacy or the full A2 verdict. It is not the Gate 1 census, not a full provenance validator, and not admission to census execution.
 
 ## 1. Controlling schema and measurement definition
 
@@ -106,10 +106,15 @@ Exit codes: 0 means local checks passed for the supplied manifest and, when supp
 
 tests/test_b1_census_intake.py contains synthetic adversarial fixtures. It tests the complete 17-field envelope; unknown fields at the root and nested levels; both prohibited status-decision consultation flags; null/malformed digests and evidence references; status-specific output including the false-zero correction; exact formula citation; cross-variant record-ID rules; sidecar hash binding and mismatch codes; and CLI outcomes. The tests use invented IDs, timestamps and digests only.
 
-tests/test_gate1_inputs.py (new, GLM 2026-11-23) contains 13 tests for the Gate 1 inputs machinery: parent roster/family-map integrity against the frozen design, the annex auditor's C1/C2/C3/C5 rule checks with synthetic adversarial mutations, and the end-to-end demo-synthetic pre-registration build verified through the reviewed intake checker.
+tests/test_gate1_inputs.py began as a GLM-authored 13-test suite and is extended in the GPT repair to 25 tests. The expanded suite covers C1–C7 intake boundaries, C4 effective-parent deduplication and adopted-family-map hash binding, C5 compliance-only reporting, C6 note-presence versus adequacy, schema blob pinning, real-inventory validation, q-registry crosswalks, and both synthetic-demo and non-demo pre-registration builds. All fixtures use invented IDs and hashes. The full census-intake suite passed **84/84 tests** on CPython 3.13.18 against the exact candidate repair blobs on 2026-11-23.
 
 Historical code authorship is preserved accurately. The local agent HY4 authored the earlier prototype (0060e7b) and v0.2 successor (fd0b34b). Both commits remain unchanged in Git history. GPT inspected those implementations, found that they did not enforce the reviewed full manifest contract, and authored this v0.3 successor rewrite. The earlier implementations are not represented as GPT-authored. Claude agreed to the correction approach and conditions before implementation; that agreement is not a code PASS. Claude's independent review of this v0.3 successor concluded on 2026-11-23 with a PASS for the reviewed local structural intake checks and the syntax repair; the verdict, the withdrawn zero-convention objection and the limits are recorded in PR #11.
 
 The v0.2 partial record_schema.json is removed from this successor branch to avoid presenting it as the controlling contract; its historical bytes remain available in the v0.2 commit. The prototype review packet and dated historical correction are also retained unchanged. See CORRECTION_RECORD_2026-11-23.md and REVIEW_PACKET_FOR_CLAUDE_V0_3_2026-11-23.md.
 
-No bank access, parent acquisition, mutation allocation, solver construction, diagnostic execution, real-manifest validation, census computation, outcome collection, model fitting or predictive analysis has occurred under this repair. Gate 1 preflight remains BLOCKED / NOT ASSESSABLE; the scientific proposition remains unproven.
+The C9 bank artifact exists from run 41591572358 (artifact ID 13210063805; SHA-256
+`6e6d60c1cb703ed80c1d4fc8191ad764a81b3c06517caeff9db15bf52db2bbe2`). It contains generated
+diagnostic and held-out input banks and oracle outputs; the held-out bank is publicly exposed,
+not sealed. This repair does not retrieve, regenerate, or use those bank files. No parent solver
+bodies or diagnostic outcome records were produced, and no mutation allocation was supplied or
+reconstructed. Gate 1 remains BLOCKED / NOT ASSESSABLE; the scientific proposition remains unproven.

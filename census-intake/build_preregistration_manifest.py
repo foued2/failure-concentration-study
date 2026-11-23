@@ -21,16 +21,15 @@ validate_annex.py, or from explicitly labelled synthetic demo inputs
 (--demo-synthetic, invented IDs/digests only, for machinery verification).
 
 Inputs (real build):
-  --roster        parent roster JSON (e.g. gate1-inputs/PARENT_ROSTER_G01_G30.json)
-  --family-map    family map JSON (e.g. gate1-inputs/FAMILY_MAP.json)
-  --allocation    annex audit report from validate_annex.py with audit_decision
-                  ALL_LOCAL_RULES_PASS (supplies q_id mechanism identities)
-  --bank-identity JSON: bank_id, version, sha256, record_manifest_sha256
-  --governance    JSON: diagnostic_exposure_disclosure content supplied by the
-                  reviewer/owner (selection-history status and description,
-                  future-bank status, evidence refs)
-  --rule-ref      JSON artifactRef of the governing instrument/rule document
-  --out-dir       output directory
+  --roster        adopted parent roster JSON
+  --family-map    adopted family map JSON
+  --inventory     construction-supplied 150-row EXPECTED_NOT_RUN inventory
+                  with real variant_id and q_id values
+  --allocation    structural-intake report from validate_annex.py; C4 must be
+                  ASSESSED against the same adopted family-map bytes supplied
+                  to this builder (C6 adequacy remains unassessed)
+  --bank-identity, --governance, --rule-ref, --provenance-refs,
+  --evaluation-row-basis-ref, and --out-dir.
 
 Demo mode (--demo-synthetic) fabricates every annex-dependent input with
 SYN_-prefixed invented identifiers and 64-hex digests derived from random
@@ -98,6 +97,93 @@ def _load_file_ref(path: Path) -> dict:
     return {"sha256": _sha256(raw), "git_blob_sha1": _git_blob_sha1(raw), "bytes": len(raw)}
 
 
+def _validate_real_inventory(inventory: dict, roster: dict) -> dict:
+    """Validate a complete, construction-supplied 150-slot pre-execution inventory."""
+    if not isinstance(inventory, dict):
+        raise SystemExit("BUILDER_INVENTORY_NOT_OBJECT")
+    required_root = {"artifact_id", "version", "expected_variant_count", "validity_status", "variants"}
+    if not required_root.issubset(inventory):
+        raise SystemExit("BUILDER_INVENTORY_ROOT_FIELDS_MISSING")
+    if inventory["expected_variant_count"] != 150 or inventory["validity_status"] != "EXPECTED_NOT_RUN":
+        raise SystemExit("BUILDER_INVENTORY_NOT_150_EXPECTED_NOT_RUN")
+    variants = inventory.get("variants")
+    if not isinstance(variants, list) or len(variants) != 150:
+        raise SystemExit("BUILDER_INVENTORY_VARIANT_COUNT_NOT_150")
+    roster_family = {p["parent_id"]: p["Z_id"] for p in roster.get("parents", [])}
+    if len(roster_family) != 30:
+        raise SystemExit("BUILDER_ROSTER_NOT_30_UNIQUE_PARENTS")
+    roles = {"S0", "SA", "SB", "SAB", "S-EXTRA"}
+    seen_ids = set()
+    by_parent = {pid: [] for pid in roster_family}
+    for index, row in enumerate(variants):
+        if not isinstance(row, dict):
+            raise SystemExit(f"BUILDER_INVENTORY_ROW_NOT_OBJECT:{index}")
+        required = {"variant_id", "parent_id", "Z_id", "q_id", "role", "validity_status"}
+        if not required.issubset(row):
+            raise SystemExit(f"BUILDER_INVENTORY_ROW_FIELDS_MISSING:{index}")
+        vid, pid, zid, qid, role, status = (
+            row["variant_id"], row["parent_id"], row["Z_id"], row["q_id"],
+            row["role"], row["validity_status"]
+        )
+        for name, value in (("variant_id", vid), ("q_id", qid)):
+            if not isinstance(value, str) or not value.strip():
+                raise SystemExit(f"BUILDER_INVENTORY_{name.upper()}_EMPTY:{index}")
+        if vid in seen_ids:
+            raise SystemExit(f"BUILDER_INVENTORY_VARIANT_ID_DUPLICATE:{vid}")
+        seen_ids.add(vid)
+        if pid not in roster_family:
+            raise SystemExit(f"BUILDER_INVENTORY_PARENT_UNKNOWN:{pid}")
+        if zid != roster_family[pid]:
+            raise SystemExit(f"BUILDER_INVENTORY_FAMILY_MISMATCH:{pid}")
+        if role not in roles or status != "EXPECTED_NOT_RUN":
+            raise SystemExit(f"BUILDER_INVENTORY_ROLE_OR_STATUS_INVALID:{vid}")
+        by_parent[pid].append(role)
+    for pid, assigned in by_parent.items():
+        if len(assigned) != 5 or set(assigned) != roles:
+            raise SystemExit(f"BUILDER_INVENTORY_PARENT_ROLE_SET_INVALID:{pid}")
+    return inventory
+
+
+def _build_q_registry(inventory: dict, *, synthetic: bool) -> dict:
+    """Create a q_id-to-variant crosswalk from the actual inventory."""
+    q_to_variants: dict[str, list[str]] = {}
+    for row in inventory["variants"]:
+        q_to_variants.setdefault(row["q_id"], []).append(row["variant_id"])
+    return {
+        "artifact_id": "SYN-q-registry" if synthetic else "lc518-150-q-registry",
+        "version": "0.0-synthetic" if synthetic else "1.0",
+        "label": DEMO_LABEL if synthetic else LABEL,
+        "q_entries": [
+            {"q_id": qid, "variant_ids": q_to_variants[qid]}
+            for qid in sorted(q_to_variants)
+        ],
+        "variant_count": len(inventory["variants"]),
+        "q_id_count": len(q_to_variants),
+    }
+
+
+def _verify_family_map_adoption_binding(
+    family_map: dict,
+    family_map_info: dict,
+    allocation_report: dict,
+) -> None:
+    """Ensure C4 was assessed against these exact, adopted family-map bytes."""
+    c4 = allocation_report.get("C4", {})
+    adoption = c4.get("family_map_adoption_ref", {}) if isinstance(c4, dict) else {}
+    if family_map.get("status") != "ADOPTED":
+        raise SystemExit("BUILDER_FAMILY_MAP_NOT_ADOPTED")
+    if c4.get("status") != "ASSESSED":
+        raise SystemExit("BUILDER_C4_NOT_ASSESSED")
+    if (
+        c4.get("family_map_sha256_verified") is not True
+        or c4.get("family_map_roster_partition_verified") is not True
+        or adoption.get("status") != "ADOPTED"
+        or adoption.get("artifact_id") != family_map.get("artifact_id")
+        or adoption.get("sha256") != family_map_info.get("sha256")
+    ):
+        raise SystemExit("BUILDER_FAMILY_MAP_ADOPTION_BINDING_MISMATCH")
+
+
 def build_inputs(args) -> dict:
     """Load or fabricate the input artifact set. Returns a context dict."""
     ctx: dict = {"demo": bool(args.demo_synthetic)}
@@ -163,7 +249,8 @@ def build_inputs(args) -> dict:
 
     # Real build: every input must be supplied; nothing is fabricated.
     required = {
-        "roster": args.roster, "family_map": args.family_map, "allocation": args.allocation,
+        "roster": args.roster, "family_map": args.family_map,
+        "inventory": args.inventory, "allocation": args.allocation,
         "bank_identity": args.bank_identity, "governance": args.governance,
         "rule_ref": args.rule_ref, "provenance_refs": args.provenance_refs,
     }
@@ -176,10 +263,24 @@ def build_inputs(args) -> dict:
     ctx["family_map"] = json.loads(Path(args.family_map).read_bytes().decode("utf-8"))
     ctx["roster_info"] = _load_file_ref(Path(args.roster))
     ctx["family_map_info"] = _load_file_ref(Path(args.family_map))
+    inventory_raw = Path(args.inventory).read_bytes()
+    ctx["inventory_obj"] = _validate_real_inventory(
+        json.loads(inventory_raw.decode("utf-8")), ctx["roster"]
+    )
+    ctx["inventory_source_sha256"] = _sha256(inventory_raw)
     alloc_report = json.loads(Path(args.allocation).read_bytes().decode("utf-8"))
-    if alloc_report.get("audit_decision") != "ALL_LOCAL_RULES_PASS":
-        raise SystemExit("BUILDER_ALLOCATION_NOT_AUDITED: allocation input must be an ALL_LOCAL_RULES_PASS audit report from validate_annex.py")
-    ctx["allocation"] = alloc_report.get("annex") or alloc_report
+    if (
+        alloc_report.get("audit_decision") != "STRUCTURAL_INTAKE_PASS_C6_ADEQUACY_NOT_ASSESSED"
+        or alloc_report.get("C4", {}).get("status") != "ASSESSED"
+    ):
+        raise SystemExit(
+            "BUILDER_ALLOCATION_NOT_STRUCTURALLY_ADMITTED: requires structural intake pass "
+            "and C4 status ASSESSED; C6 adequacy remains unassessed"
+        )
+    _verify_family_map_adoption_binding(
+        ctx["family_map"], ctx["family_map_info"], alloc_report
+    )
+    ctx["allocation_audit"] = alloc_report
     ctx["bank_identity"] = json.loads(Path(args.bank_identity).read_bytes().decode("utf-8"))
     ctx["governance"] = json.loads(Path(args.governance).read_bytes().decode("utf-8"))
     ctx["rule_ref"] = json.loads(Path(args.rule_ref).read_bytes().decode("utf-8"))
@@ -192,81 +293,48 @@ def _default(name: str) -> Path:
 
 
 def emit_artifacts(ctx: dict, out_dir: Path, now_utc: str) -> dict:
-    """Emit q registry, variant inventory, run-start ledger; return refs+info."""
+    """Emit q registry and NOT_STARTED ledger from the real or synthetic inventory."""
     roster = ctx["roster"]
-    family_parents = {p["Z_id"] for p in roster["parents"]}
-    parents = [p["parent_id"] for p in roster["parents"]]
-    alloc = ctx["allocation"]
     synth = ctx["demo"]
 
-    pair_by_parent = {a["parent_id"]: a for a in alloc["pair_assignments"]}
-    s_extra_by_parent = {s["parent_id"]: s for s in alloc["s_extra_assignments"]}
-
-    # q registry: one q identity per variant slot (150). q carries the
-    # mechanism identity (m component of the B1 cell). S0 slots carry the
-    # unmutated baseline identity.
-    q_registry = {
-        "artifact_id": "SYN-q-registry" if synth else "lc518-150-q-registry",
-        "version": "0.0-synthetic" if synth else "1.0",
-        "label": DEMO_LABEL if synth else LABEL,
-        "q_entries": [],
-    }
-    inventory = {
-        "artifact_id": "SYN-variant-inventory" if synth else "lc518-150-variant-inventory",
-        "version": "0.0-synthetic" if synth else "1.0",
-        "label": DEMO_LABEL if synth else LABEL,
-        "expected_variant_count": 150,
-        "validity_status": "EXPECTED_NOT_RUN",
-        "variants": [],
-    }
-    ledger_rows = []
-
-    seq = 0
-    for parent in roster["parents"]:
-        pid, zid = parent["parent_id"], parent["Z_id"]
-        if zid not in family_parents:
-            raise SystemExit(f"BUILDER_ROSTER_FAMILY_UNKNOWN: {pid} -> {zid}")
-        pair = pair_by_parent.get(pid)
-        s_extra = s_extra_by_parent.get(pid)
-        if pair is None or s_extra is None:
-            raise SystemExit(f"BUILDER_ALLOCATION_INCOMPLETE: parent {pid}")
-        base = f"SYN-S{seq + 1:03d}" if synth else None
-        for role in ROLES:
-            seq += 1
-            if synth:
+    if synth:
+        inventory_obj = {
+            "artifact_id": "SYN-variant-inventory",
+            "version": "0.0-synthetic",
+            "label": DEMO_LABEL,
+            "expected_variant_count": 150,
+            "validity_status": "EXPECTED_NOT_RUN",
+            "variants": [],
+        }
+        for index, parent in enumerate(roster["parents"]):
+            pid, zid = parent["parent_id"], parent["Z_id"]
+            pair = next(x for x in ctx["allocation"]["pair_assignments"] if x["parent_id"] == pid)
+            extra = next(x for x in ctx["allocation"]["s_extra_assignments"] if x["parent_id"] == pid)
+            base = f"SYN-S{index + 1:03d}"
+            for role in ROLES:
                 vid = base if role == "S0" else f"{base}-{role}"
-                q_id = {
+                qid = {
                     "S0": f"SYN-Q-BASE-{pid}",
                     "SA": f"SYN-Q-A-{pair['mechanism_a']}-{pid}",
                     "SB": f"SYN-Q-B-{pair['mechanism_b']}-{pid}",
                     "SAB": f"SYN-Q-AB-{pair['mechanism_a']}+{pair['mechanism_b']}-{pid}",
-                    "S-EXTRA": f"SYN-Q-X-{s_extra['mechanism_id']}-{pid}",
+                    "S-EXTRA": f"SYN-Q-X-{extra['mechanism_id']}-{pid}",
                 }[role]
-            else:
-                vid = None  # assigned at construction (opaque permutation)
-                q_id = None
-            if vid is None:
-                raise SystemExit(
-                    "BUILDER_VARIANT_ID_UNASSIGNED: variant_id and q_id for real "
-                    "builds are assigned at construction (PARENT_DESIGN.md Section 1); "
-                    "supply a filled inventory or run --demo-synthetic."
-                )
-            inventory["variants"].append({
-                "variant_id": vid,
-                "parent_id": pid,
-                "Z_id": zid,
-                "q_id": q_id,
-                "role": role,
-                "validity_status": "EXPECTED_NOT_RUN",
-            })
-            ledger_rows.append({
-                "variant_id": vid,
-                "execution_state": "NOT_STARTED",
-                "started_at_utc": None,
-            })
+                inventory_obj["variants"].append({
+                    "variant_id": vid, "parent_id": pid, "Z_id": zid,
+                    "q_id": qid, "role": role, "validity_status": "EXPECTED_NOT_RUN",
+                })
+    else:
+        inventory_obj = _validate_real_inventory(ctx["inventory_obj"], roster)
 
-    q_reg_info = _write_json(out_dir / "q_registry.json", q_registry)
-    inv_info = _write_json(out_dir / "variant_inventory.json", inventory)
+    q_registry_obj = _build_q_registry(inventory_obj, synthetic=synth)
+    q_reg_info = _write_json(out_dir / "q_registry.json", q_registry_obj)
+    inv_info = _write_json(out_dir / "variant_inventory.json", inventory_obj)
+
+    ledger_rows = [
+        {"variant_id": row["variant_id"], "execution_state": "NOT_STARTED", "started_at_utc": None}
+        for row in inventory_obj["variants"]
+    ]
     ledger = {
         "artifact_id": "SYN-run-start-ledger" if synth else "lc518-b1-run-start-ledger",
         "version": "0.0-synthetic" if synth else "1.0",
@@ -275,16 +343,20 @@ def emit_artifacts(ctx: dict, out_dir: Path, now_utc: str) -> dict:
         "rows": ledger_rows,
     }
     ledger_info = _write_json(out_dir / "run_start_ledger.json", ledger)
-    if seq != 150:
-        raise SystemExit(f"BUILDER_POPULATION_COUNT_NOT_150: built {seq}")
+
+    if len(inventory_obj["variants"]) != 150:
+        raise SystemExit(f"BUILDER_POPULATION_COUNT_NOT_150: built {len(inventory_obj['variants'])}")
+    q_crosswalk = sum(len(item["variant_ids"]) for item in q_registry_obj["q_entries"])
+    if not q_registry_obj["q_entries"] or q_crosswalk != 150:
+        raise SystemExit("BUILDER_Q_REGISTRY_INVENTORY_CROSSWALK_FAILED")
     return {
         "q_registry": q_reg_info,
         "inventory": inv_info,
         "ledger": ledger_info,
-        "inventory_obj": inventory,
+        "inventory_obj": inventory_obj,
         "ledger_obj": ledger,
+        "q_registry_obj": q_registry_obj,
     }
-
 
 def build_manifest(ctx: dict, emitted: dict, out_dir: Path, now_utc: str) -> dict:
     roster = ctx["roster"]
@@ -405,7 +477,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=LABEL)
     parser.add_argument("--roster")
     parser.add_argument("--family-map")
-    parser.add_argument("--allocation", help="audit report JSON from validate_annex.py (ALL_LOCAL_RULES_PASS)")
+    parser.add_argument("--inventory", help="real 150-row EXPECTED_NOT_RUN inventory with construction-assigned variant_id and q_id")
+    parser.add_argument("--allocation", help="structural-intake report from validate_annex.py; C4 assessed, C6 adequacy not assessed")
     parser.add_argument("--bank-identity")
     parser.add_argument("--governance")
     parser.add_argument("--rule-ref")
@@ -454,6 +527,11 @@ def main(argv: list[str] | None = None) -> int:
             "run_start_ledger.json": emitted["ledger"],
             "preregistration_manifest.json": manifest_info,
         },
+        "q_registry_entry_count": len(emitted["q_registry_obj"]["q_entries"]),
+        "q_registry_variant_crosswalk_count": sum(
+            len(item["variant_ids"]) for item in emitted["q_registry_obj"]["q_entries"]
+        ),
+        "inventory_source_sha256": ctx.get("inventory_source_sha256"),
         "boundary": (
             "This manifest is a design-stage pre-registration artifact. Passing the "
             "intake checker proves schema/semantic conformance only; it is not census "

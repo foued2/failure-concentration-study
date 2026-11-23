@@ -110,13 +110,13 @@
     "witness_declarations": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cd_feasibility_witnesses_documented"],
+      "required": ["cd_feasibility_witnesses_documented", "witness_notes"],
       "properties": {
         "cd_feasibility_witnesses_documented": {
           "const": true,
           "description": "Protocol C6: the annex must actually document the witnesses for within-cell C_D-value feasibility."
         },
-        "witness_notes": {"type": "string", "minLength": 1}
+        "witness_notes": {"type": "string", "minLength": 1, "pattern": "\\S"}
       }
     }
   }
