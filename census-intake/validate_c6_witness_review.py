@@ -483,7 +483,6 @@ def validate_c6_dossier(
     family_map_raw: bytes,
     c4_report: dict,
     c4_raw: bytes,
-    roster: dict,
 ) -> dict:
     schema_errors = _validate_dossier_schema(dossier, dossier_schema)
     if schema_errors:
@@ -702,7 +701,6 @@ def main(argv: list[str] | None = None) -> int:
             family_map_raw=family_map_raw,
             c4_report=c4_report,
             c4_raw=c4_raw,
-            roster=roster,
         )
         report_raw = json.dumps(
             report, indent=2, sort_keys=True, ensure_ascii=False
