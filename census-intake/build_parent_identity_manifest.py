@@ -47,9 +47,13 @@ def _safe_source_bytes(source_root: Path, relative_path: str) -> bytes:
     if "\\" in relative_path:
         raise IdentityInputError("SOURCE_PATH_MUST_USE_POSIX_SEPARATORS")
 
+    raw_parts = relative_path.split("/")
     rel = PurePosixPath(relative_path)
-    if rel.is_absolute() or not rel.parts or any(
-        part in ("", ".", "..") for part in rel.parts
+    if (
+        rel.is_absolute()
+        or not raw_parts
+        or any(part in ("", ".", "..") for part in raw_parts)
+        or not rel.parts
     ):
         raise IdentityInputError("SOURCE_PATH_NOT_SAFE_RELATIVE_PATH")
 
@@ -94,6 +98,8 @@ def _validate_family_partition(roster: dict, family_map: dict) -> dict[str, str]
 
     if family_map.get("status") != "ADOPTED":
         raise IdentityInputError("FAMILY_MAP_NOT_ADOPTED")
+    if not isinstance(family_map.get("artifact_id"), str) or not family_map["artifact_id"].strip():
+        raise IdentityInputError("FAMILY_MAP_ARTIFACT_ID_MISSING")
 
     family_rows = family_map.get("families")
     if not isinstance(family_rows, dict):
@@ -126,11 +132,23 @@ def build_parent_identity_manifest(
     computed_at_utc: str,
 ) -> dict:
     """Hash the explicitly indexed 30 parent files and return the C4 identity manifest."""
+    if not isinstance(roster, dict) or not isinstance(family_map, dict):
+        raise IdentityInputError("ROSTER_OR_FAMILY_MAP_NOT_OBJECT")
+    if not isinstance(source_index, dict):
+        raise IdentityInputError("SOURCE_INDEX_NOT_OBJECT")
     if family_map.get("status") != "ADOPTED":
         raise IdentityInputError("FAMILY_MAP_NOT_ADOPTED")
-    if not isinstance(family_map_sha256, str) or len(family_map_sha256) != 64:
+    if (
+        not isinstance(family_map_sha256, str)
+        or len(family_map_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in family_map_sha256)
+    ):
         raise IdentityInputError("FAMILY_MAP_SHA256_INVALID")
-    if not isinstance(source_index_sha256, str) or len(source_index_sha256) != 64:
+    if (
+        not isinstance(source_index_sha256, str)
+        or len(source_index_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in source_index_sha256)
+    ):
         raise IdentityInputError("SOURCE_INDEX_SHA256_INVALID")
     if not isinstance(computed_by, str) or not computed_by.strip():
         raise IdentityInputError("COMPUTED_BY_MISSING")
