@@ -216,3 +216,11 @@ schema validation while naming a different protocol or intake schema.
 These are dossier provenance bindings. They do not amend Rev 11, authorize annex
 inspection, replace the independent auditor's §2 attestations, or turn mechanical
 validation into a semantic reach/joint-attainability decision.
+
+## 5. Owner decision update (2026-11-23; append-only)
+
+The project owner instructed GPT to finish the pending roster/family-map adoption and S0 identity-stage authorization. The current JSON artifacts now carry status `ADOPTED`. GPT compared all 30 parent/family rows with the frozen `PARENT_DESIGN.md` v1.0 at commit `3e9a29c9652a6ab4f6bab0919e386757280b2654`; the rows and all five family membership lists match. Family counts are 7/8/8/5/2 for K1-K5. The adopted `Z_id` is the algorithm-family component (z) in the B1 exact support key.
+
+The owner has authorized a **conditional S0-only identity-preparation stage**. It cannot begin until the complete private C0 mutation annex is supplied, passes structural intake, and documents the two preselected repeated-pair identities before source construction. The permitted stage is limited to 30 unmutated S0 parent source files held outside the public repository, followed by a private hash-only source-custody manifest. No mutated versions, variant/q IDs, execution, diagnostics, outcomes or census are authorized.
+
+The owner mutation allocation remains unestablished. No S0 source or parent source hash exists. C6 witness adequacy and semantic attainability remain unassessed. Gate 1 remains **BLOCKED / NOT ASSESSABLE**. Claude's retrospective review of the commit series remains pending.

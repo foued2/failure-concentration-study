@@ -201,3 +201,33 @@ No solver body has been created by this workstream. No source has been executed.
 No diagnostic record or correctness outcome has been collected. No bank was
 regenerated or used. No census, predictive fit, simulation or power calculation
 was run. No protocol was changed or adopted by this note.
+
+## 7. Owner decision: roster/family adoption and conditional S0 authorization (2026-11-23)
+
+This addendum records the current owner-directed decisions. Earlier sections are retained as historical records of the state at the time they were written; this addendum controls the operative status from this date.
+
+### 7.1 Parent roster and family map adopted
+
+The project owner instructed GPT to finish the outstanding adoption and S0-stage items. Acting on that instruction, the roster and family map are now marked `ADOPTED` in their respective JSON artifacts.
+
+GPT opened the immutable `PARENT_DESIGN.md` v1.0 source at commit `3e9a29c9652a6ab4f6bab0919e386757280b2654`. A row-by-row comparison found all 30 parent IDs and family assignments identical. The family-map membership lists also match exactly. Counts are K1=7, K2=8, K3=8, K4=5, K5=2. The `Z_id` interpretation is adopted as the algorithm-family component (z) of the frozen B1 support key ((m,z,k_{fail},k_{unresolved})); mechanism (m) remains defined only by the owner-supplied annex.
+
+This adoption is limited to the parent roster and family map. It does not establish mutation compatibility, mutation allocations, source identities, source hashes, or solver correctness. Claude's retrospective review remains pending and is not represented as completed.
+
+### 7.2 Narrow S0-only identity-preparation authorization
+
+The owner's instruction is recorded as authorization for a narrowly scoped S0-only identity-preparation stage. **The authorization is conditional and is not yet executable.** Before any parent source file is created, all of the following must be satisfied:
+
+1. The owner supplies the complete private mutation-design annex through the recorded C0 channel.
+2. The annex passes the frozen structural intake checks.
+3. The identities of the two repeated mechanism pairs and evidence that both were preselected before source construction are recorded in the private annex.
+
+Once those prerequisites are met, the authorized construction scope is exactly 30 unmutated S0 parent source files implementing the frozen G01-G30 design, solely to establish immutable parent base-source identities. Keep the sources outside the public repository. A separately identified source custodian may then create the private hash-only identity manifest from the exact source bytes.
+
+This authorization does **not** authorize SA, SB, SAB or S-extra source construction; S001-S150 variant identities; q IDs or a real variant inventory; source execution, import, test harness evaluation or oracle comparison; bank use or regeneration; diagnostic collection; outcome records; census execution; model fitting; simulation; power or MDE analysis. No source file or source hash has been created by this decision.
+
+### 7.3 C6 and Gate 1 remain blocked
+
+No owner allocation, actual parent source, C4 identity manifest, C4 assessment, C6 witness dossier, eight-stratum witness vector, semantic reach finding, joint-attainability finding or structural-absence finding has been supplied or created. C6 adequacy is therefore **NOT ASSESSED / NOT ASSESSABLE** on current evidence. Mechanical C6 tooling does not replace the independent semantic review required by Rev 11.
+
+Gate 1 remains **BLOCKED / NOT ASSESSABLE**. This decision does not alter the frozen Rev 11 protocol or issue an A2 verdict.

@@ -157,3 +157,11 @@ diagnostic and held-out input banks and oracle outputs; the held-out bank is pub
 not sealed. This repair does not retrieve, regenerate, or use those bank files. No parent solver
 bodies or diagnostic outcome records were produced, and no mutation allocation was supplied or
 reconstructed. Gate 1 remains BLOCKED / NOT ASSESSABLE; the scientific proposition remains unproven.
+
+## 9. Owner adoption and conditional S0 decision (2026-11-23; append-only)
+
+The project owner instructed GPT to complete the pending roster/family-map adoption and resolve the S0 identity-stage authorization. The two JSON artifacts under `gate1-inputs/` are now marked `ADOPTED`. GPT compared their 30 parent/family assignments against frozen `PARENT_DESIGN.md` v1.0 at commit `3e9a29c9652a6ab4f6bab0919e386757280b2654`; all 30 rows and the five family membership lists match. The adopted `Z_id` mapping is the algorithm-family component (z) in the B1 exact support key.
+
+A narrow S0-only identity-preparation stage is now **conditionally authorized**, but cannot start until the owner delivers the complete private C0 mutation annex, the annex passes structural intake, and both repeated-pair identities are documented as preselected before construction. Once those conditions are met, the only permitted construction is 30 unmutated S0 parent sources held outside the public repository, followed by a private hash-only identity manifest. This does not authorize mutated versions, real variant or q IDs, execution, diagnostics, outcomes, census, fitting, simulation, power or MDE work.
+
+The owner mutation allocation is still unestablished. No S0 source or base-source hash has been produced. C6 witness adequacy remains unassessed. Gate 1 remains **BLOCKED / NOT ASSESSABLE**. Claude's retrospective review remains pending.
