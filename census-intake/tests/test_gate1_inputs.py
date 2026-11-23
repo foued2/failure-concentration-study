@@ -86,6 +86,21 @@ def synthetic_parent_identities(family_map, family_map_sha256):
         "parents": parents,
     }
 
+def refresh_synthetic_source_bundle_digest(identities):
+    bundle_rows = [
+        {
+            "parent_id": p["parent_id"],
+            "base_source_path": p["base_source_path"],
+            "base_source_sha256": p["base_source_sha256"],
+        }
+        for p in identities["parents"]
+    ]
+    raw = json.dumps(
+        bundle_rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    identities["source_hash_attestation"]["source_bundle_sha256"] = hashlib.sha256(raw).hexdigest()
+
+
 def synthetic_valid_annex() -> dict:
     mechs = [{"mechanism_id": f"M{i}", "name": f"SYNTHETIC mechanism {i}",
               "definition": f"SYNTHETIC definition {i} (invented for tests only)"}
@@ -254,6 +269,7 @@ class TestAnnexAuditor(unittest.TestCase):
         identities = synthetic_parent_identities(family_map, family_map_sha256)
         identities["parents"][1]["base_source_sha256"] = identities["parents"][0]["base_source_sha256"]
         identities["parents"][1]["base_source_path"] = identities["parents"][0]["base_source_path"]
+        refresh_synthetic_source_bundle_digest(identities)
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
             family_map_sha256, family_map, family_map_sha256,
@@ -269,6 +285,7 @@ class TestAnnexAuditor(unittest.TestCase):
         family_map, digest = synthetic_adopted_family_map()
         identities = synthetic_parent_identities(family_map, digest)
         identities["parents"][0]["base_source_path"] = "source-file-not-mounted.py"
+        refresh_synthetic_source_bundle_digest(identities)
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA,
             identities, digest, family_map, digest,
@@ -296,6 +313,7 @@ class TestAnnexAuditor(unittest.TestCase):
         identities = synthetic_parent_identities(family_map, family_map_sha256)
         identities["parents"][7]["base_source_sha256"] = identities["parents"][0]["base_source_sha256"]
         identities["parents"][7]["base_source_path"] = identities["parents"][0]["base_source_path"]
+        refresh_synthetic_source_bundle_digest(identities)
         report = validate_annex.audit_annex(
             synthetic_valid_annex(), ROSTER, ANNEX_SCHEMA, identities,
             family_map_sha256, family_map, family_map_sha256,
