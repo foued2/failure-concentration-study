@@ -153,6 +153,8 @@ def make_dossier(data: dict, witnesses: list[dict]) -> dict:
     return {
         "dossier_id": "SYNTHETIC-C6-DOSSIER",
         "version": "1.0",
+        "a2_protocol_sha256": c6_checker.EXPECTED_A2_PROTOCOL_SHA256,
+        "annex_intake_schema_blob_sha1": c6_checker.EXPECTED_ANNEX_INTAKE_SCHEMA_BLOB_SHA1,
         "annex_sha256": hashlib.sha256(data["annex_raw"]).hexdigest(),
         "parent_identity_manifest_sha256": hashlib.sha256(data["identity_raw"]).hexdigest(),
         "parent_roster_sha256": hashlib.sha256(data["roster_raw"]).hexdigest(),
@@ -316,6 +318,32 @@ class TestC6WitnessDossierMechanicalChecks(unittest.TestCase):
             "C6_DOSSIER_ARTIFACT_BINDING_MISMATCH:parent_roster_sha256",
         ):
             run_checker(self.data, dossier)
+
+    def test_dossier_with_wrong_protocol_digest_is_rejected_by_schema(self):
+        dossier = make_dossier(
+            self.data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        dossier["a2_protocol_sha256"] = "0" * 64
+        result = run_checker(self.data, dossier)
+        self.assertEqual(result["dossier_decision"], "REJECTED")
+        self.assertTrue(any(
+            error["instance_path"] == "/a2_protocol_sha256"
+            for error in result["schema_errors"]
+        ))
+
+    def test_dossier_with_wrong_annex_schema_pin_is_rejected_by_schema(self):
+        dossier = make_dossier(
+            self.data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        dossier["annex_intake_schema_blob_sha1"] = "0" * 40
+        result = run_checker(self.data, dossier)
+        self.assertEqual(result["dossier_decision"], "REJECTED")
+        self.assertTrue(any(
+            error["instance_path"] == "/annex_intake_schema_blob_sha1"
+            for error in result["schema_errors"]
+        ))
 
     def test_unadopted_roster_is_rejected_for_c6_review(self):
         data = dict(self.data)
