@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lc518:150:mutation-design-annex:intake-form:1.0",
+  "title": "LC518/150 owner mutation-design annex intake form schema v1.0",
+  "description": "Machine-readable form for the owner-supplied mutation-design annex (work order line 45). This schema and its auditor implement ONLY the structural and audit rules already frozen in the LC518 protocol (C1-C7) and the work order (:45, :47, Sections 3, 11). They contain no mutation content, propose none, and pre-fill none. Supplying annex content is an owner act; running the auditor is a mechanical check, not an authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "annex_id",
+    "submitted_by",
+    "submitted_at_utc",
+    "provenance_statement",
+    "mechanisms",
+    "pair_assignments",
+    "replication_preselection",
+    "s_extra_assignments",
+    "witness_declarations"
+  ],
+  "properties": {
+    "annex_id": {"type": "string", "minLength": 1},
+    "submitted_by": {"type": "string", "minLength": 1},
+    "submitted_at_utc": {"type": "string", "format": "date-time"},
+    "provenance_statement": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Owner statement of channel and date of delivery per protocol C0 (recorded owner channel; no public commit of annex text)."
+    },
+    "mechanisms": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Protocol C1: exactly eight mechanisms, each with a definition. Fail if any mechanism lacks a definition or count != 8.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mechanism_id", "name", "definition"],
+        "properties": {
+          "mechanism_id": {"type": "string", "pattern": "^M[1-8]$"},
+          "name": {"type": "string", "minLength": 1},
+          "definition": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "pair_assignments": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "description": "Protocol C2/C3: exactly 30 assignments, one-to-one onto parents G01-G30; all 28 unordered mechanism pairs appear at least once; exactly two distinct preselected pairs appear one additional time. Each assignment declares which mechanism is mutation A (SA/SB orientation).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["parent_id", "mechanism_a", "mechanism_b", "is_replication"],
+        "properties": {
+          "parent_id": {"type": "string", "pattern": "^G(0[1-9]|1[0-9]|2[0-9]|30)$"},
+          "mechanism_a": {"type": "string", "pattern": "^M[1-8]$"},
+          "mechanism_b": {"type": "string", "pattern": "^M[1-8]$"},
+          "is_replication": {"type": "boolean", "description": "true only for the two preselected replicated pairs."},
+          "preselection_evidence": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required when is_replication is true: evidence the replication was preselected before construction (protocol C2)."
+          }
+        }
+      }
+    },
+    "replication_preselection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replicated_pair_1", "replicated_pair_2", "declared_before_construction"],
+      "properties": {
+        "replicated_pair_1": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mechanism_a", "mechanism_b"],
+          "properties": {
+            "mechanism_a": {"type": "string", "pattern": "^M[1-8]$"},
+            "mechanism_b": {"type": "string", "pattern": "^M[1-8]$"}
+          }
+        },
+        "replicated_pair_2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mechanism_a", "mechanism_b"],
+          "properties": {
+            "mechanism_a": {"type": "string", "pattern": "^M[1-8]$"},
+            "mechanism_b": {"type": "string", "pattern": "^M[1-8]$"}
+          }
+        },
+        "declared_before_construction": {
+          "const": true,
+          "description": "Work order line 47 / protocol C2: the two replicated pairs must be preselected before source construction."
+        }
+      }
+    },
+    "s_extra_assignments": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "description": "Work order line 47 / protocol C5: 30 S-extra assignments, one per parent, balanced across the eight mechanisms as closely as integer counts permit (audit expectation: six mechanisms at 4, two at 3).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["parent_id", "mechanism_id"],
+        "properties": {
+          "parent_id": {"type": "string", "pattern": "^G(0[1-9]|1[0-9]|2[0-9]|30)$"},
+          "mechanism_id": {"type": "string", "pattern": "^M[1-8]$"}
+        }
+      }
+    },
+    "witness_declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cd_feasibility_witnesses_documented"],
+      "properties": {
+        "cd_feasibility_witnesses_documented": {
+          "const": true,
+          "description": "Protocol C6: the annex must actually document the witnesses for within-cell C_D-value feasibility."
+        },
+        "witness_notes": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

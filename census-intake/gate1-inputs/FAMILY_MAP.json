@@ -1,0 +1,55 @@
+{
+  "artifact_id": "lc518-150-family-map",
+  "version": "1.0-draft-for-adoption",
+  "status": "DERIVED_FROM_FROZEN_DESIGN — PENDING GPT/CLAUDE ADOPTION",
+  "date": "2026-11-23",
+  "author": "GLM (independent verification role)",
+  "source": {
+    "document": "lc518-150/glm-handoff/PARENT_DESIGN.md v1.0 (FROZEN 2026-11-01) Section 3",
+    "frozen_content_sha256": "c6138342af84fe02a64390c2f6a7f4077f0268aa875ad90ee534c76a725f3437",
+    "git_object_commit": "3e9a29c9652a6ab4f6bab0919e386757280b2654"
+  },
+  "task": "Coin Change II (LC518_TASK_CONTRACT.md): change(amount, coins) = W(A, S), number of multisets over distinct coins summing exactly to A; W(0, S) = 1.",
+  "families": {
+    "K1": {
+      "name": "Bottom-up 1-D coin-outer unbounded-knapsack counting",
+      "state": "dp[0..A] over amounts",
+      "recurrence": "dp[a] += dp[a - c], coin-outer, amount-ascending, in place",
+      "time": "O(nA)", "space": "O(A)",
+      "parents": ["G01", "G02", "G03", "G04", "G05", "G06", "G07"]
+    },
+    "K2": {
+      "name": "Bottom-up 2-D coin-index x amount use/skip table",
+      "state": "T[i][a], first i coins",
+      "recurrence": "T[i][a] = T[i-1][a] + T[i][a - c_i]",
+      "time": "O(nA)", "space": "O(nA) or O(A) rolling",
+      "parents": ["G08", "G09", "G10", "G11", "G12", "G13", "G14", "G15"]
+    },
+    "K3": {
+      "name": "Top-down memoized exact counting over suffix sets",
+      "state": "f(i, a), coins[i:]",
+      "recurrence": "f(i, a) = f(i+1, a) + f(i, a - c_i)",
+      "time": "O(nA)", "space": "O(nA) memo + stack",
+      "parents": ["G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23"]
+    },
+    "K4": {
+      "name": "Generating-function product P(x) = prod (1 - x^c)^{-1}, truncated",
+      "state": "coefficient array P[0..A]",
+      "recurrence": "per-coin series multiplication by geometric series",
+      "time": "O(nA) to O(nA log A)", "space": "O(A)",
+      "parents": ["G24", "G25", "G26", "G27", "G28"]
+    },
+    "K5": {
+      "name": "Coin-set split with single Cauchy product",
+      "state": "two half-products P_L, P_R",
+      "recurrence": "W(A) = sum_t P_L[t] * P_R[A - t]",
+      "time": "O(nA + A^2)", "space": "O(A)",
+      "parents": ["G29", "G30"]
+    }
+  },
+  "scope_constraints": {
+    "C7_K5_exclusion": "Frozen protocol C7: no (mechanism, K5) cell qualifies; K5 is reportable descriptively only. Structural basis, annex-free: K5 has 2 parent groups, below any three-parent minimum under any schedule.",
+    "three_parent_floor": "Cells in the B1 support require a three-parent same-cell minimum (LC518_CONCENTRATION_ESTIMAND_REVIEW_2026-11-05.md Section 3).",
+    "F_INT": "No parent may use fixed-width machine integers for DP cells; intermediate values are not bounded by the int32 answer guarantee (PARENT_DESIGN.md Section 2)."
+  }
+}
