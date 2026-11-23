@@ -3,8 +3,9 @@
 **SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED**
 
 **Version:** 0.3.0, GPT-authored successor rewrite
-**State:** merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4` after Claude's final PASS; `master` unchanged
+**State:** merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4` via PR #11 (2026-11-23T10:44:42Z, work branch only, not `master`); Claude final verdict PASS for the six-line syntax repair and for v0.3 as a local structural intake check, recorded in PR #11
 **Date:** 2026-11-23
+**Gate 1 inputs machinery:** `gate1-inputs/` plus `ANNEX_INTAKE_FORM_SCHEMA.json`, `ANNEX_INTAKE_FORM_TEMPLATE.json`, `validate_annex.py`, `build_preregistration_manifest.py` — the remaining-gap map, the owner mutation-design annex intake form and mechanical C1–C7 auditor, and the pre-registration manifest builder (see `gate1-inputs/README.md`)
 
 This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies a bounded set of manifest-local semantic checks. It is not the Gate 1 census, not a full provenance validator, and not a decision that an input is ready for census execution.
 
@@ -105,7 +106,9 @@ Exit codes: 0 means local checks passed for the supplied manifest and, when supp
 
 tests/test_b1_census_intake.py contains synthetic adversarial fixtures. It tests the complete 17-field envelope; unknown fields at the root and nested levels; both prohibited status-decision consultation flags; null/malformed digests and evidence references; status-specific output including the false-zero correction; exact formula citation; cross-variant record-ID rules; sidecar hash binding and mismatch codes; and CLI outcomes. The tests use invented IDs, timestamps and digests only.
 
-Historical code authorship is preserved accurately. The local agent HY4 authored the earlier prototype (0060e7b) and v0.2 successor (fd0b34b). Both commits remain unchanged in Git history. GPT inspected those implementations, found that they did not enforce the reviewed full manifest contract, and authored this v0.3 successor rewrite. The earlier implementations are not represented as GPT-authored. Claude agreed to the correction approach before implementation and later issued a final PASS for the syntax repair and v0.3 validator as a local structural intake check. This PASS does not validate external provenance, bank membership, real manifests, or scientific claims.
+tests/test_gate1_inputs.py (new, GLM 2026-11-23) contains 13 tests for the Gate 1 inputs machinery: parent roster/family-map integrity against the frozen design, the annex auditor's C1/C2/C3/C5 rule checks with synthetic adversarial mutations, and the end-to-end demo-synthetic pre-registration build verified through the reviewed intake checker.
+
+Historical code authorship is preserved accurately. The local agent HY4 authored the earlier prototype (0060e7b) and v0.2 successor (fd0b34b). Both commits remain unchanged in Git history. GPT inspected those implementations, found that they did not enforce the reviewed full manifest contract, and authored this v0.3 successor rewrite. The earlier implementations are not represented as GPT-authored. Claude agreed to the correction approach and conditions before implementation; that agreement is not a code PASS. Claude's independent review of this v0.3 successor concluded on 2026-11-23 with a PASS for the reviewed local structural intake checks and the syntax repair; the verdict, the withdrawn zero-convention objection and the limits are recorded in PR #11.
 
 The v0.2 partial record_schema.json is removed from this successor branch to avoid presenting it as the controlling contract; its historical bytes remain available in the v0.2 commit. The prototype review packet and dated historical correction are also retained unchanged. See CORRECTION_RECORD_2026-11-23.md and REVIEW_PACKET_FOR_CLAUDE_V0_3_2026-11-23.md.
 
