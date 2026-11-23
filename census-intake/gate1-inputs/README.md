@@ -129,3 +129,52 @@ The C4/C6 workstream does not adopt the roster or family map, supply or infer th
 owner mutation allocation, create S0 or mutated solver bodies, emit real variant
 IDs or q IDs, execute code, collect outcomes, run the census, fit a model, or
 authorize any experiment. Gate 1 remains **BLOCKED / NOT ASSESSABLE**.
+
+
+## 6. GPT C4/C6 follow-up (2026-11-23; append-only)
+
+This addendum records the additional roster and C6 report-integrity checks. Earlier
+sections remain as the historical description of the package at their respective
+dates.
+
+### Parent roster adoption is now a separate C4 prerequisite
+
+The source-custody identity manifest now binds both:
+- the exact raw bytes of the adopted parent roster (artifact ID, version, SHA-256);
+- the exact raw bytes of the adopted family map (artifact ID, SHA-256).
+
+The source-custody builder refuses a roster whose status is not `ADOPTED`. The
+source-blind A2 C4 checker also refuses to assess C4 unless the supplied roster is
+adopted and its exact-byte SHA-256 matches the identity manifest's roster adoption
+reference. A family-map adoption does not imply roster adoption.
+
+Both current repository artifacts remain marked adoption-pending. Consequently,
+this additional rule does not change the current verdict: C4 is still
+**NOT ASSESSABLE** on current repository inputs.
+
+### C6 dossier bindings strengthened
+
+The proposed C6 dossier schema now pins the exact adopted roster bytes as well as
+the annex, parent identity manifest, family map and C4 report. The C6 mechanical
+checker requires the roster to be explicitly supplied, adopted and byte-bound to
+the identity manifest and C4 report.
+
+Before inspecting witness rows, it validates:
+- the C4 report tool identity and version;
+- the C4 report's binding to the exact annex bytes;
+- all 40 mechanism-by-family incidence rows, including zeros;
+- uniqueness and coverage of the 40 cells;
+- consistency of each structural-qualification flag with the effective-parent count;
+- agreement between the incidence rows and the qualifying-cell list;
+- K5's nonqualifying status.
+
+These are report-integrity checks, not a substitute for A2 semantic assessment.
+C6 still requires independent human judgement on mechanism reach and joint
+attainability. The dossier checker cannot establish structural absence or complete
+the full `S_W × D` assessment and never issues the A2 verdict.
+
+No roster or family map was adopted by this addendum. No owner mutation allocation,
+real parent source, source hash, witness vector, semantic witness decision, solver,
+variant inventory, execution outcome or census was created. The real S0-only identity
+preparation stage remains separately unauthorized. Gate 1 remains
+**BLOCKED / NOT ASSESSABLE**.
