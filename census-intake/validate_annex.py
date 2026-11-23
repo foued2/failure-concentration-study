@@ -25,11 +25,18 @@ import sys
 from itertools import combinations
 from pathlib import Path, PurePosixPath
 from collections import Counter
+from datetime import datetime
 
 from jsonschema import Draft202012Validator, FormatChecker
 
 TOOL_NAME = "lc518-150-annex-auditor"
 TOOL_VERSION = "1.0.0"
+PARENT_HASHER_TOOL_NAME = "lc518-parent-source-hasher"
+PARENT_HASHER_TOOL_VERSION = "1.0.0"
+PARENT_HASHER_EXECUTION_BOUNDARY = (
+    "File bytes were read and hashed. No source file was imported, "
+    "executed, parsed, compiled or modified."
+)
 AUDIT_LABEL = "ANNEX AUDIT ONLY — NOT AN AUTHORIZATION — NO CONTENT SUPPLIED BY THIS TOOL"
 
 SCHEMA_FILENAME = "ANNEX_INTAKE_FORM_SCHEMA.json"
@@ -107,6 +114,14 @@ def audit_c4_incidence(
     ):
         result["reason_codes"] = ["C4_PARENT_SOURCE_HASH_ATTESTATION_MISSING_OR_INVALID"]
         return result
+    required_hasher_fields = {
+        "tool": PARENT_HASHER_TOOL_NAME,
+        "tool_version": PARENT_HASHER_TOOL_VERSION,
+        "execution_boundary": PARENT_HASHER_EXECUTION_BOUNDARY,
+    }
+    if any(hash_attestation.get(key) != value for key, value in required_hasher_fields.items()):
+        result["reason_codes"] = ["C4_PARENT_SOURCE_HASHER_IDENTITY_INVALID"]
+        return result
     for key in ("computed_by", "computed_at_utc", "source_index_sha256", "source_bundle_sha256"):
         value = hash_attestation.get(key)
         if not isinstance(value, str) or not value.strip():
@@ -117,6 +132,16 @@ def audit_c4_incidence(
         if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value):
             result["reason_codes"] = [f"C4_PARENT_SOURCE_HASH_ATTESTATION_DIGEST_INVALID:{key}"]
             return result
+    try:
+        attested_time = datetime.fromisoformat(
+            hash_attestation["computed_at_utc"].replace("Z", "+00:00")
+        )
+    except ValueError:
+        result["reason_codes"] = ["C4_PARENT_SOURCE_HASH_ATTESTATION_TIMESTAMP_INVALID"]
+        return result
+    if attested_time.tzinfo is None or attested_time.utcoffset() is None:
+        result["reason_codes"] = ["C4_PARENT_SOURCE_HASH_ATTESTATION_TIMESTAMP_MISSING_TIMEZONE"]
+        return result
 
     adoption = parent_identities.get("family_map_adoption_ref")
     if (
@@ -161,6 +186,38 @@ def audit_c4_incidence(
     if mapped != expected:
         result["status"] = "BLOCKED_UNRESOLVED"
         result["reason_codes"] = ["C4_ADOPTED_FAMILY_MAP_ROSTER_MISMATCH"]
+        return result
+
+    if len(parent_identities["parents"]) != EXPECTED_PARENTS:
+        result["reason_codes"] = ["C4_PARENT_IDENTITY_ROW_COUNT_NOT_30"]
+        return result
+
+    # Verify the source custodian's canonical bundle digest from the manifest rows.
+    # This checks manifest integrity, not the source bytes themselves; A2 remains
+    # source-blind under Rev 11 §4.
+    canonical_bundle_rows = []
+    for row in parent_identities["parents"]:
+        if not isinstance(row, dict):
+            result["reason_codes"] = ["C4_PARENT_IDENTITY_ROW_NOT_OBJECT"]
+            return result
+        canonical_bundle_rows.append({
+            "parent_id": row.get("parent_id"),
+            "base_source_path": row.get("base_source_path"),
+            "base_source_sha256": row.get("base_source_sha256"),
+        })
+    canonical_bundle_rows.sort(
+        key=lambda item: item["parent_id"] if isinstance(item["parent_id"], str) else ""
+    )
+    canonical_bundle = json.dumps(
+        canonical_bundle_rows,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    computed_bundle_sha256 = hashlib.sha256(canonical_bundle).hexdigest()
+    if computed_bundle_sha256 != hash_attestation["source_bundle_sha256"]:
+        result["status"] = "BLOCKED_UNRESOLVED"
+        result["reason_codes"] = ["C4_PARENT_SOURCE_BUNDLE_HASH_MISMATCH"]
         return result
 
     by_parent = {}
@@ -269,6 +326,7 @@ def audit_c4_incidence(
         "parent_source_hash_attestation_present": True,
         "parent_source_hash_count": len(by_parent),
         "parent_source_hash_subject": "EXACT_BASE_SOURCE_FILE_BYTES",
+        "parent_source_bundle_sha256_verified": True,
         "auditor_source_access": "NONE_STATIC_MANIFEST_ONLY",
     })
     return result
@@ -283,6 +341,15 @@ def audit_annex(
     family_map: dict | None = None,
     family_map_sha256: str | None = None,
 ) -> dict:
+    if parent_identity_manifest_sha256 is not None and (
+        not isinstance(parent_identity_manifest_sha256, str)
+        or len(parent_identity_manifest_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in parent_identity_manifest_sha256)
+    ):
+        report_digest_error = True
+    else:
+        report_digest_error = False
+
     report = {
         "tool": TOOL_NAME,
         "tool_version": TOOL_VERSION,
@@ -297,6 +364,8 @@ def audit_annex(
     }
     reasons: list[str] = report["reason_codes"]
     rules = report["rules"]
+    if report_digest_error:
+        reasons.append("C4_PARENT_IDENTITY_MANIFEST_SHA256_INVALID")
 
     schema_errors = [
         {
