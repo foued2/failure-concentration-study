@@ -173,7 +173,7 @@ class B1IntakeV03Tests(unittest.TestCase):
         self.assertEqual(len(self.schema["required"]), 17)
         self.assertFalse(self.schema["additionalProperties"])
 
-"def test_sidecar_schema_blob_is_pinned_in_validator(self):
+    def test_sidecar_schema_blob_is_pinned_in_validator(self):
         self.assertEqual(self.sidecar_schema_sha, v.SIDECAR_SCHEMA_BLOB_SHA1)
 
     def test_complete_17_field_manifest_passes_schema_and_local_checks(self):
@@ -271,7 +271,7 @@ class B1IntakeV03Tests(unittest.TestCase):
         self.assertEqual(r["manifest_decision"], "REJECTED")
 
     def test_bad_digest_format_rejected(self):
-"
+
         manifest = make_manifest()
         manifest["variants"][0]["semantic_source_digest"] = "not-a-digest"
         r, _ = manifest_result(manifest)
@@ -344,7 +344,7 @@ class B1IntakeV03Tests(unittest.TestCase):
         self.assertNotIn("c_d_denominator", measurement)
         self.assertEqual(measurement["cell"][2], 0)
 
-"    def test_cd_formula_uses_failure_vector_only_and_is_cited(self):
+    def test_cd_formula_uses_failure_vector_only_and_is_cited(self):
         variant = make_variant()
         r, _ = manifest_result(make_manifest([variant]))
         measurement = r["variants"][0]["measurement"]
@@ -413,7 +413,7 @@ class B1IntakeV03Tests(unittest.TestCase):
         r, _ = manifest_result(make_manifest([a, b]))
         self.assertEqual(r["manifest_decision"], "LOCAL_SCHEMA_AND_SEMANTIC_CHECKS_PASS_EXTERNAL_CHECKS_NOT_PERFORMED")
 
-"    def test_different_valid_id_sets_rejected(self):
+    def test_different_valid_id_sets_rejected(self):
         a = make_variant(variant_id="a", prefix="bank-a")
         b = make_variant(variant_id="b", prefix="bank-b")
         b["semantic_source_digest"] = "e" * 64
@@ -496,7 +496,7 @@ class B1IntakeV03Tests(unittest.TestCase):
             "aggregate_assertions": assertions,
         }
 
-"    def test_sidecar_matching_vectors_are_consistency_only_and_do_not_change_manifest(self):
+    def test_sidecar_matching_vectors_are_consistency_only_and_do_not_change_manifest(self):
         manifest = make_manifest()
         manifest_report, raw = manifest_result(manifest)
         manifest_before = manifest_report["manifest_decision"]
@@ -588,7 +588,7 @@ class B1IntakeV03Tests(unittest.TestCase):
         self.assertEqual(sr["manifest_decision_unchanged"], "REJECTED")
 
 
-"    def test_cli_manifest_only_exit_code_and_report(self):
+    def test_cli_manifest_only_exit_code_and_report(self):
         with tempfile.TemporaryDirectory() as tmp:
             manifest_path = Path(tmp) / "manifest.json"
             manifest_path.write_text(json.dumps(make_manifest()), encoding="utf-8")
