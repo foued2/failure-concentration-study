@@ -83,6 +83,7 @@ def audit_c4_incidence(
     parent_identities: dict | None,
     family_map: dict | None,
     family_map_sha256: str | None,
+    parent_roster_sha256: str | None,
 ) -> dict:
     """Compute effective n(m,z) for all 40 cells, deduplicating base hashes."""
     result = {
@@ -100,6 +101,26 @@ def audit_c4_incidence(
         return result
     if not isinstance(family_map, dict) or not isinstance(family_map_sha256, str):
         result["reason_codes"] = ["C4_FAMILY_MAP_FILE_MISSING"]
+        return result
+    if (
+        roster.get("status") != "ADOPTED"
+        or not isinstance(roster.get("artifact_id"), str)
+        or not isinstance(roster.get("version"), str)
+        or not isinstance(parent_roster_sha256, str)
+        or len(parent_roster_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in parent_roster_sha256)
+    ):
+        result["reason_codes"] = ["C4_PARENT_ROSTER_NOT_ADOPTED_OR_HASH_NOT_PINNED"]
+        return result
+    roster_adoption = parent_identities.get("parent_roster_adoption_ref")
+    if (
+        not isinstance(roster_adoption, dict)
+        or roster_adoption.get("status") != "ADOPTED"
+        or roster_adoption.get("artifact_id") != roster.get("artifact_id")
+        or roster_adoption.get("version") != roster.get("version")
+        or roster_adoption.get("sha256") != parent_roster_sha256
+    ):
+        result["reason_codes"] = ["C4_PARENT_ROSTER_ADOPTION_BINDING_INVALID"]
         return result
 
     hash_attestation = parent_identities.get("source_hash_attestation")
@@ -323,6 +344,8 @@ def audit_c4_incidence(
         "family_map_adoption_ref": adoption,
         "family_map_sha256_verified": True,
         "family_map_roster_partition_verified": True,
+        "parent_roster_sha256_verified": True,
+        "parent_roster_adoption_ref": roster_adoption,
         "parent_source_hash_attestation_present": True,
         "parent_source_hash_count": len(by_parent),
         "parent_source_hash_subject": "EXACT_BASE_SOURCE_FILE_BYTES",
@@ -340,6 +363,7 @@ def audit_annex(
     parent_identity_manifest_sha256: str | None = None,
     family_map: dict | None = None,
     family_map_sha256: str | None = None,
+    parent_roster_sha256: str | None = None,
 ) -> dict:
     report_digest_error = (
         parent_identities is not None
@@ -347,6 +371,15 @@ def audit_annex(
             not isinstance(parent_identity_manifest_sha256, str)
             or len(parent_identity_manifest_sha256) != 64
             or any(ch not in "0123456789abcdef" for ch in parent_identity_manifest_sha256)
+        )
+    )
+
+    report_roster_digest_error = (
+        parent_identities is not None
+        and (
+            not isinstance(parent_roster_sha256, str)
+            or len(parent_roster_sha256) != 64
+            or any(ch not in "0123456789abcdef" for ch in parent_roster_sha256)
         )
     )
 
@@ -361,11 +394,14 @@ def audit_annex(
         "C4": {"status": "NOT_ASSESSABLE", "reason_codes": [], "n_m_z": [], "qualifying_cells": []},
         "C6_scope": "PRESENCE_ONLY_NOT_ADEQUACY",
         "parent_identity_manifest_sha256": parent_identity_manifest_sha256,
+        "parent_roster_sha256": parent_roster_sha256,
     }
     reasons: list[str] = report["reason_codes"]
     rules = report["rules"]
     if report_digest_error:
         reasons.append("C4_PARENT_IDENTITY_MANIFEST_SHA256_INVALID")
+    if report_roster_digest_error:
+        reasons.append("C4_PARENT_ROSTER_SHA256_INVALID")
 
     schema_errors = [
         {
@@ -491,16 +527,22 @@ def audit_annex(
 
     # C4 depends on a valid C3 one-to-one parent assignment and consistent
     # SA/SB orientation. Do not let malformed C3 input reach incidence indexing.
-    if report_digest_error:
+    if report_digest_error or report_roster_digest_error:
         c4 = {
             "status": "NOT_ASSESSABLE",
-            "reason_codes": ["C4_PARENT_IDENTITY_MANIFEST_SHA256_INVALID"],
+            "reason_codes": [
+                code for code, failed in (
+                    ("C4_PARENT_IDENTITY_MANIFEST_SHA256_INVALID", report_digest_error),
+                    ("C4_PARENT_ROSTER_SHA256_INVALID", report_roster_digest_error),
+                ) if failed
+            ],
             "n_m_z": [],
             "qualifying_cells": [],
         }
     elif c3_bijective and c3_orientation:
         c4 = audit_c4_incidence(
             annex, roster, parent_identities, family_map, family_map_sha256,
+            parent_roster_sha256,
         )
     else:
         c4 = {
@@ -614,7 +656,9 @@ def main(argv: list[str] | None = None) -> int:
             if args.roster
             else Path(__file__).resolve().parent / ROSTER_FILENAME
         )
-        roster = json.loads(roster_path.read_bytes().decode("utf-8"))
+        roster_raw = roster_path.read_bytes()
+        roster = json.loads(roster_raw.decode("utf-8"))
+        roster_sha256 = hashlib.sha256(roster_raw).hexdigest()
         parent_identities = None
         parent_identity_sha256 = None
         if args.parent_identities:
@@ -634,10 +678,11 @@ def main(argv: list[str] | None = None) -> int:
 
     report = audit_annex(
         annex, roster, schema, parent_identities, parent_identity_sha256,
-        family_map, family_map_sha256,
+        family_map, family_map_sha256, roster_sha256,
     )
     report["annex_sha256"] = annex_sha
     report["roster_artifact_id"] = roster.get("artifact_id")
+    report["roster_sha256"] = roster_sha256
 
     output = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if args.report:
