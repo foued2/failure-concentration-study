@@ -23,7 +23,7 @@ The schema does not define f, u or p as manifest fields. They do not appear amon
 
 The statistic is implemented from the controlling measurement document, not inferred from the former code. The cited definition is C_D = max over j=1..8 of (f_j / k_fail), with k_fail = sum over j of f_j, from CD_MEASUREMENT_SPEC_2026-11-19.md §1 (which quotes Rev 11 lines 216–221); the reporting definition is also in §5. The source file is pinned by Git blob SHA-1 923655f20337b99f11e400f3428d1d18ac34c96d, at commit ccd95e4c125d081abca95153f9af9c9a28d65b9a.
 
-u_j never enters the numerator or denominator of C_D. k_unresolved remains a separate component of the exact cell identity. For a complete VALID variant with k_fail = 0, the report uses the categorical label NO OBSERVED FAILURES, not a numeric predictor value. This is a display/reporting choice for the intake output; the measurement specification records the protocol's labelled zero convention.
+u_j never enters the numerator or denominator of C_D. k_unresolved remains a separate component of the exact cell identity. For a complete VALID variant with k_fail = 0, the report uses the categorical label NO OBSERVED FAILURES, not a numeric predictor value. This is an implementation/reporting choice, not a claim that the convention is settled across instruments. The measurement specification §4 explicitly notes that the k_fail = 0 convention is inconsistent across instruments, even though its §1 transcription of Rev 11 states C_D = 0 with the NO OBSERVED FAILURES label.
 
 ## 2. What is checked
 

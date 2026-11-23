@@ -48,7 +48,9 @@ SIDECAR_SCHEMA_BLOB_SHA1 = "72fc746c3d6129534aeb2fdbcd866842865f98c7"
 
 MEASUREMENT_ZERO_CITATION = (
     "C_D measurement specification and exposure register (2026-11-19), §§1 and 4; "
-    "Rev 11 convention is C_D=0 when k_fail=0, labelled NO OBSERVED FAILURES. "
+    "For k_fail=0 this implementation emits the categorical label NO OBSERVED FAILURES. "
+    "The measurement specification §4 notes that the zero convention is inconsistent across instruments; "
+    "this reporting choice is not presented as a universally settled convention. "
     "The intake report emits the label as a categorical display state, not a numeric predictor."
 )
 

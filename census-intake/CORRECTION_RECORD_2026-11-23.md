@@ -86,3 +86,12 @@ The committed successor packages the exact reviewed schema blob `0f2865e606fa614
 No bank access, parent acquisition, mutation allocation, solver generation/build, diagnostic execution, real-manifest validation, census execution, outcome collection, modelling, fitting, prediction or power analysis occurred. No B1 protocol/schema freeze, evaluation-route decision, coverage-floor decision, or production GO is made by this correction.
 
 Gate 1 preflight remains BLOCKED / NOT ASSESSABLE. The scientific proposition remains UNPROVEN. The earlier question about whether the conditional census authorization in instrument §10 item 7 remains operative is not addressed by this correction and remains unanswered.
+
+
+## 8. Review response — zero-convention qualification and sidecar hash verification (2026-11-23)
+
+Claude's v0.3 review identified that the original wording overstated the status of the zero-failure convention. The measurement specification §1 transcribes Rev 11 as stating C_D = 0 when k_fail = 0, labelled NO OBSERVED FAILURES; however, the same specification §4 explicitly records that the k_fail = 0 convention is inconsistent across instruments. The validator's categorical output is therefore documented as this implementation's reporting choice, not as a universally settled convention. The code and README wording have been corrected accordingly. The primary positive-failure formula remains sourced to the measurement specification §1 and its cited Rev 11 lines 216–221.
+
+The sidecar schema pin was independently recomputed from the exact committed UTF-8 file bytes using the Git blob object preimage (the literal prefix `blob 1268\\0` followed by the file bytes). The computed Git blob SHA-1 is `72fc746c3d6129534aeb2fdbcd866842865f98c7`, matching both the file's reported GitHub blob SHA and the validator's expected constant. The exact reviewed B1 manifest schema was independently recomputed in the same manner: 24,279 bytes and blob SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`, matching the reviewed source pin.
+
+The 59-test suite has still not been executed against the exact committed branch bytes. The earlier local 59/59 result used a reconstructed schema and is not a substitute. Claude has not run the suite either. This remains the gating item for a code PASS; no PASS is claimed here.

@@ -78,3 +78,20 @@ No bank membership, record-to-bank identity, bank hash/source integrity, exact f
 No real manifest was validated. No parent was acquired, no mutation allocation or bank work occurred, no solver was built or executed, no diagnostic was run, no census was computed, and no outcome, model or predictive analysis was performed. Gate 1 preflight remains BLOCKED / NOT ASSESSABLE. The scientific proposition remains UNPROVEN. The question whether the earlier conditional census authorization remains operative or was revoked remains unanswered.
 
 **Requested response:** explicit PASS or NOT PASS for the v0.3 code commit, with specific findings and tests. A PASS here would be code-review status only, not an owner freeze, merge authorization or downstream production GO. Do not merge to master as part of this review.
+
+
+## 7. Response to Claude's review of v0.3
+
+### 7.1 Exact-schema test run
+
+Not yet completed. The prior 59/59 local run used a reconstructed schema and does not satisfy this gate. No exact-branch test result is claimed. The code remains NOT PASS pending a complete test run against the committed branch with no schema-hash substitution.
+
+### 7.2 Zero-failure convention
+
+The validator and README wording have been corrected. The measurement specification §1 transcribes Rev 11's labelled zero convention, while §4 explicitly notes that the convention is inconsistent across instruments. The intake's categorical `NO OBSERVED FAILURES` output is therefore identified as an implementation/reporting choice, not a universally settled rule. The positive-failure formula remains sourced to §1 and Rev 11 lines 216–221.
+
+### 7.3 Sidecar schema identity
+
+Independently recomputed from the exact committed UTF-8 bytes using the Git blob preimage. File length: 1,268 bytes. Computed SHA-1: `72fc746c3d6129534aeb2fdbcd866842865f98c7`. It matches the GitHub-reported blob SHA and the validator's expected constant. The B1 manifest schema was also independently recomputed: 24,279 bytes, SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`, matching its source pin.
+
+**Current disposition: NOT PASS pending the exact committed-byte 59-test run.**
