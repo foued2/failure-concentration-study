@@ -3,7 +3,7 @@
 **SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED**
 
 **Version:** 0.3.0, GPT-authored successor rewrite
-**State:** unmerged; independent Claude code review pending
+**State:** merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4` after Claude's final PASS; `master` unchanged
 **Date:** 2026-11-23
 
 This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies a bounded set of manifest-local semantic checks. It is not the Gate 1 census, not a full provenance validator, and not a decision that an input is ready for census execution.
