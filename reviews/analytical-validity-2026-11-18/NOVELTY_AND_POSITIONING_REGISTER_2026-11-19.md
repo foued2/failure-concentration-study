@@ -1244,3 +1244,44 @@ GitHub reports both commits authored and committed under connected account `foue
 PR #11 code review is PASS within Claude's stated local-structural scope, but no merge is authorized. Revision 0.6 remains a draft pending Claude's §14.2 check and owner acceptance/freeze. Coverage thresholds remain unset. No production GO is active; the pause remains in force; conditional census permission remains dormant, not revoked and not triggered.
 
 No real manifest, protected set, bank, solver, diagnostic execution, outcome, census, model fitting, or predictive analysis was performed or authorized by these positions. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the scientific proposition remains **UNPROVEN**.
+
+
+---
+
+## 25. Dated amendment — 2026-11-23 (Claude §14.2 check completed; PR #11 work-branch integration)
+
+This amendment supersedes only the outstanding-review wording and current PR disposition in §24. Historical text in §§1–24 is preserved unchanged.
+
+### 25.1 Claude's §14.2 check and revision 0.6 disposition
+
+Claude reports that she read both relevant texts directly on GitHub and found no defect:
+
+- The adopted contribution statement in register §14.2 scopes the claim to the fixed, publicly exposed 78-record B1 **development** bank and states its null rule. It does not claim confirmatory status.
+- Census instrument revision 0.6 §16.1 quotes the superseded §14.2 finding-6 wording verbatim and replaces it for operative use. The replacement fixes 78 for this instrument version, requires code to read `row_count` from the validated manifest, and states that the count does not designate a confirmatory route.
+
+Claude accepts revision 0.6 on that reconciliation. GPT and Claude therefore jointly accept revision 0.6 as a **design-only census specification**. This is not owner acceptance, a freeze, execution authorization, or a production GO. The public 78-record bank remains development-only; the protected set alone is the intended confirmatory route, with disjointness and protection still to be verified when that set exists.
+
+### 25.2 Wording correction, without rewriting the historical record
+
+Section 24.1 contains the phrase **"Her PASS"**. For operative reference, read this as **"Claude's PASS"**. The references in §§24.2–24.3 to "her own §14.2 check" are likewise superseded by **"Claude's §14.2 check"**, which was completed with no defect on 2026-11-23. No historical text is altered.
+
+### 25.3 PR #11 integration and GitHub's PR #10 status
+
+Following Claude's final software PASS and completion of the §14.2 condition, GPT updated PR #11's disposition and merged it into its designated base branch only:
+
+- PR #11 head: `258c68df4a2ede77c0acd2e9ab0382080ae305b6`.
+- Target: `work/b1-census-intake-validator-v02-2026-11-22`.
+- Merge commit: `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`.
+- Result: PR #11 closed as merged into the work branch. This is not a merge to `master`.
+
+PR #11's aggregate diff against its HY4 v0.2 base comprised the inherited GPT-authored v0.3 successor plus the final syntax-repair commit (5 commits, 10 files, 2,116 additions and 829 deletions). The final syntax-repair commit itself remains exactly one test file with six additions and six deletions; no validator/schema/test-assertion change was part of that repair commit.
+
+After PR #11 was merged, GitHub also reported PR #10 as merged, with its head commit `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`. That head is included in PR #11's merged history. GPT did **not** perform a separate merge operation on PR #10; its status change is recorded as the GitHub consequence of integrating the successor branch. PR #10's prior review record remains accessible.
+
+The work branch now points to `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`. The protected default branch `master` remains unchanged at `ccbd0bdefd2d02ec22f6e17f27e9d0074952605a`. PR #9 remains open and draft. No merge to `master` occurred.
+
+### 25.4 Remaining design and scientific status
+
+The seven joint positions are updated as follows: items 1, 2, 3, 5, 6 and 7 are closed under the stated model-level delegation; item 4 is the only remaining open design item. Numerical values for `rho_min`, `rho_cell`, and `rho_rec` are still unset and must be derived, challenged by Claude, and frozen before any realised diagnostic manifest exists. If a threshold is not derived from a prespecified power target after Gate 4, it must be explicitly descriptive-only.
+
+The work-branch merge is a software integration step only. No real manifest, protected set, diagnostic bank use, parent acquisition, mutation allocation, solver construction or execution, diagnostic run, outcome collection, census, fitting, or predictive analysis occurred or was authorized. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the proposition remains **UNPROVEN**; the project pause remains in force; the conditional census authorization remains dormant, neither revoked nor triggered; no production GO is active.
