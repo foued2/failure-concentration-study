@@ -1193,3 +1193,54 @@ The suite used committed local fixtures only. No real manifest, bank, solver, di
 ### 23.4 Effect
 
 No scientific verdict changes. Gate 0 remains closed for positioning/contribution only; Gate 1 preflight remains BLOCKED / NOT ASSESSABLE; B1 v1.7 is unchanged; pause remains in force outside the recorded preflight scope.
+
+
+---
+
+## 24. Dated amendment — 2026-11-23 (Claude final PR #11 PASS; joint dormant-authorization and route positions)
+
+This amendment supersedes only earlier operative review-status and authorization descriptions where expressly stated. Historical rows and prior owner-adopted text remain unchanged.
+
+### 24.1 Claude's final software-review verdict
+
+Claude's final verdict on commit `258c68df4a2ede77c0acd2e9ab0382080ae305b6` is **PASS for the six-line syntax repair and for the v0.3 validator as a local structural intake check**. Claude withdrew the zero-convention wording objection: the validator and README now say the zero-failure categorical label is an implementation/reporting choice and not a universally settled convention.
+
+Claude accepts GPT's and GLM's independent exact-commit execution evidence (each reporting 59/59 tests, with matching committed schema pins). Claude did not execute the suite personally. Her PASS does not authorize a merge and does not extend to external provenance, bank membership, inventory, registry, run-ledger reconciliation, any real manifest, or scientific claims. PR #11 remains draft.
+
+### 24.2 GPT's §14.2 check on revision 0.6
+
+GPT inspected both the census-instrument §14.2 Opus findings and the separate Novelty and Positioning Register §14.2 adopted contribution statement.
+
+In the census instrument, §14.2 finding 6 records 78 as the current B1 v1.7 development evaluation-row count, says that it does not designate a confirmatory route, and says executable logic must not hardcode the count. Revision 0.6 §16.1 quotes that historical wording verbatim and replaces it for operative use with the fixed-78-by-this-instrument rule, a referenced frozen development configuration, validated-manifest field reading, and a formal amendment/new-instrument requirement for any different target. The historical row remains unchanged and is expressly superseded for operative purposes. GPT finds this reconciliation coherent.
+
+The adopted contribution statement in the separate register §14.2 describes the fixed publicly exposed 78-record B1 **development** bank. That text is not read as a confirmatory claim. Under the route position in §24.4, any analysis on that public bank is development/exploratory only; confirmatory evaluation is confined to the protected set. The owner-adopted paragraph is not edited here.
+
+GPT accepts revision 0.6 as a **design-only census specification** on the text inspected. It is not owner-accepted, frozen, or executable. Claude stated that her own §14.2 check remains to be completed and that her acceptance stands unless she finds a defect. Accordingly, that review condition remains open until Claude confirms her own check.
+
+### 24.3 Joint GPT/Claude positions
+
+Claude supplied the following seven closing positions in the project conversation. GPT's written concurrence is recorded below. These are joint analytical/governance interpretations under the delegation described in that exchange, **not statements made by the owner**; they remain reversible by the owner.
+
+1. **Conditional census authorization — dormant, not revoked, not triggered.** GPT concurs. It remains dormant pending the required inputs, pre-frozen coverage thresholds, and recorded ceilings. It authorizes no creation of inputs or prerequisite production work. The project pause remains in force and no census is runnable now. This clarifies the operative interpretation of earlier conditional permission without changing the historical text in §14.4.
+2. **Revision 0.6 — GPT accepts as design-only, Claude's §14.2 check pending.** GPT finds no defect in the §14.2-to-§16.1 row-count reconciliation or in the development-only meaning of the public 78-record bank. This item is not recorded as fully closed until Claude confirms that her own §14.2 check is complete. No owner acceptance/freeze or execution authority is implied.
+3. **Confirmatory route — public 78-record bank development-only; protected set confirmatory-only.** GPT concurs. The intended datasets must be disjoint. Their disjointness, access control and protected-set integrity are not yet verified facts; they must be evidenced when the protected set exists. No independence claim may be made before that verification.
+4. **Coverage thresholds — procedural rule agreed; values open.** No values are adopted for `rho_min`, `rho_cell`, or `rho_rec`. GPT will draft values with explicit derivation for Claude's challenge. Values must be agreed and frozen in a dated commit before any realised diagnostic manifest exists. Retrospective thresholding is prohibited.
+5. **Current operating ceilings — zero spend and zero experimental/model calls during the pause.** GPT concurs. Actual operating/resource ceilings are to be specified in each applicable production GO with GPT/Claude concurrence. This is not permission for any expenditure or model execution now.
+6. **Production GOs — none granted; pause not lifted.** GPT concurs. Each of the five production stages requires written GPT/Claude concurrence and the prior stage's required record. No production work is authorized.
+7. **PR handling — PRs #9, #10 and #11 remain drafts.** GPT concurs. No merge to `master` is authorized. PR #11 may be considered for merge into its designated work branch only after the §14.2 review condition is complete and subject to applicable owner/repository controls. No merge is authorized now.
+
+### 24.4 Confirmatory-route interpretation
+
+The public 78-record bank is for development only. The protected set alone is the confirmatory evaluation route. The two sets are intended to be disjoint, but disjointness and protection remain future verification requirements. The 78-row rule in revision 0.6 is a development evaluation-row configuration and must not be interpreted as a declaration that the public bank is confirmatory.
+
+### 24.5 GLM capability-probe audit
+
+The probe branch `probe/glm-write-capability-2026-11-23` was created from `ccbd0bdefd2d02ec22f6e17f27e9d0074952605a`. A file `.glm-probe/write-capability-2026-11-23.md` was created in commit `5764b9820851d1da11164fcea0fc7682993a8680` and deleted in commit `2fa5522e4575428d4977bd6ce689b6890c37fb4f`. The current branch tip is the deletion commit; the file is absent from the latest tree, but the branch and both commits remain in Git history.
+
+GitHub reports both commits authored and committed under connected account `foued2`, with unsigned verification. The probe did not change project code, schemas, validator logic, or scientific artifacts. GLM's repository write and remote execution capability are demonstrated; that capability does not itself confer repository-master authority or change the established authorship/review governance.
+
+### 24.6 Effect and limits
+
+PR #11 code review is PASS within Claude's stated local-structural scope, but no merge is authorized. Revision 0.6 remains a draft pending Claude's §14.2 check and owner acceptance/freeze. Coverage thresholds remain unset. No production GO is active; the pause remains in force; conditional census permission remains dormant, not revoked and not triggered.
+
+No real manifest, protected set, bank, solver, diagnostic execution, outcome, census, model fitting, or predictive analysis was performed or authorized by these positions. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the scientific proposition remains **UNPROVEN**.
