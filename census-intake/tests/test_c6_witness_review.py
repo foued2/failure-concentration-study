@@ -193,7 +193,6 @@ def run_checker(data: dict, dossier: dict) -> dict:
         family_map_raw=data["family_map_raw"],
         c4_report=data["c4_report"],
         c4_raw=data["c4_raw"],
-        roster=ROSTER,
     )
 
 
