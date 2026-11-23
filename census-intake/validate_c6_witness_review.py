@@ -43,8 +43,10 @@ LABEL = (
     "SEMANTIC REACH AND JOINT ATTAINABILITY REQUIRE INDEPENDENT REVIEW"
 )
 SCHEMA_FILENAME = "C6_WITNESS_REVIEW_SCHEMA.json"
-EXPECTED_SCHEMA_GIT_BLOB_SHA1 = "37d682d9228d7fab70963a4507488c1e4cf5ade5"
+EXPECTED_SCHEMA_GIT_BLOB_SHA1 = "07fb4928cee9e75fb362e729c3d675307094493c"
 EXPECTED_BANK_DESIGN_SHA256 = "da7f8c1ae3c5e3a582c38d91be2463061bce2acb0a772fac72d34459f4b17843"
+EXPECTED_A2_PROTOCOL_SHA256 = "530dad4baf77c00a0afa76f91321c567fcbdfe4cf4a5ae6d0bee336c5dfac739"
+EXPECTED_ANNEX_INTAKE_SCHEMA_BLOB_SHA1 = "1cc7bd81701c7cdb1c6f43c7058f59943c8ca25b"
 N_RECORDS = 64
 STRATA = [f"D{i}" for i in range(1, 9)]
 FAMILIES_IN_SCOPE = {"K1", "K2", "K3", "K4"}
@@ -293,6 +295,11 @@ def _validate_bindings(
     if c4_report.get("audit_decision") != "STRUCTURAL_INTAKE_PASS_C6_ADEQUACY_NOT_ASSESSED":
         raise DossierError("C6_C4_STRUCTURAL_INTAKE_NOT_PASSED")
 
+    if dossier.get("a2_protocol_sha256") != EXPECTED_A2_PROTOCOL_SHA256:
+        raise DossierError("C6_A2_PROTOCOL_REV11_IDENTITY_MISMATCH")
+    if dossier.get("annex_intake_schema_blob_sha1") != EXPECTED_ANNEX_INTAKE_SCHEMA_BLOB_SHA1:
+        raise DossierError("C6_ANNEX_INTAKE_SCHEMA_IDENTITY_MISMATCH")
+
     design = dossier["design_basis"]
     if (
         design.get("N") != N_RECORDS
@@ -309,6 +316,8 @@ def _validate_bindings(
         "parent_roster_adoption_verified": True,
         "family_map_sha256_verified": True,
         "c4_report_sha256_verified": True,
+        "a2_protocol_rev11_sha256_verified": True,
+        "annex_intake_schema_blob_sha1_verified": True,
         **c4_structure_report,
         "c4_status_assessed": True,
         "parent_roster_adopted": True,
@@ -759,6 +768,8 @@ def main(argv: list[str] | None = None) -> int:
         from validate_annex import load_and_verify_schema
 
         pinned_annex_schema = load_and_verify_schema(annex_schema)
+        if _git_blob_sha1(annex_schema_raw) != EXPECTED_ANNEX_INTAKE_SCHEMA_BLOB_SHA1:
+            raise DossierError("C6_ANNEX_INTAKE_SCHEMA_IDENTITY_MISMATCH")
         annex_errors = list(Draft202012Validator(
             pinned_annex_schema, format_checker=FormatChecker()
         ).iter_errors(annex))
