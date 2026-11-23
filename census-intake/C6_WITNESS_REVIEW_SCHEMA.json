@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:lc518:150:c6-witness-review:1.0",
   "title": "LC518 A2 C6 witness review dossier schema v1.0",
-  "description": "Proposed companion review dossier. It does not alter the pinned owner-annex form schema and is not authorized for use until its relationship to Rev 11 C0 is reviewed and adopted.",
+  "description": "Proposed companion review dossier. It does not alter the pinned owner-annex form schema and is not authorized for use until its relationship to Rev 11 C0 is reviewed and adopted. The version_slot_id is a deterministic pre-construction identity (parent ID + role), not a constructed solver variant ID.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,24 +17,52 @@
     "witnesses"
   ],
   "properties": {
-    "dossier_id": {"type": "string", "minLength": 1},
-    "version": {"const": "1.0"},
-    "annex_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "parent_identity_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "family_map_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "c4_report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dossier_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "const": "1.0"
+    },
+    "annex_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "parent_identity_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "family_map_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "c4_report_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "design_basis": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["N", "unit", "R", "bank_design_sha256"],
+      "required": [
+        "N",
+        "unit",
+        "R",
+        "bank_design_sha256"
+      ],
       "properties": {
-        "N": {"const": 64},
-        "unit": {"const": "diagnostic_bank_records_per_solver_body"},
+        "N": {
+          "const": 64
+        },
+        "unit": {
+          "const": "diagnostic_bank_records_per_solver_body"
+        },
         "R": {
           "type": "array",
           "minItems": 8,
           "maxItems": 8,
-          "items": {"const": 8}
+          "items": {
+            "const": 8
+          }
         },
         "bank_design_sha256": {
           "const": "da7f8c1ae3c5e3a582c38d91be2463061bce2acb0a772fac72d34459f4b17843"
@@ -56,15 +84,37 @@
         "review_completed_at_utc"
       ],
       "properties": {
-        "reviewer_id": {"type": "string", "minLength": 1},
-        "not_annex_author_or_coauthor": {"const": true},
-        "no_role_in_taxonomy": {"const": true},
-        "no_role_in_pair_assignments": {"const": true},
-        "no_role_in_s_extra_design": {"const": true},
-        "not_availability_investigator": {"const": true},
-        "attestation_recorded_at_utc": {"type": "string", "format": "date-time"},
-        "first_annex_access_at_utc": {"type": "string", "format": "date-time"},
-        "review_completed_at_utc": {"type": "string", "format": "date-time"}
+        "reviewer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "not_annex_author_or_coauthor": {
+          "const": true
+        },
+        "no_role_in_taxonomy": {
+          "const": true
+        },
+        "no_role_in_pair_assignments": {
+          "const": true
+        },
+        "no_role_in_s_extra_design": {
+          "const": true
+        },
+        "not_availability_investigator": {
+          "const": true
+        },
+        "attestation_recorded_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "first_annex_access_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "review_completed_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "witnesses": {
@@ -76,6 +126,7 @@
         "required": [
           "witness_id",
           "parent_id",
+          "version_slot_id",
           "version_role",
           "mechanism_id",
           "Z_id",
@@ -87,54 +138,128 @@
           "unresolved_provenance"
         ],
         "properties": {
-          "witness_id": {"type": "string", "minLength": 1},
-          "parent_id": {"type": "string", "pattern": "^G(0[1-9]|1[0-9]|2[0-9]|30)$"},
-          "version_role": {"enum": ["SA", "SB", "S-EXTRA"]},
-          "mechanism_id": {"type": "string", "pattern": "^M[1-8]$"},
-          "Z_id": {"type": "string", "pattern": "^K[1-5]$"},
+          "witness_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_id": {
+            "type": "string",
+            "pattern": "^G(0[1-9]|1[0-9]|2[0-9]|30)$"
+          },
+          "version_role": {
+            "enum": [
+              "SA",
+              "SB",
+              "S-EXTRA"
+            ]
+          },
+          "mechanism_id": {
+            "type": "string",
+            "pattern": "^M[1-8]$"
+          },
+          "Z_id": {
+            "type": "string",
+            "pattern": "^K[1-5]$"
+          },
           "cell": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["k_fail", "k_unresolved"],
+            "required": [
+              "k_fail",
+              "k_unresolved"
+            ],
             "properties": {
-              "k_fail": {"type": "integer", "minimum": 2, "maximum": 64},
-              "k_unresolved": {"type": "integer", "minimum": 0, "maximum": 62}
+              "k_fail": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 64
+              },
+              "k_unresolved": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 62
+              }
             }
           },
           "f": {
             "type": "array",
             "minItems": 8,
             "maxItems": 8,
-            "items": {"type": "integer", "minimum": 0, "maximum": 8}
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            }
           },
           "u": {
             "type": "array",
             "minItems": 8,
             "maxItems": 8,
-            "items": {"type": "integer", "minimum": 0, "maximum": 8}
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            }
           },
           "reach_assessments": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["stratum_id", "decision", "quoted_rule", "rationale"],
+              "required": [
+                "stratum_id",
+                "decision",
+                "quoted_rule",
+                "rationale"
+              ],
               "properties": {
-                "stratum_id": {"type": "string", "pattern": "^D[1-8]$"},
-                "decision": {"enum": ["SUPPORTED", "RULES_OUT", "NOT_ESTABLISHED"]},
-                "quoted_rule": {"type": "string", "minLength": 1},
-                "rationale": {"type": "string", "minLength": 1}
+                "stratum_id": {
+                  "type": "string",
+                  "pattern": "^D[1-8]$"
+                },
+                "decision": {
+                  "enum": [
+                    "SUPPORTED",
+                    "RULES_OUT",
+                    "NOT_ESTABLISHED"
+                  ]
+                },
+                "quoted_rule": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
-            }
+            },
+            "minItems": 1,
+            "uniqueItems": true
           },
           "joint_attainability": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["decision", "quoted_rule", "rationale"],
+            "required": [
+              "decision",
+              "quoted_rule",
+              "rationale"
+            ],
             "properties": {
-              "decision": {"enum": ["SUPPORTED", "NOT_ESTABLISHED"]},
-              "quoted_rule": {"type": "string", "minLength": 1},
-              "rationale": {"type": "string", "minLength": 1}
+              "decision": {
+                "enum": [
+                  "SUPPORTED",
+                  "NOT_ESTABLISHED"
+                ]
+              },
+              "quoted_rule": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           },
           "unresolved_provenance": {
@@ -142,14 +267,61 @@
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["stratum_id", "origin", "evidence_reference", "rationale"],
+              "required": [
+                "stratum_id",
+                "origin",
+                "evidence_reference",
+                "rationale"
+              ],
               "properties": {
-                "stratum_id": {"type": "string", "pattern": "^D[1-8]$"},
-                "origin": {"enum": ["MECHANISM_ATTRIBUTED", "PROCESS_ATTRIBUTED"]},
-                "evidence_reference": {"type": "string", "minLength": 1},
-                "rationale": {"type": "string", "minLength": 1}
-              }
+                "stratum_id": {
+                  "type": "string",
+                  "pattern": "^D[1-8]$"
+                },
+                "origin": {
+                  "enum": [
+                    "MECHANISM_ATTRIBUTED",
+                    "PROCESS_ATTRIBUTED"
+                  ]
+                },
+                "evidence_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "mechanism_rule_quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "origin": {
+                        "const": "MECHANISM_ATTRIBUTED"
+                      }
+                    },
+                    "required": [
+                      "origin"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "mechanism_rule_quote"
+                    ]
+                  }
+                }
+              ]
             }
+          },
+          "version_slot_id": {
+            "type": "string",
+            "pattern": "^G(0[1-9]|1[0-9]|2[0-9]|30):(SA|SB|S-EXTRA)$",
+            "description": "Deterministic pre-construction version-slot identity: parent_id plus eligible role; not an opaque constructed variant ID."
           }
         }
       }
