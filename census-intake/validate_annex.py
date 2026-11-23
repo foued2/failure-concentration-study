@@ -341,14 +341,14 @@ def audit_annex(
     family_map: dict | None = None,
     family_map_sha256: str | None = None,
 ) -> dict:
-    if parent_identity_manifest_sha256 is not None and (
-        not isinstance(parent_identity_manifest_sha256, str)
-        or len(parent_identity_manifest_sha256) != 64
-        or any(ch not in "0123456789abcdef" for ch in parent_identity_manifest_sha256)
-    ):
-        report_digest_error = True
-    else:
-        report_digest_error = False
+    report_digest_error = (
+        parent_identities is not None
+        and (
+            not isinstance(parent_identity_manifest_sha256, str)
+            or len(parent_identity_manifest_sha256) != 64
+            or any(ch not in "0123456789abcdef" for ch in parent_identity_manifest_sha256)
+        )
+    )
 
     report = {
         "tool": TOOL_NAME,
@@ -491,7 +491,14 @@ def audit_annex(
 
     # C4 depends on a valid C3 one-to-one parent assignment and consistent
     # SA/SB orientation. Do not let malformed C3 input reach incidence indexing.
-    if c3_bijective and c3_orientation:
+    if report_digest_error:
+        c4 = {
+            "status": "NOT_ASSESSABLE",
+            "reason_codes": ["C4_PARENT_IDENTITY_MANIFEST_SHA256_INVALID"],
+            "n_m_z": [],
+            "qualifying_cells": [],
+        }
+    elif c3_bijective and c3_orientation:
         c4 = audit_c4_incidence(
             annex, roster, parent_identities, family_map, family_map_sha256,
         )
