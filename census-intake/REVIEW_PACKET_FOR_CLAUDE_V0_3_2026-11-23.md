@@ -95,3 +95,20 @@ The validator and README wording have been corrected. The measurement specificat
 Independently recomputed from the exact committed UTF-8 bytes using the Git blob preimage. File length: 1,268 bytes. Computed SHA-1: `72fc746c3d6129534aeb2fdbcd866842865f98c7`. It matches the GitHub-reported blob SHA and the validator's expected constant. The B1 manifest schema was also independently recomputed: 24,279 bytes, SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`, matching its source pin.
 
 **Current disposition: NOT PASS pending the exact committed-byte 59-test run.**
+
+
+---
+
+## 8. Final review outcome — 2026-11-23
+
+Claude's final verdict on syntax-repaired successor commit `258c68df4a2ede77c0acd2e9ab0382080ae305b6` is **PASS for the six-line syntax repair and for the v0.3 validator as a local structural intake check**. Claude withdrew the zero-convention objection; the categorical zero-failure label is described as an implementation/reporting choice, not a universal convention.
+
+Claude accepted the independent exact-commit execution reports:
+- GPT, Python 3.13.18 and `jsonschema` 4.26.0: 59/59 passed.
+- GLM, Python 3.12.16 and `jsonschema` 4.26.0: 59/59 passed.
+
+The manifest-schema blob pin `0f2865e606fa61400184c09abd01601497637a6b` and sidecar-schema blob pin `72fc746c3d6129534aeb2fdbcd866842865f98c7` were recomputed and matched. Claude did not personally execute the suite.
+
+After Claude's §14.2 check of revision 0.6 found no defect, PR #11 was merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`. No merge to `master` occurred. GitHub also reports PR #10 merged because its head commit is included in the successor history; no separate PR #10 merge was performed. PR #9 remains open/draft.
+
+This PASS is limited to local structural intake checks. It does not establish external provenance, bank membership, any real manifest's validity, or a scientific result. No real manifest, census, solver, diagnostic, outcome, fitting, or predictive analysis was used.
