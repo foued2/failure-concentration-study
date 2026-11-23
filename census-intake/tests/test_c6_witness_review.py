@@ -81,6 +81,7 @@ def prepare_inputs(duplicate_base_ids: bool = False) -> dict:
     )
     if c4_report["audit_decision"] != "STRUCTURAL_INTAKE_PASS_C6_ADEQUACY_NOT_ASSESSED":
         raise AssertionError(c4_report["reason_codes"])
+    c4_report["annex_sha256"] = hashlib.sha256(annex_raw).hexdigest()
     c4_raw = canonical_json_bytes(c4_report)
 
     return {
@@ -304,6 +305,60 @@ class TestC6WitnessDossierMechanicalChecks(unittest.TestCase):
         with self.assertRaisesRegex(c6_checker.DossierError,
                                     "C6_DOSSIER_ARTIFACT_BINDING_MISMATCH:annex_sha256"):
             run_checker(self.data, dossier)
+
+    def test_dossier_is_bound_to_exact_roster_bytes(self):
+        dossier = make_dossier(
+            self.data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        dossier["parent_roster_sha256"] = "0" * 64
+        with self.assertRaisesRegex(
+            c6_checker.DossierError,
+            "C6_DOSSIER_ARTIFACT_BINDING_MISMATCH:parent_roster_sha256",
+        ):
+            run_checker(self.data, dossier)
+
+    def test_unadopted_roster_is_rejected_for_c6_review(self):
+        data = dict(self.data)
+        data["roster"] = dict(self.data["roster"])
+        data["roster"]["status"] = "PENDING_ADOPTION"
+        dossier = make_dossier(
+            data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        with self.assertRaisesRegex(
+            c6_checker.DossierError, "C6_PARENT_ROSTER_NOT_ADOPTED"
+        ):
+            run_checker(data, dossier)
+
+    def test_incomplete_c4_incidence_table_is_rejected(self):
+        data = dict(self.data)
+        data["c4_report"] = json.loads(json.dumps(self.data["c4_report"]))
+        data["c4_report"]["C4"]["n_m_z"].pop()
+        data["c4_raw"] = canonical_json_bytes(data["c4_report"])
+        dossier = make_dossier(
+            data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        with self.assertRaisesRegex(
+            c6_checker.DossierError,
+            "C6_C4_INCIDENCE_TABLE_NOT_EXACTLY_40_CELLS",
+        ):
+            run_checker(data, dossier)
+
+    def test_c4_report_annex_binding_must_match(self):
+        data = dict(self.data)
+        data["c4_report"] = json.loads(json.dumps(self.data["c4_report"]))
+        data["c4_report"]["annex_sha256"] = "0" * 64
+        data["c4_raw"] = canonical_json_bytes(data["c4_report"])
+        dossier = make_dossier(
+            data,
+            [make_witness("G01", [2, 0, 0, 0, 0, 0, 0, 0])],
+        )
+        with self.assertRaisesRegex(
+            c6_checker.DossierError, "C6_C4_REPORT_ANNEX_BINDING_INVALID"
+        ):
+            run_checker(data, dossier)
 
     def test_attestation_must_precede_first_annex_access(self):
         dossier = make_dossier(
