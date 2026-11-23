@@ -2117,3 +2117,18 @@ The only open item among Claude's seven joint positions is derivation of numeric
 Claude's software PASS remains bounded to the syntax repair and v0.3 local structural intake checks. It does not establish external provenance, bank membership, registry/inventory/run-ledger reconciliation, or real-manifest validity. No real manifest, bank use, solver/diagnostic work, census, outcome, model fit, or predictive analysis occurred.
 
 Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the proposition remains **UNPROVEN**; the project pause remains in force; the conditional census authorization remains dormant, neither revoked nor triggered; no production GO is active.
+
+
+---
+
+## 44. GLM follow-up audit and cleanup (2026-11-23)
+
+GLM's report was checked against live repository state. Its PR #11 "draft/unmerged" and PR #10 "open/draft" statements were stale: PR #11 is merged to the designated work branch at `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`; GitHub also reports PR #10 merged because its head `a48cc9d` is included in the successor history. No merge to `master` occurred. PR #9 remains open/draft.
+
+The unprotected GLM probe branch was deleted after verifying its exact ref and target commit. A subsequent listing showed 75 branches, down from 76. The two unsigned probe commits remain in repository history by SHA; branch deletion does not rewrite commit objects.
+
+The review packet's duplicate §7 heading was corrected, its historical NOT PASS line was explicitly superseded by the final PASS, and PR #10/#11 bodies were updated to remove stale current-state statements. PR #10's four GPT-authored commits are now correctly described. The exact six-line syntax-repair commit remains the only content change in that repair commit.
+
+GLM correctly noted zero GitHub Actions checks on PR #11. The 59/59 test results are independent out-of-band runs, not CI checks. Aggregate PR stats are full-history diffs and do not replace the commit-level six-line syntax-repair diff.
+
+No real manifest, bank, solver, diagnostic, census, outcome, fit, or predictive analysis was used. Gate 1 remains BLOCKED / NOT ASSESSABLE; the proposition remains UNPROVEN; the pause remains in force; conditional census authorization remains dormant, neither revoked nor triggered.
