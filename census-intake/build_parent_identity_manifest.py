@@ -76,6 +76,12 @@ def _safe_source_bytes(source_root: Path, relative_path: str) -> bytes:
 
 
 def _validate_family_partition(roster: dict, family_map: dict) -> dict[str, str]:
+    if roster.get("status") != "ADOPTED":
+        raise IdentityInputError("PARENT_ROSTER_NOT_ADOPTED")
+    if not isinstance(roster.get("artifact_id"), str) or not roster["artifact_id"].strip():
+        raise IdentityInputError("PARENT_ROSTER_ARTIFACT_ID_MISSING")
+    if not isinstance(roster.get("version"), str) or not roster["version"].strip():
+        raise IdentityInputError("PARENT_ROSTER_VERSION_MISSING")
     parents = roster.get("parents")
     if not isinstance(parents, list) or len(parents) != EXPECTED_PARENT_COUNT:
         raise IdentityInputError("ROSTER_NOT_EXACTLY_30_PARENTS")
@@ -125,6 +131,7 @@ def build_parent_identity_manifest(
     roster: dict,
     family_map: dict,
     family_map_sha256: str,
+    roster_sha256: str,
     source_index: dict,
     source_index_sha256: str,
     source_root: Path,
@@ -144,6 +151,12 @@ def build_parent_identity_manifest(
         or any(ch not in "0123456789abcdef" for ch in family_map_sha256)
     ):
         raise IdentityInputError("FAMILY_MAP_SHA256_INVALID")
+    if (
+        not isinstance(roster_sha256, str)
+        or len(roster_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in roster_sha256)
+    ):
+        raise IdentityInputError("PARENT_ROSTER_SHA256_INVALID")
     if (
         not isinstance(source_index_sha256, str)
         or len(source_index_sha256) != 64
@@ -231,6 +244,12 @@ def build_parent_identity_manifest(
                 "executed, parsed, compiled or modified."
             ),
         },
+        "parent_roster_adoption_ref": {
+            "status": "ADOPTED",
+            "artifact_id": roster.get("artifact_id"),
+            "version": roster.get("version"),
+            "sha256": roster_sha256,
+        },
         "family_map_adoption_ref": {
             "status": "ADOPTED",
             "artifact_id": family_map.get("artifact_id"),
@@ -266,7 +285,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        roster, _roster_raw = _load_json(Path(args.roster))
+        roster, roster_raw = _load_json(Path(args.roster))
         family_map, family_map_raw = _load_json(Path(args.family_map))
         source_index, source_index_raw = _load_json(Path(args.source_index))
         computed_at = args.computed_at_utc or datetime.now(timezone.utc).strftime(
@@ -276,6 +295,7 @@ def main(argv: list[str] | None = None) -> int:
             roster=roster,
             family_map=family_map,
             family_map_sha256=sha256_bytes(family_map_raw),
+            roster_sha256=sha256_bytes(roster_raw),
             source_index=source_index,
             source_index_sha256=sha256_bytes(source_index_raw),
             source_root=Path(args.source_root),
