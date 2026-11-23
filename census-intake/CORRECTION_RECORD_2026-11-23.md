@@ -95,3 +95,41 @@ Claude's v0.3 review identified that the original wording overstated the status 
 The sidecar schema pin was independently recomputed from the exact committed UTF-8 file bytes using the Git blob object preimage (the literal prefix `blob 1268\\0` followed by the file bytes). The computed Git blob SHA-1 is `72fc746c3d6129534aeb2fdbcd866842865f98c7`, matching both the file's reported GitHub blob SHA and the validator's expected constant. The exact reviewed B1 manifest schema was independently recomputed in the same manner: 24,279 bytes and blob SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`, matching the reviewed source pin.
 
 The 59-test suite has still not been executed against the exact committed branch bytes. The earlier local 59/59 result used a reconstructed schema and is not a substitute. Claude has not run the suite either. This remains the gating item for a code PASS; no PASS is claimed here.
+
+
+---
+
+## 9. Final review and work-branch integration — 2026-11-23
+
+This entry supersedes the pending-review and "unmerged" status statements above. Those statements accurately record the state when the earlier entries were written; they are not rewritten.
+
+### 9.1 Exact-commit execution
+
+The syntax-repaired successor commit is `258c68df4a2ede77c0acd2e9ab0382080ae305b6`, parented directly by `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`. The syntax repair itself changed only `census-intake/tests/test_b1_census_intake.py`, with six approved additions and six deletions. No validator, schema, requirements, or test assertion was changed in that repair commit.
+
+Two independent clean-checkout runs against the exact committed bytes reported 59/59 passing:
+- GPT: Python 3.13.18, `jsonschema` 4.26.0.
+- GLM: Python 3.12.16, `jsonschema` 4.26.0.
+
+Both runs recomputed and matched the manifest schema blob `0f2865e606fa61400184c09abd01601497637a6b` and sidecar schema blob `72fc746c3d6129534aeb2fdbcd866842865f98c7`. Claude accepted these as execution evidence, while noting that Claude did not personally run the suite.
+
+### 9.2 Claude's final PASS
+
+Claude's final verdict is **PASS for the six-line syntax repair and for the v0.3 validator as a local structural intake check**. Claude withdrew the zero-convention objection because the implementation and README already state that the `NO OBSERVED FAILURES` category is an implementation/reporting choice and not a universally settled convention.
+
+The PASS does not establish bank membership, provenance, inventory/registry/run-ledger reconciliation, real-manifest validity, or any scientific claim. The checker remains labelled `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED`.
+
+### 9.3 Merge disposition
+
+After Claude's PASS and completion of the separate §14.2 review condition, PR #11 was merged into its designated work branch only:
+- Target branch: `work/b1-census-intake-validator-v02-2026-11-22`.
+- Head commit: `258c68df4a2ede77c0acd2e9ab0382080ae305b6`.
+- Merge commit: `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`.
+
+The PR's aggregate diff against the HY4 v0.2 base contains the GPT-authored v0.3 successor plus the final syntax repair (5 commits, 10 files). The syntax-repair commit alone is limited to the one test file and six lines described above.
+
+GitHub subsequently reports PR #10 as merged at its head `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`, which is included in PR #11's merged history. No separate PR #10 merge operation was performed. PR #9 remains open/draft. The default branch `master` remains unchanged at `ccbd0bdefd2d02ec22f6e17f27e9d0074952605a`.
+
+### 9.4 Scientific and operational boundary
+
+No real manifest, bank use, protected set, parent acquisition, mutation allocation, solver construction or execution, diagnostic run, outcome collection, census, model fitting, or predictive analysis occurred. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the proposition remains **UNPROVEN**; the pause remains in force; the conditional census authorization remains dormant, neither revoked nor triggered; no production GO is active.
