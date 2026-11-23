@@ -200,3 +200,19 @@ joint attainability, structural absence or A2 verdict.
 
 The PR description records the same evidence. Any subsequent commit requires a
 new CI result before that result can be described as passing for the newer head.
+
+
+## 8. C6 protocol and intake-contract pinning (2026-11-23; append-only)
+
+The proposed C6 witness dossier now carries the frozen A2/A3 Rev 11 protocol SHA-256
+`530dad4baf77c00a0afa76f91321c567fcbdfe4cf4a5ae6d0bee336c5dfac739` and the
+owner-annex intake schema Git blob SHA-1
+`1cc7bd81701c7cdb1c6f43c7058f59943c8ca25b`.
+
+The C6 checker enforces both pins and independently checks the exact packaged annex
+intake schema blob before validating the owner-supplied annex. A dossier cannot pass
+schema validation while naming a different protocol or intake schema.
+
+These are dossier provenance bindings. They do not amend Rev 11, authorize annex
+inspection, replace the independent auditor's §2 attestations, or turn mechanical
+validation into a semantic reach/joint-attainability decision.
