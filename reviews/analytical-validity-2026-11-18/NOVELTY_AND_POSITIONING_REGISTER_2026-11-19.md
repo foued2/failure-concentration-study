@@ -1112,3 +1112,32 @@ No repair was made. The GPT branch and PR #10 remain unmerged and untouched. Cla
 ### 21.4 Effect
 
 No verdict in §§1–20 changes. Gate 0 closed for position and contribution only; Gate 1 preflight remains **BLOCKED / NOT ASSESSABLE**; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope. No scientific output was produced.
+
+---
+
+## 22. Dated amendment — 2026-11-23 (approved one-line repair is insufficient; concurrence still required)
+
+### 22.1 What GPT approved
+
+GPT approved a narrow repair: new successor branch from `a48cc9d`, preserving PR #10 and the existing branch; change **only** line 176 of `census-intake/tests/test_b1_census_intake.py` to `    def test_sidecar_schema_blob_is_pinned_in_validator(self):`; run `py_compile` and the full committed suite; record commit, hashes, versions and result; send evidence to Claude.
+
+GPT also stated a binding governance condition: the local agent must obtain **Claude's explicit agreement to this exact line replacement before applying it**. GPT's approval is not represented as Claude's approval. No Claude channel exists in this harness, so that agreement has not been obtained.
+
+### 22.2 Local technical check: the approved scope is insufficient
+
+Using only bytes from commit `a48cc9d` and a temporary compile probe (no repository file changed):
+
+- Deleting the stray quote at line 176 without restoring indentation yields `IndentationError` at line 179. GPT's requirement of four-space indentation is correct.
+- Applying GPT's exact one-line replacement still yields `SyntaxError: unterminated string literal` at **line 274**.
+- A scan of the committed test file finds six defective lines: **176, 274, 347, 416, 499, 591**. Line 274 is a lone `"`; the other five are a leading `"` before a `def` statement (line 176 additionally lacks the four-space indent).
+- A temporary copy with all six lines repaired compiles successfully.
+
+Therefore changing only line 176 cannot make the committed suite importable. The approved repair scope must be revised before implementation; this finding is a compile-level fact, not a code review.
+
+### 22.3 Disposition
+
+No repair was applied to any branch. PR #10 and GPT's branch remain untouched. The exact-byte test gate remains **NOT RUN**, Claude's NOT PASS remains operative, and the earlier conditional census-authorization question remains unanswered. No scientific output was produced.
+
+### 22.4 Effect
+
+No verdict in §§1–21 changes. Gate 0 closed for position and contribution only; Gate 1 preflight **BLOCKED / NOT ASSESSABLE**; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope.

@@ -1981,3 +1981,26 @@ Exact-byte test gate remains **NOT RUN**, now with a concrete cause additional t
 ### 39.4 Effect
 
 No verdict in §§1–38 changes. Gate 0 closed for position and contribution only; Gate 1 preflight BLOCKED / NOT ASSESSABLE; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope.
+
+---
+
+## 40. Approved one-line repair is insufficient; concurrence still required (2026-11-23)
+
+### 40.1 GPT's approval and condition
+
+GPT approved a narrow repair: a new successor branch from `a48cc9d`, preserving PR #10; change only line 176 of the committed test file to the four-space-indented method declaration; run `py_compile` and the full suite; record byte-level and runtime evidence; send it to Claude. GPT made this conditional on **Claude's explicit agreement to that exact replacement before implementation**. No Claude channel exists here, so that agreement has not been obtained and GPT's approval is not represented as Claude's.
+
+### 40.2 Technical check against the exact commit
+
+Using bytes from `a48cc9d` in a temporary compile probe only:
+
+- Removing only the quote at line 176 gives `IndentationError` at line 179; the four-space indent GPT specified is required.
+- Applying GPT's exact one-line replacement still gives `SyntaxError: unterminated string literal` at **line 274**.
+- Six lines in the committed test file are defective: **176, 274, 347, 416, 499, 591**. Line 274 is a lone `"`; the other five have a leading `"` before `def` (line 176 also lacks indentation).
+- A temporary copy repairing all six lines compiles successfully.
+
+The approved scope therefore cannot make the committed suite importable. This is a compile-level fact, not a code review or a revised approval.
+
+### 40.3 Disposition and effect
+
+No repair was applied; PR #10 and GPT's branch remain untouched. Exact-byte test gate remains NOT RUN; Claude's NOT PASS remains operative; the earlier census-authorization question remains unanswered. No verdict in §§1–39 changes. Gate 0 closed for position and contribution only; Gate 1 preflight BLOCKED / NOT ASSESSABLE; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope.
