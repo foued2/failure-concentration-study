@@ -167,6 +167,7 @@ class B1IntakeV03Tests(unittest.TestCase):
 
     def test_packaged_manifest_schema_exact_source_identity(self):
         raw = v._schema_path().read_bytes()
+        self.assertEqual(v.SCHEMA_SOURCE_BLOB_SHA1, "0f2865e606fa61400184c09abd01601497637a6b")
         self.assertEqual(blob_sha1(raw), v.SCHEMA_SOURCE_BLOB_SHA1)
         self.assertEqual(self.schema["$id"], v.SCHEMA_ID)
         self.assertEqual(len(self.schema["required"]), 17)

@@ -77,9 +77,9 @@ Local execution in this working container:
 
     py -m unittest discover -s census-intake/tests -v
 
-Result: 59 tests run, 59 passed. For this local run, the validator's expected packaged-schema SHA constant was temporarily set to the local reconstruction's Git blob SHA because the local working file was reconstructed for testing. The committed code was then restored to the reviewed source blob SHA 0f2865e606fa61400184c09abd01601497637a6b. Therefore the local 59/59 run verifies validator and test behaviour against a semantically equivalent reconstruction of schema 0.6; it is not a byte-identity test of the eventual committed schema. The exact source schema blob is added to the GPT successor branch; the branch's runtime source-blob guard must be tested independently against those exact bytes. Claude's independent review and test run remain required.
+Result: **59 tests run, 59 passed** against a locally reconstructed schema copy after temporarily changing the local validator's expected schema-blob constant to that reconstruction's Git blob SHA. The reconstruction was 7 bytes shorter than the reviewed source file; equivalence was not established. This run therefore verifies the validator logic and synthetic cases against that local reconstruction only. It is not a test against the exact source schema, not a byte-identity check, and not evidence that all 59 fixtures pass against the exact committed schema.
 
-This qualification is intentional: the local run must not be described as byte-identity verification of the eventual committed schema.
+The committed successor packages the exact reviewed schema blob `0f2865e606fa61400184c09abd01601497637a6b`. The committed validator retains that exact expected constant, and the source-identity test now also asserts that literal expected hash. The exact-byte runtime guard and complete test suite must be run independently against the committed branch. Claude's independent review and test run remain required.
 
 ## 7. Scope and non-authorizations
 
