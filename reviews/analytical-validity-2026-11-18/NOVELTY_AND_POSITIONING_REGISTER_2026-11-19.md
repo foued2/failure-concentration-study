@@ -1141,3 +1141,55 @@ No repair was applied to any branch. PR #10 and GPT's branch remain untouched. T
 ### 22.4 Effect
 
 No verdict in §§1–21 changes. Gate 0 closed for position and contribution only; Gate 1 preflight **BLOCKED / NOT ASSESSABLE**; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope.
+
+
+---
+
+## 23. Dated amendment — 2026-11-23 (approved six-line repair; exact successor-commit suite passes)
+
+This amendment supersedes only the earlier operational statements in §§21–22 that the exact-byte test gate remains NOT RUN. The historical failed attempt on `a48cc9d` remains accurate: that predecessor test file could not compile. The repair and successful run are on a new successor commit.
+
+### 23.1 Approval and implementation
+
+Claude provided written concurrence for exactly six syntax-only corrections in `census-intake/tests/test_b1_census_intake.py`, and nothing else:
+
+- line 176: restore the four-space indentation and remove the stray opening quotation mark from the method declaration;
+- lines 274, 347, 416, 499, and 591: remove only the stray quotation mark.
+
+The new branch `gpt/b1-v06-intake-syntax-repair-2026-11-23` was created directly from `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`. GPT committed `258c68df4a2ede77c0acd2e9ab0382080ae305b6`. GitHub's committed diff was verified: exactly one changed file (`census-intake/tests/test_b1_census_intake.py`), six additions and six deletions at the six approved line locations, no other file; parent exactly `a48cc9d`. PR #10 and its existing branch were not altered.
+
+### 23.2 Exact-commit execution
+
+A fresh clone was checked out detached at `258c68df4a2ede77c0acd2e9ab0382080ae305b6`. The worktree was clean before execution and remained clean after the test suite.
+
+- Python: `3.13.18`
+- `jsonschema`: `4.26.0`, installed from the committed `census-intake/requirements.txt`
+- Test file blob: `606078403788dd0e3e1444dda26060dc5904c518`
+- Manifest schema blob: `0f2865e606fa61400184c09abd01601497637a6b`, 24,279 bytes
+- Validator blob: `cbffe0df924eba17de01e7342694da6455ee5b85`
+- Sidecar schema blob: `72fc746c3d6129534aeb2fdbcd866842865f98c7`
+
+The manifest schema blob matches the frozen schema pin and the suite's schema-identity test. The validator and sidecar schema hashes also match the committed source.
+
+`python -m py_compile census-intake/validate_records.py census-intake/tests/test_b1_census_intake.py` completed successfully.
+
+From `census-intake/`, `python -m unittest discover -s tests -v` was run twice against the same unchanged commit. Both runs passed all 59 tests. The second run produced no stderr output and reported:
+
+```
+Ran 59 tests in 4.495s
+
+OK
+UNITTEST_EXIT=0
+```
+
+No source file was changed between runs. All 59 individual test names and their `OK` outcomes are preserved in `B1_V03_EXACT_COMMIT_TEST_RUN_2026-11-23.md`.
+
+### 23.3 Result and limitations
+
+**Exact successor-commit test execution: PASS, 59/59.** This is not Claude's code-review verdict. Claude's prior NOT PASS remains operative until Claude independently reviews the repaired successor commit and test evidence. No merge is authorized.
+
+The suite used committed local fixtures only. No real manifest, bank, solver, diagnostic execution, outcome data, census, or predictive analysis was used. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the scientific proposition remains **UNPROVEN**; the census-authorization question remains unanswered.
+
+### 23.4 Effect
+
+No scientific verdict changes. Gate 0 remains closed for positioning/contribution only; Gate 1 preflight remains BLOCKED / NOT ASSESSABLE; B1 v1.7 is unchanged; pause remains in force outside the recorded preflight scope.
