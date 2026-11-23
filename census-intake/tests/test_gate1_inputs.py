@@ -40,6 +40,26 @@ def synthetic_adopted_family_map():
 
 
 def synthetic_parent_identities(family_map, family_map_sha256):
+    parents = [
+        {
+            "parent_id": p["parent_id"],
+            "base_source_path": f"{p['parent_id']}.py",
+            "base_source_sha256": f"{i + 1:064x}",
+            "Z_id": p["Z_id"],
+        }
+        for i, p in enumerate(ROSTER["parents"])
+    ]
+    bundle_rows = [
+        {
+            "parent_id": p["parent_id"],
+            "base_source_path": p["base_source_path"],
+            "base_source_sha256": p["base_source_sha256"],
+        }
+        for p in parents
+    ]
+    bundle_raw = json.dumps(
+        bundle_rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
     return {
         "artifact_id": "SYNTHETIC-PARENT-IDENTITIES",
         "version": "0.0-synthetic",
@@ -55,19 +75,16 @@ def synthetic_parent_identities(family_map, family_map_sha256):
             "computed_by": "SYNTHETIC TEST FIXTURE ONLY",
             "computed_at_utc": "2026-11-23T00:00:00Z",
             "source_index_sha256": "a" * 64,
-            "source_bundle_sha256": "b" * 64,
+            "source_bundle_sha256": hashlib.sha256(bundle_raw).hexdigest(),
+            "tool": "lc518-parent-source-hasher",
+            "tool_version": "1.0.0",
+            "execution_boundary": (
+                "File bytes were read and hashed. No source file was imported, "
+                "executed, parsed, compiled or modified."
+            ),
         },
-        "parents": [
-            {
-                "parent_id": p["parent_id"],
-                "base_source_path": f"{p['parent_id']}.py",
-                "base_source_sha256": f"{i + 1:064x}",
-                "Z_id": p["Z_id"],
-            }
-            for i, p in enumerate(ROSTER["parents"])
-        ],
+        "parents": parents,
     }
-
 
 def synthetic_valid_annex() -> dict:
     mechs = [{"mechanism_id": f"M{i}", "name": f"SYNTHETIC mechanism {i}",
