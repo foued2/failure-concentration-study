@@ -22,6 +22,8 @@ import validate_c6_witness_review as c6_checker  # noqa: E402
 from test_gate1_inputs import (  # noqa: E402
     ANNEX_SCHEMA,
     ROSTER,
+    ROSTER_RAW,
+    ROSTER_SHA256,
     synthetic_adopted_family_map,
     synthetic_parent_identities,
     synthetic_valid_annex,
@@ -75,6 +77,7 @@ def prepare_inputs(duplicate_base_ids: bool = False) -> dict:
         identity_sha,
         family_map,
         family_map_sha,
+        ROSTER_SHA256,
     )
     if c4_report["audit_decision"] != "STRUCTURAL_INTAKE_PASS_C6_ADEQUACY_NOT_ASSESSED":
         raise AssertionError(c4_report["reason_codes"])
@@ -85,6 +88,8 @@ def prepare_inputs(duplicate_base_ids: bool = False) -> dict:
         "annex_raw": annex_raw,
         "identity_manifest": identities,
         "identity_raw": identity_raw,
+        "roster": ROSTER,
+        "roster_raw": ROSTER_RAW,
         "family_map": family_map,
         "family_map_raw": family_map_raw,
         "c4_report": c4_report,
@@ -149,6 +154,7 @@ def make_dossier(data: dict, witnesses: list[dict]) -> dict:
         "version": "1.0",
         "annex_sha256": hashlib.sha256(data["annex_raw"]).hexdigest(),
         "parent_identity_manifest_sha256": hashlib.sha256(data["identity_raw"]).hexdigest(),
+        "parent_roster_sha256": hashlib.sha256(data["roster_raw"]).hexdigest(),
         "family_map_sha256": hashlib.sha256(data["family_map_raw"]).hexdigest(),
         "c4_report_sha256": hashlib.sha256(data["c4_raw"]).hexdigest(),
         "design_basis": {
@@ -180,6 +186,8 @@ def run_checker(data: dict, dossier: dict) -> dict:
         annex_raw=data["annex_raw"],
         identity_manifest=data["identity_manifest"],
         identity_raw=data["identity_raw"],
+        roster=data["roster"],
+        roster_raw=data["roster_raw"],
         family_map=data["family_map"],
         family_map_raw=data["family_map_raw"],
         c4_report=data["c4_report"],
