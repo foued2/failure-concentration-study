@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lc518:b1-v1.7:aggregate-assertions:0.1",
+  "title": "LC518 B1 aggregate consistency sidecar schema 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "manifest_sha256", "sidecar_schema_blob_sha1", "aggregate_assertions"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "manifest_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "sidecar_schema_blob_sha1": {"type": "string", "pattern": "^[a-fA-F0-9]{40}$"},
+    "aggregate_assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variant_id"],
+        "properties": {
+          "variant_id": {"type": "string", "minLength": 1},
+          "f": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"type": "integer", "minimum": 0}},
+          "u": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"type": "integer", "minimum": 0}},
+          "p": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"type": "integer", "minimum": 0}}
+        },
+        "anyOf": [{"required": ["f"]}, {"required": ["u"]}, {"required": ["p"]}]
+      }
+    }
+  }
+}

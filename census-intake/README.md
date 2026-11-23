@@ -1,119 +1,112 @@
-# B1 v1.7 census intake validator — v0.2 successor
+# LC518 B1 v1.7 census-manifest intake checker
 
 **SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED**
 
-**Version:** 0.2 (successor to the held `0060e7b` prototype)
-**Status:** implementation complete on a separate, unmerged successor branch; independent review pending.
-**Date:** 2026-11-22
+**Version:** 0.3.0, GPT-authored successor rewrite
+**State:** unmerged; independent Claude code review pending
+**Date:** 2026-11-23
 
-This folder validates the per-variant `diagnostic_record_results` structure of a B1 v1.7 outcome-blind
-census manifest. The individual terminal records are the source of truth. It admits or rejects records
-for a design-only census; it does not compute census support, LOPO coverage, or any scientific result.
+This package checks a B1 v1.7 census-manifest JSON object against the exact reviewed revision 0.6 JSON Schema and applies a bounded set of manifest-local semantic checks. It is not the Gate 1 census, not a full provenance validator, and not a decision that an input is ready for census execution.
 
-## 1. Exact scope label
+## 1. Controlling schema and measurement definition
 
-The label `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED` appears in the validator's output header and
-in this README. The validator checks syntax and structural consistency only. It does **not** verify:
+The package includes the exact byte-for-byte copy of the reviewed schema:
 
-- frozen diagnostic-bank membership of any record ID;
-- diagnostic artifact provenance;
-- source-artifact integrity or record-to-bank identity;
-- any external evidence not available to this task.
+- Source commit: f19e2a0ba09f2161f290558da5f61abc9d3ab52a
+- Source path: reviews/analytical-validity-2026-11-18/b1-v17-census-review-2026-11-22/B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_6.json
+- Source Git blob SHA-1: 0f2865e606fa61400184c09abd01601497637a6b
+- Schema ID: urn:lc518:b1-v1.7:census-manifest:0.6-draft
 
-A digest string is a syntactic field, not provenance verification.
+At startup, the validator recomputes the Git blob SHA-1 of the packaged schema and refuses to run if it differs from the reviewed source blob. It also checks the schema using a Draft 2020-12 validator before validating a manifest.
 
-## 2. Authorization and repository handling
+The schema does not define f, u or p as manifest fields. They do not appear among the 17 required root fields or the variant properties in $defs; both the root object and $defs.variant set additionalProperties to false. Adding those vectors to the manifest would therefore violate the reviewed schema. They are accepted only in the separate aggregate-assertion sidecar described below.
 
-The owner authorized step 1: a B1-specific semantic validator and synthetic tests. GPT accepted Claude's
-NOT PASS verdict on `0060e7b` and the two-reviewer correction scope; that agreement authorizes this
-correction within Step 1 only.
+The statistic is implemented from the controlling measurement document, not inferred from the former code. The cited definition is C_D = max over j=1..8 of (f_j / k_fail), with k_fail = sum over j of f_j, from CD_MEASUREMENT_SPEC_2026-11-19.md §1 (which quotes Rev 11 lines 216–221); the reporting definition is also in §5. The source file is pinned by Git blob SHA-1 923655f20337b99f11e400f3428d1d18ac34c96d, at commit ccd95e4c125d081abca95153f9af9c9a28d65b9a.
 
-- Prototype commit `0060e7b` is preserved unchanged in history. This is a successor commit on a separate
-  branch; no history was rewritten and nothing was merged into master.
-- No bank access, parent acquisition, mutation allocation, solver construction, diagnostic execution,
-  outcome collection, `Y`-matrix construction, census execution, fitting or predictive analysis occurred.
-- The project pause remains in force outside the Step 1 scope. Whether an earlier conditional census
-  authorization remains operative is **unanswered** and is deliberately not interpreted here.
-- `P` remains unproven; B1 v1.7 and the reviewed instrument are unchanged.
+u_j never enters the numerator or denominator of C_D. k_unresolved remains a separate component of the exact cell identity. For a complete VALID variant with k_fail = 0, the report uses the categorical label NO OBSERVED FAILURES, not a numeric predictor value. This is a display/reporting choice for the intake output; the measurement specification records the protocol's labelled zero convention.
 
-## 3. Record structure enforced
+## 2. What is checked
 
-The manifest is a JSON object using the B1 v1.7 field names:
+### Schema-local checks
 
-| Field | Rule |
-|---|---|
-| `schema_version` | must be `0.6-draft` |
-| `study_id` | must be `LC518` |
-| `measurement_basis` | must be the string `record_level_64`; the canonical-60 basis has no path and is rejected |
-| `diagnostic_bank` | `stratum_ids` = D1…D8, `records_per_stratum` = 8, `total_records` = 64 |
-| `parent_roster` | non-empty; each `parent_id` / `Z_id` pair unique and consistent with variants |
-| `variants` | non-empty list |
-| `outcome_exclusion_assertion` | all three declared values must be `false` |
+The checker applies the packaged revision 0.6 schema, including all 17 required root fields, nested field types, constants, enums, references, conditional status rules, digest patterns, date-time formats, record cardinalities, and additionalProperties=false at every level where the schema specifies it. This rejects unknown root fields, outcome-bearing extra fields inside variants or diagnostic results, null required evidence objects, malformed digest values, malformed references, and malformed status decisions.
 
-Each variant requires `variant_id`, `parent_id`, `Z_id`, `q_id`, `validity_status` and
-`diagnostic_record_results`. Each result requires `diagnostic_record_id`, `stratum_id` in D1–D8, and
-`terminal_status` in `DEFINITE_PASS`, `DEFINITE_FAILURE`, `UNRESOLVED`.
+### Manifest-local semantic checks
 
-### Status-specific rules
+- Parent IDs and variant IDs are unique in the manifest.
+- Each variant's parent_id exists in parent_roster, and its Z_id agrees with that roster entry.
+- Diagnostic record IDs are unique within each variant.
+- All complete VALID variants have identical record-ID sets. Reuse of the same frozen-bank IDs across variants is permitted. This does not match those IDs to the actual bank.
+- Identical semantic-source or runnable-artifact digests across different variants are flagged for explicit duplicate-variant adjudication; variants are never automatically collapsed.
+- Non-VALID status decisions must use the status-appropriate decision basis, carry all seven schema-required fields, assert both terminal-value and derived-count consultation flags as false, and use record-presence/identity metadata only for INCOMPLETE.
+- The locally checkable timing conditions for pre-diagnostic INVALID and EXCLUDED_BEFORE_DIAGNOSTICS, and for EXPECTED_NOT_RUN, are checked against the campaign first-start and ledger snapshot timestamps carried in the manifest. Per-variant ledger-row reconciliation still requires the referenced external ledger and is not performed here.
 
-| Status | Results | Additional requirements |
-|---|---|---|
-| `VALID` | exactly 64; exactly 8 per stratum; IDs unique within the variant | `diagnostic_evidence_ref`, `semantic_source_digest`, `runnable_artifact_digest` |
-| `INCOMPLETE` | 0–63 | `status_reason`, `status_decision` with `POSTRUN_COMPLETENESS_AUDIT` and identity metadata consulted, `diagnostic_evidence_ref` |
-| `INVALID` | 0 | `status_reason`, status decision with `PREDIAGNOSTIC_OBJECTIVE_INVALIDITY` |
-| `EXCLUDED_BEFORE_DIAGNOSTICS` | 0 | `status_reason`, status decision with `PREDIAGNOSTIC_DESIGN_EXCLUSION` |
-| `EXPECTED_NOT_RUN` | 0 | `status_reason`, status decision with `EXPECTED_NOT_RUN_INVENTORY_AUDIT`; no record receipt metadata consulted |
+A local pass is labelled LOCAL_SCHEMA_AND_SEMANTIC_CHECKS_PASS_EXTERNAL_CHECKS_NOT_PERFORMED. It is not an admission to the census.
 
-Partial and zero-result statuses are not forced to a 64-ID set.
+## 3. Measurement-output rules
 
-### Derivation
+For VALID variants, all 64 terminal records are required, exactly eight in each D1–D8 stratum. The checker derives f, u and p from DEFINITE_FAILURE, UNRESOLVED and DEFINITE_PASS records. It derives k_fail, k_unresolved, the exact B1 cell and C_D from the failure vector. The exact rational C_D is emitted as a reduced numerator/denominator string.
 
-Per stratum: `f_j` = count of `DEFINITE_FAILURE`, `u_j` = count of `UNRESOLVED`, `p_j` = count of
-`DEFINITE_PASS`. With eight results per stratum, `f_j + u_j + p_j = 8` by construction. Then
-`k_fail = Σ f_j`, `k_unresolved = Σ u_j`.
+For INCOMPLETE, any received records produce only provisional per-stratum f/u/p counts labelled PROVISIONAL — INCOMPLETE INVENTORY. No k_fail, k_unresolved, full cell or C_D is emitted. An incomplete status with zero received records emits no vectors.
 
-`C_D = max_j f_j / k_fail` when `k_fail > 0`, emitted as an exact rational string. Unresolved outcomes
-never enter its numerator or denominator. When `k_fail = 0`, the emitted label is exactly
-`NO OBSERVED FAILURES`, with no numeric value.
+For INVALID, EXCLUDED_BEFORE_DIAGNOSTICS and EXPECTED_NOT_RUN, the package emits no diagnostic counts, no k_fail, no k_unresolved, no cell and no C_D. No records is not interpreted as zero diagnostic failures.
 
-### Aggregates are non-authoritative
+## 4. Aggregate-assertion sidecar
 
-`f`, `u` and `p` fields are optional consistency checks. If absent, the vectors are derived. If present
-and equal to the derived vectors, they are retained only as checks. If present and unequal, the variant
-is rejected with `AGGREGATE_MISMATCH`; a structurally malformed vector gets `MALFORMED_AGGREGATE`.
+Optional aggregate assertions are stored outside the schema-exact manifest in aggregate_assertions.schema.json format. The sidecar has:
 
-These three fields are an intake extension for the consistency check and are not part of the reviewed
-revision 0.6 schema. This validator does not claim full 0.6 structural conformance.
+- manifest_sha256: SHA-256 of the exact raw manifest bytes supplied to the validator;
+- sidecar_schema_blob_sha1: the Git blob SHA-1 of the committed sidecar schema, pinned in the validator and checked against the file at runtime;
+- aggregate_assertions: one or more entries keyed by variant_id, each containing one or more optional f, u or p vectors.
 
-### Cross-variant record IDs
+The sidecar schema is committed at census-intake/aggregate_assertions.schema.json; its Git blob SHA-1 is 72fc746c3d6129534aeb2fdbcd866842865f98c7.
 
-The frozen bank is expected to be reused. The same IDs across complete `VALID` variants are accepted;
-IDs duplicated within one variant are rejected. All complete `VALID` variants must carry an identical
-ID set, otherwise `CROSS_VARIANT_ID_SET_MISMATCH`. This is an ID-set check only — not a bank-membership
-or source-artifact check.
+The sidecar is accepted only when its manifest SHA-256 matches the exact supplied manifest and its declared schema blob SHA-1 matches the actual committed sidecar schema. Each assertion must refer to a VALID variant in that manifest. Vectors are compared with values independently derived from individual terminal records. A mismatch yields AGGREGATE_MISMATCH; malformed vectors yield MALFORMED_AGGREGATE.
 
-## 4. Use
+The sidecar can never change the manifest's validation decision. The combined report preserves manifest_report.manifest_decision separately from sidecar_report.sidecar_decision. A rejected or mismatched sidecar remains a sidecar rejection, not a revision of the manifest decision. A sidecar cannot be validated without the matching manifest bytes.
 
-```powershell
-py census-intake/validate_records.py --manifest path/to/manifest.json --report path/to/report.json
-```
+## 5. Explicitly unperformed checks
 
-Exit codes: `0` all admitted with no manifest-level findings; `2` any rejection or `EMPTY_MANIFEST`;
-`3` input/JSON error. The report is deterministic for identical bytes and carries the manifest SHA-256.
-It contains no census verdict, no eligibility flag, no gate decision and no outcome data.
+This package does not retrieve, read or verify the referenced external artifacts. In particular, it does not verify:
 
-## 5. Tests
+- diagnostic record IDs or stratum assignments against the frozen bank record manifest;
+- bank hashes or record-manifest hashes against the bank artifact;
+- exact one-to-one variant coverage against the frozen variant inventory;
+- q_id membership against the q registry;
+- Z_id membership against the external family map;
+- per-variant run-ledger rows, execution states, start times or full status-to-ledger reconciliation;
+- cross-file identity among the roster, q registry, family map, inventory, bank, build and diagnostic-run files;
+- historical exposure evidence or the contents of a future bank-generation protocol;
+- external evidence retrieval, source provenance or artifact integrity.
 
-`tests/test_b1_census_intake.py` contains 25 synthetic tests with invented identifiers. They cover the
-case table in the correction brief, every non-string basis type, status-specific rules, aggregate
-handling, the exact zero-failure label, cross-variant ID sets, determinism, and CLI exit codes. Passing
-them establishes validator behaviour on synthetic fixtures only; it does not establish that a real
-manifest exists, is admissible, or supports a census.
+A digest or reference that is syntactically valid is not a verified artifact. The output repeats this boundary.
 
-## 6. Review status
+## 6. Installation and use
 
-Claude's independent review applies to this successor, not to the held prototype. The earlier review and
-its dated 4(b) correction are in `REVIEW_PACKET_FOR_CLAUDE_2026-11-22.md`. See
-`CORRECTION_RECORD_2026-11-22.md` for the implementation scope and non-authorizations.
+Python 3.9 or newer is required. The dependency is pinned in requirements.txt.
 
-Rationale in the scientific record: register §17 and reviewer-ledger §35.
+Install from the repository root:
+
+    py -m pip install -r census-intake/requirements.txt
+
+Manifest only:
+
+    py census-intake/validate_records.py --manifest path/to/manifest.json --report path/to/report.json
+
+Manifest plus optional aggregate sidecar:
+
+    py census-intake/validate_records.py --manifest path/to/manifest.json --sidecar path/to/aggregate_assertions.json --report path/to/report.json
+
+The JSON report has separate manifest_report and sidecar_report sections. A report without a sidecar has sidecar_report set to null.
+
+Exit codes: 0 means local checks passed for the supplied manifest and, when supplied, its sidecar; 2 means a manifest or sidecar local rejection; 3 means an unreadable/malformed input or packaged-schema integrity/dependency error.
+
+## 7. Tests and authoring history
+
+tests/test_b1_census_intake.py contains synthetic adversarial fixtures. It tests the complete 17-field envelope; unknown fields at the root and nested levels; both prohibited status-decision consultation flags; null/malformed digests and evidence references; status-specific output including the false-zero correction; exact formula citation; cross-variant record-ID rules; sidecar hash binding and mismatch codes; and CLI outcomes. The tests use invented IDs, timestamps and digests only.
+
+Historical code authorship is preserved accurately. The local agent HY4 authored the earlier prototype (0060e7b) and v0.2 successor (fd0b34b). Both commits remain unchanged in Git history. GPT inspected those implementations, found that they did not enforce the reviewed full manifest contract, and authored this v0.3 successor rewrite. The earlier implementations are not represented as GPT-authored. Claude agreed to the correction approach and conditions before implementation; that agreement is not a code PASS. Claude's independent review of this v0.3 successor remains pending.
+
+The v0.2 partial record_schema.json is removed from this successor branch to avoid presenting it as the controlling contract; its historical bytes remain available in the v0.2 commit. The prototype review packet and dated historical correction are also retained unchanged. See CORRECTION_RECORD_2026-11-23.md and REVIEW_PACKET_FOR_CLAUDE_V0_3_2026-11-23.md.
+
+No bank access, parent acquisition, mutation allocation, solver construction, diagnostic execution, real-manifest validation, census computation, outcome collection, model fitting or predictive analysis has occurred under this repair. Gate 1 preflight remains BLOCKED / NOT ASSESSABLE; the scientific proposition remains unproven.
