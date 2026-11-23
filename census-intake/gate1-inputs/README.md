@@ -178,3 +178,25 @@ real parent source, source hash, witness vector, semantic witness decision, solv
 variant inventory, execution outcome or census was created. The real S0-only identity
 preparation stage remains separately unauthorized. Gate 1 remains
 **BLOCKED / NOT ASSESSABLE**.
+
+
+## 7. Latest synthetic CI verification (2026-11-23; append-only)
+
+The complete census-intake unittest discovery suite passed **112 tests** on CPython
+3.13.18 at branch head
+`3a87cdca7603574a981b43e843f6877538f93137`.
+
+- Workflow run: `45207331100`
+- Event: pull request for PR #13
+- Test step: `Run census intake and Gate 1 tests`
+- Result: `Ran 112 tests ... OK`
+- Run URL: https://github.com/foued2/failure-concentration-study/actions/runs/45207331100
+
+This result covers the exact branch head above. The tests use synthetic identifiers,
+digests, source-text fixtures, annex definitions, witness vectors and reviewer
+attestations. They verify software mechanics only. They do not verify any real
+parent-source identity, owner allocation, mutation definition, C6 semantic reach,
+joint attainability, structural absence or A2 verdict.
+
+The PR description records the same evidence. Any subsequent commit requires a
+new CI result before that result can be described as passing for the newer head.
