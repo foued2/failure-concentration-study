@@ -31,6 +31,13 @@ class TestParentIdentityManifestBuilder(unittest.TestCase):
         self.family_map = load_json(
             CENSUS_INTAKE / "gate1-inputs" / "FAMILY_MAP.json"
         )
+        self.roster["status"] = "ADOPTED"
+        self.roster_raw = (
+            json.dumps(
+                self.roster, indent=2, sort_keys=True, ensure_ascii=False
+            ) + "\n"
+        ).encode("utf-8")
+        self.roster_sha256 = hashlib.sha256(self.roster_raw).hexdigest()
         self.family_map["status"] = "ADOPTED"
         self.family_map_raw = (
             json.dumps(
@@ -71,6 +78,7 @@ class TestParentIdentityManifestBuilder(unittest.TestCase):
             "roster": self.roster,
             "family_map": self.family_map,
             "family_map_sha256": self.family_map_sha256,
+            "roster_sha256": self.roster_sha256,
             "source_index": self.source_index,
             "source_index_sha256": hashlib.sha256(self.source_index_raw).hexdigest(),
             "source_root": self.source_root,
@@ -92,6 +100,14 @@ class TestParentIdentityManifestBuilder(unittest.TestCase):
             "EXACT_BASE_SOURCE_FILE_BYTES",
         )
         self.assertEqual(
+            manifest["parent_roster_adoption_ref"]["sha256"],
+            self.roster_sha256,
+        )
+        self.assertEqual(
+            manifest["parent_roster_adoption_ref"]["status"],
+            "ADOPTED",
+        )
+        self.assertEqual(
             manifest["source_hash_attestation"]["method"],
             "READ_BYTES_AND_HASH_ONLY_NO_IMPORT_OR_EXECUTION",
         )
@@ -111,6 +127,14 @@ class TestParentIdentityManifestBuilder(unittest.TestCase):
         g02 = next(row for row in manifest["parents"] if row["parent_id"] == "G02")
         self.assertEqual(g01["base_source_sha256"], g02["base_source_sha256"])
         self.assertNotEqual(g01["parent_id"], g02["parent_id"])
+
+    def test_unadopted_parent_roster_is_rejected(self):
+        roster = dict(self.roster)
+        roster["status"] = "PENDING_ADOPTION"
+        with self.assertRaisesRegex(
+            identity_builder.IdentityInputError, "PARENT_ROSTER_NOT_ADOPTED"
+        ):
+            self.build(roster=roster)
 
     def test_unadopted_family_map_is_rejected(self):
         family_map = dict(self.family_map)
