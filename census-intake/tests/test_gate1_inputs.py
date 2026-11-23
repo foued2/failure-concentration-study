@@ -368,6 +368,10 @@ class TestAnnexAuditor(unittest.TestCase):
 
     def test_c4_pending_family_map_is_not_assessable(self):
         family_map = json.loads(json.dumps(FAMILY_MAP))
+        # This test exercises the pending-adoption rejection path independently
+        # of the repository artifact's current adoption status.
+        family_map["status"] = "PENDING_ADOPTION"
+        family_map.pop("adoption_record", None)
         raw = (json.dumps(family_map, indent=2, sort_keys=True, ensure_ascii=False) + chr(10)).encode("utf-8")
         digest = hashlib.sha256(raw).hexdigest()
         identities = synthetic_parent_identities(family_map, digest)
