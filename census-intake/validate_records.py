@@ -1,13 +1,11 @@
-"""B1 v1.7 census intake validator — v0.2 successor.
+"""LC518 B1 v1.7 census-manifest structural and local-semantic intake checks.
 
 SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED
 
-Validates the per-variant diagnostic_record_results structure of a B1 v1.7
-outcome-blind census manifest. The individual terminal records are the source of
-truth; supplied aggregate f/u/p vectors are non-authoritative consistency checks.
-No bank access, no solvers, no diagnostics, no census decision, no outcomes.
-
-Standard library only. See README.md for the scope and the reviewed correction brief.
+This tool validates against the exact reviewed B1 v1.7 manifest schema draft 0.6
+and applies only manifest-local semantic checks that do not require external files.
+It does not establish full census admissibility, bank membership, source provenance,
+run-ledger reconciliation, registry membership, or scientific support.
 """
 
 from __future__ import annotations
@@ -17,449 +15,485 @@ import hashlib
 import json
 import re
 import sys
+from collections import Counter
+from datetime import datetime
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
-TOOL_NAME = "b1-census-intake"
-TOOL_VERSION = "0.2"
-SCHEMA_VERSION = "0.6-draft"
+from jsonschema import Draft202012Validator, FormatChecker
+
+TOOL_NAME = "lc518-b1-census-intake"
+TOOL_VERSION = "0.3.0"
 INTAKE_LABEL = "SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED"
 
-STRATA = tuple(f"D{j}" for j in range(1, 9))
-RECORDS_PER_STRATUM = 8
-EXPECTED_RESULTS = 64
-MEASUREMENT_BASIS = "record_level_64"
-TERMINAL_STATUSES = ("DEFINITE_PASS", "DEFINITE_FAILURE", "UNRESOLVED")
-
-VALIDITY_STATUSES = (
-    "VALID",
-    "INVALID",
-    "EXCLUDED_BEFORE_DIAGNOSTICS",
-    "INCOMPLETE",
-    "EXPECTED_NOT_RUN",
+SCHEMA_FILENAME = "B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_6.json"
+SCHEMA_ID = "urn:lc518:b1-v1.7:census-manifest:0.6-draft"
+SCHEMA_SOURCE_COMMIT = "f19e2a0ba09f2161f290558da5f61abc9d3ab52a"
+SCHEMA_SOURCE_PATH = (
+    "reviews/analytical-validity-2026-11-18/"
+    "b1-v17-census-review-2026-11-22/"
+    "B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_6.json"
 )
+SCHEMA_SOURCE_BLOB_SHA1 = "0f2865e606fa61400184c09abd01601497637a6b"
+
+MEASUREMENT_SPEC_COMMIT = "ccd95e4c125d081abca95153f9af9c9a28d65b9a"
+MEASUREMENT_SPEC_PATH = "reviews/analytical-validity-2026-11-18/CD_MEASUREMENT_SPEC_2026-11-19.md"
+MEASUREMENT_SPEC_BLOB_SHA1 = "923655f20337b99f11e400f3428d1d18ac34c96d"
+MEASUREMENT_FORMULA_CITATION = (
+    "C_D measurement specification and exposure register (2026-11-19), §1, "
+    "which quotes LC518 Rev 11 lines 216–221; see also §5."
+)
+SIDECAR_SCHEMA_BLOB_SHA1 = "72fc746c3d6129534aeb2fdbcd866842865f98c7"
+
+MEASUREMENT_ZERO_CITATION = (
+    "C_D measurement specification and exposure register (2026-11-19), §§1 and 4; "
+    "For k_fail=0 this implementation emits the categorical label NO OBSERVED FAILURES. "
+    "The measurement specification §4 notes that the zero convention is inconsistent across instruments; "
+    "this reporting choice is not presented as a universally settled convention. "
+    "The intake report emits the label as a categorical display state, not a numeric predictor."
+)
+
+STRATA = tuple(f"D{i}" for i in range(1, 9))
+TERMINAL_STATUSES = frozenset({"DEFINITE_PASS", "DEFINITE_FAILURE", "UNRESOLVED"})
+VALIDITY_STATUSES = frozenset({
+    "VALID", "INVALID", "EXCLUDED_BEFORE_DIAGNOSTICS", "INCOMPLETE", "EXPECTED_NOT_RUN"
+})
 DECISION_BASIS = {
     "INVALID": "PREDIAGNOSTIC_OBJECTIVE_INVALIDITY",
     "EXCLUDED_BEFORE_DIAGNOSTICS": "PREDIAGNOSTIC_DESIGN_EXCLUSION",
     "INCOMPLETE": "POSTRUN_COMPLETENESS_AUDIT",
     "EXPECTED_NOT_RUN": "EXPECTED_NOT_RUN_INVENTORY_AUDIT",
 }
-ZERO_RESULT_STATUSES = ("INVALID", "EXCLUDED_BEFORE_DIAGNOSTICS", "EXPECTED_NOT_RUN")
 
-VARIANT_REQUIRED = (
-    "variant_id",
-    "parent_id",
-    "Z_id",
-    "q_id",
-    "validity_status",
-    "diagnostic_record_results",
-)
-VARIANT_ALLOWED = frozenset(VARIANT_REQUIRED) | frozenset(
-    {
-        "semantic_source_digest",
-        "runnable_artifact_digest",
-        "status_reason",
-        "status_decision",
-        "diagnostic_evidence_ref",
-        "f",
-        "u",
-        "p",
-    }
-)
-AGGREGATES = ("f", "u", "p")
-DIGEST_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+EXTERNAL_CHECKS_NOT_PERFORMED = [
+    "diagnostic record IDs and stratum assignments against the frozen bank record manifest",
+    "bank hash/source-artifact identity against the referenced bank artifact",
+    "exact one-to-one variant coverage against the referenced frozen variant inventory",
+    "q_id membership against the referenced q registry",
+    "Z_id membership against the referenced family map",
+    "per-variant execution-state rows, start times, and status reconciliation in the referenced run-start ledger",
+    "cross-file identity consistency among referenced roster, registry, inventory, bank, build, and run artifacts",
+    "historical exposure evidence and future bank-generation protocol contents",
+    "external evidence retrieval, source provenance, or artifact integrity",
+]
 
 
-def _is_int(value: object) -> bool:
-    return isinstance(value, int) and not isinstance(value, bool)
+def _git_blob_sha1(raw: bytes) -> str:
+    header = f"blob {len(raw)}\0".encode("ascii")
+    return hashlib.sha1(header + raw).hexdigest()
 
 
-def _nonempty_str(value: object) -> bool:
-    return isinstance(value, str) and bool(value)
+def _parse_utc(value: str) -> datetime:
+    # JSON Schema FormatChecker validates RFC3339 syntax; normalize trailing Z for Python.
+    return datetime.fromisoformat(value[:-1] + "+00:00" if value.endswith("Z") else value)
 
 
-def _status_decision_ok(variant: dict, status: str) -> bool:
-    sd = variant.get("status_decision")
-    if not isinstance(sd, dict):
-        return False
-    if sd.get("decision_basis") != DECISION_BASIS[status]:
-        return False
-    consulted = sd.get("record_presence_identity_metadata_consulted")
-    if not isinstance(consulted, bool):
-        return False
-    if status == "INCOMPLETE":
-        return consulted is True
-    return consulted is False
+def _schema_path() -> Path:
+    return Path(__file__).resolve().parent / SCHEMA_FILENAME
 
 
-def _vector_ok(value: object) -> bool:
-    return (
-        isinstance(value, list)
-        and len(value) == 8
-        and all(_is_int(v) and v >= 0 for v in value)
-    )
+def load_and_verify_schema(schema_path: Path | None = None) -> dict:
+    path = schema_path or _schema_path()
+    raw = path.read_bytes()
+    actual_blob = _git_blob_sha1(raw)
+    if actual_blob != SCHEMA_SOURCE_BLOB_SHA1:
+        raise RuntimeError(
+            "PACKAGED_B1_SCHEMA_IDENTITY_MISMATCH: packaged schema bytes do not match "
+            f"the reviewed source blob {SCHEMA_SOURCE_BLOB_SHA1}; found {actual_blob}"
+        )
+    schema = json.loads(raw.decode("utf-8"))
+    if schema.get("$id") != SCHEMA_ID:
+        raise RuntimeError("PACKAGED_B1_SCHEMA_ID_MISMATCH")
+    Draft202012Validator.check_schema(schema)
+    return schema
 
 
-def _empty_counts() -> list[int]:
-    return [0] * 8
+def _schema_issues(data: object, schema: dict) -> list[dict]:
+    validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    issues = []
+    for error in sorted(validator.iter_errors(data), key=lambda e: (list(map(str, e.absolute_path)), e.validator or "")):
+        issues.append({
+            "instance_path": "/" + "/".join(str(p) for p in error.absolute_path),
+            "schema_keyword": error.validator,
+            "message": "value violates the reviewed B1 v1.7 schema draft 0.6 constraint",
+        })
+    return issues
 
-
-def _derive_from_results(results: list[dict]) -> tuple[list[int], list[int], list[int]]:
+def _derive_vectors(results: list[dict]) -> tuple[list[int], list[int], list[int]]:
     f = [0] * 8
     u = [0] * 8
     p = [0] * 8
     for result in results:
-        stratum = STRATA.index(result["stratum_id"])
-        status = result["terminal_status"]
-        if status == "DEFINITE_FAILURE":
-            f[stratum] += 1
-        elif status == "UNRESOLVED":
-            u[stratum] += 1
+        j = STRATA.index(result["stratum_id"])
+        terminal = result["terminal_status"]
+        if terminal == "DEFINITE_FAILURE":
+            f[j] += 1
+        elif terminal == "UNRESOLVED":
+            u[j] += 1
         else:
-            p[stratum] += 1
+            p[j] += 1
     return f, u, p
 
 
-def validate_variant(
-    variant: object,
-    index: int,
-    parent_ids: set[str],
-    parent_z: dict[str, str],
-    seen_variant_ids: set[str],
-) -> tuple[dict, set[str] | None]:
-    """Return (entry, id_set_for_valid_complete_variant_or_None)."""
-
-    entry: dict = {
+def _variant_entry(variant: dict, index: int) -> dict:
+    status = variant["validity_status"]
+    result = {
         "index": index,
-        "variant_id": None,
-        "validity_status": None,
-        "decision": "REJECTED",
+        "variant_id": variant["variant_id"],
+        "validity_status": status,
+        "local_semantic_decision": "LOCAL_CHECKS_PASS",
         "reason_codes": [],
-        "aggregate_check": None,
+        "measurement": {"state": "NO_DIAGNOSTIC_MEASUREMENT"},
     }
-    codes: list[str] = []
-    id_set_for_consistency: set[str] | None = None
+    errors = result["reason_codes"]
+    results = variant["diagnostic_record_results"]
 
-    try:
-        if not isinstance(variant, dict):
-            codes.append("VARIANT_NOT_OBJECT")
-            entry["reason_codes"] = codes
-            return entry, None
-
-        vid = variant.get("variant_id")
-        if _nonempty_str(vid):
-            entry["variant_id"] = vid
-        status = variant.get("validity_status")
-        entry["validity_status"] = status if isinstance(status, str) else None
-
-        unknown = sorted(k for k in variant if k not in VARIANT_ALLOWED)
-        if unknown:
-            codes.append("UNKNOWN_VARIANT_FIELD")
-        missing = [k for k in VARIANT_REQUIRED if k not in variant]
-        if missing:
-            codes.append("MISSING_VARIANT_FIELD")
-            entry["reason_codes"] = sorted(set(codes))
-            return entry, None
-
-        for field in ("variant_id", "parent_id", "Z_id", "q_id"):
-            if not _nonempty_str(variant[field]):
-                codes.append("EMPTY_IDENTIFIER")
-                break
-
-        if _nonempty_str(vid):
-            if vid in seen_variant_ids:
-                codes.append("DUPLICATE_VARIANT_ID")
-            seen_variant_ids.add(vid)
-
-        if not isinstance(status, str) or status not in VALIDITY_STATUSES:
-            codes.append("INVALID_VALIDITY_STATUS")
-            entry["reason_codes"] = sorted(set(codes))
-            return entry, None
-
-        if variant["parent_id"] not in parent_ids:
-            codes.append("UNKNOWN_PARENT_ID")
-        elif parent_z.get(variant["parent_id"]) != variant["Z_id"]:
-            codes.append("PARENT_Z_MISMATCH")
-
-        results = variant["diagnostic_record_results"]
-        if not isinstance(results, list):
-            codes.append("RESULTS_NOT_ARRAY")
-            entry["reason_codes"] = sorted(set(codes))
-            return entry, None
-        if len(results) > EXPECTED_RESULTS:
-            codes.append("TOO_MANY_RESULTS")
-
-        if status == "VALID":
-            if len(results) != EXPECTED_RESULTS:
-                codes.append("VALID_RESULT_COUNT")
-            for field in (
-                "diagnostic_evidence_ref",
-                "semantic_source_digest",
-                "runnable_artifact_digest",
-            ):
-                if field not in variant:
-                    codes.append("MISSING_VALID_FIELD")
-                    break
-            for digest_field in ("semantic_source_digest", "runnable_artifact_digest"):
-                value = variant.get(digest_field)
-                if value is not None and not (
-                    isinstance(value, str) and DIGEST_RE.fullmatch(value)
-                ):
-                    codes.append("INVALID_DIGEST_FORMAT")
-                    break
+    # These checks are local; referenced external artifacts are deliberately not opened.
+    decision = variant.get("status_decision")
+    if status != "VALID":
+        if not isinstance(decision, dict):
+            errors.append("STATUS_DECISION_MISSING_OR_NOT_OBJECT")
         else:
-            if "status_reason" not in variant or not _nonempty_str(variant.get("status_reason")):
-                codes.append("MISSING_STATUS_REASON")
-            if status == "INCOMPLETE":
-                if len(results) > 63:
-                    codes.append("INCOMPLETE_RESULT_COUNT")
-                if "diagnostic_evidence_ref" not in variant:
-                    codes.append("MISSING_DIAGNOSTIC_EVIDENCE_REF")
-            elif results:
-                codes.append("NONZERO_RESULTS_FOR_STATUS")
-            if not _status_decision_ok(variant, status):
-                codes.append("INVALID_STATUS_DECISION")
+            if decision.get("decision_basis") != DECISION_BASIS[status]:
+                errors.append("STATUS_DECISION_BASIS_MISMATCH")
+            if decision.get("diagnostic_terminal_values_consulted") is not False:
+                errors.append("DIAGNOSTIC_TERMINAL_VALUES_CONSULTATION_NOT_FALSE")
+            if decision.get("derived_failure_unresolved_counts_consulted") is not False:
+                errors.append("DERIVED_FAILURE_COUNTS_CONSULTATION_NOT_FALSE")
+            expected_identity = status == "INCOMPLETE"
+            if decision.get("record_presence_identity_metadata_consulted") is not expected_identity:
+                errors.append("RECORD_IDENTITY_CONSULTATION_STATUS_MISMATCH")
+            try:
+                decided = _parse_utc(decision["decided_at_utc"])
+                ledger = None
+                # The ledger's external rows cannot be checked here. Only campaign-level
+                # ordering for the pre-diagnostic classifications is locally testable.
+                first = variant.get("__campaign_first_start")
+                if first is not None:
+                    ledger = _parse_utc(first)
+                snapshot = variant.get("__ledger_snapshot")
+                if status in {"INVALID", "EXCLUDED_BEFORE_DIAGNOSTICS"}:
+                    if ledger is not None and not decided < ledger:
+                        errors.append("PREDIAGNOSTIC_DECISION_NOT_BEFORE_FIRST_RUN")
+                    elif ledger is None and snapshot is not None and decided > _parse_utc(snapshot):
+                        errors.append("PREDIAGNOSTIC_DECISION_AFTER_LEDGER_SNAPSHOT")
+                elif status == "EXPECTED_NOT_RUN" and snapshot is not None and decided > _parse_utc(snapshot):
+                    errors.append("EXPECTED_NOT_RUN_DECISION_AFTER_LEDGER_SNAPSHOT")
+            except (KeyError, TypeError, ValueError, OverflowError):
+                errors.append("STATUS_DECISION_TIMESTAMP_INVALID")
 
-        id_set: set[str] = set()
-        for result in results:
-            if not isinstance(result, dict):
-                codes.append("RESULT_NOT_OBJECT")
-                continue
-            rid = result.get("diagnostic_record_id")
-            stratum = result.get("stratum_id")
-            terminal = result.get("terminal_status")
-            if not _nonempty_str(rid):
-                codes.append("INVALID_RECORD_ID")
-            elif rid in id_set:
-                codes.append("DUPLICATE_RECORD_ID")
-            else:
-                id_set.add(rid)
-            if stratum not in STRATA:
-                codes.append("INVALID_STRATUM_ID")
-            if terminal not in TERMINAL_STATUSES:
-                codes.append("INVALID_TERMINAL_STATUS")
+    # Identity checks within a variant are local and do not assert bank membership.
+    ids = [row["diagnostic_record_id"] for row in results]
+    if len(ids) != len(set(ids)):
+        errors.append("DUPLICATE_RECORD_ID_WITHIN_VARIANT")
 
-        if status == "VALID":
-            counts = [0] * 8
-            for result in results:
-                if isinstance(result, dict) and result.get("stratum_id") in STRATA:
-                    counts[STRATA.index(result["stratum_id"])] += 1
-            if any(c != RECORDS_PER_STRATUM for c in counts):
-                codes.append("STRATUM_RESULT_COUNT")
+    if errors:
+        result["local_semantic_decision"] = "REJECTED"
+        result["reason_codes"] = sorted(set(errors))
+        result["measurement"] = {"state": "NOT_REPORTED_DUE_TO_LOCAL_VALIDATION_ERRORS"}
+        return result
 
-        derived_f, derived_u, derived_p = (
-            _derive_from_results(results)
-            if all(
-                isinstance(r, dict)
-                and r.get("stratum_id") in STRATA
-                and r.get("terminal_status") in TERMINAL_STATUSES
-                for r in results
-            )
-            else (_empty_counts(), _empty_counts(), _empty_counts())
-        )
+    if status == "VALID":
+        f, u, p = _derive_vectors(results)
+        k_fail = sum(f)
+        k_unresolved = sum(u)
+        measurement = {
+            "state": "COMPLETE_VALID_MEASUREMENT",
+            "f": f,
+            "u": u,
+            "p": p,
+            "k_fail": k_fail,
+            "k_unresolved": k_unresolved,
+            "cell": [variant["q_id"], variant["Z_id"], k_fail, k_unresolved],
+            "c_d_formula": "max_{j=1..8}(f_j / k_fail); k_fail = sum_{j=1..8}(f_j)",
+            "c_d_formula_source": MEASUREMENT_FORMULA_CITATION,
+        }
+        if k_fail == 0:
+            measurement["c_d"] = "NO OBSERVED FAILURES"
+            measurement["c_d_status"] = "NO OBSERVED FAILURES"
+            measurement["c_d_zero_convention_source"] = MEASUREMENT_ZERO_CITATION
+        else:
+            rational = Fraction(max(f), k_fail)
+            measurement["c_d"] = f"{rational.numerator}/{rational.denominator}"
+            measurement["c_d_numerator"] = rational.numerator
+            measurement["c_d_denominator"] = rational.denominator
+            measurement["c_d_status"] = "DEFINED"
+        result["measurement"] = measurement
 
-        aggregate_status = "absent"
-        for name, derived in zip(AGGREGATES, (derived_f, derived_u, derived_p)):
-            if name not in variant:
-                continue
-            supplied = variant[name]
-            if not _vector_ok(supplied):
-                codes.append("MALFORMED_AGGREGATE")
-                aggregate_status = "malformed"
-                break
-            if supplied != derived:
-                codes.append("AGGREGATE_MISMATCH")
-                aggregate_status = "mismatch"
-                break
-            aggregate_status = "consistent"
-        entry["aggregate_check"] = aggregate_status
-
-        id_set_for_consistency = id_set if status == "VALID" and len(results) == EXPECTED_RESULTS else None
-
-        if not codes:
-            k_fail = sum(derived_f)
-            k_unresolved = sum(derived_u)
-            entry["derived"] = {
-                "f": derived_f,
-                "u": derived_u,
-                "p": derived_p,
-                "k_fail": k_fail,
-                "k_unresolved": k_unresolved,
-                "cell": [variant["q_id"], variant["Z_id"], k_fail, k_unresolved],
+    elif status == "INCOMPLETE":
+        if results:
+            f, u, p = _derive_vectors(results)
+            result["measurement"] = {
+                "state": "PROVISIONAL_INCOMPLETE_MEASUREMENTS",
+                "label": "PROVISIONAL — INCOMPLETE INVENTORY",
+                "received_record_count": len(results),
+                "provisional_stratum_counts": {"f": f, "u": u, "p": p},
             }
-            if status != "VALID":
-                entry["derived"]["c_d_status"] = "NOT_APPLICABLE"
-            elif k_fail == 0:
-                entry["derived"]["c_d"] = "NO OBSERVED FAILURES"
-                entry["derived"]["c_d_status"] = "NO OBSERVED FAILURES"
-            else:
-                ratio = str(Fraction(max(derived_f), k_fail))
-                entry["derived"]["c_d"] = ratio
-                entry["derived"]["c_d_numeric"] = ratio
-                entry["derived"]["c_d_status"] = "DEFINED"
-            entry["decision"] = "ADMITTED"
-
-    except Exception:
-        # No uncaught exception may escape on malformed input.
-        codes.append("VALIDATION_EXCEPTION")
-
-    entry["reason_codes"] = sorted(set(codes))
-    if codes:
-        entry["decision"] = "REJECTED"
-        entry.pop("derived", None)
-    return entry, id_set_for_consistency if not codes else None
-
-
-def validate_census_manifest(data: object, manifest_sha256: str | None = None) -> dict:
-    """Validate the full B1 v1.7 outcome-blind census manifest object."""
-
-    if not isinstance(data, dict):
-        if isinstance(data, list) and not data:
-            return {
-                "intake_label": INTAKE_LABEL,
-                "tool": TOOL_NAME,
-                "tool_version": TOOL_VERSION,
-                "schema_version": SCHEMA_VERSION,
-                "manifest_sha256": manifest_sha256,
-                "count": 0,
-                "admitted": 0,
-                "rejected": 0,
-                "manifest_reason_codes": ["EMPTY_MANIFEST"],
-                "records": [],
+        else:
+            result["measurement"] = {
+                "state": "INCOMPLETE_ZERO_RECORD_RECEIPT",
+                "label": "PROVISIONAL — INCOMPLETE INVENTORY",
+                "received_record_count": 0,
             }
-        raise ValueError("manifest root must be a JSON object")
 
-    codes: list[str] = []
-    if data.get("schema_version") != SCHEMA_VERSION:
-        codes.append("UNSUPPORTED_SCHEMA_VERSION")
-    if data.get("study_id") != "LC518":
-        codes.append("INVALID_STUDY_ID")
+    elif status in {"INVALID", "EXCLUDED_BEFORE_DIAGNOSTICS", "EXPECTED_NOT_RUN"}:
+        # No measurement exists. Do not generate zero-valued vectors or exact cells.
+        result["measurement"] = {
+            "state": "NO_DIAGNOSTIC_MEASUREMENT",
+        }
 
-    basis = data.get("measurement_basis")
-    if not isinstance(basis, str):
-        codes.append("NON_STRING_EXPOSURE_BASIS")
-    elif basis != MEASUREMENT_BASIS:
-        codes.append("UNSUPPORTED_EXPOSURE_BASIS")
+    return result
 
-    bank = data.get("diagnostic_bank")
-    if not isinstance(bank, dict):
-        codes.append("INVALID_DIAGNOSTIC_BANK")
-    else:
-        if bank.get("stratum_ids") != list(STRATA):
-            codes.append("INVALID_STRATUM_IDS")
-        if bank.get("records_per_stratum") != RECORDS_PER_STRATUM:
-            codes.append("INVALID_RECORDS_PER_STRATUM")
-        if bank.get("total_records") != EXPECTED_RESULTS:
-            codes.append("INVALID_TOTAL_RECORDS")
-
-    assertion = data.get("outcome_exclusion_assertion")
-    if not isinstance(assertion, dict) or any(
-        assertion.get(k) is not False
-        for k in (
-            "correctness_outcomes_included",
-            "outcomes_consulted",
-            "model_outputs_included",
-        )
-    ):
-        codes.append("OUTCOME_EXCLUSION_ASSERTION_FAILED")
-
-    roster = data.get("parent_roster")
-    parent_ids: set[str] = set()
-    parent_z: dict[str, str] = {}
-    if not isinstance(roster, list) or not roster:
-        codes.append("INVALID_PARENT_ROSTER")
-    else:
-        for parent in roster:
-            if not isinstance(parent, dict):
-                codes.append("INVALID_PARENT_ENTRY")
-                continue
-            pid, zid = parent.get("parent_id"), parent.get("Z_id")
-            if not _nonempty_str(pid) or not _nonempty_str(zid):
-                codes.append("INVALID_PARENT_ENTRY")
-            elif pid in parent_ids:
-                codes.append("DUPLICATE_PARENT_ID")
-            else:
-                parent_ids.add(pid)
-                parent_z[pid] = zid
-
-    variants = data.get("variants")
-    if not isinstance(variants, list):
-        codes.append("VARIANTS_NOT_ARRAY")
-        variants = []
-    elif not variants:
-        codes.append("EMPTY_VARIANT_LIST")
-
-    entries = []
-    id_sets: list[tuple[int, set[str]]] = []
-    seen_variant_ids: set[str] = set()
-    for index, variant in enumerate(variants):
-        entry, id_set = validate_variant(
-            variant, index, parent_ids, parent_z, seen_variant_ids
-        )
-        entries.append(entry)
-        if id_set is not None:
-            id_sets.append((index, id_set))
-
-    if id_sets:
-        reference_index, reference_set = id_sets[0]
-        for index, id_set in id_sets[1:]:
-            if id_set != reference_set:
-                codes.append("CROSS_VARIANT_ID_SET_MISMATCH")
-                for entry in entries:
-                    if entry["index"] in (index, reference_index):
-                        entry.setdefault("reason_codes", []).append(
-                            "CROSS_VARIANT_ID_SET_MISMATCH"
-                        )
-                        entry["reason_codes"] = sorted(set(entry["reason_codes"]))
-                        entry["decision"] = "REJECTED"
-                        entry.pop("derived", None)
-
-    for entry in entries:
-        for code in set(codes):
-            entry.setdefault("manifest_reason_codes", []).append(code)
-        entry["manifest_reason_codes"] = sorted(set(entry.get("manifest_reason_codes", [])))
-        if entry["manifest_reason_codes"]:
-            entry["decision"] = "REJECTED"
-            entry.pop("derived", None)
-
-    admitted = sum(1 for e in entries if e["decision"] == "ADMITTED")
-    report = {
+def validate_manifest(data: object, manifest_sha256: str, schema: dict | None = None) -> dict:
+    schema = schema or load_and_verify_schema()
+    base = {
         "intake_label": INTAKE_LABEL,
         "tool": TOOL_NAME,
         "tool_version": TOOL_VERSION,
-        "schema_version": SCHEMA_VERSION,
+        "manifest_schema": {
+            "schema_id": SCHEMA_ID,
+            "source_commit": SCHEMA_SOURCE_COMMIT,
+            "source_path": SCHEMA_SOURCE_PATH,
+            "source_blob_sha1": SCHEMA_SOURCE_BLOB_SHA1,
+        },
+        "measurement_definition": {
+            "formula": "C_D = max_{j=1..8}(f_j / k_fail), where k_fail = sum_j f_j",
+            "source_path": MEASUREMENT_SPEC_PATH,
+            "source_commit": MEASUREMENT_SPEC_COMMIT,
+            "source_blob_sha1": MEASUREMENT_SPEC_BLOB_SHA1,
+            "source_section": "§1 (quotes Rev 11 lines 216–221); §5 reporting definition",
+            "unresolved_rule": "k_unresolved does not enter C_D; it remains part of the exact cell identity",
+        },
         "manifest_sha256": manifest_sha256,
-        "scope": "syntactic intake only; no bank membership, provenance, census decision or outcomes",
-        "count": len(entries),
-        "admitted": admitted,
-        "rejected": len(entries) - admitted,
-        "manifest_reason_codes": sorted(set(codes)),
-        "records": entries,
+        "manifest_schema_valid": False,
+        "manifest_decision": "REJECTED",
+        "manifest_reason_codes": [],
+        "schema_issues": [],
+        "variants": [],
+        "external_checks_not_performed": EXTERNAL_CHECKS_NOT_PERFORMED,
+        "scope_warning": (
+            "A local schema/semantic pass is not full census-input admissibility and is not a census decision."
+        ),
     }
+
+    if isinstance(data, list) and not data:
+        base["manifest_reason_codes"] = ["EMPTY_MANIFEST"]
+        return base
+    if not isinstance(data, dict):
+        base["manifest_reason_codes"] = ["MANIFEST_ROOT_NOT_OBJECT"]
+        return base
+
+    if not isinstance(data.get("measurement_basis"), str):
+        base["manifest_reason_codes"].append("NON_STRING_MEASUREMENT_BASIS")
+    elif data.get("measurement_basis") != "record_level_64":
+        base["manifest_reason_codes"].append("UNSUPPORTED_MEASUREMENT_BASIS")
+
+    schema_issues = _schema_issues(data, schema)
+    base["schema_issues"] = schema_issues
+    if schema_issues:
+        base["manifest_reason_codes"].append("B1_SCHEMA_VALIDATION_FAILED")
+    else:
+        base["manifest_schema_valid"] = True
+
+    # Stop semantic processing when the structural contract failed. Never let a partial parse
+    # turn an invalid manifest into a locally accepted one.
+    if schema_issues:
+        base["manifest_reason_codes"] = sorted(set(base["manifest_reason_codes"]))
+        return base
+
+    parent_z: dict[str, str] = {}
+    for parent in data["parent_roster"]:
+        pid, zid = parent["parent_id"], parent["Z_id"]
+        if pid in parent_z:
+            base["manifest_reason_codes"].append("DUPLICATE_PARENT_ID")
+        else:
+            parent_z[pid] = zid
+
+    variant_ids: set[str] = set()
+    valid_sets: list[tuple[str, set[str]]] = []
+    digest_owners: dict[tuple[str, str], str] = {}
+    ledger = data["diagnostic_run_start_ledger"]
+    first_start = ledger["first_diagnostic_execution_started_at_utc"]
+    snapshot = ledger["snapshot_as_of_utc"]
+
+    for index, variant in enumerate(data["variants"]):
+        vid = variant["variant_id"]
+        if vid in variant_ids:
+            base["manifest_reason_codes"].append("DUPLICATE_VARIANT_ID")
+        variant_ids.add(vid)
+        if parent_z.get(variant["parent_id"]) != variant["Z_id"]:
+            base["manifest_reason_codes"].append("PARENT_FAMILY_MAPPING_MISMATCH")
+
+        # Add the envelope ledger timestamps only for local temporal checks. These are not
+        # inserted into or represented as original manifest fields.
+        copy_variant = dict(variant)
+        copy_variant["__campaign_first_start"] = first_start
+        copy_variant["__ledger_snapshot"] = snapshot
+        entry = _variant_entry(copy_variant, index)
+        base["variants"].append(entry)
+        if entry["local_semantic_decision"] == "REJECTED":
+            base["manifest_reason_codes"].extend(entry["reason_codes"])
+
+        if variant["validity_status"] == "VALID":
+            ids = {r["diagnostic_record_id"] for r in variant["diagnostic_record_results"]}
+            valid_sets.append((vid, ids))
+            for field in ("semantic_source_digest", "runnable_artifact_digest"):
+                key = (field, variant[field].lower())
+                if key in digest_owners and digest_owners[key] != vid:
+                    base["manifest_reason_codes"].append("DUPLICATE_ARTIFACT_DIGEST_REQUIRES_ADJUDICATION")
+                else:
+                    digest_owners[key] = vid
+
+    if len(valid_sets) > 1:
+        reference_vid, reference_ids = valid_sets[0]
+        for other_vid, other_ids in valid_sets[1:]:
+            if other_ids != reference_ids:
+                base["manifest_reason_codes"].append("CROSS_VARIANT_ID_SET_MISMATCH")
+                for entry in base["variants"]:
+                    if entry["variant_id"] in {reference_vid, other_vid}:
+                        entry["reason_codes"] = sorted(set(entry["reason_codes"] + ["CROSS_VARIANT_ID_SET_MISMATCH"]))
+                        entry["local_semantic_decision"] = "REJECTED"
+
+    base["manifest_reason_codes"] = sorted(set(base["manifest_reason_codes"]))
+    if not base["manifest_reason_codes"]:
+        base["manifest_decision"] = "LOCAL_SCHEMA_AND_SEMANTIC_CHECKS_PASS_EXTERNAL_CHECKS_NOT_PERFORMED"
+    return base
+
+def _sidecar_schema_path() -> Path:
+    return Path(__file__).resolve().parent / "aggregate_assertions.schema.json"
+
+
+def validate_sidecar(
+    sidecar: object,
+    sidecar_raw: bytes,
+    manifest_raw: bytes,
+    manifest_report: dict,
+    sidecar_schema_path: Path | None = None,
+) -> dict:
+    path = sidecar_schema_path or _sidecar_schema_path()
+    schema_raw = path.read_bytes()
+    actual_schema_blob_sha1 = _git_blob_sha1(schema_raw)
+    if actual_schema_blob_sha1 != SIDECAR_SCHEMA_BLOB_SHA1:
+        raise RuntimeError(
+            "PACKAGED_SIDECAR_SCHEMA_IDENTITY_MISMATCH: expected "
+            f"{SIDECAR_SCHEMA_BLOB_SHA1}, found {actual_schema_blob_sha1}"
+        )
+    schema = json.loads(schema_raw.decode("utf-8"))
+    Draft202012Validator.check_schema(schema)
+    report = {
+        "intake_label": INTAKE_LABEL,
+        "sidecar_sha256": hashlib.sha256(sidecar_raw).hexdigest(),
+        "sidecar_schema_blob_sha1_actual": actual_schema_blob_sha1,
+        "sidecar_decision": "REJECTED",
+        "sidecar_reason_codes": [],
+        "assertions": [],
+        "manifest_decision_unchanged": manifest_report["manifest_decision"],
+        "note": "Sidecar results never modify the manifest's independent local validation decision.",
+    }
+
+    if not isinstance(sidecar, dict):
+        report["sidecar_reason_codes"].append("SIDECAR_ROOT_NOT_OBJECT")
+        return report
+
+    if manifest_report.get("manifest_decision") == "REJECTED":
+        report["sidecar_reason_codes"].append("SIDECAR_MANIFEST_NOT_LOCALLY_VALID")
+        return report
+
+    for error in Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(sidecar):
+        report["sidecar_reason_codes"].append("SIDECAR_SCHEMA_VALIDATION_FAILED")
+        if any(str(part) in {"f", "u", "p"} for part in error.absolute_path):
+            report["sidecar_reason_codes"].append("MALFORMED_AGGREGATE")
+        report.setdefault("schema_issues", []).append({
+            "instance_path": "/" + "/".join(str(p) for p in error.absolute_path),
+            "schema_keyword": error.validator,
+            "message": "value violates the aggregate-sidecar schema constraint",
+        })
+
+    expected_manifest_sha = hashlib.sha256(manifest_raw).hexdigest()
+    if report.get("sidecar_reason_codes"):
+        report["sidecar_reason_codes"] = sorted(set(report["sidecar_reason_codes"]))
+        return report
+    if sidecar.get("manifest_sha256") != expected_manifest_sha:
+        report["sidecar_reason_codes"].append("SIDECAR_MANIFEST_SHA256_MISMATCH")
+    if sidecar.get("sidecar_schema_blob_sha1") != actual_schema_blob_sha1:
+        report["sidecar_reason_codes"].append("SIDECAR_SCHEMA_BLOB_SHA1_MISMATCH")
+    if report["sidecar_reason_codes"]:
+        report["sidecar_reason_codes"] = sorted(set(report["sidecar_reason_codes"]))
+        return report
+
+    variants_by_id = {v.get("variant_id"): v for v in manifest_report.get("_validated_variants", [])}
+    seen = set()
+    for assertion in sidecar.get("aggregate_assertions", []) if isinstance(sidecar.get("aggregate_assertions"), list) else []:
+        vid = assertion.get("variant_id") if isinstance(assertion, dict) else None
+        row = {"variant_id": vid, "decision": "REJECTED", "reason_codes": []}
+        if not isinstance(vid, str) or vid not in variants_by_id:
+            row["reason_codes"].append("SIDECAR_VARIANT_NOT_FOUND")
+        elif vid in seen:
+            row["reason_codes"].append("SIDECAR_DUPLICATE_VARIANT_ASSERTION")
+        else:
+            seen.add(vid)
+            variant = variants_by_id[vid]
+            if variant.get("validity_status") != "VALID":
+                row["reason_codes"].append("SIDECAR_ASSERTION_REQUIRES_VALID_VARIANT")
+            else:
+                derived_f, derived_u, derived_p = _derive_vectors(variant["diagnostic_record_results"])
+                for field, derived in (("f", derived_f), ("u", derived_u), ("p", derived_p)):
+                    if field not in assertion:
+                        continue
+                    supplied = assertion[field]
+                    if (not isinstance(supplied, list) or len(supplied) != 8
+                            or any(isinstance(x, bool) or not isinstance(x, int) or x < 0 for x in supplied)):
+                        row["reason_codes"].append("MALFORMED_AGGREGATE")
+                    elif supplied != derived:
+                        row["reason_codes"].append("AGGREGATE_MISMATCH")
+            if not row["reason_codes"]:
+                row["decision"] = "CONSISTENT_NON_AUTHORITATIVE_ASSERTION"
+        row["reason_codes"] = sorted(set(row["reason_codes"]))
+        report["assertions"].append(row)
+
+    report["sidecar_reason_codes"] = sorted(set(report["sidecar_reason_codes"]))
+    if not report["sidecar_reason_codes"] and all(a["decision"] != "REJECTED" for a in report["assertions"]):
+        report["sidecar_decision"] = "SIDECAR_CONSISTENCY_CHECKS_PASS"
+    report["manifest_decision_unchanged"] = manifest_report["manifest_decision"]
     return report
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=INTAKE_LABEL)
-    parser.add_argument("--manifest", required=True, help="path to a B1 v1.7 census manifest JSON object")
-    parser.add_argument("--report", help="write report JSON here (default: stdout)")
+    parser.add_argument("--manifest", required=True, help="B1 v1.7 manifest JSON")
+    parser.add_argument("--sidecar", help="optional aggregate-assertion sidecar JSON")
+    parser.add_argument("--report", help="combined report JSON path; defaults to stdout")
     args = parser.parse_args(argv)
 
     try:
-        raw = Path(args.manifest).read_bytes()
-        digest = hashlib.sha256(raw).hexdigest()
-        data = json.loads(raw.decode("utf-8"))
-        report = validate_census_manifest(data, digest)
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+        manifest_raw = Path(args.manifest).read_bytes()
+        manifest_sha = hashlib.sha256(manifest_raw).hexdigest()
+        manifest_data = json.loads(manifest_raw.decode("utf-8"))
+        schema = load_and_verify_schema()
+        manifest_report = validate_manifest(manifest_data, manifest_sha, schema)
+        combined: dict[str, Any] = {"manifest_report": manifest_report, "sidecar_report": None}
+        exit_code = 0 if manifest_report["manifest_decision"] != "REJECTED" else 2
+        if args.sidecar:
+            sidecar_raw = Path(args.sidecar).read_bytes()
+            sidecar_data = json.loads(sidecar_raw.decode("utf-8"))
+            # Internal lookup is not exposed in the public report.
+            manifest_report_for_sidecar = dict(manifest_report)
+            manifest_report_for_sidecar["_validated_variants"] = manifest_data.get("variants", []) if isinstance(manifest_data, dict) else []
+            sidecar_report = validate_sidecar(sidecar_data, sidecar_raw, manifest_raw, manifest_report_for_sidecar)
+            combined["sidecar_report"] = sidecar_report
+            if sidecar_report["sidecar_decision"] == "REJECTED":
+                exit_code = 2
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError, RuntimeError) as exc:
         print(f"INTAKE_INPUT_ERROR: {exc}", file=sys.stderr)
         return 3
 
-    text = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    output = json.dumps(combined, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if args.report:
-        Path(args.report).write_text(text, encoding="utf-8", newline="\n")
+        Path(args.report).write_text(output, encoding="utf-8", newline="\n")
     else:
-        sys.stdout.write(text)
-    return 0 if report["rejected"] == 0 and not report["manifest_reason_codes"] else 2
+        sys.stdout.write(output)
+    return exit_code
 
 
 if __name__ == "__main__":
