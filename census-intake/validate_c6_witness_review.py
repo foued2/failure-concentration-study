@@ -137,6 +137,80 @@ def _validate_dossier_schema(dossier: dict, schema: dict) -> list[dict]:
     ]
 
 
+def _validate_c4_report_structure(c4_report: dict, *, annex_sha256: str) -> dict:
+    """Check report identity and internal integrity of the complete C4 incidence table."""
+    if c4_report.get("tool") != "lc518-150-annex-auditor":
+        raise DossierError("C6_C4_REPORT_TOOL_IDENTITY_INVALID")
+    if c4_report.get("tool_version") != "1.0.0":
+        raise DossierError("C6_C4_REPORT_TOOL_VERSION_INVALID")
+    if c4_report.get("annex_sha256") != annex_sha256:
+        raise DossierError("C6_C4_REPORT_ANNEX_BINDING_INVALID")
+
+    c4 = c4_report.get("C4")
+    if not isinstance(c4, dict) or c4.get("status") != "ASSESSED":
+        raise DossierError("C6_C4_REPORT_NOT_ASSESSED")
+
+    rows = c4.get("n_m_z")
+    if not isinstance(rows, list) or len(rows) != 40:
+        raise DossierError("C6_C4_INCIDENCE_TABLE_NOT_EXACTLY_40_CELLS")
+
+    expected_cells = {
+        (f"M{mechanism}", f"K{family}")
+        for mechanism in range(1, 9)
+        for family in range(1, 6)
+    }
+    observed_cells: set[tuple[str, str]] = set()
+    expected_qualifying: set[tuple[str, str]] = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            raise DossierError("C6_C4_INCIDENCE_ROW_NOT_OBJECT")
+        mechanism_id, z_id = row.get("mechanism_id"), row.get("Z_id")
+        n_effective = row.get("n_effective_parent_groups")
+        if (
+            not isinstance(mechanism_id, str)
+            or not isinstance(z_id, str)
+            or (mechanism_id, z_id) not in expected_cells
+            or (mechanism_id, z_id) in observed_cells
+            or isinstance(n_effective, bool)
+            or not isinstance(n_effective, int)
+            or n_effective < 0
+        ):
+            raise DossierError("C6_C4_INCIDENCE_ROW_INVALID_OR_DUPLICATED")
+        observed_cells.add((mechanism_id, z_id))
+        qualifies = n_effective >= 3
+        if row.get("qualifies_structurally") is not qualifies:
+            raise DossierError("C6_C4_INCIDENCE_QUALIFICATION_FLAG_INCONSISTENT")
+        if qualifies:
+            if z_id == "K5":
+                raise DossierError("C6_C4_K5_MUST_NOT_QUALIFY")
+            expected_qualifying.add((mechanism_id, z_id))
+
+    if observed_cells != expected_cells:
+        raise DossierError("C6_C4_INCIDENCE_TABLE_CELL_COVERAGE_INCOMPLETE")
+
+    qualifying_rows = c4.get("qualifying_cells")
+    if not isinstance(qualifying_rows, list):
+        raise DossierError("C6_C4_QUALIFYING_CELL_TABLE_MISSING")
+    observed_qualifying = set()
+    for row in qualifying_rows:
+        if not isinstance(row, dict):
+            raise DossierError("C6_C4_QUALIFYING_CELL_ROW_INVALID")
+        pair = (row.get("mechanism_id"), row.get("Z_id"))
+        if pair in observed_qualifying or pair not in expected_cells:
+            raise DossierError("C6_C4_QUALIFYING_CELL_DUPLICATED_OR_INVALID")
+        observed_qualifying.add(pair)
+    if observed_qualifying != expected_qualifying:
+        raise DossierError("C6_C4_QUALIFYING_CELL_SET_DISAGREES_WITH_INCIDENCE")
+
+    return {
+        "c4_report_tool_identity_verified": True,
+        "c4_report_annex_binding_verified": True,
+        "c4_incidence_cell_count": len(rows),
+        "c4_qualifying_pair_count": len(expected_qualifying),
+        "c4_incidence_qualification_consistent": True,
+    }
+
+
 def _validate_bindings(
     *,
     dossier: dict,
@@ -183,6 +257,9 @@ def _validate_bindings(
         raise DossierError("C6_IDENTITY_MANIFEST_PARENT_ROSTER_BINDING_INVALID")
 
     identity_adoption = identity_manifest.get("family_map_adoption_ref")
+    c4_structure_report = _validate_c4_report_structure(
+        c4_report, annex_sha256=expected["annex_sha256"]
+    )
     c4 = c4_report.get("C4", {})
     c4_adoption = c4.get("family_map_adoption_ref", {})
     if (
@@ -232,6 +309,7 @@ def _validate_bindings(
         "parent_roster_adoption_verified": True,
         "family_map_sha256_verified": True,
         "c4_report_sha256_verified": True,
+        **c4_structure_report,
         "c4_status_assessed": True,
         "parent_roster_adopted": True,
         "family_map_adopted": True,
