@@ -1,0 +1,33 @@
+name: Census intake tests
+
+on:
+  push:
+    branches:
+      - gpt/gate1-c4-c6-machinery-2026-11-23
+    paths:
+      - "census-intake/**"
+      - ".github/workflows/census-intake-tests.yml"
+  pull_request:
+    branches:
+      - work/b1-census-intake-validator-v02-2026-11-22
+    paths:
+      - "census-intake/**"
+      - ".github/workflows/census-intake-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  census-intake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install pinned intake dependency
+        run: python -m pip install -r census-intake/requirements.txt
+      - name: Run census intake and Gate 1 tests
+        run: python -m unittest discover -s census-intake/tests -p "test_*.py" -v
