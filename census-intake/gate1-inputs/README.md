@@ -54,8 +54,8 @@ chain in a stated order.
 | `FAMILY_MAP.json` | `078d545cbeb49dc67ccb9decf5f46e283ac4abb6384e38ddf7aef03a89d58821` |
 | `../ANNEX_INTAKE_FORM_SCHEMA.json` | `5669f0187176be32f1254d7f05b0b60d356f181190a3562cd7baf6f3ba79d694` |
 | `../ANNEX_INTAKE_FORM_TEMPLATE.json` | `7def55022b0151ee3716db1915ca99c08af76c6adaceb240b84723cd58ac670a` |
-| `../validate_annex.py` | `682aef5322794907bf16176bbed1899c939ee707044cc64234df5147c14139ef` |
-| `../build_preregistration_manifest.py` | `19aada3adb82c7cc0201d3f8f90968db33b0d6a6feefeee3d7b2224ce27dcf3b` |
+| `../validate_annex.py` | `89e645a7bb6926aa2f86a4f614e273842af30be0e6c0ef4bd7ed7f437f0b35f7` |
+| `../build_preregistration_manifest.py` | `5249fcd25969f9b5944f6c5909350e188184aa48a1b6536b71722ab10a3dbd41` |
 | `GATE1_COVERAGE_THRESHOLDS_PROPOSAL_V1_2026-11-23.md` | `9f13d93ac7d34f9640624b674bee92822908d4536d8621c7998c11461fe3aec0` |
 | `CENSUS_OPERATING_LIMITS_PROPOSAL_V1_2026-11-23.md` | `6f7861f0fb603075bfb8ca7e7efef6e4db5e2db8f03ce1558865c9500d32fdf1` |
 | `../tests/test_gate1_inputs.py` | `55e0fb6e2070aefda45d67ce2164f39b98b61054ce963d89ff586a66b156bd39` |
