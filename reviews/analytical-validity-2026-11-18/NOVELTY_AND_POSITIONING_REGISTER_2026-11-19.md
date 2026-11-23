@@ -1285,3 +1285,18 @@ The work branch now points to `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`. The pr
 The seven joint positions are updated as follows: items 1, 2, 3, 5, 6 and 7 are closed under the stated model-level delegation; item 4 is the only remaining open design item. Numerical values for `rho_min`, `rho_cell`, and `rho_rec` are still unset and must be derived, challenged by Claude, and frozen before any realised diagnostic manifest exists. If a threshold is not derived from a prespecified power target after Gate 4, it must be explicitly descriptive-only.
 
 The work-branch merge is a software integration step only. No real manifest, protected set, diagnostic bank use, parent acquisition, mutation allocation, solver construction or execution, diagnostic run, outcome collection, census, fitting, or predictive analysis occurred or was authorized. Gate 1 remains **BLOCKED / NOT ASSESSABLE**; the proposition remains **UNPROVEN**; the project pause remains in force; the conditional census authorization remains dormant, neither revoked nor triggered; no production GO is active.
+
+
+---
+
+## 26. Repository follow-up audit — GLM findings adjudicated (2026-11-23)
+
+GLM's post-merge report was reconciled against live GitHub state. Its report's statements that PR #11 remained draft/unmerged and PR #10 remained open were stale relative to the actual repository: PR #11 is closed/merged at `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`, and GitHub reports PR #10 merged at its already-included head `a48cc9d`. Neither was merged to `master`; PR #9 remains open/draft.
+
+The probe branch `probe/glm-write-capability-2026-11-23` was verified at `2fa5522e4575428d4977bd6ce689b6890c37fb4f`, then deleted. A subsequent branch listing contained 75 refs rather than 76. This deletes the branch reference, not the underlying commit objects or their historical attribution.
+
+The review-packet numbering defect was corrected: the second former §7 is now §8, and the final adjudication is §9. The earlier NOT PASS wording is labelled as historical and superseded by §9. PR #10's body was corrected to state four GPT-authored commits and to distinguish its historical test limitation from the later exact-commit 59/59 runs. PR #11's body was corrected to reflect PR #10's GitHub status.
+
+GLM's zero-CI observation is retained: the 59/59 runs are independent out-of-band execution evidence; they are not GitHub Actions check runs. The aggregate PR diff statistics do not contradict the syntax repair commit's exact one-file/six-addition/six-deletion diff; aggregate PR statistics compare the full successor history to the base.
+
+No production work or scientific execution was initiated. Gate 1 remains BLOCKED / NOT ASSESSABLE; the proposition remains UNPROVEN; the pause and dormant conditional census authorization remain unchanged.
