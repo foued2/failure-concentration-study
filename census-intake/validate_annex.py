@@ -70,43 +70,12 @@ def _unordered(mech_a: str, mech_b: str) -> tuple[str, str]:
     return (mech_a, mech_b) if mech_a <= mech_b else (mech_b, mech_a)
 
 
-def _verified_parent_source_sha256(source_root: Path, relative_path: str) -> str:
-    """Hash an actual parent source file without importing or executing it.
-
-    Paths are POSIX-style, relative to the supplied source root, and may not
-    traverse outside it or pass through symlinks.
-    """
-    if not isinstance(relative_path, str) or not relative_path.strip():
-        raise ValueError("PARENT_SOURCE_PATH_MISSING")
-    if "\\" in relative_path:
-        raise ValueError("PARENT_SOURCE_PATH_MUST_USE_POSIX_SEPARATORS")
-    rel = PurePosixPath(relative_path)
-    if rel.is_absolute() or not rel.parts or any(part in (".", "..") for part in rel.parts):
-        raise ValueError("PARENT_SOURCE_PATH_NOT_SAFE_RELATIVE_PATH")
-
-    root = source_root.resolve(strict=True)
-    if not root.is_dir():
-        raise ValueError("PARENT_SOURCE_ROOT_NOT_DIRECTORY")
-    candidate = root
-    for part in rel.parts:
-        candidate = candidate / part
-        if candidate.is_symlink():
-            raise ValueError("PARENT_SOURCE_PATH_CONTAINS_SYMLINK")
-    resolved = candidate.resolve(strict=True)
-    if not resolved.is_relative_to(root):
-        raise ValueError("PARENT_SOURCE_PATH_ESCAPES_ROOT")
-    if not resolved.is_file():
-        raise ValueError("PARENT_SOURCE_PATH_NOT_FILE")
-    return hashlib.sha256(resolved.read_bytes()).hexdigest()
-
-
 def audit_c4_incidence(
     annex: dict,
     roster: dict,
     parent_identities: dict | None,
     family_map: dict | None,
     family_map_sha256: str | None,
-    parent_source_root: Path | None = None,
 ) -> dict:
     """Compute effective n(m,z) for all 40 cells, deduplicating base hashes."""
     result = {
@@ -122,12 +91,32 @@ def audit_c4_incidence(
     if not isinstance(parent_identities, dict) or not isinstance(parent_identities.get("parents"), list):
         result["reason_codes"] = ["C4_PARENT_IDENTITY_MANIFEST_MALFORMED"]
         return result
-    if parent_source_root is None:
-        result["reason_codes"] = ["C4_PARENT_SOURCE_ROOT_NOT_SUPPLIED"]
-        return result
     if not isinstance(family_map, dict) or not isinstance(family_map_sha256, str):
         result["reason_codes"] = ["C4_FAMILY_MAP_FILE_MISSING"]
         return result
+
+    hash_attestation = parent_identities.get("source_hash_attestation")
+    required_attestation = {
+        "algorithm": "SHA-256",
+        "hash_subject": "EXACT_BASE_SOURCE_FILE_BYTES",
+        "method": "READ_BYTES_AND_HASH_ONLY_NO_IMPORT_OR_EXECUTION",
+    }
+    if not isinstance(hash_attestation, dict) or any(
+        hash_attestation.get(key) != value
+        for key, value in required_attestation.items()
+    ):
+        result["reason_codes"] = ["C4_PARENT_SOURCE_HASH_ATTESTATION_MISSING_OR_INVALID"]
+        return result
+    for key in ("computed_by", "computed_at_utc", "source_index_sha256", "source_bundle_sha256"):
+        value = hash_attestation.get(key)
+        if not isinstance(value, str) or not value.strip():
+            result["reason_codes"] = [f"C4_PARENT_SOURCE_HASH_ATTESTATION_FIELD_MISSING:{key}"]
+            return result
+    for key in ("source_index_sha256", "source_bundle_sha256"):
+        value = hash_attestation[key]
+        if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value):
+            result["reason_codes"] = [f"C4_PARENT_SOURCE_HASH_ATTESTATION_DIGEST_INVALID:{key}"]
+            return result
 
     adoption = parent_identities.get("family_map_adoption_ref")
     if (
@@ -177,8 +166,6 @@ def audit_c4_incidence(
     by_parent = {}
     hash_families = {}
     malformed, blocked = [], []
-    verified_source_hashes: dict[str, str] = {}
-    source_missing: list[str] = []
     for index, row in enumerate(parent_identities["parents"]):
         if not isinstance(row, dict):
             malformed.append(f"ROW_{index}_NOT_OBJECT")
@@ -196,20 +183,18 @@ def audit_c4_incidence(
         if zid not in expected.values():
             malformed.append(f"{pid}_UNKNOWN_FAMILY")
             continue
-        try:
-            actual_digest = _verified_parent_source_sha256(
-                parent_source_root, row.get("base_source_path")
-            )
-        except FileNotFoundError:
-            source_missing.append(f"C4_PARENT_SOURCE_FILE_MISSING:{pid}")
+        source_path = row.get("base_source_path")
+        if not isinstance(source_path, str) or not source_path.strip():
+            malformed.append(f"{pid}_BASE_SOURCE_PATH_MISSING")
             continue
-        except (OSError, ValueError) as exc:
-            malformed.append(f"C4_PARENT_SOURCE_PATH_INVALID:{pid}:{exc}")
+        rel = PurePosixPath(source_path)
+        if (
+            rel.is_absolute() or not rel.parts
+            or any(part in (".", "..") for part in rel.parts)
+            or "\\" in source_path
+        ):
+            malformed.append(f"{pid}_BASE_SOURCE_PATH_NOT_SAFE_RELATIVE_PATH")
             continue
-        if actual_digest != digest:
-            blocked.append(f"C4_PARENT_SOURCE_HASH_MISMATCH:{pid}")
-            continue
-        verified_source_hashes[pid] = actual_digest
         current = (digest, zid)
         if pid in by_parent:
             if by_parent[pid] != current:
@@ -228,10 +213,6 @@ def audit_c4_incidence(
     missing = sorted(set(expected) - set(by_parent))
     if missing:
         malformed.append("C4_PARENT_IDENTITY_COVERAGE_INCOMPLETE:" + ",".join(missing))
-    if source_missing:
-        result["reason_codes"] = sorted(set(malformed + blocked + source_missing))
-        result["status"] = "BLOCKED_UNRESOLVED" if blocked else "NOT_ASSESSABLE"
-        return result
     if malformed:
         result["reason_codes"] = sorted(set(malformed + blocked))
         result["status"] = "BLOCKED_UNRESOLVED" if blocked else "NOT_ASSESSABLE"
@@ -285,8 +266,10 @@ def audit_c4_incidence(
         "family_map_adoption_ref": adoption,
         "family_map_sha256_verified": True,
         "family_map_roster_partition_verified": True,
-        "parent_source_bytes_verified": True,
-        "verified_parent_source_count": len(verified_source_hashes),
+        "parent_source_hash_attestation_present": True,
+        "parent_source_hash_count": len(by_parent),
+        "parent_source_hash_subject": "EXACT_BASE_SOURCE_FILE_BYTES",
+        "auditor_source_access": "NONE_STATIC_MANIFEST_ONLY",
     })
     return result
 
@@ -299,7 +282,6 @@ def audit_annex(
     parent_identity_manifest_sha256: str | None = None,
     family_map: dict | None = None,
     family_map_sha256: str | None = None,
-    parent_source_root: Path | None = None,
 ) -> dict:
     report = {
         "tool": TOOL_NAME,
@@ -443,7 +425,6 @@ def audit_annex(
     if c3_bijective and c3_orientation:
         c4 = audit_c4_incidence(
             annex, roster, parent_identities, family_map, family_map_sha256,
-            parent_source_root,
         )
     else:
         c4 = {
@@ -530,10 +511,10 @@ def audit_annex(
     else:
         report["audit_decision"] = "STRUCTURAL_INTAKE_PASS_C6_ADEQUACY_NOT_ASSESSED"
     report["boundary"] = (
-        "Structural intake only. C4 verifies each declared base-source SHA-256 against "
-        "the actual source-file bytes under the supplied source root, and verifies the "
-        "adopted family-map bytes. C5 is compliance reporting only. C6 note presence was "
-        "checked, not adequacy or semantic attainability."
+        "Structural intake only. C4 consumes the source-custodian's hash-attested parent "
+        "identity manifest and verifies its consistency with the adopted family-map bytes. "
+        "The A2 auditor does not open solver source. C5 is compliance reporting only. C6 "
+        "note presence was checked, not adequacy or semantic attainability."
     )
     return report
 
@@ -544,10 +525,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--roster", help="parent roster JSON; defaults to gate1-inputs/PARENT_ROSTER_G01_G30.json next to this file")
     parser.add_argument("--parent-identities", help="separate parent-ID/base-source-SHA256/Z_id manifest and family-map adoption reference")
     parser.add_argument("--family-map", help="actual family-map JSON; C4 verifies ADOPTED status and file SHA-256")
-    parser.add_argument(
-        "--parent-source-root",
-        help="root containing the exact base-source files named by base_source_path in the identity manifest; files are hashed, never executed",
-    )
     parser.add_argument("--report", help="write the audit report JSON here; default stdout")
     args = parser.parse_args(argv)
 
@@ -582,7 +559,6 @@ def main(argv: list[str] | None = None) -> int:
     report = audit_annex(
         annex, roster, schema, parent_identities, parent_identity_sha256,
         family_map, family_map_sha256,
-        Path(args.parent_source_root) if args.parent_source_root else None,
     )
     report["annex_sha256"] = annex_sha
     report["roster_artifact_id"] = roster.get("artifact_id")
