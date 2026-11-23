@@ -80,7 +80,7 @@ No real manifest was validated. No parent was acquired, no mutation allocation o
 **Requested response:** explicit PASS or NOT PASS for the v0.3 code commit, with specific findings and tests. A PASS here would be code-review status only, not an owner freeze, merge authorization or downstream production GO. Do not merge to master as part of this review.
 
 
-## 7. Response to Claude's review of v0.3
+## 8. Response to Claude's review of v0.3
 
 ### 7.1 Exact-schema test run
 
@@ -94,12 +94,12 @@ The validator and README wording have been corrected. The measurement specificat
 
 Independently recomputed from the exact committed UTF-8 bytes using the Git blob preimage. File length: 1,268 bytes. Computed SHA-1: `72fc746c3d6129534aeb2fdbcd866842865f98c7`. It matches the GitHub-reported blob SHA and the validator's expected constant. The B1 manifest schema was also independently recomputed: 24,279 bytes, SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`, matching its source pin.
 
-**Current disposition: NOT PASS pending the exact committed-byte 59-test run.**
+**Disposition recorded at the time of this review response:** NOT PASS pending the exact committed-byte 59-test run. This was the state when §8 was written and is superseded by §9 below.
 
 
 ---
 
-## 8. Final review outcome — 2026-11-23
+## 9. Final review outcome — 2026-11-23
 
 Claude's final verdict on syntax-repaired successor commit `258c68df4a2ede77c0acd2e9ab0382080ae305b6` is **PASS for the six-line syntax repair and for the v0.3 validator as a local structural intake check**. Claude withdrew the zero-convention objection; the categorical zero-failure label is described as an implementation/reporting choice, not a universal convention.
 
@@ -112,3 +112,18 @@ The manifest-schema blob pin `0f2865e606fa61400184c09abd01601497637a6b` and side
 After Claude's §14.2 check of revision 0.6 found no defect, PR #11 was merged into `work/b1-census-intake-validator-v02-2026-11-22` at `c1f76e4b20c38f7b43e1ee2ef2ba27c9d61a09aa`. No merge to `master` occurred. GitHub also reports PR #10 merged because its head commit is included in the successor history; no separate PR #10 merge was performed. PR #9 remains open/draft.
 
 This PASS is limited to local structural intake checks. It does not establish external provenance, bank membership, any real manifest's validity, or a scientific result. No real manifest, census, solver, diagnostic, outcome, fitting, or predictive analysis was used.
+
+
+---
+
+## 10. Status reconciliation and section-number correction — 2026-11-23
+
+This amendment records the later final adjudication and corrects the duplicate section numbering without changing the substance of the earlier review history.
+
+- The former second `## 7. Response to Claude's review of v0.3` heading is now numbered §8. The final review outcome is now §9. The two sibling sections no longer share the same number.
+- The NOT PASS sentence in §8 is explicitly labelled as the disposition **at the time that section was written**. It is superseded by §9, which records Claude's final PASS after the two exact-commit 59/59 runs and Claude's withdrawal of the zero-convention objection.
+- The independent test evidence remains out-of-band review evidence, not GitHub Actions CI. PR #11 had zero CI check runs at the time of GLM's audit. No claim of CI execution is made.
+- GLM's reported PR-level diff-stat observation is a presentation/merge-base effect, not a contradictory file-change count: the syntax repair commit itself is exactly one test file, six additions and six deletions. Review the commit diff for that repair, not aggregate PR statistics.
+- The probe branch `probe/glm-write-capability-2026-11-23` was deleted on 2026-11-23 through GitHub's reference deletion API. A subsequent branch listing returned 75 branches rather than 76. The two unsigned probe commits remain in Git object history by SHA as expected; deleting the branch ref does not rewrite or erase commit objects.
+
+PR #11's final PASS and work-branch merge remain as recorded in §9. No merge to `master` occurred. No real manifest or scientific execution was performed.
