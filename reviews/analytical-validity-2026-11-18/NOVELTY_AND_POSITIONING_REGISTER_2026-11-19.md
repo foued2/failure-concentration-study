@@ -1061,3 +1061,17 @@ No bank membership, source-artifact provenance, exact variant-inventory coverage
 The v0.3 successor remains unmerged and held pending Claude's independent code review. Claude's prior agreement is agreement to the repair approach, not a PASS. No master merge, owner freeze, production GO, real-manifest admission, census execution or downstream analysis is authorized by this amendment.
 
 No bank access, parent acquisition, mutation allocation, solver construction or execution, diagnostic run, outcome collection, fitting or predictive analysis occurred. Gate 1 preflight remains **BLOCKED / NOT ASSESSABLE**; `P` remains **UNPROVEN**. The question whether the earlier conditional census authorization remains operative or was revoked remains unanswered.
+
+
+---
+
+## 20. Claude v0.3 review response and remaining test gate (2026-11-23)
+
+Claude reviewed v0.3 and returned NOT PASS, identifying three remaining items. The two documentary/identity items have been addressed in successor commit `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`:
+
+1. The validator and README now describe `NO OBSERVED FAILURES` as this implementation's categorical reporting choice. The measurement specification §1 transcribes Rev 11's labelled zero convention, but §4 records that the convention is inconsistent across instruments. The code no longer describes the zero convention as universally settled.
+2. The sidecar schema's Git blob SHA-1 was independently recomputed from the exact committed file bytes. At 1,268 bytes, its Git blob SHA-1 is `72fc746c3d6129534aeb2fdbcd866842865f98c7`, matching the GitHub-reported blob and validator pin. The 24,279-byte B1 schema was also recomputed as `0f2865e606fa61400184c09abd01601497637a6b`, matching the reviewed source.
+
+The remaining gate is the complete 59-test suite executed against the exact committed branch bytes, with no schema-hash substitution. The prior local 59/59 run used a reconstructed schema and does not satisfy this requirement. No one has yet run the exact committed suite. Claude's NOT PASS remains operative pending that run. PR #10 remains draft and unmerged; no master merge is authorized.
+
+No real manifest or external research inputs were used. Gate 1 remains BLOCKED / NOT ASSESSABLE and the scientific proposition remains UNPROVEN.
