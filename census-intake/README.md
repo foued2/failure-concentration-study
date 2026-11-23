@@ -86,8 +86,10 @@ A digest or reference that is syntactically valid is not a verified artifact. Th
 
 The source-custody utility `build_parent_identity_manifest.py` hashes exact bytes from
 an explicitly supplied 30-parent source index. It rejects unsafe paths and symlinks and
-does not import, execute, parse, compile or modify parent source files. It requires an
-ADOPTED family map and exact roster coverage.
+does not import, execute, parse, compile or modify parent source files. It requires both
+an ADOPTED parent roster and an ADOPTED family map, validates their exact 30-parent
+partition, and records SHA-256 bindings to the exact raw bytes of both artifacts. The
+source index is separately hash-pinned.
 
 **This utility is not an A2 audit and its use is not currently authorized for real
 parent sources.** The proposed S0-only identity-preparation stage requires a separate
@@ -108,11 +110,12 @@ py census-intake/build_parent_identity_manifest.py `
 ```
 
 The resulting manifest is supplied to `validate_annex.py` through
-`--parent-identities`. The A2 auditor checks the manifest's family binding,
-30-parent coverage, digest syntax and duplicate-hash rules; it does not reopen
-the source files. The source custodian's hash computation is separately attested
-and its manifest must be retained and hash-pinned through the private evidence
-channel.
+`--parent-identities`. The A2 auditor requires the adopted roster bytes and the
+adopted family-map bytes to match their respective manifest bindings, then checks
+the 30 parent IDs, family assignments, source-hash attestation structure, canonical
+source-bundle digest, and duplicate-hash rules. It does not reopen the source files.
+The source custodian's hash computation is separately attested and its manifest
+must be retained and hash-pinned through the private evidence channel.
 
 The current sequencing and C6 witness-review proposal is documented in
 `gate1-inputs/C4_C6_STAGE_RESOLUTION_2026-11-23.md`. It is not adopted and
