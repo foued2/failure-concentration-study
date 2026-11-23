@@ -1899,3 +1899,41 @@ is recorded here.
 No verdict in §§1–35 changes. Gate 0 closed for position and contribution only; Gate 1 preflight
 BLOCKED / NOT ASSESSABLE; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded
 preflight scope.
+
+
+---
+
+## 37. GPT-owned v0.3 B1 intake rewrite; independent review pending (2026-11-23)
+
+### 37.1 Authorship and historical preservation
+
+HY4 authored the earlier prototype `0060e7b` and the v0.2 successor `fd0b34b`. Both commits and their historical review/audit records remain unchanged. GPT inspected those artifacts and authored the v0.3 rewrite on `gpt/b1-v06-intake-repair-2026-11-23`. Claude agreed to the correction approach and its conditions before implementation in the 2026-11-23 conversation. That was approach agreement only; it was not a code review or PASS. No GitHub action is attributed to Claude.
+
+### 37.2 Work and repository references
+
+The successor branch is three commits ahead of the HY4 v0.2 parent:
+- `da1f41fc8a902be01b42257e028f8ad974952905`: GPT v0.3 validator, exact schema package, sidecar schema, tests, requirements and documentation.
+- `9caf82819887975e2f03951af58e87f256a369a6`: explicit literal assertion of the reviewed source schema blob in the test suite and a more precise local test limitation.
+- `b31c14c4b6f3e99fffc3a72f2609e6bda53927f1`: new Claude review packet.
+
+Draft PR #10 is at https://github.com/foued2/failure-concentration-study/pull/10. Its base is the v0.2 predecessor branch, not master, to isolate the GPT changes from inherited unrelated branch history. It is draft and unmerged. Master is unchanged.
+
+### 37.3 Technical changes
+
+The validator packages and runtime-pins the exact reviewed B1 v1.7 schema draft 0.6 (source commit `f19e2a0ba09f2161f290558da5f61abc9d3ab52a`, blob SHA-1 `0f2865e606fa61400184c09abd01601497637a6b)). It applies Draft 2020-12 validation and explicit local semantic checks. It rejects unknown fields throughout schema-constrained objects, enforces the seven status-decision fields including the two false consultation flags, and rejects null/malformed required digests and evidence references.
+
+The v0.6 schema does not define `f`, `u` or `p` as manifest fields. They are optional assertions in a separate sidecar whose schema blob is pinned at `72fc746c3d6129534aeb2fdbcd866842865f98c7`. The sidecar binds to the raw manifest SHA-256 and sidecar schema blob identity; it cannot alter the manifest decision. Mismatch and malformed reasons are `AGGREGATE_MISMATCH` and `MALFORMED_AGGREGATE`.
+
+C_D is implemented from the measurement specification (2026-11-19) §1, which quotes Rev 11 lines 216–221, and §5. Unresolved outcomes are excluded. Only VALID variants receive complete derived counts, exact cell and C_D. INCOMPLETE data is provisional only and produces no full cell/C_D. INVALID, EXCLUDED_BEFORE_DIAGNOSTICS and EXPECTED_NOT_RUN produce no measurement counts or cell; this corrects v0.2's false-zero cells.
+
+The report explicitly states that bank membership, source provenance, frozen inventory coverage, q registry, family map, per-variant run ledger, historical exposure evidence and other external checks were not performed. The exact label is `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED`.
+
+### 37.4 Test limitation and review gate
+
+There are 59 synthetic test methods. The local run recorded 59 passing after temporarily pinning the local validator/test to a locally reconstructed schema file. That file was 7 bytes shorter than the reviewed source, and equivalence was not established. The local result is not an exact-schema run. The branch contains the exact official schema blob, the code pins it, and the test asserts the literal official hash. Claude is requested to independently execute the tests against the exact committed schema and give an explicit PASS or NOT PASS.
+
+PR #10 and the new review packet must remain unmerged pending Claude's independent review. A code PASS would not itself constitute owner freeze or authorization for bank/solver/diagnostic/census work.
+
+### 37.5 Effect
+
+No real manifest was admitted or validated. No bank access, parent acquisition, mutation allocation, solver construction or execution, diagnostics, census, outcomes, fitting or predictive analysis occurred. Gate 1 preflight remains **BLOCKED / NOT ASSESSABLE**; `P` remains **UNPROVEN**. The earlier conditional census-authorization interpretation remains unanswered. No verdict in §§1–36 changes.

@@ -1014,3 +1014,50 @@ is written into this record.
 No verdict in §§1–17 changes. Gate 0 closed for position and contribution only; Gate 1 preflight
 remains **BLOCKED / NOT ASSESSABLE**; `P` unproven; B1 v1.7 unchanged; pause in force outside the
 recorded preflight scope. No scientific output was produced.
+
+
+---
+
+## 19. Dated amendment — 2026-11-23 (GPT-owned v0.3 B1 intake rewrite; Claude review pending)
+
+### 19.1 Trigger and authorship
+
+Following the v0.2 review, GPT's static inspection and Claude's independent probes identified further defects. Claude gave written agreement to GPT's proposed repair sequence and six conditions before implementation on 2026-11-23. That agreement covered the implementation approach only; it was not a code review or PASS.
+
+HY4 authored the historical prototype commit `0060e7b` and v0.2 successor commit `fd0b34b`. Both commits remain unchanged. GPT inspected and rewrote the implementation on the separate branch `gpt/b1-v06-intake-repair-2026-11-23`. The correction record explicitly attributes previous work to HY4 and the v0.3 rewrite to GPT. No GitHub action is attributed to Claude.
+
+### 19.2 Additional defects found in v0.2
+
+The v0.2 validator did not enforce the full revision 0.6 manifest envelope or nested unknown-property rules. It could admit an unknown root field such as `correctness_outcomes`, ignore prohibited consultation flags set to true, and admit present-but-null digest/evidence fields. It also generated a `[q,Z,0,0]` cell for non-measured statuses including INVALID, EXCLUDED_BEFORE_DIAGNOSTICS and EXPECTED_NOT_RUN. Those statuses do not have diagnostic measurements; treating an empty result set as zero failures creates false measurements.
+
+### 19.3 GPT v0.3 implementation
+
+The v0.3 successor is on branch `gpt/b1-v06-intake-repair-2026-11-23`, whose code work is three commits ahead of the HY4 v0.2 parent:
+
+- `da1f41fc8a902be01b42257e028f8ad974952905`: GPT v0.3 schema-exact rewrite.
+- `9caf82819887975e2f03951af58e87f256a369a6`: explicit source-schema identity assertion in the tests and a corrected local-test limitation record.
+- `b31c14c4b6f3e99fffc3a72f2609e6bda53927f1`: successor-specific Claude review packet.
+
+Draft PR #10 is open at https://github.com/foued2/failure-concentration-study/pull/10. Its base is the HY4 v0.2 predecessor branch so that the review diff is limited to the GPT successor commits. It is not a merge to that branch or to master; no merge has occurred. Master remains unchanged.
+
+The implementation packages the exact reviewed B1 schema draft 0.6 from commit `f19e2a0ba09f2161f290558da5f61abc9d3ab52a`, source path `reviews/analytical-validity-2026-11-18/b1-v17-census-review-2026-11-22/B1_V1_7_CENSUS_MANIFEST_SCHEMA_DRAFT_0_6.json`, Git blob SHA-1 `0f2865e606fa61400184c09abd01601497637a6b`. It pins this source blob in the code and rejects a different packaged schema. The schema requires 17 top-level fields, prohibits additional properties at the root and variant level, and does not define `f`, `u` or `p` as manifest fields. Those optional assertions have therefore been moved to a separate sidecar.
+
+The aggregate sidecar schema is separately pinned by Git blob SHA-1 `72fc746c3d6129534aeb2fdbcd866842865f98c7`. Sidecar inputs bind to the SHA-256 of the exact manifest bytes and to the sidecar schema blob identity. Mismatches are rejected with `AGGREGATE_MISMATCH`; malformed vectors with `MALFORMED_AGGREGATE`. The sidecar cannot alter the manifest's independent validation decision.
+
+The implemented C_D formula is sourced from `CD_MEASUREMENT_SPEC_2026-11-19.md` §1, which quotes Rev 11 lines 216–221, and the reporting definition in §5. It is not inferred from the predecessor's code. Unresolved outcomes are excluded from the C_D numerator and denominator.
+
+For VALID variants, the tool derives the complete f/u/p vectors, k values, exact cell and rational C_D from the 64 individual result records. A valid zero-failure variant is labelled `NO OBSERVED FAILURES`. INCOMPLETE variants can report provisional stratum counts only, labelled `PROVISIONAL — INCOMPLETE INVENTORY`, with no full cell or C_D. INVALID, EXCLUDED_BEFORE_DIAGNOSTICS and EXPECTED_NOT_RUN produce no measurement vectors, k values, cell or C_D. The tool labels its output `SYNTACTIC INTAKE ONLY — PROVENANCE NOT VERIFIED` and lists external checks not performed.
+
+### 19.4 Testing and limits
+
+The synthetic suite contains 59 test methods covering the complete 17-field manifest fixture; unknown root and nested fields; both prohibited status-decision consultation flags; null/malformed digests and evidence references; status-specific measurement output; the no-false-zero correction; formula/source citation; record-ID and family checks; sidecar binding, schema identity and mismatch codes; and CLI outcomes.
+
+A local run reported 59 tests passing after the validator and test's expected schema hash were temporarily adjusted to a locally reconstructed schema copy. That copy was 7 bytes shorter than the reviewed source; equivalence was not established. Therefore the local 59/59 result is not a test against the exact committed schema and does not prove that all fixtures pass against the exact source bytes. The committed branch packages the exact reviewed schema blob and pins its hash; the test now asserts the literal expected source hash. Claude's independent run against the exact committed bytes remains required. This limitation is recorded in `census-intake/CORRECTION_RECORD_2026-11-23.md` and the successor-specific review packet.
+
+No bank membership, source-artifact provenance, exact variant-inventory coverage, q-registry membership, family-map membership, per-variant run-ledger reconciliation, historical exposure evidence or other external artifact checks were performed. No real manifest was read or validated.
+
+### 19.5 Effect
+
+The v0.3 successor remains unmerged and held pending Claude's independent code review. Claude's prior agreement is agreement to the repair approach, not a PASS. No master merge, owner freeze, production GO, real-manifest admission, census execution or downstream analysis is authorized by this amendment.
+
+No bank access, parent acquisition, mutation allocation, solver construction or execution, diagnostic run, outcome collection, fitting or predictive analysis occurred. Gate 1 preflight remains **BLOCKED / NOT ASSESSABLE**; `P` remains **UNPROVEN**. The question whether the earlier conditional census authorization remains operative or was revoked remains unanswered.
