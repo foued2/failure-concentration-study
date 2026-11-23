@@ -273,7 +273,6 @@ def _effective_parent_identities(
     if not isinstance(identity_rows, list) or len(identity_rows) != 30:
         raise DossierError("C6_PARENT_IDENTITY_MANIFEST_NOT_EXACTLY_30")
     identity_by_id: dict[str, dict] = {}
-    effective: dict[tuple[str, str], dict] = {}
     hash_to_family: dict[str, str] = {}
     for row in identity_rows:
         if not isinstance(row, dict):
@@ -295,10 +294,6 @@ def _effective_parent_identities(
             raise DossierError("C6_BASE_SOURCE_HASH_CROSSES_FAMILIES")
         hash_to_family[digest] = z_id
         identity_by_id[parent_id] = row
-        effective[(z_id, digest)] = {
-            "Z_id": z_id,
-            "base_source_sha256": digest,
-        }
 
     if set(identity_by_id) != set(roster_by_id):
         raise DossierError("C6_PARENT_IDENTITY_ROSTER_COVERAGE_INCOMPLETE")
@@ -509,15 +504,24 @@ def validate_c6_dossier(
             raise DossierError(f"C6_WITNESS_ID_DUPLICATE:{witness_id}")
         seen_witness_ids.add(witness_id)
 
-        validated, _reasons = _validate_witness(
-            witness,
-            definitions=definitions,
-            roster_by_id=roster_by_id,
-            identity_by_id=identity_by_id,
-            pair_by_parent=pair_by_parent,
-            extra_by_parent=extra_by_parent,
-            R=[8] * 8,
-        )
+        try:
+            validated, _reasons = _validate_witness(
+                witness,
+                definitions=definitions,
+                roster_by_id=roster_by_id,
+                identity_by_id=identity_by_id,
+                pair_by_parent=pair_by_parent,
+                extra_by_parent=extra_by_parent,
+                R=[8] * 8,
+            )
+        except DossierError as exc:
+            inadmissible_witnesses.append({
+                "witness_id": witness_id,
+                "reason": str(exc),
+                "disposition": "INADMISSIBLE_DISCARDED_NOT_STRUCTURAL_ABSENCE",
+            })
+            continue
+
         valid_witnesses.append(validated)
         mechanism_family = (validated["mechanism_id"], validated["Z_id"])
         if mechanism_family not in s_w or validated["Z_id"] not in FAMILIES_IN_SCOPE:
@@ -589,6 +593,7 @@ def validate_c6_dossier(
             "inadmissible": len(inadmissible_witnesses),
             "out_of_scope": len(out_of_scope_witnesses),
         },
+        "inadmissible_witnesses": inadmissible_witnesses,
         "out_of_scope_witness_count": len(out_of_scope_witnesses),
         "cell_results": cell_results,
         "positive_witness_pattern_cell_count": positive_cell_count,
