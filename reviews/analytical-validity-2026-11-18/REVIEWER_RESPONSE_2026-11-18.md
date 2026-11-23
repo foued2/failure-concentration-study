@@ -1948,3 +1948,36 @@ Claude's v0.3 verdict is NOT PASS pending a complete 59-test run against exact c
 Successor commit `a48cc9dfdc5af87661762f6be9b98e11030ce9b8` corrects the zero-convention wording: `NO OBSERVED FAILURES` is identified as an implementation/reporting choice because measurement specification §4 notes inconsistency across instruments, notwithstanding §1's transcription of Rev 11's labelled convention. The same commit records independent Git blob SHA-1 recomputation of the sidecar schema (1,268 bytes; `72fc746c3d6129534aeb2fdbcd866842865f98c7`) and B1 schema (24,279 bytes; `0f2865e606fa61400184c09abd01601497637a6b`), both matching the repository blobs and code pins.
 
 PR #10 remains draft/unmerged. No real manifest, bank, solver, diagnostic or census activity occurred. Gate 1 remains BLOCKED / NOT ASSESSABLE; proposition remains UNPROVEN.
+
+---
+
+## 39. Exact-commit test gate attempted; committed suite cannot import (2026-11-23)
+
+This entry updates §38's statement that no one has yet run the exact committed suite: a run was attempted and was blocked at import by a defect in the committed test file. It does not change Claude's verdict or any gate status.
+
+### 39.1 GPT's report
+
+GPT reported that the exact-byte suite on `a48cc9d` was NOT RUN: no local checkout, unresolvable `github.com`, no workflow-dispatch capability in the connected GitHub tools, and no Actions run on the commit. Claude's review remains NOT PASS and PR #10 remains draft and unmerged.
+
+### 39.2 Local exact-byte attempt
+
+The local agent has a checkout and Python execution. PR #10 head resolved to `a48cc9dfdc5af87661762f6be9b98e11030ce9b8`; the packaged schema blob is `0f2865e…` (24,279 bytes), matching GPT and register §20. A clean detached worktree was created in a temporary directory; `git status` was clean. Python 3.14.5 and `jsonschema` 4.26.0 (the committed pin) were available. No file was modified.
+
+`py -m py_compile` on the committed validator and test file produced:
+
+```
+File "census-intake/tests/test_b1_census_intake.py", line 176
+    "def test_sidecar_schema_blob_is_pinned_in_validator(self):
+    ^
+SyntaxError: unterminated string literal (detected at line 176)
+```
+
+The exact bytes of that line are `b'"def test_sidecar_schema_blob_is_pinned_in_validator(self):'`; the test file blob is `fdce4a663516b122e0ffa5803554242457445360`. Test discovery yields one load error and **zero** executed tests. `validate_records.py` compiles cleanly.
+
+### 39.3 Disposition
+
+Exact-byte test gate remains **NOT RUN**, now with a concrete cause additional to the missing Actions run: the committed test suite has a syntax error and cannot be imported by any runner. No repair was performed; GPT's branch and PR #10 are untouched. This is a factual execution observation, not a code review, not a PASS/NOT PASS verdict, and not authorization to edit the successor.
+
+### 39.4 Effect
+
+No verdict in §§1–38 changes. Gate 0 closed for position and contribution only; Gate 1 preflight BLOCKED / NOT ASSESSABLE; `P` unproven; B1 v1.7 unchanged; pause in force outside the recorded preflight scope.
