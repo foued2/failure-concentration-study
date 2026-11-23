@@ -32,14 +32,6 @@ def _load(path: Path):
 ROSTER = _load(CENSUS_INTAKE / "gate1-inputs" / "PARENT_ROSTER_G01_G30.json")
 FAMILY_MAP = _load(CENSUS_INTAKE / "gate1-inputs" / "FAMILY_MAP.json")
 ANNEX_SCHEMA = validate_annex.load_and_verify_schema()
-SYNTHETIC_SOURCE_ROOT = Path(tempfile.mkdtemp(prefix="lc518-c4-source-fixtures-"))
-for _parent_index in range(1, 31):
-    _parent_id = f"G{_parent_index:02d}"
-    (_path := SYNTHETIC_SOURCE_ROOT / f"{_parent_id}.py").write_bytes(
-        f"# synthetic parent source {_parent_id}\n".encode("utf-8")
-    )
-
-
 def synthetic_adopted_family_map():
     family_map = json.loads(json.dumps(FAMILY_MAP))
     family_map["status"] = "ADOPTED"
@@ -69,9 +61,7 @@ def synthetic_parent_identities(family_map, family_map_sha256):
             {
                 "parent_id": p["parent_id"],
                 "base_source_path": f"{p['parent_id']}.py",
-                "base_source_sha256": hashlib.sha256(
-                    (SYNTHETIC_SOURCE_ROOT / f"{p['parent_id']}.py").read_bytes()
-                ).hexdigest(),
+                "base_source_sha256": f"{i + 1:064x}",
                 "Z_id": p["Z_id"],
             }
             for i, p in enumerate(ROSTER["parents"])
