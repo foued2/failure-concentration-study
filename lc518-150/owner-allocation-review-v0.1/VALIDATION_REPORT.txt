@@ -1,0 +1,20 @@
+LC518 NEW ALLOCATION v0.1 — SYNTHETIC STRUCTURAL VALIDATION
+Tests run: 23
+Failures: 0
+Errors: 0
+Pair assignments: 30; unique pairs: 28; repeated pairs: {'M01-M02': 2, 'M03-M04': 2}
+SA incidence: {'M01': 4, 'M02': 4, 'M03': 4, 'M04': 4, 'M05': 3, 'M06': 4, 'M07': 3, 'M08': 4}
+SB incidence: {'M01': 4, 'M02': 4, 'M03': 4, 'M04': 4, 'M05': 4, 'M06': 3, 'M07': 4, 'M08': 3}
+S-extra incidence: {'M01': 4, 'M02': 4, 'M03': 4, 'M04': 4, 'M05': 4, 'M06': 4, 'M07': 3, 'M08': 3}
+Synthetic positive-trigger inputs: 50 (valid under published D1-D8 descriptions; not asserted to be frozen bank rows).
+Family-semantic checks: 250; each baseline family result matched the independent DP oracle and each designated mutant changed its trigger fixture.
+Negative-control checks: 40; each named mutation was silent on its predeclared non-trigger case.
+Pair-composition checks: 150 assigned parent-pair/family compositions were deterministic; separate test confirms each pair changes at least one trigger fixture in each family model.
+Oracle checks: independent 1-D and 2-D DPs agree on all 50 inputs; bounded exhaustive multiplicity enumeration also agrees on the small-input subset.
+Compatibility scope: all 30 parent/tactic entries have proposed family-adapter mappings; no source-specific patch compatibility has been established.
+Raw-ID candidate C6 cells (K1-K4): 16; 48 witness skeletons are arithmetic proposals only.
+C6 status: NOT PASSED; source-specific joint attainability, bank-record mapping, and C4 source-hash deduplication are not established.
+Parent source hashes: missing; C4 effective parent-group deduplication unverified.
+Exact diagnostic bank record mapping: not tested; fixtures are synthetic.
+Candidate solver source bodies: none created or executed.
+Overall: PASS for listed structural and synthetic semantic checks only; NOT an A2 verdict.
