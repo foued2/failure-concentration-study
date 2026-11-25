@@ -1,0 +1,3362 @@
+{
+  "SAB_composition_precedence": "For a combined pair, duplicate the original first denomination (M04), remove all occurrences of the original maximum (M03), remove denominations equal to amount (M05), apply the unsorted prefix break (M06), apply the M07 guard using the original minimum, then combine recurrence modifiers M01/M02/M08. This is an explicit proposal-level semantic merge rule; exact source-diff compatibility still requires review against each parent implementation.",
+  "allocation_rows": [
+    {
+      "SA_mutation_A": "M01",
+      "SB_mutation_B": "M02",
+      "S_extra": "M05",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M02"
+      ],
+      "pair_assignment_id": "PAIR-01",
+      "pair_status": "BASE",
+      "parent_id": "G04",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M01",
+      "SB_mutation_B": "M03",
+      "S_extra": "M06",
+      "family_id": "K5",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M03"
+      ],
+      "pair_assignment_id": "PAIR-02",
+      "pair_status": "BASE",
+      "parent_id": "G29",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M01",
+      "SB_mutation_B": "M04",
+      "S_extra": "M03",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M04"
+      ],
+      "pair_assignment_id": "PAIR-03",
+      "pair_status": "BASE",
+      "parent_id": "G11",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M01",
+      "SB_mutation_B": "M05",
+      "S_extra": "M03",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M05"
+      ],
+      "pair_assignment_id": "PAIR-04",
+      "pair_status": "BASE",
+      "parent_id": "G13",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M06",
+      "SB_mutation_B": "M01",
+      "S_extra": "M03",
+      "family_id": "K4",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M06"
+      ],
+      "pair_assignment_id": "PAIR-05",
+      "pair_status": "BASE",
+      "parent_id": "G24",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M07",
+      "SB_mutation_B": "M01",
+      "S_extra": "M02",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-06",
+      "pair_status": "BASE",
+      "parent_id": "G08",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M08",
+      "SB_mutation_B": "M01",
+      "S_extra": "M04",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-07",
+      "pair_status": "BASE",
+      "parent_id": "G07",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M02",
+      "SB_mutation_B": "M03",
+      "S_extra": "M01",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M03"
+      ],
+      "pair_assignment_id": "PAIR-08",
+      "pair_status": "BASE",
+      "parent_id": "G12",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M02",
+      "SB_mutation_B": "M04",
+      "S_extra": "M05",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M04"
+      ],
+      "pair_assignment_id": "PAIR-09",
+      "pair_status": "BASE",
+      "parent_id": "G14",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M02",
+      "SB_mutation_B": "M05",
+      "S_extra": "M06",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M05"
+      ],
+      "pair_assignment_id": "PAIR-10",
+      "pair_status": "BASE",
+      "parent_id": "G02",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M06",
+      "SB_mutation_B": "M02",
+      "S_extra": "M04",
+      "family_id": "K4",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M06"
+      ],
+      "pair_assignment_id": "PAIR-11",
+      "pair_status": "BASE",
+      "parent_id": "G28",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M07",
+      "SB_mutation_B": "M02",
+      "S_extra": "M06",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-12",
+      "pair_status": "BASE",
+      "parent_id": "G09",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M08",
+      "SB_mutation_B": "M02",
+      "S_extra": "M01",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M02",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-13",
+      "pair_status": "BASE",
+      "parent_id": "G05",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M03",
+      "SB_mutation_B": "M04",
+      "S_extra": "M07",
+      "family_id": "K4",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M04"
+      ],
+      "pair_assignment_id": "PAIR-14",
+      "pair_status": "BASE",
+      "parent_id": "G25",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M03",
+      "SB_mutation_B": "M05",
+      "S_extra": "M02",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M05"
+      ],
+      "pair_assignment_id": "PAIR-15",
+      "pair_status": "BASE",
+      "parent_id": "G06",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M03",
+      "SB_mutation_B": "M06",
+      "S_extra": "M05",
+      "family_id": "K4",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M06"
+      ],
+      "pair_assignment_id": "PAIR-16",
+      "pair_status": "BASE",
+      "parent_id": "G26",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M03",
+      "SB_mutation_B": "M07",
+      "S_extra": "M06",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-17",
+      "pair_status": "BASE",
+      "parent_id": "G15",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M08",
+      "SB_mutation_B": "M03",
+      "S_extra": "M01",
+      "family_id": "K4",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-18",
+      "pair_status": "BASE",
+      "parent_id": "G27",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M04",
+      "SB_mutation_B": "M05",
+      "S_extra": "M07",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M04",
+        "M05"
+      ],
+      "pair_assignment_id": "PAIR-19",
+      "pair_status": "BASE",
+      "parent_id": "G18",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M04",
+      "SB_mutation_B": "M06",
+      "S_extra": "M08",
+      "family_id": "K5",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M04",
+        "M06"
+      ],
+      "pair_assignment_id": "PAIR-20",
+      "pair_status": "BASE",
+      "parent_id": "G30",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M04",
+      "SB_mutation_B": "M07",
+      "S_extra": "M08",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M04",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-21",
+      "pair_status": "BASE",
+      "parent_id": "G20",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M08",
+      "SB_mutation_B": "M04",
+      "S_extra": "M02",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M04",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-22",
+      "pair_status": "BASE",
+      "parent_id": "G17",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M05",
+      "SB_mutation_B": "M06",
+      "S_extra": "M01",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M05",
+        "M06"
+      ],
+      "pair_assignment_id": "PAIR-23",
+      "pair_status": "BASE",
+      "parent_id": "G19",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M05",
+      "SB_mutation_B": "M07",
+      "S_extra": "M03",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M05",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-24",
+      "pair_status": "BASE",
+      "parent_id": "G16",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M05",
+      "SB_mutation_B": "M08",
+      "S_extra": "M04",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M05",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-25",
+      "pair_status": "BASE",
+      "parent_id": "G03",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M06",
+      "SB_mutation_B": "M07",
+      "S_extra": "M02",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M06",
+        "M07"
+      ],
+      "pair_assignment_id": "PAIR-26",
+      "pair_status": "BASE",
+      "parent_id": "G23",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M06",
+      "SB_mutation_B": "M08",
+      "S_extra": "M04",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M06",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-27",
+      "pair_status": "BASE",
+      "parent_id": "G22",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M07",
+      "SB_mutation_B": "M08",
+      "S_extra": "M05",
+      "family_id": "K3",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M07",
+        "M08"
+      ],
+      "pair_assignment_id": "PAIR-28",
+      "pair_status": "BASE",
+      "parent_id": "G21",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M04",
+      "SB_mutation_B": "M03",
+      "S_extra": "M07",
+      "family_id": "K1",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M03",
+        "M04"
+      ],
+      "pair_assignment_id": "PAIR-29",
+      "pair_status": "REPEAT-1",
+      "parent_id": "G01",
+      "parent_source_sha256": null
+    },
+    {
+      "SA_mutation_A": "M02",
+      "SB_mutation_B": "M01",
+      "S_extra": "M08",
+      "family_id": "K2",
+      "opaque_solver_ids": null,
+      "pair": [
+        "M01",
+        "M02"
+      ],
+      "pair_assignment_id": "PAIR-30",
+      "pair_status": "REPEAT-1",
+      "parent_id": "G10",
+      "parent_source_sha256": null
+    }
+  ],
+  "design_date": "2026-11-25",
+  "design_status": "PROPOSED_NEW_DESIGN_PENDING_INDEPENDENT_REVIEW_NOT_FROZEN",
+  "document_id": "LC518_NEW_OWNER_SEALED_ALLOCATION_V0_1",
+  "fixed_parent_families": {
+    "K1": "G01-G07",
+    "K2": "G08-G15",
+    "K3": "G16-G23",
+    "K4": "G24-G28",
+    "K5": "G29-G30"
+  },
+  "limits": [
+    "The 50 synthetic trigger examples are valid examples under the published D1-D8 stratum descriptions; they are not verified records in the frozen 64-record diagnostic bank.",
+    "The 48 C6 witness skeletons demonstrate arithmetic feasibility only; they are not admissible Rev 11 witnesses without parent source hashes, exact bank-record mapping, and mechanism-reach/joint-attainability citations.",
+    "No 150 solver source bodies were created, imported, or executed.",
+    "No runtime/memory failure, diagnostic outcome, held-out correctness outcome, or predictive result was produced.",
+    "The publicly exposed held-out bank and diagnostic candidate-screening history remain provenance limitations to disclose in any later report."
+  ],
+  "mutation_taxonomy": [
+    {
+      "definition": "Change the coefficient/base state for amount 0 from 1 to 0.",
+      "family_adapters": {
+        "K1": "dp[0]=0; also change explicit amount==0 or empty-prefix returns from 1 to 0 (notably G04 and G07)",
+        "K2": "T[0][0]=0",
+        "K3": "f(i,0)=0",
+        "K4": "polynomial identity coefficient P[0]=0",
+        "K5": "one half-product identity coefficient P_L[0]=0"
+      },
+      "id": "M01",
+      "name": "Empty-combination identity set to zero",
+      "reach": "D1 amount-zero/boundary and every reachable positive stratum D2, D4, D5, D6, D7 and D8. The wrong identity suppresses positive counts; D3 is unchanged because its reference count is zero.",
+      "risk": "A direct base-state fault; should be localized in each family.",
+      "semantic_edit": "W(0,S): 1 -> 0",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "The correct reference answer is positive; the incorrect zero identity then removes every derivation from the empty state.",
+      "witness_strata": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "definition": "Replace unlimited reuse of each denomination by at-most-one use per denomination.",
+      "family_adapters": {
+        "K1": "in-place parents: descending amount update; double-buffer G06: use previous-row value prev[a-c] rather than same-pass cur[a-c]",
+        "K2": "use branch reads previous row T[i-1][a-c_i]",
+        "K3": "use branch advances to f(i+1,a-c_i)",
+        "K4": "replace each geometric factor by (1+x^c); doubling variants retain only the one-use factor",
+        "K5": "use finite-use factor updates in each half-product"
+      },
+      "id": "M02",
+      "name": "Unbounded multiplicity reduced to one use",
+      "reach": "D1/D2 boundary and exact-match cases, D4 modular cases, D5 non-greedy cases, and D6-D8 where a valid representation requires repeated use. D3 remains unchanged because restricting a solution set cannot make an unreachable target reachable.",
+      "risk": "Same intended semantic error, translated to each recurrence.",
+      "semantic_edit": "Unbounded recurrence -> 0/1 recurrence",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "At least one valid combination requires using some denomination at least twice, and the at-most-once count is lower than the unbounded count.",
+      "witness_strata": [
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "definition": "Remove the maximum denomination before evaluating the otherwise unchanged parent.",
+      "family_adapters": {
+        "K1": "skip max denomination in outer coin loop",
+        "K2": "omit max-denomination row/factor",
+        "K3": "omit max denomination from recursion state",
+        "K4": "omit its generating-function factor",
+        "K5": "omit it from the appropriate half-product"
+      },
+      "id": "M03",
+      "name": "Largest denomination omitted",
+      "reach": "D1, D2, D4-D8 when the largest denomination contributes to at least one valid representation. It cannot create a solution on D3 unreachable inputs.",
+      "risk": "Order-independent because max(coins) is determined by value, not input position.",
+      "semantic_edit": "coins := coins without max(coins)",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "At least one valid combination uses the maximum denomination, so removing it changes the answer.",
+      "witness_strata": [
+        "D2",
+        "D5"
+      ]
+    },
+    {
+      "definition": "Process the first input denomination twice as if the two occurrences were distinct coin types, despite the contract's distinct-denomination set semantics.",
+      "family_adapters": {
+        "K1": "repeat first coin's in-place update pass",
+        "K2": "add a duplicate first-coin row/factor",
+        "K3": "include first denomination twice as two recursion indices",
+        "K4": "multiply by the first geometric factor twice",
+        "K5": "include first denomination factor twice in its half-product"
+      },
+      "id": "M04",
+      "name": "First denomination processed twice",
+      "reach": "D1, D2, D4-D8 whenever the first denomination participates in a representation; duplicating its type changes the count. It cannot make D3 reachable because denomination values are unchanged.",
+      "risk": "A localized repeated-iteration defect; preserve original input order when identifying the first denomination.",
+      "semantic_edit": "duplicate first coin factor/iteration once",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "The first input denomination participates in at least one representation, and treating it as two distinct types changes the combination count.",
+      "witness_strata": [
+        "D2",
+        "D5"
+      ]
+    },
+    {
+      "definition": "Discard any denomination c equal to the target amount A before counting combinations, incorrectly treating an exact denomination match as unusable.",
+      "family_adapters": {
+        "K1": "filter target-equal denomination before the coin loop",
+        "K2": "omit target-equal coin row",
+        "K3": "omit target-equal coin index from recursion state",
+        "K4": "omit target-equal factor from the generating-function product",
+        "K5": "omit target-equal factor before splitting and half-products"
+      },
+      "id": "M05",
+      "name": "Target-equal denomination omitted",
+      "reach": "D1/D2 exact-match boundaries and D4/D6-D8 inputs where a denomination equals the target. The fixed D5 {1,3,4}, amount 6/10 examples contain no target-equal denomination; D3 remains unchanged because its answer is zero.",
+      "risk": "Distinct from M03: it removes only c=A, even when a larger denomination remains; the two coincide only when the target-equal denomination is also the maximum.",
+      "semantic_edit": "coins := [c for c in coins if c != amount]",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "A positive target denomination is present; removing it removes the singleton combination using that denomination.",
+      "witness_strata": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "definition": "Before the parent performs any ordering/normalization, scan the original input sequence and stop at the first denomination greater than amount; retain only the prefix. No sort is performed before this test.",
+      "family_adapters": {
+        "K1": "insert pre-normalization prefix filter",
+        "K2": "insert pre-normalization prefix filter",
+        "K3": "insert pre-normalization prefix filter",
+        "K4": "insert pre-normalization prefix filter",
+        "K5": "insert pre-normalization prefix filter"
+      },
+      "id": "M06",
+      "name": "Unsorted prefix early-stop",
+      "reach": "D1, D2, D4, D6, D7 and D8 when an input ordering places a denomination greater than amount before a later useful denomination. The fixed D5 {1,3,4}, amount 6/10 examples contain no coin greater than amount; D3 remains zero either way.",
+      "risk": "Must execute before all sorting/bisect/filtering in S0; otherwise it may be repaired by the parent normalization.",
+      "semantic_edit": "coins := takewhile(c <= amount, original_coins)",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "A denomination greater than the target appears before a later denomination that contributes to a valid representation; the premature break then discards that useful suffix.",
+      "witness_strata": [
+        "D2",
+        "D6"
+      ]
+    },
+    {
+      "definition": "Incorrectly return zero whenever amount is not divisible by min(coins), treating divisibility by the smallest denomination as necessary for reachability.",
+      "family_adapters": {
+        "K1": "pre-DP guard",
+        "K2": "pre-table guard",
+        "K3": "pre-recursion guard",
+        "K4": "pre-product guard",
+        "K5": "pre-convolution guard"
+      },
+      "id": "M07",
+      "name": "Minimum-denomination divisibility shortcut",
+      "reach": "D1, D2, D4, D6, D7 and D8 when a reachable amount is not divisible by the smallest denomination. The fixed D5 examples contain denomination 1; D3 is correctly zero under this guard.",
+      "risk": "This is deliberately a false-negative pruning rule; it does not alter inputs or the oracle.",
+      "semantic_edit": "if amount % min(coins) != 0: return 0",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "The target is not divisible by the minimum denomination, but the reference answer is positive because other denominations form a valid combination.",
+      "witness_strata": [
+        "D2",
+        "D4"
+      ]
+    },
+    {
+      "definition": "Multiply every non-empty use-transition contribution by two instead of one, overcounting denomination-use paths.",
+      "family_adapters": {
+        "K1": "dp[a] += 2*dp[a-c]",
+        "K2": "T[i][a] = T[i-1][a] + 2*T[i][a-c]",
+        "K3": "f(i,a) = f(i+1,a) + 2*f(i,a-c)",
+        "K4": "residue-chain: new[a]=old[a]+2*new[a-c]; binary-doubling: replace each factor (1-x^c)^-1 by product_j(1+2^(2^j)*x^(2^j*c)); sparse carrier: coefficient at multiplicity t is weighted by 2^t",
+        "K5": "apply the same doubled geometric-factor coefficients in each half-product before the Cauchy product"
+      },
+      "id": "M08",
+      "name": "Use-transition contribution doubled",
+      "reach": "D1, D2, D4-D8 whenever the correct answer includes at least one denomination-use transition; D3 remains zero and is unchanged.",
+      "risk": "A transition-weight fault distinct from duplicating one denomination: each positive multiplicity path is reweighted.",
+      "semantic_edit": "add 2*use_count instead of use_count",
+      "strata": [
+        "D1",
+        "D2",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "trigger_condition": "The reference answer is positive; every non-empty transition path receives an extra multiplicity weight, changing the total.",
+      "witness_strata": [
+        "D2",
+        "D5"
+      ]
+    }
+  ],
+  "not_recovered_from_original_annex": true,
+  "orientation_rule": "Balanced base tournament orientation; the second occurrence of each repeated pair is reversed. The mechanism placed in SA is M01..M08 as recorded per row, not always the lower-numbered mechanism.",
+  "parent_compatibility_matrix": [
+    {
+      "SA_family_adapter": "dp[0]=0; also change explicit amount==0 or empty-prefix returns from 1 to 0 (notably G04 and G07)",
+      "SA_mechanism": "M01",
+      "SB_family_adapter": "in-place parents: descending amount update; double-buffer G06: use previous-row value prev[a-c] rather than same-pass cur[a-c]",
+      "SB_mechanism": "M02",
+      "S_extra_family_adapter": "filter target-equal denomination before the coin loop",
+      "S_extra_mechanism": "M05",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G04",
+      "parent_tactic_from_frozen_design": "K1 filtered coins plus while-loop",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M01 must also alter the parent's explicit amount-zero/empty-prefix return branch, not only dp[0]."
+      ]
+    },
+    {
+      "SA_family_adapter": "one half-product identity coefficient P_L[0]=0",
+      "SA_mechanism": "M01",
+      "SB_family_adapter": "omit it from the appropriate half-product",
+      "SB_mechanism": "M03",
+      "S_extra_family_adapter": "insert pre-normalization prefix filter",
+      "S_extra_mechanism": "M06",
+      "family_id": "K5",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G29",
+      "parent_tactic_from_frozen_design": "K5 split plus Cauchy product, given-order split",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "T[0][0]=0",
+      "SA_mechanism": "M01",
+      "SB_family_adapter": "add a duplicate first-coin row/factor",
+      "SB_mechanism": "M04",
+      "S_extra_family_adapter": "omit max-denomination row/factor",
+      "S_extra_mechanism": "M03",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G11",
+      "parent_tactic_from_frozen_design": "K2 suffix-indexed reverse table",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M04 must capture and duplicate the original first input denomination before sorting/reversing."
+      ]
+    },
+    {
+      "SA_family_adapter": "T[0][0]=0",
+      "SA_mechanism": "M01",
+      "SB_family_adapter": "omit target-equal coin row",
+      "SB_mechanism": "M05",
+      "S_extra_family_adapter": "omit max-denomination row/factor",
+      "S_extra_mechanism": "M03",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G13",
+      "parent_tactic_from_frozen_design": "K2 flat list with stride arithmetic",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "insert pre-normalization prefix filter",
+      "SA_mechanism": "M06",
+      "SB_family_adapter": "polynomial identity coefficient P[0]=0",
+      "SB_mechanism": "M01",
+      "S_extra_family_adapter": "omit its generating-function factor",
+      "S_extra_mechanism": "M03",
+      "family_id": "K4",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G24",
+      "parent_tactic_from_frozen_design": "K4 geometric doubling, given order",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "pre-table guard",
+      "SA_mechanism": "M07",
+      "SB_family_adapter": "T[0][0]=0",
+      "SB_mechanism": "M01",
+      "S_extra_family_adapter": "use branch reads previous row T[i-1][a-c_i]",
+      "S_extra_mechanism": "M02",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G08",
+      "parent_tactic_from_frozen_design": "K2 full table, row-wise",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "dp[a] += 2*dp[a-c]",
+      "SA_mechanism": "M08",
+      "SB_family_adapter": "dp[0]=0; also change explicit amount==0 or empty-prefix returns from 1 to 0 (notably G04 and G07)",
+      "SB_mechanism": "M01",
+      "S_extra_family_adapter": "repeat first coin's in-place update pass",
+      "S_extra_mechanism": "M04",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G07",
+      "parent_tactic_from_frozen_design": "K1 bisect cutoff prefix",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M01 must also alter the parent's explicit amount-zero/empty-prefix return branch, not only dp[0].",
+        "M04 must capture and duplicate the original first input denomination before sorting/reversing."
+      ]
+    },
+    {
+      "SA_family_adapter": "use branch reads previous row T[i-1][a-c_i]",
+      "SA_mechanism": "M02",
+      "SB_family_adapter": "omit max-denomination row/factor",
+      "SB_mechanism": "M03",
+      "S_extra_family_adapter": "T[0][0]=0",
+      "S_extra_mechanism": "M01",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G12",
+      "parent_tactic_from_frozen_design": "K2 sparse dict rows",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "use branch reads previous row T[i-1][a-c_i]",
+      "SA_mechanism": "M02",
+      "SB_family_adapter": "add a duplicate first-coin row/factor",
+      "SB_mechanism": "M04",
+      "S_extra_family_adapter": "omit target-equal coin row",
+      "S_extra_mechanism": "M05",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G14",
+      "parent_tactic_from_frozen_design": "K2 copy-then-extend row builder",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "in-place parents: descending amount update; double-buffer G06: use previous-row value prev[a-c] rather than same-pass cur[a-c]",
+      "SA_mechanism": "M02",
+      "SB_family_adapter": "filter target-equal denomination before the coin loop",
+      "SB_mechanism": "M05",
+      "S_extra_family_adapter": "insert pre-normalization prefix filter",
+      "S_extra_mechanism": "M06",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G02",
+      "parent_tactic_from_frozen_design": "K1 sorted ascending",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M06 must run on the original input order before sorting/reversing/bisect normalization."
+      ]
+    },
+    {
+      "SA_family_adapter": "insert pre-normalization prefix filter",
+      "SA_mechanism": "M06",
+      "SB_family_adapter": "replace each geometric factor by (1+x^c); doubling variants retain only the one-use factor",
+      "SB_mechanism": "M02",
+      "S_extra_family_adapter": "multiply by the first geometric factor twice",
+      "S_extra_mechanism": "M04",
+      "family_id": "K4",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G28",
+      "parent_tactic_from_frozen_design": "K4 doubling on sparse dict carrier",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "pre-table guard",
+      "SA_mechanism": "M07",
+      "SB_family_adapter": "use branch reads previous row T[i-1][a-c_i]",
+      "SB_mechanism": "M02",
+      "S_extra_family_adapter": "insert pre-normalization prefix filter",
+      "S_extra_mechanism": "M06",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G09",
+      "parent_tactic_from_frozen_design": "K2 rolling two rows",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "dp[a] += 2*dp[a-c]",
+      "SA_mechanism": "M08",
+      "SB_family_adapter": "in-place parents: descending amount update; double-buffer G06: use previous-row value prev[a-c] rather than same-pass cur[a-c]",
+      "SB_mechanism": "M02",
+      "S_extra_family_adapter": "dp[0]=0; also change explicit amount==0 or empty-prefix returns from 1 to 0 (notably G04 and G07)",
+      "S_extra_mechanism": "M01",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G05",
+      "parent_tactic_from_frozen_design": "K1 sorted descending",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "omit its generating-function factor",
+      "SA_mechanism": "M03",
+      "SB_family_adapter": "multiply by the first geometric factor twice",
+      "SB_mechanism": "M04",
+      "S_extra_family_adapter": "pre-product guard",
+      "S_extra_mechanism": "M07",
+      "family_id": "K4",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G25",
+      "parent_tactic_from_frozen_design": "K4 geometric doubling, descending coins",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "skip max denomination in outer coin loop",
+      "SA_mechanism": "M03",
+      "SB_family_adapter": "filter target-equal denomination before the coin loop",
+      "SB_mechanism": "M05",
+      "S_extra_family_adapter": "in-place parents: descending amount update; double-buffer G06: use previous-row value prev[a-c] rather than same-pass cur[a-c]",
+      "S_extra_mechanism": "M02",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G06",
+      "parent_tactic_from_frozen_design": "K1 double buffer per coin",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M02 must make the double-buffer recurrence read prev[a-c], not cur[a-c]."
+      ]
+    },
+    {
+      "SA_family_adapter": "omit its generating-function factor",
+      "SA_mechanism": "M03",
+      "SB_family_adapter": "insert pre-normalization prefix filter",
+      "SB_mechanism": "M06",
+      "S_extra_family_adapter": "omit target-equal factor from the generating-function product",
+      "S_extra_mechanism": "M05",
+      "family_id": "K4",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G26",
+      "parent_tactic_from_frozen_design": "K4 residue-chain accumulation",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "omit max-denomination row/factor",
+      "SA_mechanism": "M03",
+      "SB_family_adapter": "pre-table guard",
+      "SB_mechanism": "M07",
+      "S_extra_family_adapter": "insert pre-normalization prefix filter",
+      "S_extra_mechanism": "M06",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G15",
+      "parent_tactic_from_frozen_design": "K2 sorted coins, skip-row compression",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M06 must run on the original input order before sorting/reversing/bisect normalization."
+      ]
+    },
+    {
+      "SA_family_adapter": "residue-chain: new[a]=old[a]+2*new[a-c]; binary-doubling: replace each factor (1-x^c)^-1 by product_j(1+2^(2^j)*x^(2^j*c)); sparse carrier: coefficient at multiplicity t is weighted by 2^t",
+      "SA_mechanism": "M08",
+      "SB_family_adapter": "omit its generating-function factor",
+      "SB_mechanism": "M03",
+      "S_extra_family_adapter": "polynomial identity coefficient P[0]=0",
+      "S_extra_mechanism": "M01",
+      "family_id": "K4",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G27",
+      "parent_tactic_from_frozen_design": "K4 residue-chain, sorted coins",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M08 must use weighted geometric coefficients in the exact K4 tactic (residue-chain, binary-doubling, or sparse carrier)."
+      ]
+    },
+    {
+      "SA_family_adapter": "include first denomination twice as two recursion indices",
+      "SA_mechanism": "M04",
+      "SB_family_adapter": "omit target-equal coin index from recursion state",
+      "SB_mechanism": "M05",
+      "S_extra_family_adapter": "pre-recursion guard",
+      "S_extra_mechanism": "M07",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G18",
+      "parent_tactic_from_frozen_design": "K3 explicit-stack iterative DFS",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "include first denomination factor twice in its half-product",
+      "SA_mechanism": "M04",
+      "SB_family_adapter": "insert pre-normalization prefix filter",
+      "SB_mechanism": "M06",
+      "S_extra_family_adapter": "apply the same doubled geometric-factor coefficients in each half-product before the Cauchy product",
+      "S_extra_mechanism": "M08",
+      "family_id": "K5",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G30",
+      "parent_tactic_from_frozen_design": "K5 split plus Cauchy product, sorted split",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M04 must capture and duplicate the original first input denomination before sorting/reversing.",
+        "M06 must run on the original input order before sorting/reversing/bisect normalization."
+      ]
+    },
+    {
+      "SA_family_adapter": "include first denomination twice as two recursion indices",
+      "SA_mechanism": "M04",
+      "SB_family_adapter": "pre-recursion guard",
+      "SB_mechanism": "M07",
+      "S_extra_family_adapter": "f(i,a) = f(i+1,a) + 2*f(i,a-c)",
+      "S_extra_mechanism": "M08",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G20",
+      "parent_tactic_from_frozen_design": "K3 largest-part-first suffix recursion",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "f(i,a) = f(i+1,a) + 2*f(i,a-c)",
+      "SA_mechanism": "M08",
+      "SB_family_adapter": "include first denomination twice as two recursion indices",
+      "SB_mechanism": "M04",
+      "S_extra_family_adapter": "use branch advances to f(i+1,a-c_i)",
+      "S_extra_mechanism": "M02",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G17",
+      "parent_tactic_from_frozen_design": "K3 dict memo top-down, skip-first",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "omit target-equal coin index from recursion state",
+      "SA_mechanism": "M05",
+      "SB_family_adapter": "insert pre-normalization prefix filter",
+      "SB_mechanism": "M06",
+      "S_extra_family_adapter": "f(i,0)=0",
+      "S_extra_mechanism": "M01",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G19",
+      "parent_tactic_from_frozen_design": "K3 flat-array memo, sorted coins",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M06 must run on the original input order before sorting/reversing/bisect normalization."
+      ]
+    },
+    {
+      "SA_family_adapter": "omit target-equal coin index from recursion state",
+      "SA_mechanism": "M05",
+      "SB_family_adapter": "pre-recursion guard",
+      "SB_mechanism": "M07",
+      "S_extra_family_adapter": "omit max denomination from recursion state",
+      "S_extra_mechanism": "M03",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G16",
+      "parent_tactic_from_frozen_design": "K3 lru_cache top-down, use-first, given order",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "filter target-equal denomination before the coin loop",
+      "SA_mechanism": "M05",
+      "SB_family_adapter": "dp[a] += 2*dp[a-c]",
+      "SB_mechanism": "M08",
+      "S_extra_family_adapter": "repeat first coin's in-place update pass",
+      "S_extra_mechanism": "M04",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G03",
+      "parent_tactic_from_frozen_design": "K1 sparse dict cells",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "insert pre-normalization prefix filter",
+      "SA_mechanism": "M06",
+      "SB_family_adapter": "pre-recursion guard",
+      "SB_mechanism": "M07",
+      "S_extra_family_adapter": "use branch advances to f(i+1,a-c_i)",
+      "S_extra_mechanism": "M02",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G23",
+      "parent_tactic_from_frozen_design": "K3 lru top-down, explicit depth-bound",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "insert pre-normalization prefix filter",
+      "SA_mechanism": "M06",
+      "SB_family_adapter": "f(i,a) = f(i+1,a) + 2*f(i,a-c)",
+      "SB_mechanism": "M08",
+      "S_extra_family_adapter": "include first denomination twice as two recursion indices",
+      "S_extra_mechanism": "M04",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G22",
+      "parent_tactic_from_frozen_design": "K3 bisect skip-run compaction",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "M04 must capture and duplicate the original first input denomination before sorting/reversing.",
+        "M06 must run on the original input order before sorting/reversing/bisect normalization."
+      ]
+    },
+    {
+      "SA_family_adapter": "pre-recursion guard",
+      "SA_mechanism": "M07",
+      "SB_family_adapter": "f(i,a) = f(i+1,a) + 2*f(i,a-c)",
+      "SB_mechanism": "M08",
+      "S_extra_family_adapter": "omit target-equal coin index from recursion state",
+      "S_extra_mechanism": "M05",
+      "family_id": "K3",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G21",
+      "parent_tactic_from_frozen_design": "K3 smallest-part-first suffix recursion, dict memo",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "repeat first coin's in-place update pass",
+      "SA_mechanism": "M04",
+      "SB_family_adapter": "skip max denomination in outer coin loop",
+      "SB_mechanism": "M03",
+      "S_extra_family_adapter": "pre-DP guard",
+      "S_extra_mechanism": "M07",
+      "family_id": "K1",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G01",
+      "parent_tactic_from_frozen_design": "K1 canonical list, given order",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    },
+    {
+      "SA_family_adapter": "use branch reads previous row T[i-1][a-c_i]",
+      "SA_mechanism": "M02",
+      "SB_family_adapter": "T[0][0]=0",
+      "SB_mechanism": "M01",
+      "S_extra_family_adapter": "T[i][a] = T[i-1][a] + 2*T[i][a-c]",
+      "S_extra_mechanism": "M08",
+      "family_id": "K2",
+      "formulation_level_status": "PROPOSED_COMPATIBLE",
+      "parent_id": "G10",
+      "parent_tactic_from_frozen_design": "K2 full table, amount-outer fill",
+      "patch_boundary": "The mechanism must be introduced at the stated preprocessing or recurrence boundary without silently changing unrelated parent logic; source-specific patch location and diff are not established.",
+      "source_patch_status": "NOT_REVIEWED_NO_PARENT_SOURCE_BODY_EXISTS",
+      "specific_patch_flags": [
+        "No extra family-tactic exception identified by this coarse screen; exact source patch still requires review."
+      ]
+    }
+  ],
+  "parent_design_source": {
+    "commit": "3e9a29c9652a6ab4f6bab0919e386757280b2654",
+    "git_blob_sha1": "fd15338bd511ba479e62efa50ada9d2d233e143a",
+    "path": "lc518-150/glm-handoff/PARENT_DESIGN.md"
+  },
+  "repeat_pairs_preselected": [
+    [
+      "M01",
+      "M02"
+    ],
+    [
+      "M03",
+      "M04"
+    ]
+  ],
+  "summary": {
+    "C6_witness_skeletons": [
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K1",
+        "mechanism_id": "M01",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G04",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G05",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G07",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D2"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K2",
+        "mechanism_id": "M01",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G08",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G10",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M01",
+            "parent_id": "G11",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D2"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K1",
+        "mechanism_id": "M02",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G02",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G04",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G05",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K2",
+        "mechanism_id": "M02",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G08",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G09",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M02",
+            "parent_id": "G10",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K2",
+        "mechanism_id": "M03",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G11",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G12",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G13",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K4",
+        "mechanism_id": "M03",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G24",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G25",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M03",
+            "parent_id": "G26",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K1",
+        "mechanism_id": "M04",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G01",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G03",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G07",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K3",
+        "mechanism_id": "M04",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G17",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G18",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M04",
+            "parent_id": "G20",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K1",
+        "mechanism_id": "M05",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G02",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G03",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G04",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D2"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K3",
+        "mechanism_id": "M05",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G16",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G18",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M05",
+            "parent_id": "G19",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D1",
+          "D2"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K3",
+        "mechanism_id": "M06",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G19",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G22",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G23",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D6"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K4",
+        "mechanism_id": "M06",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G24",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G26",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ],
+            "family_id": "K4",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M06",
+            "parent_id": "G28",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D6"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K2",
+        "mechanism_id": "M07",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G08",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G09",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K2",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G15",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D4"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K3",
+        "mechanism_id": "M07",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G16",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G18",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M07",
+            "parent_id": "G20",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D4"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K1",
+        "mechanism_id": "M08",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G03",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G05",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K1",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G07",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      },
+      {
+        "admission_limit": "No bank record IDs, parent source hashes, or source-line mechanism-reach citations are attached; these are not Rev 11-admissible witnesses or C6 PASS results.",
+        "cross_parent_C_D_difference_demonstrated_arithmetically": true,
+        "exact_cell": {
+          "k_fail": 2,
+          "k_unresolved": 0
+        },
+        "family_id": "K3",
+        "mechanism_id": "M08",
+        "parent_witness_skeletons": [
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G17",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SA",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/2",
+            "f": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G20",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "S-extra",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          },
+          {
+            "C_D": "1/1",
+            "f": [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "family_id": "K3",
+            "k_fail": 2,
+            "k_unresolved": 0,
+            "mechanism_id": "M08",
+            "parent_id": "G21",
+            "u": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "variant_role": "SB",
+            "witness_status": "HYPOTHETICAL_SKELETON_NOT_ADMISSIBLE"
+          }
+        ],
+        "strata_pair": [
+          "D2",
+          "D5"
+        ]
+      }
+    ],
+    "SA_incidence_by_mechanism": {
+      "M01": 4,
+      "M02": 4,
+      "M03": 4,
+      "M04": 4,
+      "M05": 3,
+      "M06": 4,
+      "M07": 3,
+      "M08": 4
+    },
+    "SB_incidence_by_mechanism": {
+      "M01": 4,
+      "M02": 4,
+      "M03": 4,
+      "M04": 4,
+      "M05": 4,
+      "M06": 3,
+      "M07": 4,
+      "M08": 3
+    },
+    "S_extra_incidence_by_mechanism": {
+      "M01": 4,
+      "M02": 4,
+      "M03": 4,
+      "M04": 4,
+      "M05": 4,
+      "M06": 4,
+      "M07": 3,
+      "M08": 3
+    },
+    "base_source_hash_status": "NOT YET AVAILABLE; C4 effective parent-group counts and duplicate-hash deduplication remain unverified",
+    "candidate_C6_cell_count": 16,
+    "candidate_C6_parent_count_cells": [
+      {
+        "family_id": "K1",
+        "mechanism_id": "M01",
+        "parent_id_count": 3
+      },
+      {
+        "family_id": "K1",
+        "mechanism_id": "M02",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K1",
+        "mechanism_id": "M04",
+        "parent_id_count": 3
+      },
+      {
+        "family_id": "K1",
+        "mechanism_id": "M05",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K1",
+        "mechanism_id": "M08",
+        "parent_id_count": 3
+      },
+      {
+        "family_id": "K2",
+        "mechanism_id": "M01",
+        "parent_id_count": 5
+      },
+      {
+        "family_id": "K2",
+        "mechanism_id": "M02",
+        "parent_id_count": 5
+      },
+      {
+        "family_id": "K2",
+        "mechanism_id": "M03",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K2",
+        "mechanism_id": "M07",
+        "parent_id_count": 3
+      },
+      {
+        "family_id": "K3",
+        "mechanism_id": "M04",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K3",
+        "mechanism_id": "M05",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K3",
+        "mechanism_id": "M06",
+        "parent_id_count": 3
+      },
+      {
+        "family_id": "K3",
+        "mechanism_id": "M07",
+        "parent_id_count": 5
+      },
+      {
+        "family_id": "K3",
+        "mechanism_id": "M08",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K4",
+        "mechanism_id": "M03",
+        "parent_id_count": 4
+      },
+      {
+        "family_id": "K4",
+        "mechanism_id": "M06",
+        "parent_id_count": 3
+      }
+    ],
+    "pair_assignment_count": 30,
+    "parent_count": 30,
+    "raw_parent_id_incidence_by_family": {
+      "K1": {
+        "M01": 3,
+        "M02": 4,
+        "M03": 2,
+        "M04": 3,
+        "M05": 4,
+        "M06": 1,
+        "M07": 1,
+        "M08": 3
+      },
+      "K2": {
+        "M01": 5,
+        "M02": 5,
+        "M03": 4,
+        "M04": 2,
+        "M05": 2,
+        "M06": 2,
+        "M07": 3,
+        "M08": 1
+      },
+      "K3": {
+        "M01": 1,
+        "M02": 2,
+        "M03": 1,
+        "M04": 4,
+        "M05": 4,
+        "M06": 3,
+        "M07": 5,
+        "M08": 4
+      },
+      "K4": {
+        "M01": 2,
+        "M02": 1,
+        "M03": 4,
+        "M04": 2,
+        "M05": 1,
+        "M06": 3,
+        "M07": 1,
+        "M08": 1
+      },
+      "K5": {
+        "M01": 1,
+        "M02": 0,
+        "M03": 1,
+        "M04": 1,
+        "M05": 0,
+        "M06": 2,
+        "M07": 0,
+        "M08": 1
+      }
+    },
+    "repeated_pair_counts": {
+      "M01-M02": 2,
+      "M03-M04": 2
+    },
+    "role_incidence_by_family": {
+      "K1": {
+        "M01": {
+          "S-extra": 1,
+          "SA": 1,
+          "SB": 1,
+          "total": 3
+        },
+        "M02": {
+          "S-extra": 1,
+          "SA": 1,
+          "SB": 2,
+          "total": 4
+        },
+        "M03": {
+          "S-extra": 0,
+          "SA": 1,
+          "SB": 1,
+          "total": 2
+        },
+        "M04": {
+          "S-extra": 2,
+          "SA": 1,
+          "SB": 0,
+          "total": 3
+        },
+        "M05": {
+          "S-extra": 1,
+          "SA": 1,
+          "SB": 2,
+          "total": 4
+        },
+        "M06": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M07": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M08": {
+          "S-extra": 0,
+          "SA": 2,
+          "SB": 1,
+          "total": 3
+        }
+      },
+      "K2": {
+        "M01": {
+          "S-extra": 1,
+          "SA": 2,
+          "SB": 2,
+          "total": 5
+        },
+        "M02": {
+          "S-extra": 1,
+          "SA": 3,
+          "SB": 1,
+          "total": 5
+        },
+        "M03": {
+          "S-extra": 2,
+          "SA": 1,
+          "SB": 1,
+          "total": 4
+        },
+        "M04": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 2,
+          "total": 2
+        },
+        "M05": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 1,
+          "total": 2
+        },
+        "M06": {
+          "S-extra": 2,
+          "SA": 0,
+          "SB": 0,
+          "total": 2
+        },
+        "M07": {
+          "S-extra": 0,
+          "SA": 2,
+          "SB": 1,
+          "total": 3
+        },
+        "M08": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        }
+      },
+      "K3": {
+        "M01": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M02": {
+          "S-extra": 2,
+          "SA": 0,
+          "SB": 0,
+          "total": 2
+        },
+        "M03": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M04": {
+          "S-extra": 1,
+          "SA": 2,
+          "SB": 1,
+          "total": 4
+        },
+        "M05": {
+          "S-extra": 1,
+          "SA": 2,
+          "SB": 1,
+          "total": 4
+        },
+        "M06": {
+          "S-extra": 0,
+          "SA": 2,
+          "SB": 1,
+          "total": 3
+        },
+        "M07": {
+          "S-extra": 1,
+          "SA": 1,
+          "SB": 3,
+          "total": 5
+        },
+        "M08": {
+          "S-extra": 1,
+          "SA": 1,
+          "SB": 2,
+          "total": 4
+        }
+      },
+      "K4": {
+        "M01": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 1,
+          "total": 2
+        },
+        "M02": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 1,
+          "total": 1
+        },
+        "M03": {
+          "S-extra": 1,
+          "SA": 2,
+          "SB": 1,
+          "total": 4
+        },
+        "M04": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 1,
+          "total": 2
+        },
+        "M05": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M06": {
+          "S-extra": 0,
+          "SA": 2,
+          "SB": 1,
+          "total": 3
+        },
+        "M07": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        },
+        "M08": {
+          "S-extra": 0,
+          "SA": 1,
+          "SB": 0,
+          "total": 1
+        }
+      },
+      "K5": {
+        "M01": {
+          "S-extra": 0,
+          "SA": 1,
+          "SB": 0,
+          "total": 1
+        },
+        "M02": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 0,
+          "total": 0
+        },
+        "M03": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 1,
+          "total": 1
+        },
+        "M04": {
+          "S-extra": 0,
+          "SA": 1,
+          "SB": 0,
+          "total": 1
+        },
+        "M05": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 0,
+          "total": 0
+        },
+        "M06": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 1,
+          "total": 2
+        },
+        "M07": {
+          "S-extra": 0,
+          "SA": 0,
+          "SB": 0,
+          "total": 0
+        },
+        "M08": {
+          "S-extra": 1,
+          "SA": 0,
+          "SB": 0,
+          "total": 1
+        }
+      }
+    },
+    "solver_variant_ids_status": "NOT ASSIGNED; all S0/SA/SB/SAB/S-extra source bodies remain unbuilt",
+    "unique_parent_ids": 30,
+    "unique_unordered_pairs": 28
+  }
+}
