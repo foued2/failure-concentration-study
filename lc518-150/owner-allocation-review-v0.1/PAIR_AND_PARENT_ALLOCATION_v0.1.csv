@@ -1,0 +1,31 @@
+pair_assignment_id,parent_id,family_id,pair,SA_mutation_A,SB_mutation_B,pair_status,S_extra,parent_source_sha256,opaque_solver_ids,parent_tactic
+PAIR-01,G04,K1,M01/M02,M01,M02,BASE,M05,,,K1 filtered coins plus while-loop
+PAIR-02,G29,K5,M01/M03,M01,M03,BASE,M06,,,"K5 split plus Cauchy product, given-order split"
+PAIR-03,G11,K2,M01/M04,M01,M04,BASE,M03,,,K2 suffix-indexed reverse table
+PAIR-04,G13,K2,M01/M05,M01,M05,BASE,M03,,,K2 flat list with stride arithmetic
+PAIR-05,G24,K4,M01/M06,M06,M01,BASE,M03,,,"K4 geometric doubling, given order"
+PAIR-06,G08,K2,M01/M07,M07,M01,BASE,M02,,,"K2 full table, row-wise"
+PAIR-07,G07,K1,M01/M08,M08,M01,BASE,M04,,,K1 bisect cutoff prefix
+PAIR-08,G12,K2,M02/M03,M02,M03,BASE,M01,,,K2 sparse dict rows
+PAIR-09,G14,K2,M02/M04,M02,M04,BASE,M05,,,K2 copy-then-extend row builder
+PAIR-10,G02,K1,M02/M05,M02,M05,BASE,M06,,,K1 sorted ascending
+PAIR-11,G28,K4,M02/M06,M06,M02,BASE,M04,,,K4 doubling on sparse dict carrier
+PAIR-12,G09,K2,M02/M07,M07,M02,BASE,M06,,,K2 rolling two rows
+PAIR-13,G05,K1,M02/M08,M08,M02,BASE,M01,,,K1 sorted descending
+PAIR-14,G25,K4,M03/M04,M03,M04,BASE,M07,,,"K4 geometric doubling, descending coins"
+PAIR-15,G06,K1,M03/M05,M03,M05,BASE,M02,,,K1 double buffer per coin
+PAIR-16,G26,K4,M03/M06,M03,M06,BASE,M05,,,K4 residue-chain accumulation
+PAIR-17,G15,K2,M03/M07,M03,M07,BASE,M06,,,"K2 sorted coins, skip-row compression"
+PAIR-18,G27,K4,M03/M08,M08,M03,BASE,M01,,,"K4 residue-chain, sorted coins"
+PAIR-19,G18,K3,M04/M05,M04,M05,BASE,M07,,,K3 explicit-stack iterative DFS
+PAIR-20,G30,K5,M04/M06,M04,M06,BASE,M08,,,"K5 split plus Cauchy product, sorted split"
+PAIR-21,G20,K3,M04/M07,M04,M07,BASE,M08,,,K3 largest-part-first suffix recursion
+PAIR-22,G17,K3,M04/M08,M08,M04,BASE,M02,,,"K3 dict memo top-down, skip-first"
+PAIR-23,G19,K3,M05/M06,M05,M06,BASE,M01,,,"K3 flat-array memo, sorted coins"
+PAIR-24,G16,K3,M05/M07,M05,M07,BASE,M03,,,"K3 lru_cache top-down, use-first, given order"
+PAIR-25,G03,K1,M05/M08,M05,M08,BASE,M04,,,K1 sparse dict cells
+PAIR-26,G23,K3,M06/M07,M06,M07,BASE,M02,,,"K3 lru top-down, explicit depth-bound"
+PAIR-27,G22,K3,M06/M08,M06,M08,BASE,M04,,,K3 bisect skip-run compaction
+PAIR-28,G21,K3,M07/M08,M07,M08,BASE,M05,,,"K3 smallest-part-first suffix recursion, dict memo"
+PAIR-29,G01,K1,M03/M04,M04,M03,REPEAT-1,M07,,,"K1 canonical list, given order"
+PAIR-30,G10,K2,M01/M02,M02,M01,REPEAT-1,M08,,,"K2 full table, amount-outer fill"
