@@ -450,7 +450,8 @@ class WitnessTests(unittest.TestCase):
         with self.assertRaises(PolicyError): self.witness.intent(no_op)
         request = make_request(target="e" * 40)
         first = self.witness.intent(request)
-        uppercase = {**request, "base_commit": request["base_commit"].upper(),
+        uppercase = {**request, "oac_sha256": request["oac_sha256"].upper(),
+                     "base_commit": request["base_commit"].upper(),
                      "target_commit": request["target_commit"].upper()}
         self.assertEqual(self.witness.intent(uppercase), (first[0], "duplicate"))
 
@@ -563,6 +564,84 @@ class WitnessTests(unittest.TestCase):
         reconciler = self.reconciler(request, raising)
         self.assertEqual(reconciler.apply_once(), "BREACH")
         self.assertEqual(self.witness.state(), "BREACH")
+
+    def test_pending_reconciliation_retries_untouched_ref_to_applied(self):
+        request, github = make_request(), self.adapter()
+        github.app_allowed = False
+        reconciler = self.reconciler(request, github)
+        self.assertEqual(reconciler.apply_once(), "PENDING_RECONCILIATION")
+        self.assertIsNone(github.read_ref())
+        self.assertEqual(github.events, [])
+        github.app_allowed = True
+        self.assertEqual(reconciler.apply_once(), "GITHUB_APPLIED")
+        self.assertEqual(github.read_ref(), request["target_commit"])
+        self.assertEqual(github.events, [
+            ("create", None, request["base_commit"], "app"),
+            ("update", request["base_commit"], request["target_commit"], "app"),
+        ])
+        with self.assertRaises(Conflict):
+            self.witness.intent(make_request(target="e" * 40))
+
+    def test_pending_reconciliation_retries_partial_base_creation_to_applied(self):
+        request = make_request()
+
+        class FailAfterBaseCreateAdapter(FakeGitHub):
+            def __init__(self, policy, app_signer):
+                super().__init__(policy, app_signer)
+                self.fail_on_update = True
+
+            def apply_intent(self, req):
+                normalized = {**req, "base_commit": req["base_commit"].lower(),
+                              "target_commit": req["target_commit"].lower()}
+                base, target = normalized["base_commit"], normalized["target_commit"]
+                if self.ref is None:
+                    self.ref = base
+                    self.events.append(("create", None, base, "app"))
+                if self.fail_on_update and self.ref == base:
+                    raise RuntimeError("simulated outage between base create and B->A update")
+                return super().apply_intent(req)
+
+        github = FailAfterBaseCreateAdapter(POLICY, self.signers["github_adapter"])
+        reconciler = self.reconciler(request, github)
+        self.assertEqual(reconciler.apply_once(), "PENDING_RECONCILIATION")
+        self.assertEqual(github.read_ref(), request["base_commit"])
+        self.assertEqual(github.events, [("create", None, request["base_commit"], "app")])
+        github.fail_on_update = False
+        self.assertEqual(reconciler.apply_once(), "GITHUB_APPLIED")
+        self.assertEqual(github.read_ref(), request["target_commit"])
+        self.assertEqual(github.events, [
+            ("create", None, request["base_commit"], "app"),
+            ("update", request["base_commit"], request["target_commit"], "app"),
+        ])
+
+    def test_pending_reconciliation_progressing_none_to_base_then_applied_without_conflict(self):
+        request = make_request()
+
+        class OutageThenBaseFailAdapter(FakeGitHub):
+            def __init__(self, policy, app_signer):
+                super().__init__(policy, app_signer)
+                self.mode = "outage"
+
+            def apply_intent(self, req):
+                if self.mode == "outage":
+                    raise RuntimeError("transient outage before create")
+                if self.mode == "fail_update":
+                    base = req["base_commit"].lower()
+                    if self.ref is None:
+                        self.ref = base
+                        self.events.append(("create", None, base, "app"))
+                    raise RuntimeError("transient failure after create")
+                return super().apply_intent(req)
+
+        github = OutageThenBaseFailAdapter(POLICY, self.signers["github_adapter"])
+        reconciler = self.reconciler(request, github)
+        self.assertEqual(reconciler.apply_once(), "PENDING_RECONCILIATION")
+        github.mode = "fail_update"
+        self.assertEqual(reconciler.apply_once(), "PENDING_RECONCILIATION")
+        self.assertEqual(github.read_ref(), request["base_commit"])
+        github.mode = "ok"
+        self.assertEqual(reconciler.apply_once(), "GITHUB_APPLIED")
+        self.assertEqual(github.read_ref(), request["target_commit"])
 
     def test_applied_receipt_replay_after_lost_ack_is_idempotent_after_restart(self):
         req, github = make_request(), self.adapter()

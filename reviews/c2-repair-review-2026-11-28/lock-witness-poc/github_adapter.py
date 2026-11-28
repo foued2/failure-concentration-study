@@ -88,10 +88,12 @@ class Reconciler:
             self.witness.record_adapter_evidence(self.request, receipt)
             return self.witness.state()
         if self.adapter.read_ref() == base and self.adapter.events == expected[:1]:
-            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
+            if state != "PENDING_RECONCILIATION":
+                self.witness.record_adapter_evidence(self.request, self._worker_receipt())
             return self.witness.state()
         if self.adapter.read_ref() is None and not self.adapter.events:
-            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
+            if state != "PENDING_RECONCILIATION":
+                self.witness.record_adapter_evidence(self.request, self._worker_receipt())
             return self.witness.state()
         self.witness.record_adapter_evidence(self.request, self._breach_receipt())
         return self.witness.state()
@@ -101,13 +103,16 @@ class Reconciler:
         if state == "UNCLAIMED":
             self.witness.intent(self.request)
         elif state == "PENDING_RECONCILIATION":
-            return self.reconcile()
+            reconciled = self.reconcile()
+            if reconciled != "PENDING_RECONCILIATION":
+                return reconciled
         elif state in ("GITHUB_APPLIED", "BREACH"):
             return state
         try:
             receipt = self.adapter.apply_intent(self.request)
         except Exception:
-            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
+            if self.witness.state() != "PENDING_RECONCILIATION":
+                self.witness.record_adapter_evidence(self.request, self._worker_receipt())
             return self.reconcile()
         self.witness.record_adapter_evidence(self.request, receipt)
         return self.witness.state()

@@ -28,8 +28,9 @@ ALLOWED_TRANSITIONS = {
 
 def normalized_request(request):
     normalized = dict(request)
-    normalized["base_commit"] = normalized["base_commit"].lower()
-    normalized["target_commit"] = normalized["target_commit"].lower()
+    for field in ("oac_sha256", "base_commit", "target_commit"):
+        if isinstance(normalized.get(field), str):
+            normalized[field] = normalized[field].lower()
     return normalized
 
 
