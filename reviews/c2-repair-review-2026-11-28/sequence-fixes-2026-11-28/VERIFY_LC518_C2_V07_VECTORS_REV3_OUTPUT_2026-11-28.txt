@@ -1,0 +1,15 @@
+PASS 01 universe: count=28 bytes=224 sha256=d5e54cd8a071fde1fd06a897b611fb9d39bfa28f5aeecb06e46537a2f93149bd
+PASS 02 vector repeat-1 counter=0: n=28 index=5 sha256=996627683d5bd28b1445281d42762ae3c0fafaca315c33deb096582a9970f659
+PASS 03 vector repeat-1 counter=1: n=28 index=23 sha256=c59aff206cf93ecd342e7b6a70af095a0e40ff1d3cfffe38e13b74ec70fd0ddb
+PASS 04 vector repeat-2 counter=0: n=27 index=19 sha256=bce13a787bba4cf2849ecc7f9291e17459543545a9162f34b0f37a7256474881
+PASS 05 vector repeat-2 counter=1: n=27 index=13 sha256=8f096ae539624f40ea1ad9a5bf6272e0673c0e85d33f48971d7719edb55f3561
+PASS 06 normal two-stage fixture: first=M01/M07 second=M04/M07
+PASS 07 rejection-threshold arithmetic only: L(28)=L(27)=2^256-16; this check does not execute the loop
+PASS 08 x=L-1 accepted for repeat-1: n=28 index=27 counter=0
+PASS 09 x=L-1 accepted for repeat-2: n=27 index=26 counter=0
+PASS 10 two consecutive rejections then real digest for repeat-1: injected counters 0 and 1 rejected; accepted counter=2 index=11 sha256=d560753b262a38e0febea4886029ec8115e209879c56b118d3913b0bba97298b
+PASS 11 two consecutive rejections then real digest for repeat-2: injected counters 0 and 1 rejected; accepted counter=2 index=16 sha256=e1df82a6608189025ba55fa1666a80936bcb64042cf6099df9a7787d357c1de5
+PASS 12 one rejection and counter advance for repeat-1: injected counter 0 rejected; accepted counter=1 index=23 sha256=c59aff206cf93ecd342e7b6a70af095a0e40ff1d3cfffe38e13b74ec70fd0ddb
+PASS 13 one rejection and counter advance for repeat-2: injected counter 0 rejected; accepted counter=1 index=13 sha256=8f096ae539624f40ea1ad9a5bf6272e0673c0e85d33f48971d7719edb55f3561
+PASS 14 uint64 counter overflow: rejection at 2^64-1 raises; counter does not wrap
+RESULT: 14 checks passed; no drand query; no BLS verification; no HTTP client test; no GitHub Activity test; no production selection
