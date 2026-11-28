@@ -14,6 +14,12 @@
 4. `sequence-fixes-2026-11-28/verify_lc518_c2_v07_vectors_REV2.py` and `VERIFY_LC518_C2_V07_VECTORS_REV2_OUTPUT_2026-11-28.txt` — GPT-authored reproducible ten-check vector/rejection-loop verifier and its raw output.
 5. `README_REV3.md` — filename mapping for all paths cited by Revision 2 §10.
 
+The candidate OAC path is fixed in Revision 3 as:
+
+`adoptions/LC518-R2-C2/<experiment_id>/OWNER_ADOPTION.json`
+
+The ID grammar is `[A-Z0-9][A-Z0-9._-]{0,63}`; the ID must come from a prior study-registry record and is not operator-selected. GPT found no canonical C2 `experiment_id` or registry path in the current master tree/code search. Please review whether this exact OAC path and the first-charter rule adequately close the forked-lock defect, and confirm that the missing pre-existing registry value is a hard adoption blocker.
+
 ## Required separate verdicts
 
 Please give PASS / NOT PASS for:
