@@ -22,6 +22,12 @@ This proposal does not change the v0.7 pair universe, hash framing, rejection sa
 
 A lock is not authorized by a protocol hash alone. Before any lock-ref creation, a single **Owner Adoption Charter (OAC)** must exist as an immutable, publicly recorded commit on the repository's protected `master` branch.
 
+The OAC must be stored at the one canonical path:
+
+`adoptions/LC518-R2-C2/<experiment_id>/OWNER_ADOPTION.json`
+
+The `experiment_id` path segment must match the pre-existing study-registry value and the adopted grammar `[A-Z0-9][A-Z0-9._-]{0,63}`. This path is not operator-selectable. No alternate filename, directory, branch, or protocol-hash-derived charter path qualifies for the same experiment. The registry source path and commit that pre-register the ID must be explicitly cited by the OAC; if no such prior record exists, the OAC cannot be created and no lock can proceed.
+
 The OAC must fix, in canonical machine-readable form:
 
 - one `experiment_id`, obtained from the pre-existing LC518 study/experiment registry, not invented or chosen by the operator at lock time;
