@@ -1,0 +1,1419 @@
+{
+  "capture_type": "normalized_activity_projection",
+  "raw_response": false,
+  "source": "GITHUB_LIST_REPOSITORY_ACTIVITIES connected GitHub tool",
+  "repository": "foued2/failure-concentration-study",
+  "request": {
+    "time_period": "year",
+    "direction": "asc",
+    "per_page": 100
+  },
+  "capture_note": "The connector returned parsed activity objects. It did not expose the original response bytes, status line, headers, Link header, or raw pagination cursor. This file is not a wire capture and cannot establish full-history completeness.",
+  "record_count": 100,
+  "first_event_id": 46450944076,
+  "last_event_id": 47789198475,
+  "first_timestamp": "2026-10-14T09:37:43Z",
+  "last_timestamp": "2026-10-26T06:31:00Z",
+  "records": [
+    {
+      "id": 46450944076,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0LEoTA",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/master",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "94fd572159bc9a1dde807e98261987cee139b652",
+      "timestamp": "2026-10-14T09:37:43Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46450988860,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0LHXPA",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/transfer-artifacts",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "94a758ec9672adc7f4b89d89497f19868b4d48ca",
+      "timestamp": "2026-10-14T09:38:13Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46454132154,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0OHNug",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "94fd572159bc9a1dde807e98261987cee139b652",
+      "after": "e036b8853f634f35f721c9ab92ca93508836a8d5",
+      "timestamp": "2026-10-14T10:11:45Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46459602016,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0TVEYA",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "e036b8853f634f35f721c9ab92ca93508836a8d5",
+      "after": "d9dfa8fcc48cf7b63a4139d45647961f2f242a57",
+      "timestamp": "2026-10-14T11:12:01Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46460523758,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0UNU7g",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "d9dfa8fcc48cf7b63a4139d45647961f2f242a57",
+      "after": "4d7f23e191065fbcb732cdaff66ab6e1923bb042",
+      "timestamp": "2026-10-14T11:22:07Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46467169597,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0ai9PQ",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "4d7f23e191065fbcb732cdaff66ab6e1923bb042",
+      "after": "da4030d75279097ebe734054149965bfd1e6decf",
+      "timestamp": "2026-10-14T12:31:55Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46468823747,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0cH6ww",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "da4030d75279097ebe734054149965bfd1e6decf",
+      "after": "c75fb4378f71de7c27698241aeeb117ef77ea884",
+      "timestamp": "2026-10-14T12:48:21Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46471033622,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK0eOzFg",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "c75fb4378f71de7c27698241aeeb117ef77ea884",
+      "after": "11d86b9386429a9512baec5e5b9c63beb6f252d8",
+      "timestamp": "2026-10-14T13:09:07Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46497034751,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK03Bx_w",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "11d86b9386429a9512baec5e5b9c63beb6f252d8",
+      "after": "3cd62b80712af6f11319f449d6d89b6d6fb5186a",
+      "timestamp": "2026-10-14T17:06:46Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46514470989,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK1HqATQ",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "3cd62b80712af6f11319f449d6d89b6d6fb5186a",
+      "after": "4018ebdd118eaf41dbe4437a4f7ba39aa3d542de",
+      "timestamp": "2026-10-14T20:04:06Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46515481879,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK1IntFw",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "4018ebdd118eaf41dbe4437a4f7ba39aa3d542de",
+      "after": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "timestamp": "2026-10-14T20:14:39Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46610283902,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK2jB9fg",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/gpt/rev-d-review-corrections",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "timestamp": "2026-10-15T15:07:21Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46610524283,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK2jQoew",
+      "activity_type": "push",
+      "ref": "refs/heads/gpt/rev-d-review-corrections",
+      "before": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "after": "e4bb6ee009dd57d38c7a3b5f6694d81043918f21",
+      "timestamp": "2026-10-15T15:09:36Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46617087343,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK2phNbw",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/revd-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "eb46a2c9fe165b7f19f8c88f1e932f9e8df5a430",
+      "timestamp": "2026-10-15T16:11:51Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46623599405,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK2vurLQ",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/reve-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "79f1d1f2c4a603dc7f15984e2697aab982065191",
+      "timestamp": "2026-10-15T17:16:53Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46684207724,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK3ph6bA",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/revf-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "timestamp": "2026-10-16T06:31:09Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46684276516,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK3pmHJA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/revf-package",
+      "before": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "after": "d9b491e8463358185c94e870fece646bd0fd9ef6",
+      "timestamp": "2026-10-16T06:32:05Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46796053481,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5UMb6Q",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/a1-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "3a569e398b147c27dd982c342d6f92eca1899c7a",
+      "timestamp": "2026-10-17T06:38:52Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46796144753,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5USAcQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "3a569e398b147c27dd982c342d6f92eca1899c7a",
+      "after": "812c93a74fe3a61f69fd5a480c5639ac5cf7fef5",
+      "timestamp": "2026-10-17T06:40:37Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46799891965,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5X2t_Q",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "812c93a74fe3a61f69fd5a480c5639ac5cf7fef5",
+      "after": "9ed4f0c577f14d9ee5797b7771215bb7bbd11069",
+      "timestamp": "2026-10-17T07:50:07Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46801227948,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5ZIQrA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "9ed4f0c577f14d9ee5797b7771215bb7bbd11069",
+      "after": "f69cc9ba9cf54562df2269f066465f7957c6ccde",
+      "timestamp": "2026-10-17T08:13:55Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46817817289,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5o8yyQ",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/o2-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "ae4eca2538b3cfc55e3225f915afd2d774e03e6a",
+      "timestamp": "2026-10-17T12:56:42Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46819369738,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK5qbjCg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/o2-package",
+      "before": "ae4eca2538b3cfc55e3225f915afd2d774e03e6a",
+      "after": "4d7517a1a30f47d3c41fb9f0ee6eed4397e8e05e",
+      "timestamp": "2026-10-17T13:20:46Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46843758888,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6BsJKA",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/m3-addendum",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4",
+      "timestamp": "2026-10-17T19:21:45Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46844284631,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6CMO1w",
+      "activity_type": "push",
+      "ref": "refs/heads/review/m3-addendum",
+      "before": "2c18d3333f6d5e4a0a6d04606a3954cc81f81aa4",
+      "after": "c70a3870bc23fb973de4c8c7632f84ce0331bb33",
+      "timestamp": "2026-10-17T19:30:01Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46846407118,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6ENxzg",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/revg-package",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "4639f024a3d15cfec7e45b081fb6bd3901d60e4b",
+      "timestamp": "2026-10-17T20:02:33Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46847099932,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6E4EHA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/revg-package",
+      "before": "4639f024a3d15cfec7e45b081fb6bd3901d60e4b",
+      "after": "5ffbb6ed638a8c01e598a3946106ed6f7fee7339",
+      "timestamp": "2026-10-17T20:13:18Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46892231333,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6v6qpQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "f69cc9ba9cf54562df2269f066465f7957c6ccde",
+      "after": "7d61d5e08ff9d6e9b4fd6f4821ce4a1da45ce0e9",
+      "timestamp": "2026-10-18T10:01:12Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46898958479,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK62VQjw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "7d61d5e08ff9d6e9b4fd6f4821ce4a1da45ce0e9",
+      "after": "f33d0504607e230590db8cc7cb54783a6dfee582",
+      "timestamp": "2026-10-18T11:52:46Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46900625565,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK637AnQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "f33d0504607e230590db8cc7cb54783a6dfee582",
+      "after": "e95caaa5a494a750cfa612546af2ce0af340a511",
+      "timestamp": "2026-10-18T12:19:18Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46903371813,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK66ioJQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "e95caaa5a494a750cfa612546af2ce0af340a511",
+      "after": "fbaa531667c728b29efe84a69d9f8df95a74dc26",
+      "timestamp": "2026-10-18T13:02:14Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46903822542,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK66-Izg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "fbaa531667c728b29efe84a69d9f8df95a74dc26",
+      "after": "3f617c4399bab6ad082e7d6b8953f003faff3a2c",
+      "timestamp": "2026-10-18T13:09:04Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46906042859,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK69Fp6w",
+      "activity_type": "push",
+      "ref": "refs/heads/review/a1-package",
+      "before": "3f617c4399bab6ad082e7d6b8953f003faff3a2c",
+      "after": "4551cacb757ca39aa31b88338f2abd0a67611cb5",
+      "timestamp": "2026-10-18T13:42:31Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46908151127,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6_GVVw",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "4551cacb757ca39aa31b88338f2abd0a67611cb5",
+      "timestamp": "2026-10-18T14:13:03Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46908452231,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK6_Ythw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "4551cacb757ca39aa31b88338f2abd0a67611cb5",
+      "after": "113ec2c4a7acd48f08d93a4cd6313eb4c3459e25",
+      "timestamp": "2026-10-18T14:17:22Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46912144889,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7C6F-Q",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "113ec2c4a7acd48f08d93a4cd6313eb4c3459e25",
+      "after": "906dd351e647d3d28a70ae16a01070e34fdca8a6",
+      "timestamp": "2026-10-18T15:10:05Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46913086176,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7Dzi4A",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "906dd351e647d3d28a70ae16a01070e34fdca8a6",
+      "after": "78d5f36ff09367bc138645d8c8ae130a2f8eb7ef",
+      "timestamp": "2026-10-18T15:23:22Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46914152558,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7E0obg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "78d5f36ff09367bc138645d8c8ae130a2f8eb7ef",
+      "after": "9aaf3ee6ed327a77ed153ca0059d83f55f4fa367",
+      "timestamp": "2026-10-18T15:38:21Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46914894263,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7Fh5tw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "9aaf3ee6ed327a77ed153ca0059d83f55f4fa367",
+      "after": "32024d07d5daa83c9c8caa20d743b4082b0fbcde",
+      "timestamp": "2026-10-18T15:48:53Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46916660588,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7HNtbA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "32024d07d5daa83c9c8caa20d743b4082b0fbcde",
+      "after": "091041fec59abb5c86829004e0e2114d7b21a420",
+      "timestamp": "2026-10-18T16:13:40Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46918353320,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7I1BqA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "091041fec59abb5c86829004e0e2114d7b21a420",
+      "after": "18523593b3625371c29c98355c36d5cfa62e4daf",
+      "timestamp": "2026-10-18T16:37:31Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46919967977,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7KXk6Q",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "18523593b3625371c29c98355c36d5cfa62e4daf",
+      "after": "cd1ae15f818ba2bf10980c1e9fe928d4cbfe9bb4",
+      "timestamp": "2026-10-18T17:00:22Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46920994256,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7LWN0A",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "cd1ae15f818ba2bf10980c1e9fe928d4cbfe9bb4",
+      "after": "0b31dd4da2d4d0fdac13fc095e5b98aa0ad7b898",
+      "timestamp": "2026-10-18T17:14:30Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46922971260,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7NO4fA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "0b31dd4da2d4d0fdac13fc095e5b98aa0ad7b898",
+      "after": "ba0a71d284cfcebaab169ef8d00ce2e4b878a1c7",
+      "timestamp": "2026-10-18T17:42:27Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46924733266,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7O6bUg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "ba0a71d284cfcebaab169ef8d00ce2e4b878a1c7",
+      "after": "360f09d6608888e1d639ae7892787fa626ef1804",
+      "timestamp": "2026-10-18T18:07:13Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46925645666,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7PyHYg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "360f09d6608888e1d639ae7892787fa626ef1804",
+      "after": "f9326c8a2b21a39678c7dc0000acc73bd77ca57c",
+      "timestamp": "2026-10-18T18:20:15Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46926814560,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK7Q5dYA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "f9326c8a2b21a39678c7dc0000acc73bd77ca57c",
+      "after": "a527828fe181e7101c09079983a32983484e564f",
+      "timestamp": "2026-10-18T18:36:58Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 46993722893,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK8QtODQ",
+      "activity_type": "push",
+      "ref": "refs/heads/master",
+      "before": "edae42cd496fa2780076fffb6aeb4b6c24f577b8",
+      "after": "7f587819a7aa8cc20cd282c97182082145ea39a1",
+      "timestamp": "2026-10-19T10:33:39Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47108353299,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK9-BtEw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "a527828fe181e7101c09079983a32983484e564f",
+      "after": "67580a3f718dacea6fede3d13bdfda1af96503ec",
+      "timestamp": "2026-10-20T08:47:03Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47113835137,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK-DQSgQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "67580a3f718dacea6fede3d13bdfda1af96503ec",
+      "after": "85abbf404dbcc5fc6e8fbad94a62658eaf58b175",
+      "timestamp": "2026-10-20T09:46:16Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47115572661,
+      "node_id": "PSH_kwLOVI9NZs8AAAAK-E6VtQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/target-bridge-vdraft",
+      "before": "85abbf404dbcc5fc6e8fbad94a62658eaf58b175",
+      "after": "c884685fa188e1eefd09524dd58c5ebb99de8de7",
+      "timestamp": "2026-10-20T10:05:08Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47428454173,
+      "node_id": "PSH_kwLOVI9NZs8AAAALCvTHHQ",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/exploratory/natural-solver-feasibility-pilot",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "766b3788d22b8591b24020753f71fd9a17875d7a",
+      "timestamp": "2026-10-22T18:45:15Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47536618116,
+      "node_id": "PSH_kwLOVI9NZs8AAAALEWc6hA",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/option-b-construction-audit",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "008abbfae91afbabc1b20c5c943d885f024837b4",
+      "timestamp": "2026-10-23T15:38:29Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47600313402,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFTMkOg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/option-b-construction-audit",
+      "before": "008abbfae91afbabc1b20c5c943d885f024837b4",
+      "after": "886a6d559bccab29bf8759aace2aec21bf230aa1",
+      "timestamp": "2026-10-24T05:40:55Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47600390740,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFTRSVA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/option-b-construction-audit",
+      "before": "886a6d559bccab29bf8759aace2aec21bf230aa1",
+      "after": "bec5d462a5f0c40fe44cac9d8915314943fd1634",
+      "timestamp": "2026-10-24T05:42:19Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602066303,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFU3jfw",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "bec5d462a5f0c40fe44cac9d8915314943fd1634",
+      "timestamp": "2026-10-24T06:12:26Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602112535,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFU6YFw",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "bec5d462a5f0c40fe44cac9d8915314943fd1634",
+      "after": "8e313547930cda01efbbf387d70c77dbae82bce8",
+      "timestamp": "2026-10-24T06:13:15Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602154487,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFU879w",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "8e313547930cda01efbbf387d70c77dbae82bce8",
+      "after": "8c201fb8b997de055c138a31ce83cbf72e21f3e1",
+      "timestamp": "2026-10-24T06:14:01Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602431902,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFVN3ng",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "8c201fb8b997de055c138a31ce83cbf72e21f3e1",
+      "after": "7c505c2c9ddd160848127821b46f2470d030a1f3",
+      "timestamp": "2026-10-24T06:18:54Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602493828,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFVRphA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "7c505c2c9ddd160848127821b46f2470d030a1f3",
+      "after": "abc6acee8c4dccf1fa4225c6c38001c21a96a88f",
+      "timestamp": "2026-10-24T06:20:02Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602516287,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFVTBPw",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "abc6acee8c4dccf1fa4225c6c38001c21a96a88f",
+      "after": "9114788493c0532055ecef39664b33e17046f8b2",
+      "timestamp": "2026-10-24T06:20:23Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602531234,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFVT7og",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "9114788493c0532055ecef39664b33e17046f8b2",
+      "after": "e2a45a5ed83f68c7e2827fb87cf1a6ca3e36ced4",
+      "timestamp": "2026-10-24T06:20:39Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47602538601,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFVUYaQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "e2a45a5ed83f68c7e2827fb87cf1a6ca3e36ced4",
+      "after": "30f717aac2bd37bac1e96373dcf39091461b2ff2",
+      "timestamp": "2026-10-24T06:20:47Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47610163745,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFclyIQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "30f717aac2bd37bac1e96373dcf39091461b2ff2",
+      "after": "817b7af18f12de9943401dd32f34e4b2b95d829d",
+      "timestamp": "2026-10-24T08:32:48Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47610567008,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFc-ZYA",
+      "activity_type": "branch_deletion",
+      "ref": "refs/tags/three-world-sim-2026-10-24",
+      "before": "817b7af18f12de9943401dd32f34e4b2b95d829d",
+      "after": "0000000000000000000000000000000000000000",
+      "timestamp": "2026-10-24T08:39:45Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47610794013,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFdMQHQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "817b7af18f12de9943401dd32f34e4b2b95d829d",
+      "after": "b9cad6216fff780ff09a5096b0eb2dfe8f975449",
+      "timestamp": "2026-10-24T08:43:36Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47613975025,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFgOZ8Q",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "b9cad6216fff780ff09a5096b0eb2dfe8f975449",
+      "after": "780daa5980b00f932ce5bbf4dc6dc753336c33b7",
+      "timestamp": "2026-10-24T09:36:15Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47619826995,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFlzlMw",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "780daa5980b00f932ce5bbf4dc6dc753336c33b7",
+      "after": "e7a9a16e477ec545e58fa6eefc3043e4c8b1ad7c",
+      "timestamp": "2026-10-24T11:11:07Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47620007233,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFl-lQQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "e7a9a16e477ec545e58fa6eefc3043e4c8b1ad7c",
+      "after": "d2c4d7c13a76582c8e3206fc2c835b3b47bcbfea",
+      "timestamp": "2026-10-24T11:14:02Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47621420293,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFnU1BQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "d2c4d7c13a76582c8e3206fc2c835b3b47bcbfea",
+      "after": "9d8ba965efef263bff353ecd6fd629bc91bc8615",
+      "timestamp": "2026-10-24T11:36:47Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47621769108,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFnqHlA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "9d8ba965efef263bff353ecd6fd629bc91bc8615",
+      "after": "5ddeb5c798c2b238b3811a13dfefb156c101a3cf",
+      "timestamp": "2026-10-24T11:42:27Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47622540844,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFoZOLA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "5ddeb5c798c2b238b3811a13dfefb156c101a3cf",
+      "after": "a2154069617412f5e6978e505f3c7fa9457b89f3",
+      "timestamp": "2026-10-24T11:54:55Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47622759210,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFomjKg",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "a2154069617412f5e6978e505f3c7fa9457b89f3",
+      "after": "1742d405cb9d5513c1e2ed9fbb9997de88f12a27",
+      "timestamp": "2026-10-24T11:58:26Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47624019357,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFpzdnQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "1742d405cb9d5513c1e2ed9fbb9997de88f12a27",
+      "after": "0fc7b7b3cd1fdbe8e54b36aef5b6106b96b7da51",
+      "timestamp": "2026-10-24T12:17:36Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47624022074,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFpzoOg",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "0fc7b7b3cd1fdbe8e54b36aef5b6106b96b7da51",
+      "after": "0ae951e45cdef6e5cc98ae913f3d8d7828fedc45",
+      "timestamp": "2026-10-24T12:17:38Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47624106435,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFp4xww",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "0ae951e45cdef6e5cc98ae913f3d8d7828fedc45",
+      "after": "b10250716c26f5c93da70b91635fe71e9e40291f",
+      "timestamp": "2026-10-24T12:18:57Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47624175245,
+      "node_id": "PSH_kwLOVI9NZs8AAAALFp8-jQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "b10250716c26f5c93da70b91635fe71e9e40291f",
+      "after": "e125216f46791b56b936499233cd086c3039df77",
+      "timestamp": "2026-10-24T12:20:01Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47688545220,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGnVzxA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "e125216f46791b56b936499233cd086c3039df77",
+      "after": "ae367653d418050ba761977ad7f7d9391b00e724",
+      "timestamp": "2026-10-25T05:21:43Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47690459665,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGpKqEQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "ae367653d418050ba761977ad7f7d9391b00e724",
+      "after": "0487bf85db7909ba9e407c4dbf6a24561da20a67",
+      "timestamp": "2026-10-25T05:58:26Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47690507072,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGpNjQA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "0487bf85db7909ba9e407c4dbf6a24561da20a67",
+      "after": "c55dac6a8417f77b5cc86b3bddbc7f2b20039d3b",
+      "timestamp": "2026-10-25T05:59:21Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47690527700,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGpOz1A",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "c55dac6a8417f77b5cc86b3bddbc7f2b20039d3b",
+      "after": "d2eb7e6c2ba66c08d4b6f96dbeb7bb8ff167649d",
+      "timestamp": "2026-10-25T05:59:46Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47690545270,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGpP4dg",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "d2eb7e6c2ba66c08d4b6f96dbeb7bb8ff167649d",
+      "after": "2326ca0e15fe29cfc06d0e6cf7fdc8d9160b9d9a",
+      "timestamp": "2026-10-25T06:00:04Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47701632061,
+      "node_id": "PSH_kwLOVI9NZs8AAAALGz0kPQ",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "2326ca0e15fe29cfc06d0e6cf7fdc8d9160b9d9a",
+      "after": "31a42e3be0e8a9212ff1a6e7991f8f6641ca0a3a",
+      "timestamp": "2026-10-25T09:15:18Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47702882638,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG1A5Tg",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "31a42e3be0e8a9212ff1a6e7991f8f6641ca0a3a",
+      "after": "bca3e04cbbaee2d5af3312929c1bd0fca6133559",
+      "timestamp": "2026-10-25T09:35:34Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47703740891,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG11R2w",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "bca3e04cbbaee2d5af3312929c1bd0fca6133559",
+      "after": "b85e077fa9a4ad41396d167909fd11065bff6b69",
+      "timestamp": "2026-10-25T09:49:28Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47704394160,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG2dJsA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "b85e077fa9a4ad41396d167909fd11065bff6b69",
+      "after": "25517309f4a42fae460aceceeae2dccf0c0ce8b1",
+      "timestamp": "2026-10-25T10:00:01Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47705442014,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG3dG3g",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "25517309f4a42fae460aceceeae2dccf0c0ce8b1",
+      "after": "db002420305a8b6610650f52fdb8121f704cd479",
+      "timestamp": "2026-10-25T10:16:17Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47706466816,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG4bqAA",
+      "activity_type": "push",
+      "ref": "refs/heads/research/concentration-math-spec",
+      "before": "db002420305a8b6610650f52fdb8121f704cd479",
+      "after": "8bb2e8276a1d1b18579c022952155fc88e152794",
+      "timestamp": "2026-10-25T10:32:35Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47710597286,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG8Xwpg",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/feasibility-protocol-2026-10-25",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "2aa6faf3a83ed7c697d7176fb6c99ab7b55c2fd7",
+      "timestamp": "2026-10-25T11:37:38Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47710802370,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG8kRwg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/feasibility-protocol-2026-10-25",
+      "before": "2aa6faf3a83ed7c697d7176fb6c99ab7b55c2fd7",
+      "after": "28ae637fbfda38139424576e2423ece6e04af0b8",
+      "timestamp": "2026-10-25T11:40:54Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47711732445,
+      "node_id": "PSH_kwLOVI9NZs8AAAALG9dC3Q",
+      "activity_type": "push",
+      "ref": "refs/heads/review/feasibility-protocol-2026-10-25",
+      "before": "28ae637fbfda38139424576e2423ece6e04af0b8",
+      "after": "47ef6923f7c640751a7887d48ac7e4619d029368",
+      "timestamp": "2026-10-25T11:55:25Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47745842179,
+      "node_id": "PSH_kwLOVI9NZs8AAAALHd-8Aw",
+      "activity_type": "branch_creation",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "0000000000000000000000000000000000000000",
+      "after": "3dd66ee1d17a2ab2f3eaa3b47472441ec386d9ec",
+      "timestamp": "2026-10-25T19:46:10Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47747251786,
+      "node_id": "PSH_kwLOVI9NZs8AAAALHfU-Sg",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "3dd66ee1d17a2ab2f3eaa3b47472441ec386d9ec",
+      "after": "d775cce770d82aa39da570498e689ac2448da15c",
+      "timestamp": "2026-10-25T20:06:03Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788058289,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGPmsQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "d775cce770d82aa39da570498e689ac2448da15c",
+      "after": "9fa906f9934e701d097c9e7a57a30d8b658af6af",
+      "timestamp": "2026-10-26T06:15:56Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788101719,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGSQVw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "9fa906f9934e701d097c9e7a57a30d8b658af6af",
+      "after": "eeefd712bce41d4d459fad7b53440c02ddef5e60",
+      "timestamp": "2026-10-26T06:16:31Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788114188,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGTBDA",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "eeefd712bce41d4d459fad7b53440c02ddef5e60",
+      "after": "889010aa4a63b5497cc4d6e65e24d92dad1a0bab",
+      "timestamp": "2026-10-26T06:16:41Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788122051,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGTfww",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "889010aa4a63b5497cc4d6e65e24d92dad1a0bab",
+      "after": "927584c62f0dc31ef81c27c223338cc515068ba3",
+      "timestamp": "2026-10-26T06:16:47Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788302453,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGegdQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "927584c62f0dc31ef81c27c223338cc515068ba3",
+      "after": "121eb277d09935f583cfa4f002b6048e6968d24a",
+      "timestamp": "2026-10-26T06:19:13Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47788320193,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIGflwQ",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "121eb277d09935f583cfa4f002b6048e6968d24a",
+      "after": "5c730b9790259e9fadcca3fa312adf70b43466f6",
+      "timestamp": "2026-10-26T06:19:27Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    },
+    {
+      "id": 47789198475,
+      "node_id": "PSH_kwLOVI9NZs8AAAALIHVMiw",
+      "activity_type": "push",
+      "ref": "refs/heads/review/concentration-formulation-2026-10-25",
+      "before": "5c730b9790259e9fadcca3fa312adf70b43466f6",
+      "after": "a8d6cb158dec7085f6cfed73081a3857fd4a61d3",
+      "timestamp": "2026-10-26T06:31:00Z",
+      "actor": {
+        "id": 116307732,
+        "login": "foued2",
+        "type": "User"
+      }
+    }
+  ]
+}
