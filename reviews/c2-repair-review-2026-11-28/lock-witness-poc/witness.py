@@ -64,7 +64,21 @@ class Witness:
             if self.digest(payload) != request_hash:
                 return False
             previous = event_hash
+        # Detect partial event deletion or orphaned claims. A full database rollback
+        # still requires an independently retained checkpoint to detect.
+        claims = self.db.execute("SELECT scope,request_hash,sequence FROM claims ORDER BY sequence").fetchall()
+        if len(claims) != len(rows):
+            return False
+        for scope, request_hash, sequence in claims:
+            row = next((event for event in rows if event[0] == sequence), None)
+            if row is None or (row[1], row[3]) != (scope, request_hash):
+                return False
         return True
+
+    def checkpoint(self):
+        """Return a value an independent custodian must retain outside this DB."""
+        row = self.db.execute("SELECT sequence,event_hash FROM events ORDER BY sequence DESC LIMIT 1").fetchone()
+        return row if row else (0, "0" * 64)
 
     def count(self, scope):
         return self.db.execute("SELECT COUNT(*) FROM events WHERE scope=?", (scope,)).fetchone()[0]

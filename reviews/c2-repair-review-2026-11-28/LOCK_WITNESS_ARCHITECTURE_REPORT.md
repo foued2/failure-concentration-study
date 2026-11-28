@@ -11,6 +11,10 @@ It is **not feasible to prove historical firstness for the existing Revision 5 A
 
 No GitHub ruleset can make the design administrator-proof when people trusted to administer the repository can edit/disable rules or bypass them. With one personal-repository owner/admin in control, the witness provides meaningful protection only against actors who cannot alter the App, rulesets, or witness. For stronger separation, place the repository under an organization with an organization-level ruleset and distinct organization owners, while repository admins cannot modify that org-level policy; still trust org owners and GitHub itself.
 
+### Historical cutover rule required before any use
+
+Witness activation is not a reset, lock, or evidence that the prior C2 attempt was unused. It must not accept a production authorization for this same C2 purpose while historical lock status is unresolved. A prospective cutover would require an independently reviewed disposition of the legacy interval: complete evidence establishing `NO_VALID_LOCK`, or a recorded `VALID_LOCK` which consumes the attempt permanently. If the historical interval remains incomplete, status stays indeterminate and the same-purpose witness cannot authorize another attempt. A distinct future study-purpose key would require separate prospective authority and explicit disclosure; it cannot be used to relabel or bypass the existing C2 attempt. This is a proposed gate for review, not an adopted protocol amendment.
+
 ## Revision 5 point of departure
 
 Revision 5 defines a sequence of master OAC push, canonical lock-ref creation at B, and first B-to-A push. It consumes the attempt on the first event that creates or mutates that ref, and makes later ref deletion/rewrite/recreation an audit breach rather than a successor route. This is a sound *interpretation rule after complete evidence is known*. It does not cause GitHub to enforce that only one actor can perform that first event, and it depends on a complete pre-lock Activity ledger to prove no earlier event. Its own §9.7/§11 identify missing raw Activity pages/headers and incomplete preservation.
@@ -53,25 +57,28 @@ The witness transaction precedes GitHub mutation, but there is no distributed at
 
 ## Adversarial prototype results
 
-`lock-witness-poc/` is a local SQLite state-machine prototype. Its append-only event table has a per-scope unique claim, serializing transaction, SHA-256 hash chain, FULL synchronous commits, duplicate idempotency, and replacement rejection. It has no GitHub adapter and is not production-grade immutable storage.
+`lock-witness-poc/` is a local SQLite state-machine prototype. Its append-only event table has a per-scope unique claim, serializing transaction, SHA-256 hash chain, FULL synchronous commits, duplicate idempotency, and replacement rejection. It has no GitHub adapter and is not production-grade immutable storage. An external `(sequence, hash)` checkpoint is necessary to detect full database rollback; the prototype cannot provide that external custody.
 
 | Test | Result | What it shows / does not show |
 |---|---|---|
-| Two competing requests | PASS | One local transaction wins; does not test App/ruleset behavior |
+| Two competing requests in independent processes | PASS | Spawned processes with separate SQLite connections race; one intent wins. Does not test distributed databases or App/ruleset behavior |
 | Duplicate and delayed same request | PASS | Idempotent retry returns original claim |
 | Different replacement request | PASS | Unique scope prevents a second claim |
 | Missing/out-of-order webhook notifications | PASS (model) | Witness ordering does not depend on webhook; does not emulate GitHub event service |
 | Ref deletion/recreation and force update | PASS (model) | A second intent remains rejected; actual GitHub ref/ruleset enforcement untested |
 | Ruleset modification/bypass | LIMITATION CONFIRMED | Witness cannot prevent an administrator changing GitHub policy |
-| Witness outage before/after durable intent | PASS (state model) | No intent means no call; after commit the claim stays consumed. Process/network fault injection was not performed |
-| GitHub succeeds, witness misses response | PASS (restart model) | Reopen returns same intent; reconciliation logic is specified but no GitHub endpoint was exercised |
-| Local ledger mutation | PASS | Hash-chain verifier detects modified payload; cannot detect coordinated rewrite of DB and all unanchored checkpoints |
+| Crash after durable record, before GitHub request | PASS (simulation) | Crash boundary represented; restart continues same request and rejects replacement |
+| GitHub applies ref, response lost, witness restarts | PASS (fake GitHub) | Reopened witness returns exact duplicate; mocked ref read sees A; same operation is idempotent. No real network/ref operation exercised |
+| Ruleset change or admin bypass after intent | LIMITATION CONFIRMED (simulation) | Mocked policy change blocks App; modeled direct admin mutation diverges from expected ref. Witness DB alone does not prevent or detect it; an active reconciliation read detects divergence |
+| Persistent storage corruption/rollback | PASS (simulation) | Event deletion detected; full database snapshot rollback remains internally valid but differs from independently retained checkpoint |
+| Hash-chain payload mutation | PASS | Local verifier detects payload mutation; coordinated rewrite plus replacement of all external checkpoints remains inside trust boundary |
 
-Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result: **9 tests passed**.
+Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result after adversarial additions: **12 tests passed**. All GitHub behaviors remain mocks/models, not integration results.
 
 ## Exact remaining assumptions and blockers
 
 - Historical first qualifying lock cannot currently be established from the preserved Revision 5 evidence. Raw Activity pages and headers, full ledger, retention/completeness guarantee, and creation-to-first-record gap remain unresolved.
+- No safe cutover for the same C2 purpose is authorized by this prototype. Until the historical attempt is independently classified, witness activation must not be treated as a fresh first event or permit another same-purpose lock.
 - No GitHub sandbox repository was created for end-to-end ruleset/App validation. No production settings were inspected or changed.
 - For prospective enforcement, require a single-purpose App as the sole ruleset bypass/writer, no human bypass, no direct credentials, tightly protected App private key, and restricted admin policy authority. The GitHub App itself must be enabled to bypass the ruleset for its one intended action; no other actor may bypass.
 - Need independent witness deployment review: linearizable transactional storage; append-only/WORM storage and independent checkpointing; signing-key rotation/recovery; replicated backups; access controls; concurrency/load and crash fault injection; and tested GitHub reconciliation.
