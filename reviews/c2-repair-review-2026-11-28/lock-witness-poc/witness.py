@@ -26,6 +26,13 @@ ALLOWED_TRANSITIONS = {
 }
 
 
+def normalized_request(request):
+    normalized = dict(request)
+    normalized["base_commit"] = normalized["base_commit"].lower()
+    normalized["target_commit"] = normalized["target_commit"].lower()
+    return normalized
+
+
 def validate_request(request, policy):
     required = {"experiment_id", "registry_digest", "oac_sha256", "base_commit", "target_commit"}
     if not isinstance(request, dict) or set(request) != required:
@@ -37,7 +44,10 @@ def validate_request(request, policy):
     for field in ("base_commit", "target_commit"):
         if len(request[field]) not in (40, 64) or any(c not in "0123456789abcdef" for c in request[field].lower()):
             raise PolicyError(f"invalid {field}")
-    return sha(canonical(request))
+    normalized = normalized_request(request)
+    if normalized["base_commit"] == normalized["target_commit"]:
+        raise PolicyError("base and target commits must differ")
+    return sha(canonical(normalized))
 
 
 class CheckpointStore:
@@ -82,15 +92,39 @@ class CheckpointStore:
         """)
         object.__setattr__(self, "_sealed", True)
 
-    def initialize(self, authorization):
-        """Explicit one-time bootstrap; never called implicitly by construction."""
-        if self.db.execute("SELECT 1 FROM metadata").fetchone():
-            raise PolicyError("checkpoint database already initialized")
+    def initialize(self, authorization, failpoint=None):
+        """Explicit recoverable bootstrap; retries only the same signed genesis."""
+        metadata = self.db.execute(
+            "SELECT custodian_id,manifest_digest,genesis_hash FROM metadata WHERE singleton=1").fetchone()
+        if metadata is not None:
+            if metadata[:2] != (self.policy["custodian_id"], self.manifest.digest):
+                raise IntegrityError("existing checkpoint metadata has a different identity")
+            rows = self.verify()
+            if self.external.records()[0]["checkpoint_hash"] != metadata[2]:
+                raise IntegrityError("existing metadata does not match external genesis")
+            self.authority.consume_initialization(self.manifest, authorization)
+            return "duplicate"
+        if failpoint == "before_external_genesis":
+            raise RuntimeError("injected crash before external genesis")
         self.external.initialize(self.authority, self.manifest, authorization)
-        genesis_hash = self.external.head()[1]
-        self.db.execute("INSERT INTO metadata VALUES(1,?,?,?)",
-                        (self.policy["custodian_id"], self.manifest.digest, genesis_hash))
+        if failpoint == "after_external_genesis":
+            raise RuntimeError("injected crash after external genesis")
+        genesis_hash = self.external.records()[0]["checkpoint_hash"]
+        self.db.execute("BEGIN IMMEDIATE")
+        try:
+            self.db.execute("INSERT INTO metadata VALUES(1,?,?,?)",
+                            (self.policy["custodian_id"], self.manifest.digest, genesis_hash))
+            if failpoint == "after_metadata_insert":
+                raise RuntimeError("injected crash after metadata insert before commit")
+            self.db.execute("COMMIT")
+        except Exception:
+            self.db.execute("ROLLBACK")
+            raise
         self.db.execute("PRAGMA wal_checkpoint(FULL)")
+        if failpoint == "after_metadata_commit":
+            raise RuntimeError("injected crash after metadata commit")
+        self.authority.consume_initialization(self.manifest, authorization)
+        return "created"
 
     @staticmethod
     def _event_body(seq, scope, exp, req_hash, state, prev, recorded_ns, receipt_digest):
@@ -142,6 +176,9 @@ class CheckpointStore:
                 if existing:
                     if existing[0] != experiment_id or existing[1] != request_hash:
                         raise Conflict("canonical purpose is already claimed by another intent")
+                    if existing[2] == "BREACH":
+                        self.db.execute("COMMIT")
+                        return existing[3], "BREACH"
                     self.db.execute("COMMIT")
                     return existing[3], "duplicate"
                 current_state = "UNCLAIMED"
@@ -203,7 +240,7 @@ class CheckpointStore:
                         "BREACH": "independent_reconciler"}
         if allowed_role.get(outcome) != role:
             raise IntegrityError("receipt role is not authorized for this state")
-        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha") != request["target_commit"]:
+        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha", "").lower() != request["target_commit"].lower():
             raise IntegrityError("adapter receipt does not attest the intended target")
         receipt_digest = sha(canonical(receipt))
         return self._append(self.policy["purpose_key"], self.policy["experiment_id"],
@@ -292,7 +329,7 @@ class Witness:
                         "BREACH": "independent_reconciler"}
         if allowed_role.get(outcome) != role:
             raise IntegrityError("receipt signer is not authorized for this state transition")
-        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha") != request["target_commit"]:
+        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha", "").lower() != request["target_commit"].lower():
             raise IntegrityError("adapter receipt does not attest the intended target")
         self._sync_and_verify()
         result = self._anchor.record_receipt(request, receipt)

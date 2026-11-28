@@ -4,9 +4,9 @@ import hmac
 import json
 import os
 import secrets
-import time
-from dataclasses import dataclass
 from contextlib import contextmanager
+from dataclasses import dataclass
+import time
 
 
 class IntegrityError(Exception):
@@ -23,6 +23,32 @@ def canonical(value):
 
 def sha(text):
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+@contextmanager
+def _file_lock(path):
+    """Advisory cross-process lock for local shared-filesystem model stores."""
+    with open(path + ".lock", "a+b") as lock_file:
+        if os.name == "nt":
+            import msvcrt
+            lock_file.seek(0, os.SEEK_END)
+            if lock_file.tell() == 0:
+                lock_file.write(b"\0")
+                lock_file.flush()
+            lock_file.seek(0)
+            msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+            try:
+                yield
+            finally:
+                lock_file.seek(0)
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
 
 @dataclass(frozen=True)
@@ -48,14 +74,39 @@ class PolicyAuthority:
         self._issuance = {}
         self._consumed = set()
         self._purpose_manifests = {}
-        if state_path and os.path.exists(state_path):
-            self._load_issuance_log()
+        self._anchor_path = state_path + ".head" if state_path else None
+        if state_path and (os.path.exists(state_path) or os.path.exists(self._anchor_path)):
+            with _file_lock(state_path):
+                self._load_issuance_log_unlocked()
 
-    def _append_authority_event(self, kind, manifest_digest, nonce, scientific_purpose):
+    def _anchor_signature(self, sequence, event_hash):
+        data = canonical({"sequence": sequence, "event_hash": event_hash})
+        return hmac.new(self._root_key, data.encode(), hashlib.sha256).hexdigest()
+
+    def _write_anchor_unlocked(self, sequence, event_hash):
+        record = {"sequence": sequence, "event_hash": event_hash,
+                  "signature": self._anchor_signature(sequence, event_hash)}
+        temp_path = self._anchor_path + f".{os.getpid()}.tmp"
+        with open(temp_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(canonical(record) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, self._anchor_path)
+
+    def _initialize_log_unlocked(self):
+        if os.path.exists(self._state_path) or os.path.exists(self._anchor_path):
+            raise PolicyError("policy-authority state is partially initialized")
+        with open(self._state_path, "x", encoding="utf-8", newline="\n") as f:
+            f.flush()
+            os.fsync(f.fileno())
+        self._write_anchor_unlocked(0, "0" * 64)
+
+    def _append_authority_event_unlocked(self, kind, manifest_digest, nonce, scientific_purpose):
         if not self._state_path:
             raise PolicyError("durable policy-authority state path required for genesis authorization")
-        previous = self._authority_head()
-        record = {"kind": kind, "sequence": self._authority_count() + 1,
+        rows = self._authority_records_unlocked()
+        previous = rows[-1]["event_hash"] if rows else "0" * 64
+        record = {"kind": kind, "sequence": len(rows) + 1,
                   "manifest_digest": manifest_digest, "nonce": nonce,
                   "scientific_purpose": scientific_purpose,
                   "previous_hash": previous, "recorded_ns": time.time_ns()}
@@ -65,6 +116,7 @@ class PolicyAuthority:
             f.write(canonical(record) + "\n")
             f.flush()
             os.fsync(f.fileno())
+        self._write_anchor_unlocked(record["sequence"], record["event_hash"])
         if kind == "INIT_ISSUED":
             self._issuance[manifest_digest] = nonce
         elif kind == "INIT_CONSUMED":
@@ -72,21 +124,28 @@ class PolicyAuthority:
         elif kind == "POLICY_BOUND":
             self._purpose_manifests[scientific_purpose] = manifest_digest
 
-    def _authority_records(self):
+    def _authority_records_unlocked(self):
         if not self._state_path or not os.path.exists(self._state_path):
-            return []
+            raise PolicyError("configured policy-authority state log is missing")
         try:
-            with open(self._state_path, "r", encoding="utf-8") as f:
-                return [json.loads(line) for line in f if line.strip()]
+            with open(self._state_path, "rb") as f:
+                data = f.read()
+            if data and not data.endswith(b"\n"):
+                raise PolicyError("policy-authority state log is truncated")
+            return [json.loads(line) for line in data.decode("utf-8").splitlines() if line.strip()]
         except Exception as exc:
+            if isinstance(exc, PolicyError):
+                raise
             raise PolicyError("policy-authority state log unreadable") from exc
 
-    def _load_issuance_log(self):
+    def _load_issuance_log_unlocked(self):
+        if not self._state_path or not os.path.exists(self._state_path) or not os.path.exists(self._anchor_path):
+            raise PolicyError("policy-authority log or independently retained head anchor is missing")
         self._issuance = {}
         self._consumed = set()
         self._purpose_manifests = {}
         previous = "0" * 64
-        records = self._authority_records()
+        records = self._authority_records_unlocked()
         for seq, record in enumerate(records, 1):
             signature = record.pop("signature", None)
             if not signature or not hmac.compare_digest(
@@ -117,29 +176,49 @@ class PolicyAuthority:
             else:
                 raise PolicyError("invalid policy-authority state transition")
 
-    def _authority_count(self):
-        return len(self._authority_records())
+        try:
+            with open(self._anchor_path, "r", encoding="utf-8") as f:
+                anchor = json.load(f)
+        except Exception as exc:
+            raise PolicyError("policy-authority head anchor unreadable") from exc
+        if not isinstance(anchor, dict):
+            raise PolicyError("policy-authority head anchor is invalid")
+        anchor_sequence = anchor.get("sequence")
+        anchor_hash = anchor.get("event_hash")
+        anchor_signature = anchor.get("signature")
+        if (not isinstance(anchor_sequence, int) or isinstance(anchor_sequence, bool) or
+                not isinstance(anchor_hash, str) or not isinstance(anchor_signature, str)):
+            raise PolicyError("policy-authority head anchor is invalid")
+        expected_signature = self._anchor_signature(anchor_sequence, anchor_hash)
+        if (anchor_sequence < 0 or
+                not hmac.compare_digest(anchor_signature, expected_signature) or
+                anchor_sequence > len(records)):
+            raise PolicyError("policy-authority head anchor is invalid or ahead of its log")
+        hash_at_anchor = records[anchor_sequence - 1]["event_hash"] if anchor_sequence else "0" * 64
+        if hash_at_anchor != anchor_hash:
+            raise PolicyError("policy-authority log differs from its pinned head anchor")
+        # Recover a crash after the signed log append but before the sidecar replace.
+        if len(records) > anchor_sequence:
+            latest_hash = records[-1]["event_hash"] if records else "0" * 64
+            self._write_anchor_unlocked(len(records), latest_hash)
 
-    def _authority_head(self):
-        rows = self._authority_records()
-        return rows[-1]["event_hash"] if rows else "0" * 64
+    def initialize(self):
+        """Explicit trusted bootstrap; issuance never silently recreates missing state."""
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            if not os.path.exists(self._state_path) and not os.path.exists(self._anchor_path):
+                self._initialize_log_unlocked()
+                return "created"
+            if (os.path.exists(self._state_path) and not os.path.exists(self._anchor_path) and
+                    os.path.getsize(self._state_path) == 0):
+                self._write_anchor_unlocked(0, "0" * 64)
+            self._load_issuance_log_unlocked()
+            if os.path.getsize(self._state_path) == 0:
+                return "duplicate"
+            raise PolicyError("policy authority already has an issuance history")
 
-    def issue(self, policy):
-        if self._canonical_purposes.get(policy.get("scientific_purpose")) != policy.get("purpose_key"):
-            raise PolicyError("purpose key is not canonical in the trusted policy registry")
-        payload = canonical(policy)
-        manifest_digest = sha(payload)
-        if self._state_path and os.path.exists(self._state_path):
-            self._load_issuance_log()
-        bound_digest = self._purpose_manifests.get(policy["scientific_purpose"])
-        if bound_digest is not None and bound_digest != manifest_digest:
-            raise PolicyError("scientific purpose already has a different manifest/custodian lineage")
-        if bound_digest is None:
-            self._append_authority_event("POLICY_BOUND", manifest_digest, "", policy["scientific_purpose"])
-        sig = hmac.new(self._root_key, payload.encode(), hashlib.sha256).hexdigest()
-        return SignedPolicy(payload, sig)
-
-    def verify(self, manifest):
+    def _verify_manifest_unlocked(self, manifest):
         expected = hmac.new(self._root_key, manifest.payload_json.encode(), hashlib.sha256).hexdigest()
         if not hmac.compare_digest(expected, manifest.signature):
             raise PolicyError("policy manifest signature invalid")
@@ -150,39 +229,94 @@ class PolicyAuthority:
             raise PolicyError("policy manifest fields invalid")
         if self._canonical_purposes.get(payload["scientific_purpose"]) != payload["purpose_key"]:
             raise PolicyError("signed policy purpose key is not canonical")
-        if self._state_path and os.path.exists(self._state_path):
-            self._load_issuance_log()
         if self._purpose_manifests.get(payload["scientific_purpose"]) != manifest.digest:
             raise PolicyError("manifest is not the authorized lineage for this scientific purpose")
         return payload
 
+    def issue(self, policy):
+        if self._canonical_purposes.get(policy.get("scientific_purpose")) != policy.get("purpose_key"):
+            raise PolicyError("purpose key is not canonical in the trusted policy registry")
+        payload = canonical(policy)
+        manifest_digest = sha(payload)
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            self._load_issuance_log_unlocked()
+            bound_digest = self._purpose_manifests.get(policy["scientific_purpose"])
+            if bound_digest is not None and bound_digest != manifest_digest:
+                raise PolicyError("scientific purpose already has a different manifest/custodian lineage")
+            if bound_digest is None:
+                self._append_authority_event_unlocked("POLICY_BOUND", manifest_digest, "", policy["scientific_purpose"])
+                self._load_issuance_log_unlocked()
+            sig = hmac.new(self._root_key, payload.encode(), hashlib.sha256).hexdigest()
+            return SignedPolicy(payload, sig)
+
+    def verify(self, manifest):
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            self._load_issuance_log_unlocked()
+            return self._verify_manifest_unlocked(manifest)
+
     def authorize_initialization(self, manifest):
-        self.verify(manifest)
-        if manifest.digest in self._issuance or manifest.digest in self._consumed:
-            raise PolicyError("genesis initialization authorization already issued/consumed")
-        nonce = secrets.token_hex(24)
-        self._append_authority_event("INIT_ISSUED", manifest.digest, nonce,
-                                     manifest.payload["scientific_purpose"])
-        authorization = {"action": "initialize-custodian-genesis", "manifest_digest": manifest.digest,
-                         "custodian_id": manifest.payload["custodian_id"], "nonce": nonce}
-        encoded = canonical(authorization)
-        signature = hmac.new(self._root_key, encoded.encode(), hashlib.sha256).hexdigest()
-        return encoded, signature
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            self._load_issuance_log_unlocked()
+            self._verify_manifest_unlocked(manifest)
+            if manifest.digest in self._issuance or manifest.digest in self._consumed:
+                raise PolicyError("genesis initialization authorization already issued/consumed")
+            nonce = secrets.token_hex(24)
+            self._append_authority_event_unlocked("INIT_ISSUED", manifest.digest, nonce,
+                                                  manifest.payload["scientific_purpose"])
+            self._load_issuance_log_unlocked()
+            authorization = {"action": "initialize-custodian-genesis", "manifest_digest": manifest.digest,
+                             "custodian_id": manifest.payload["custodian_id"], "nonce": nonce}
+            encoded = canonical(authorization)
+            signature = hmac.new(self._root_key, encoded.encode(), hashlib.sha256).hexdigest()
+            return encoded, signature
 
     def verify_initialization(self, manifest, authorization):
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            self._load_issuance_log_unlocked()
+            self._verify_manifest_unlocked(manifest)
+            self._check_initialization_unlocked(manifest, authorization)
+
+    def _check_initialization_unlocked(self, manifest, authorization):
         encoded, signature = authorization
-        expected = hmac.new(self._root_key, encoded.encode(), hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(expected, signature):
+        expected_sig = hmac.new(self._root_key, encoded.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(expected_sig, signature):
             raise PolicyError("genesis initialization authorization invalid")
         expected_payload = {"action": "initialize-custodian-genesis", "manifest_digest": manifest.digest,
                             "custodian_id": manifest.payload["custodian_id"],
                             "nonce": self._issuance.get(manifest.digest)}
-        if json.loads(encoded) != expected_payload:
+        if json.loads(encoded) != expected_payload or expected_payload["nonce"] is None:
             raise PolicyError("genesis authorization does not match pinned manifest")
         if manifest.digest in self._consumed:
             raise PolicyError("genesis authorization already consumed")
-        self._append_authority_event("INIT_CONSUMED", manifest.digest, expected_payload["nonce"],
-                                     manifest.payload["scientific_purpose"])
+
+    def consume_initialization(self, manifest, authorization):
+        if not self._state_path:
+            raise PolicyError("durable policy-authority state path required")
+        with _file_lock(self._state_path):
+            self._load_issuance_log_unlocked()
+            self._verify_manifest_unlocked(manifest)
+            # Consumption after a durable matching genesis is idempotent on recovery.
+            encoded, signature = authorization
+            expected_sig = hmac.new(self._root_key, encoded.encode(), hashlib.sha256).hexdigest()
+            if not hmac.compare_digest(expected_sig, signature):
+                raise PolicyError("genesis initialization authorization invalid")
+            payload = json.loads(encoded)
+            if payload != {"action": "initialize-custodian-genesis", "manifest_digest": manifest.digest,
+                           "custodian_id": manifest.payload["custodian_id"],
+                           "nonce": self._issuance.get(manifest.digest)}:
+                raise PolicyError("genesis authorization does not match pinned manifest")
+            if manifest.digest not in self._consumed:
+                self._append_authority_event_unlocked("INIT_CONSUMED", manifest.digest, payload["nonce"],
+                                                      manifest.payload["scientific_purpose"])
+                self._load_issuance_log_unlocked()
 
 
 class ExternalCheckpoint:
@@ -208,27 +342,8 @@ class ExternalCheckpoint:
     @contextmanager
     def _serialized(self):
         """Cross-process lock around external checkpoint compare-and-append."""
-        with open(self.path + ".lock", "a+b") as lock_file:
-            if os.name == "nt":
-                import msvcrt
-                lock_file.seek(0, os.SEEK_END)
-                if lock_file.tell() == 0:
-                    lock_file.write(b"\0")
-                    lock_file.flush()
-                lock_file.seek(0)
-                msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
-                try:
-                    yield
-                finally:
-                    lock_file.seek(0)
-                    msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
-                try:
-                    yield
-                finally:
-                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+        with _file_lock(self.path):
+            yield
 
     def _sign(self, record):
         return hmac.new(self._key, canonical(record).encode(), hashlib.sha256).hexdigest()
@@ -245,11 +360,20 @@ class ExternalCheckpoint:
         genesis["signature"] = self._sign(genesis)
         with self._serialized():
             if os.path.exists(self.path):
-                raise PolicyError("external checkpoint already initialized")
+                records = self._records_unlocked()
+                if len(records) == 1 and records[0] == genesis:
+                    return "duplicate"
+                if (len(records) == 1 and records[0].get("kind") == "GENESIS" and
+                        records[0].get("custodian_id") == self.custodian_id and
+                        records[0].get("manifest_digest") == self.manifest_digest):
+                    # recorded_ns makes otherwise matching genesis bytes differ.
+                    return "duplicate"
+                raise PolicyError("external checkpoint contains a mismatched or advanced genesis")
             with open(self.path, "x", encoding="utf-8", newline="\n") as f:
                 f.write(canonical(genesis) + "\n")
                 f.flush()
                 os.fsync(f.fileno())
+        return "created"
 
     def _records_unlocked(self):
         if not os.path.exists(self.path):

@@ -1,5 +1,6 @@
 """Adapter contract and fake GitHub implementation used only by local tests."""
 from trust import canonical, sha
+from witness import normalized_request
 
 
 class FakeGitHub:
@@ -12,9 +13,10 @@ class FakeGitHub:
         self.app_allowed = True
 
     def _receipt(self, request, outcome, observed_sha=None):
+        normalized = normalized_request(request)
         payload = {"purpose_key": self.policy["purpose_key"],
                    "experiment_id": self.policy["experiment_id"],
-                   "request_hash": sha(canonical(request)),
+                   "request_hash": sha(canonical(normalized)),
                    "repository": self.policy["repository"], "lock_ref": self.policy["lock_ref"],
                    "app_id": self.policy["app_id"], "outcome": outcome,
                    "observed_sha": observed_sha, "event_count": len(self.events)}
@@ -23,6 +25,7 @@ class FakeGitHub:
     def apply_intent(self, request):
         if not self.app_allowed:
             raise PermissionError("modeled ruleset rejects the App")
+        request = normalized_request(request)
         base, target = request["base_commit"], request["target_commit"]
         if self.ref is None:
             self.ref = base
@@ -57,7 +60,7 @@ class Reconciler:
     """Worker that validates observed adapter state and submits signed evidence."""
     def __init__(self, witness, request, adapter, worker_signer, reconciler_signer):
         self.witness = witness
-        self.request = request
+        self.request = normalized_request(request)
         self.adapter = adapter
         self.worker_signer = worker_signer
         self.reconciler_signer = reconciler_signer
@@ -97,6 +100,8 @@ class Reconciler:
         state = self.witness.state()
         if state == "UNCLAIMED":
             self.witness.intent(self.request)
+        elif state == "PENDING_RECONCILIATION":
+            return self.reconcile()
         elif state in ("GITHUB_APPLIED", "BREACH"):
             return state
         try:
