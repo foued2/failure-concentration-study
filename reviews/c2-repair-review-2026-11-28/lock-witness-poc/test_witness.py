@@ -103,17 +103,24 @@ class WitnessTests(unittest.TestCase):
         with self.assertRaises(PolicyError): self.witness.intent(make_request(scope="LC518-R2-C2-ALIAS"))
         alias_policy = {**POLICY, "purpose_key": "LC518-R2-C2-ALIAS"}
         with self.assertRaises(PolicyError): self.authority.issue(alias_policy)
-        # Even an alternate policy signer configuration cannot reuse this custodian's pinned manifest.
-        rogue_authority = PolicyAuthority(ROOT_KEY, {"LC518-R2-C2": "LC518-R2-C2-ALIAS"})
-        alias_manifest = rogue_authority.issue(alias_policy)
-        with self.assertRaises(PolicyError):
-            Witness(str(Path(self.tmp.name) / "alias-local.db"), self.store,
-                    alias_manifest, rogue_authority, ReceiptVerifier(ROLE_KEYS))
         forged = replace(self.manifest, payload_json=self.manifest.payload_json.replace(
             "LC518-R2-C2", "LC518-R2-C2-ALIAS"))
         with self.assertRaises(PolicyError):
             Witness(str(Path(self.tmp.name) / "forged-local.db"), self.store,
                     forged, self.authority, ReceiptVerifier(ROLE_KEYS))
+        self.assertEqual(self.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+
+    def test_second_manifest_for_same_purpose_rejected_after_authority_reconstruction(self):
+        self.assertEqual(self.authority.issue(POLICY).digest, self.manifest.digest)
+        alternate = {**POLICY, "experiment_id": "SECOND-EXPERIMENT",
+                     "registry_digest": "e" * 64, "custodian_id": "SECOND-CUSTODIAN"}
+        with self.assertRaises(PolicyError): self.authority.issue(alternate)
+        authority_path = str(Path(self.local_path).parent / "policy-authority.jsonl")
+        reconstructed_authority = PolicyAuthority(
+            ROOT_KEY, {"LC518-R2-C2": "LC518-R2-C2"}, authority_path)
+        self.assertEqual(reconstructed_authority.issue(POLICY).digest, self.manifest.digest)
+        with self.assertRaises(PolicyError): reconstructed_authority.issue(alternate)
+        # No second manifest means no independently initialized second custodian.
         self.assertEqual(self.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
 
     def test_new_empty_or_different_custodian_checkpoint_fails_closed(self):
@@ -267,6 +274,31 @@ class WitnessTests(unittest.TestCase):
         reconciler = self.reconciler(req, github, witness)
         self.assertEqual(reconciler.reconcile(), "GITHUB_APPLIED")
         with self.assertRaises(Conflict): witness.intent(make_request(target="e" * 40))
+        witness.db.close(); store.db.close()
+        self.external = external
+        self.store = CheckpointStore(self.db_path, external, self.manifest,
+                                     self.authority, CUSTODIAN_KEY, ReceiptVerifier(ROLE_KEYS))
+        self.witness = Witness(self.local_path, self.store, self.manifest,
+                               self.authority, ReceiptVerifier(ROLE_KEYS))
+
+    def test_applied_receipt_replay_after_lost_ack_is_idempotent_after_restart(self):
+        req, github = make_request(), self.adapter()
+        self.witness.intent(req)
+        receipt = github.apply_intent(req)
+        self.assertEqual(self.witness.record_adapter_evidence(req, receipt)[1], "accepted")
+        # The state acknowledgement is lost; reconstruct every local checkpoint component.
+        self.witness.db.close(); self.store.db.close()
+        external = ExternalCheckpoint(self.external_path, POLICY["custodian_id"],
+                                      self.manifest.digest, CUSTODIAN_KEY)
+        store = CheckpointStore(self.db_path, external, self.manifest,
+                                self.authority, CUSTODIAN_KEY, ReceiptVerifier(ROLE_KEYS))
+        witness = Witness(self.local_path, store, self.manifest,
+                          self.authority, ReceiptVerifier(ROLE_KEYS))
+        self.assertEqual(witness.record_adapter_evidence(req, receipt)[1], "duplicate")
+        altered_payload = {**receipt["payload"], "event_count": receipt["payload"]["event_count"] + 1}
+        conflicting = self.signers["github_adapter"].sign(altered_payload)
+        with self.assertRaises(Conflict): witness.record_adapter_evidence(req, conflicting)
+        self.assertEqual(witness.state(), "GITHUB_APPLIED")
         witness.db.close(); store.db.close()
         self.external = external
         self.store = CheckpointStore(self.db_path, external, self.manifest,

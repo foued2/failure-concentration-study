@@ -68,10 +68,11 @@ class CheckpointStore:
           CREATE TABLE IF NOT EXISTS events(
             sequence INTEGER PRIMARY KEY, scope TEXT NOT NULL, experiment_id TEXT NOT NULL,
             request_hash TEXT NOT NULL, state TEXT NOT NULL, previous_hash TEXT NOT NULL,
-            event_hash TEXT NOT NULL UNIQUE, signature TEXT NOT NULL, recorded_ns INTEGER NOT NULL);
+            event_hash TEXT NOT NULL UNIQUE, signature TEXT NOT NULL, recorded_ns INTEGER NOT NULL,
+            receipt_digest TEXT);
           CREATE TABLE IF NOT EXISTS claims(
             scope TEXT PRIMARY KEY, experiment_id TEXT NOT NULL, request_hash TEXT NOT NULL,
-            state TEXT NOT NULL, sequence INTEGER NOT NULL);
+            state TEXT NOT NULL, sequence INTEGER NOT NULL, receipt_digest TEXT);
           CREATE TRIGGER IF NOT EXISTS events_no_update BEFORE UPDATE ON events
             BEGIN SELECT RAISE(ABORT, 'append-only event log'); END;
           CREATE TRIGGER IF NOT EXISTS events_no_delete BEFORE DELETE ON events
@@ -92,13 +93,14 @@ class CheckpointStore:
         self.db.execute("PRAGMA wal_checkpoint(FULL)")
 
     @staticmethod
-    def _event_body(seq, scope, exp, req_hash, state, prev, recorded_ns):
+    def _event_body(seq, scope, exp, req_hash, state, prev, recorded_ns, receipt_digest):
         return canonical({"sequence": seq, "scope": scope, "experiment_id": exp,
                           "request_hash": req_hash, "state": state,
-                          "previous_hash": prev, "recorded_ns": recorded_ns})
+                          "previous_hash": prev, "recorded_ns": recorded_ns,
+                          "receipt_digest": receipt_digest})
 
     def verify(self):
-        rows = self.db.execute("SELECT sequence,scope,experiment_id,request_hash,state,previous_hash,event_hash,signature,recorded_ns FROM events ORDER BY sequence").fetchall()
+        rows = self.db.execute("SELECT sequence,scope,experiment_id,request_hash,state,previous_hash,event_hash,signature,recorded_ns,receipt_digest FROM events ORDER BY sequence").fetchall()
         metadata = self.db.execute("SELECT custodian_id,manifest_digest,genesis_hash FROM metadata WHERE singleton=1").fetchone()
         if metadata is None:
             raise IntegrityError("checkpoint database lacks explicitly authorized genesis")
@@ -111,8 +113,8 @@ class CheckpointStore:
         previous = genesis
         latest = {}
         for expected, row in enumerate(rows, 1):
-            seq, scope, exp, req_hash, state, prev, event_hash, signature, recorded_ns = row
-            payload = self._event_body(seq, scope, exp, req_hash, state, prev, recorded_ns)
+            seq, scope, exp, req_hash, state, prev, event_hash, signature, recorded_ns, receipt_digest = row
+            payload = self._event_body(seq, scope, exp, req_hash, state, prev, recorded_ns, receipt_digest)
             calculated = sha(payload)
             signed = hmac.new(self.key, calculated.encode(), hashlib.sha256).hexdigest()
             ext = external_records[expected]
@@ -122,20 +124,20 @@ class CheckpointStore:
                 ext.get("sequence") != seq or ext.get("event_hash") != event_hash):
                 raise IntegrityError("checkpoint chain, signature, policy scope, or external pin mismatch")
             previous = event_hash
-            latest[scope] = (exp, req_hash, state, seq)
+            latest[scope] = (exp, req_hash, state, seq, receipt_digest)
         claims = {row[0]: row[1:] for row in self.db.execute(
-            "SELECT scope,experiment_id,request_hash,state,sequence FROM claims")}
+            "SELECT scope,experiment_id,request_hash,state,sequence,receipt_digest FROM claims")}
         if claims != latest:
             raise IntegrityError("checkpoint claims do not match append-only event head")
         return rows
 
-    def _append(self, scope, experiment_id, request_hash, state):
+    def _append(self, scope, experiment_id, request_hash, state, receipt_digest=None):
         if scope != self.policy["purpose_key"] or experiment_id != self.policy["experiment_id"]:
             raise PolicyError("custodian rejects noncanonical purpose or experiment identity")
         self.db.execute("BEGIN IMMEDIATE")
         try:
             rows = self.verify()
-            existing = self.db.execute("SELECT experiment_id,request_hash,state,sequence FROM claims WHERE scope=?", (scope,)).fetchone()
+            existing = self.db.execute("SELECT experiment_id,request_hash,state,sequence,receipt_digest FROM claims WHERE scope=?", (scope,)).fetchone()
             if state == "INTENT_RECORDED":
                 if existing:
                     if existing[0] != experiment_id or existing[1] != request_hash:
@@ -149,23 +151,27 @@ class CheckpointStore:
                 if existing[0] != experiment_id or existing[1] != request_hash:
                     raise Conflict("transition does not match the claimed intent")
                 current_state = existing[2]
-                if state == current_state == "PENDING_RECONCILIATION":
-                    self.db.execute("COMMIT")
-                    return existing[3], "duplicate"
+                if state == current_state:
+                    if receipt_digest == existing[4]:
+                        self.db.execute("COMMIT")
+                        return existing[3], "duplicate"
+                    raise Conflict("conflicting receipt replay for current state")
             if state not in ALLOWED_TRANSITIONS[current_state]:
                 raise Conflict(f"transition {current_state} -> {state} is forbidden")
             seq = len(rows) + 1
             prev = rows[-1][6] if rows else self.external.head()[1]
             recorded_ns = time.time_ns()
-            payload = self._event_body(seq, scope, experiment_id, request_hash, state, prev, recorded_ns)
+            payload = self._event_body(seq, scope, experiment_id, request_hash, state, prev,
+                                       recorded_ns, receipt_digest)
             event_hash = sha(payload)
             signature = hmac.new(self.key, event_hash.encode(), hashlib.sha256).hexdigest()
-            self.db.execute("INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?)",
-                            (seq, scope, experiment_id, request_hash, state, prev, event_hash, signature, recorded_ns))
-            self.db.execute("INSERT INTO claims VALUES(?,?,?,?,?) ON CONFLICT(scope) DO UPDATE SET "
+            self.db.execute("INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?)",
+                            (seq, scope, experiment_id, request_hash, state, prev, event_hash,
+                             signature, recorded_ns, receipt_digest))
+            self.db.execute("INSERT INTO claims VALUES(?,?,?,?,?,?) ON CONFLICT(scope) DO UPDATE SET "
                             "experiment_id=excluded.experiment_id,request_hash=excluded.request_hash,"
-                            "state=excluded.state,sequence=excluded.sequence",
-                            (scope, experiment_id, request_hash, state, seq))
+                            "state=excluded.state,sequence=excluded.sequence,receipt_digest=excluded.receipt_digest",
+                            (scope, experiment_id, request_hash, state, seq, receipt_digest))
             # The external checkpoint append is outside SQLite. It is published before
             # acceptance returns; if it fails, the local DB is ahead and all later
             # acceptance fails closed until operator recovery of this exact event.
@@ -180,7 +186,7 @@ class CheckpointStore:
     def accept_intent(self, request):
         request_hash = validate_request(request, self.policy)
         return self._append(self.policy["purpose_key"], self.policy["experiment_id"],
-                            request_hash, "INTENT_RECORDED")
+                            request_hash, "INTENT_RECORDED", None)
 
     def record_receipt(self, request, receipt):
         request_hash = validate_request(request, self.policy)
@@ -199,8 +205,9 @@ class CheckpointStore:
             raise IntegrityError("receipt role is not authorized for this state")
         if outcome == "GITHUB_APPLIED" and payload.get("observed_sha") != request["target_commit"]:
             raise IntegrityError("adapter receipt does not attest the intended target")
+        receipt_digest = sha(canonical(receipt))
         return self._append(self.policy["purpose_key"], self.policy["experiment_id"],
-                            request_hash, outcome)
+                            request_hash, outcome, receipt_digest)
 
     def state(self, scope):
         row = self.db.execute("SELECT state FROM claims WHERE scope=?", (scope,)).fetchone()

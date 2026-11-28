@@ -46,15 +46,17 @@ class PolicyAuthority:
         self._state_path = state_path
         self._issuance = {}
         self._consumed = set()
+        self._purpose_manifests = {}
         if state_path and os.path.exists(state_path):
             self._load_issuance_log()
 
-    def _append_authority_event(self, kind, manifest_digest, nonce):
+    def _append_authority_event(self, kind, manifest_digest, nonce, scientific_purpose):
         if not self._state_path:
             raise PolicyError("durable policy-authority state path required for genesis authorization")
         previous = self._authority_head()
         record = {"kind": kind, "sequence": self._authority_count() + 1,
                   "manifest_digest": manifest_digest, "nonce": nonce,
+                  "scientific_purpose": scientific_purpose,
                   "previous_hash": previous, "recorded_ns": time.time_ns()}
         record["event_hash"] = sha(canonical(record))
         record["signature"] = hmac.new(self._root_key, canonical(record).encode(), hashlib.sha256).hexdigest()
@@ -66,6 +68,8 @@ class PolicyAuthority:
             self._issuance[manifest_digest] = nonce
         elif kind == "INIT_CONSUMED":
             self._consumed.add(manifest_digest)
+        elif kind == "POLICY_BOUND":
+            self._purpose_manifests[scientific_purpose] = manifest_digest
 
     def _authority_records(self):
         if not self._state_path or not os.path.exists(self._state_path):
@@ -77,6 +81,9 @@ class PolicyAuthority:
             raise PolicyError("policy-authority state log unreadable") from exc
 
     def _load_issuance_log(self):
+        self._issuance = {}
+        self._consumed = set()
+        self._purpose_manifests = {}
         previous = "0" * 64
         records = self._authority_records()
         for seq, record in enumerate(records, 1):
@@ -92,11 +99,19 @@ class PolicyAuthority:
             record["signature"] = signature
             previous = event_hash
             digest, nonce = record["manifest_digest"], record["nonce"]
-            if record["kind"] == "INIT_ISSUED":
+            purpose = record.get("scientific_purpose")
+            if record["kind"] == "POLICY_BOUND":
+                if not purpose or purpose in self._purpose_manifests or nonce != "":
+                    raise PolicyError("scientific purpose already has a manifest lineage")
+                self._purpose_manifests[purpose] = digest
+            elif record["kind"] == "INIT_ISSUED":
+                if self._purpose_manifests.get(purpose) != digest:
+                    raise PolicyError("initialization references an unbound manifest lineage")
                 if digest in self._issuance:
                     raise PolicyError("duplicate initialization authorization record")
                 self._issuance[digest] = nonce
-            elif record["kind"] == "INIT_CONSUMED" and self._issuance.get(digest) == nonce:
+            elif (record["kind"] == "INIT_CONSUMED" and self._issuance.get(digest) == nonce
+                  and digest not in self._consumed):
                 self._consumed.add(digest)
             else:
                 raise PolicyError("invalid policy-authority state transition")
@@ -112,6 +127,14 @@ class PolicyAuthority:
         if self._canonical_purposes.get(policy.get("scientific_purpose")) != policy.get("purpose_key"):
             raise PolicyError("purpose key is not canonical in the trusted policy registry")
         payload = canonical(policy)
+        manifest_digest = sha(payload)
+        if self._state_path and os.path.exists(self._state_path):
+            self._load_issuance_log()
+        bound_digest = self._purpose_manifests.get(policy["scientific_purpose"])
+        if bound_digest is not None and bound_digest != manifest_digest:
+            raise PolicyError("scientific purpose already has a different manifest/custodian lineage")
+        if bound_digest is None:
+            self._append_authority_event("POLICY_BOUND", manifest_digest, "", policy["scientific_purpose"])
         sig = hmac.new(self._root_key, payload.encode(), hashlib.sha256).hexdigest()
         return SignedPolicy(payload, sig)
 
@@ -126,6 +149,10 @@ class PolicyAuthority:
             raise PolicyError("policy manifest fields invalid")
         if self._canonical_purposes.get(payload["scientific_purpose"]) != payload["purpose_key"]:
             raise PolicyError("signed policy purpose key is not canonical")
+        if self._state_path and os.path.exists(self._state_path):
+            self._load_issuance_log()
+        if self._purpose_manifests.get(payload["scientific_purpose"]) != manifest.digest:
+            raise PolicyError("manifest is not the authorized lineage for this scientific purpose")
         return payload
 
     def authorize_initialization(self, manifest):
@@ -133,7 +160,8 @@ class PolicyAuthority:
         if manifest.digest in self._issuance or manifest.digest in self._consumed:
             raise PolicyError("genesis initialization authorization already issued/consumed")
         nonce = secrets.token_hex(24)
-        self._append_authority_event("INIT_ISSUED", manifest.digest, nonce)
+        self._append_authority_event("INIT_ISSUED", manifest.digest, nonce,
+                                     manifest.payload["scientific_purpose"])
         authorization = {"action": "initialize-custodian-genesis", "manifest_digest": manifest.digest,
                          "custodian_id": manifest.payload["custodian_id"], "nonce": nonce}
         encoded = canonical(authorization)
@@ -152,7 +180,8 @@ class PolicyAuthority:
             raise PolicyError("genesis authorization does not match pinned manifest")
         if manifest.digest in self._consumed:
             raise PolicyError("genesis authorization already consumed")
-        self._append_authority_event("INIT_CONSUMED", manifest.digest, expected_payload["nonce"])
+        self._append_authority_event("INIT_CONSUMED", manifest.digest, expected_payload["nonce"],
+                                     manifest.payload["scientific_purpose"])
 
 
 class ExternalCheckpoint:
