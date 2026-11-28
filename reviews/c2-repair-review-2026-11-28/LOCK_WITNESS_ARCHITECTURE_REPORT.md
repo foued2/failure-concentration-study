@@ -65,7 +65,7 @@ No state transition unclaims a purpose or authorizes a second request.
 | Completeness | Model verifies signed genesis, append-only external checkpoint, SQLite checkpoint DB, and local mirror at every acceptance. Production completeness depends on separately operated custody, append-only storage, key custody, and retention. | No guarantee; webhook misses and finite/undocumented retention prevent absence proof |
 | Availability | Fail closed for missing/stale/corrupt checkpoint. After intent, outage leaves consumed state pending recovery. | Feed/webhook/API outage makes conclusion incomplete |
 | Auditability | Signed manifest/genesis, checkpoint chain, and role receipts are modeled; actual independent custody, App exchange, and durable evidence export are not. | Public corroboration may exist, but evidence is delayed/duplicated/possibly missing; raw preservation is needed |
-| Recovery | Local tests cover authority process races, missing/corrupt/truncated log, four genesis crash boundaries, pending reconciliation after ref change, and terminal duplicate/receipt replay. Not a real infrastructure fault-injection exercise. | Activity/webhook delivery is not a recovery authority |
+| Recovery | Local tests cover authority process races, missing/corrupt/truncated log, four genesis crash boundaries, retry from untouched/partially created refs, pending receipt idempotency, breach after ref change, and terminal duplicate/receipt replay. Not a real infrastructure fault-injection exercise. | Activity/webhook delivery is not a recovery authority |
 
 ## Explicit trusted parties and services
 
@@ -101,7 +101,9 @@ No state transition unclaims a purpose or authorizes a second request.
 | Independent SQLite databases race external compare-and-append | PASS (shared-filesystem model) | Two DBs copied from genesis synchronize on the same proposed head; OS file lock serializes publication; one accepted, one rejected; chain verifies |
 | Two policy authorities with same root and separate empty state | FORK DEMONSTRATED | Each authority can bind a different manifest for the same purpose; singleton authority identity/state must be pinned externally in production |
 | Duplicate and changed target | PASS | Exact retry is idempotent; changed target for the canonical scope is rejected |
-| No-op target and uppercase commit IDs | PASS | Equal base/target rejected; upper/lower hex spellings normalize to one request hash and duplicate claim |
+| No-op target and uppercase SHA-256 / commit IDs | PASS | Equal base/target rejected; upper/lower OAC and commit hex spellings normalize to one request hash and duplicate claim |
+| Pending retry with untouched ref | PASS (fake adapter) | Reconciler preserves the one pending state, retries the exact intent, and reaches GITHUB_APPLIED |
+| Pending retry after creation at expected base | PASS (fake adapter) | Reconciler avoids a conflicting pending receipt and completes the same base-to-target update |
 | Existing pending state with altered ref | PASS (fake adapter) | `apply_once()` reconciles pending state directly and records terminal BREACH without attempting a conflicting second pending receipt |
 | Duplicate request / old receipt after BREACH | PASS (local model) | Exact intent reports `BREACH`; prior applied receipt cannot transition or clear terminal state |
 | Authenticated state transitions | PASS (receipt model) | Generic Witness transition method absent; unsigned/wrong-role evidence rejected; fake signed App receipt required for applied |
@@ -112,7 +114,7 @@ No state transition unclaims a purpose or authorizes a second request.
 | Ref deletion / recreation / force update | PASS (fake adapter journal) | Complete modeled lifecycle journal leads to BREACH, including recreation at the same SHA |
 | Real GitHub App/ruleset enforcement | NOT TESTED | No App, ruleset, repository API, or production setting touched |
 
-Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result: **31 tests passed** (20 previous tests retained plus 11 new regressions). Cross-process authority/checkpoint tests use OS advisory locks on shared local files; they are not remote service tests. Policy authority, checkpoint custodian, receipt signers, GitHub refs, and webhook delivery remain local models, not integration results.
+Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result: **34 tests passed** (the 31-test suite plus 3 pending-retry/digest-normalization regressions). Cross-process authority/checkpoint tests use OS advisory locks on shared local files; they are not remote service tests. Policy authority, checkpoint custodian, receipt signers, GitHub refs, and webhook delivery remain local models, not integration results.
 
 ## Exact remaining assumptions and blockers
 
