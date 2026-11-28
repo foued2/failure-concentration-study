@@ -21,13 +21,26 @@ Revision 5 defines a sequence of master OAC push, canonical lock-ref creation at
 
 ## Proposed architecture
 
-1. **Intent endpoint:** authorized operator submits a canonical request containing purpose key, registered ID, exact OAC SHA, ref, expected B, intended lock commit A/manifest digest, and idempotency key. Witness validates the request against pinned policy.
-2. **Durable first-writer claim:** witness executes one serializable transaction. A unique constraint on study-purpose key allows exactly one intent. It appends an event to an append-only hash chain and commits before any GitHub request. A concurrent different request loses; exact duplicate retries return the same claim. No subsequent intent can replace it.
+1. **Policy-bound intent endpoint:** the server pins one canonical purpose key, registered ID, and registry-entry digest. The caller cannot submit a scope; unknown request fields are rejected, and submitted experiment/registry identity must match server policy. A legitimate new scientific purpose requires a separate authorized policy change, outside this endpoint.
+2. **External checkpoint append:** before acceptance is returned, the witness verifies the complete signed checkpoint chain and compares its local mirror. The separately modeled custodian atomically appends the purpose claim under a unique key. Exact duplicate retries return the old claim; changed request, alias ID, or metadata cannot create another claim. If local storage is behind because of a crash, the mirror is recovered from the custodian. If local state is ahead, signatures fail, or checkpoint state is missing/stale, the request fails closed.
 3. **Only then call GitHub:** witness worker (the sole holder of App credentials) creates the ref at B if absent, then advances it once from B to A. Ruleset restricts creations, updates, and deletions to that App; force pushes are disabled. The ref payload is immutable by policy after the one intended transition. Prefer a single Git receive operation with an atomic transaction if available; otherwise expose distinct states and never infer failure from a lost HTTP response.
-4. **Crash/retry:** before durable intent, outage means no GitHub operation. After intent, outage leaves the attempt consumed and in `PENDING`; retry the same idempotency key only. After an ambiguous GitHub response, read the exact ref and compare against B/A before retrying. If ref is absent or still B, safely retry the same intended transition. If it is A, mark applied. Any other value/deletion is a breach; do not issue a replacement intent.
-5. **Evidence:** witness signs each event/checkpoint with a key held separately from GitHub, exports checkpoints to at least two independently administered append-only/WORM stores, and obtains externally verifiable timestamped checkpoints. Store the exact signed request, accepted/rejected response, ordered sequence, prior-event digest, GitHub request ID/response, ref reads, App identity, and ruleset snapshot. Webhooks only prompt reconciliation and are never authoritative for order.
+4. **Recovery states:** `UNCLAIMED → INTENT_RECORDED → GITHUB_APPLIED`; ambiguous or unavailable GitHub result goes `INTENT_RECORDED → PENDING_RECONCILIATION → GITHUB_APPLIED`. Unexpected ref lifecycle/state goes to terminal `BREACH`. From `GITHUB_APPLIED`, only later `BREACH` is allowed. No transition restores `UNCLAIMED`, and no replacement intent is allowed. The transition graph is implemented in the checkpoint model.
+5. **Crash/retry:** the checkpoint append is the authoritative consumed intent. If the witness crashes after it but before local mirror update, it recovers the exact signed event. If GitHub applies A but the response is lost, the worker marks pending, reads the ref, and completes the same intent; a competing request remains rejected. If GitHub has not mutated the ref, retry only the recorded B-to-A operation. Unexpected deletion/recreation/force-update transitions to breach when the reconciler has complete lifecycle evidence.
+6. **Evidence:** the model HMAC-signs checkpoint events and compares sequence/hash against a second local SQLite mirror. Production must replace this with a separately operated append-only service, asymmetric verification, and independently retained checkpoints. Store signed request, accepted/rejected response, ordered sequence, prior-event digest, GitHub request/response, ref reads, App identity, and ruleset snapshot. Webhooks only prompt reconciliation and are never authoritative for order.
 
-The witness transaction precedes GitHub mutation, but there is no distributed atomic transaction spanning witness storage and GitHub. The consumed intent is the safety mechanism: after a crash, recover that exact intent. This favors safety over liveness and can leave a permanently consumed but unapplied attempt.
+There is no distributed atomic transaction spanning the checkpoint custodian and GitHub. The external append is authoritative before GitHub; local mirror failure is recoverable from the custodian. GitHub mutation is reconciled against that same intent. This favors safety over liveness and can leave a permanently consumed but unapplied attempt.
+
+### State transition table
+
+| Current state | Allowed next state(s) | Meaning |
+|---|---|---|
+| `UNCLAIMED` | `INTENT_RECORDED` | Canonical purpose consumed at external checkpoint |
+| `INTENT_RECORDED` | `GITHUB_APPLIED`, `PENDING_RECONCILIATION`, `BREACH` | Exact operation applied, ambiguous/retryable, or contradictory evidence |
+| `PENDING_RECONCILIATION` | `GITHUB_APPLIED`, `BREACH` | Reconcile exact intent; no replacement |
+| `GITHUB_APPLIED` | `BREACH` | Later unauthorized ref lifecycle/tampering observed |
+| `BREACH` | none | Terminal state |
+
+No state transition unclaims a purpose or authorizes a second request.
 
 ## GitHub enforcement findings
 
@@ -41,12 +54,12 @@ The witness transaction precedes GitHub mutation, but there is no distributed at
 
 | Property | Witness + exclusive App + rulesets | GitHub Activity/webhook only |
 |---|---|---|
-| Firstness | Yes, as first intent serialized by witness, assuming all relevant writes are forced through it and witness ordering is linearizable | No; cannot establish absence of an earlier missed/unretained event |
-| Single use | Yes for accepted intents via unique purpose-key claim; same request retry is idempotent | Detection only if complete records are available; no enforcement |
-| Immutability | Ref create/update/delete restricted to App; later tampering blocked for ordinary actors and visible in ref/audit evidence. Admin can weaken rules | Detection/corroboration only; current ref can hide prior delete/recreate history |
-| Completeness | Witness ledger completeness is conditional on durable append-only replicas/checkpoints; GitHub history remains separate | No guarantee; webhook misses and finite/undocumented retention prevent absence proof |
-| Availability | Intentionally fail closed; outage before intent means no write, after intent means consumed/PENDING until recovery | Feed/webhook/API outage makes conclusion incomplete |
-| Auditability | Signed hash-chain events + external checkpoints + exact GitHub request/response; WORM replicas | Public corroboration may exist, but evidence is delayed/duplicated/possibly missing; raw preservation is needed |
+| Firstness | Prospective first accepted request under pinned purpose, if independent checkpoint is linearizable and every ref writer is controlled. Cannot establish historical firstness. | No; cannot establish absence of earlier/missed/unretained event |
+| Single use | Implemented in model: server-owned purpose/registry binding plus unique external claim. New purpose policy requires separately trusted authorization. | No enforcement |
+| Immutability | Ruleset/App can block ordinary actors; admin can weaken rules. Modeled reconciler detects deletion/recreation/force only with complete adapter lifecycle evidence. | Detection/corroboration only; webhook gaps and hidden same-SHA recreation may be invisible |
+| Completeness | Model verifies signed chain and local mirror at every acceptance. Production completeness depends on independent custodian, append-only storage, key custody, and checkpoint retention. | No guarantee; webhook misses and finite/undocumented retention prevent absence proof |
+| Availability | Fail closed for missing/stale/corrupt checkpoint. After intent, outage leaves consumed state pending recovery. | Feed/webhook/API outage makes conclusion incomplete |
+| Auditability | Signed chain and mirror are implemented in the model; actual independent checkpointing, App exchange, and durable evidence export are not. | Public corroboration may exist, but evidence is delayed/duplicated/possibly missing; raw preservation is needed |
 
 ## Explicit trusted parties and services
 
@@ -57,23 +70,24 @@ The witness transaction precedes GitHub mutation, but there is no distributed at
 
 ## Adversarial prototype results
 
-`lock-witness-poc/` is a local SQLite state-machine prototype. Its append-only event table has a per-scope unique claim, serializing transaction, SHA-256 hash chain, FULL synchronous commits, duplicate idempotency, and replacement rejection. It has no GitHub adapter and is not production-grade immutable storage. An external `(sequence, hash)` checkpoint is necessary to detect full database rollback; the prototype cannot provide that external custody.
+`lock-witness-poc/` separates `witness.py` (policy, acceptance, state transitions), its `CheckpointStore` class (signed append-only custodian model), and `github_adapter.py` (adapter boundary and fake). The caller never supplies the scope; the policy is read-only in the witness instance. Requests must match the pinned test registry ID/digest and exact schema. `CheckpointStore` is a separate SQLite file and verifies sequence, chain, HMAC signatures, and claims before every append. `Witness.intent()` verifies the custodian and mirror before accepting, and fails closed on corruption, a missing/stale anchor, or local rollback. This tests the acceptance logic, but it is not an independently operated service: the test process holds the HMAC key and can access both SQLite files. Production needs a remote custodian with separately controlled asymmetric signing keys and durable external checkpoint retention.
 
 | Test | Result | What it shows / does not show |
 |---|---|---|
-| Two competing requests in independent processes | PASS | Spawned processes with separate SQLite connections race; one intent wins. Does not test distributed databases or App/ruleset behavior |
-| Duplicate and delayed same request | PASS | Idempotent retry returns original claim |
-| Different replacement request | PASS | Unique scope prevents a second claim |
-| Missing/out-of-order webhook notifications | PASS (model) | Witness ordering does not depend on webhook; does not emulate GitHub event service |
-| Ref deletion/recreation and force update | PASS (model) | A second intent remains rejected; actual GitHub ref/ruleset enforcement untested |
-| Ruleset modification/bypass | LIMITATION CONFIRMED | Witness cannot prevent an administrator changing GitHub policy |
-| Crash after durable record, before GitHub request | PASS (simulation) | Crash boundary represented; restart continues same request and rejects replacement |
-| GitHub applies ref, response lost, witness restarts | PASS (fake GitHub) | Reopened witness returns exact duplicate; mocked ref read sees A; same operation is idempotent. No real network/ref operation exercised |
-| Ruleset change or admin bypass after intent | LIMITATION CONFIRMED (simulation) | Mocked policy change blocks App; modeled direct admin mutation diverges from expected ref. Witness DB alone does not prevent or detect it; an active reconciliation read detects divergence |
-| Persistent storage corruption/rollback | PASS (simulation) | Event deletion detected; full database snapshot rollback remains internally valid but differs from independently retained checkpoint |
-| Hash-chain payload mutation | PASS | Local verifier detects payload mutation; coordinated rewrite plus replacement of all external checkpoints remains inside trust boundary |
+| Caller scope/experiment alias/extra metadata | PASS (policy model) | No scope parameter exists; request must match pinned experiment/registry and exact schema; aliases rejected |
+| Two independent processes submit competing intent payloads | PASS (SQLite model) | Separate spawned processes share external claim store; one accepted, one rejected. Not a distributed-service test |
+| Corrupt external checkpoint signature | PASS (SQLite model) | Acceptance path verifies and fails before append |
+| Missing/stale external checkpoint | PASS (SQLite model) | Empty anchor against nonempty local mirror fails closed |
+| External checkpoint rollback | PASS (SQLite snapshot model) | Restore prior signed anchor while local mirror is ahead; acceptance fails closed |
+| Recovery states | PASS | Transition graph enforces allowed moves; breach terminal and no return to unclaimed |
+| Crash after intent, before GitHub call | PASS (fake adapter) | Restart recovers intent, then exact operation only; changed target rejected |
+| GitHub applies ref, response lost | PASS (fake adapter) | Pending + ref reconciliation completes same intent after simulated lost response; no real GitHub request |
+| Webhook duplicate, missing, reordered | PASS (delivery model) | Inbox deduplicates delivery IDs and preserves arrival order; missing create notification does not affect adapter-state reconciliation |
+| Ref deletion / recreation / force update | PASS (fake adapter journal) | Reconciler sees complete modeled event journal and transitions to breach, including recreation at same SHA |
+| Ruleset policy denial before write | PASS (fake adapter) | Intent remains pending and resumes only after same App request is allowed; policy administration itself not integrated |
+| Real GitHub App/ruleset enforcement | NOT TESTED | No App, ruleset, repository API, or production setting touched |
 
-Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result after adversarial additions: **12 tests passed**. All GitHub behaviors remain mocks/models, not integration results.
+Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc/`. Result: **14 tests passed**. Custodian, GitHub refs, and webhook delivery remain local models, not integration results.
 
 ## Exact remaining assumptions and blockers
 
@@ -81,6 +95,8 @@ Command: `py -3 -m unittest discover -s . -p 'test*.py' -v` in `lock-witness-poc
 - No safe cutover for the same C2 purpose is authorized by this prototype. Until the historical attempt is independently classified, witness activation must not be treated as a fresh first event or permit another same-purpose lock.
 - No GitHub sandbox repository was created for end-to-end ruleset/App validation. No production settings were inspected or changed.
 - For prospective enforcement, require a single-purpose App as the sole ruleset bypass/writer, no human bypass, no direct credentials, tightly protected App private key, and restricted admin policy authority. The GitHub App itself must be enabled to bypass the ruleset for its one intended action; no other actor may bypass.
+- The model uses HMAC and a second local SQLite file; it does not implement remote independent checkpoint custody, asymmetric signatures, signing-key protection/rotation, WORM replication, or external timestamp anchoring. These are required before calling it an enforceable independent witness.
+- The request method has no user authentication or authorization layer. The pinned policy prevents request-supplied scope aliases, but a production endpoint must authenticate callers and enforce who may submit the one allowed intent.
 - Need independent witness deployment review: linearizable transactional storage; append-only/WORM storage and independent checkpointing; signing-key rotation/recovery; replicated backups; access controls; concurrency/load and crash fault injection; and tested GitHub reconciliation.
 - A witness sequence proves order only within the witness's accepted request universe. To claim that the lock was the first qualifying operation, all paths capable of mutating/creating the ref must be blocked or included in the trusted ordering system. GitHub admins/platform remain capable of breaking this boundary.
 - Revision 5's stated canonical registry ID remains unresolved and is outside this work. No protocol adoption, lock, or draw follows from this report.
