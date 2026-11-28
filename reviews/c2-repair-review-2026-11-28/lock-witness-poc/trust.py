@@ -6,6 +6,7 @@ import os
 import secrets
 import time
 from dataclasses import dataclass
+from contextlib import contextmanager
 
 
 class IntegrityError(Exception):
@@ -195,13 +196,39 @@ class ExternalCheckpoint:
             raise AttributeError("ExternalCheckpoint identity and key are immutable after construction")
         object.__setattr__(self, name, value)
 
-    def __init__(self, path, custodian_id, manifest_digest, signing_key):
+    def __init__(self, path, custodian_id, manifest_digest, signing_key, pre_lock_hook=None):
         object.__setattr__(self, "_sealed", False)
         self.path = path
         self.custodian_id = custodian_id
         self.manifest_digest = manifest_digest
         self._key = signing_key
+        self._pre_lock_hook = pre_lock_hook
         object.__setattr__(self, "_sealed", True)
+
+    @contextmanager
+    def _serialized(self):
+        """Cross-process lock around external checkpoint compare-and-append."""
+        with open(self.path + ".lock", "a+b") as lock_file:
+            if os.name == "nt":
+                import msvcrt
+                lock_file.seek(0, os.SEEK_END)
+                if lock_file.tell() == 0:
+                    lock_file.write(b"\0")
+                    lock_file.flush()
+                lock_file.seek(0)
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+                try:
+                    yield
+                finally:
+                    lock_file.seek(0)
+                    msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+                try:
+                    yield
+                finally:
+                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
     def _sign(self, record):
         return hmac.new(self._key, canonical(record).encode(), hashlib.sha256).hexdigest()
@@ -209,8 +236,6 @@ class ExternalCheckpoint:
     def initialize(self, authority, manifest, authorization):
         authority.verify(manifest)
         authority.verify_initialization(manifest, authorization)
-        if os.path.exists(self.path):
-            raise PolicyError("external checkpoint already initialized")
         if (manifest.payload["custodian_id"], manifest.digest) != (self.custodian_id, self.manifest_digest):
             raise PolicyError("custodian identity or manifest digest mismatch")
         genesis = {"kind": "GENESIS", "sequence": 0, "custodian_id": self.custodian_id,
@@ -218,12 +243,15 @@ class ExternalCheckpoint:
                    "checkpoint_hash": sha(f"GENESIS|{self.custodian_id}|{self.manifest_digest}"),
                    "recorded_ns": time.time_ns()}
         genesis["signature"] = self._sign(genesis)
-        with open(self.path, "x", encoding="utf-8", newline="\n") as f:
-            f.write(canonical(genesis) + "\n")
-            f.flush()
-            os.fsync(f.fileno())
+        with self._serialized():
+            if os.path.exists(self.path):
+                raise PolicyError("external checkpoint already initialized")
+            with open(self.path, "x", encoding="utf-8", newline="\n") as f:
+                f.write(canonical(genesis) + "\n")
+                f.flush()
+                os.fsync(f.fileno())
 
-    def records(self):
+    def _records_unlocked(self):
         if not os.path.exists(self.path):
             raise IntegrityError("trusted genesis checkpoint missing; explicit initialization required")
         try:
@@ -256,23 +284,34 @@ class ExternalCheckpoint:
             prev = record["checkpoint_hash"]
         return records
 
-    def head(self):
-        records = self.records()
+    def records(self):
+        with self._serialized():
+            return self._records_unlocked()
+
+    def _head_unlocked(self):
+        records = self._records_unlocked()
         return records[-1]["sequence"], records[-1]["checkpoint_hash"]
 
+    def head(self):
+        with self._serialized():
+            return self._head_unlocked()
+
     def publish(self, sequence, event_hash, previous_hash):
-        current_sequence, current_hash = self.head()
-        if sequence != current_sequence + 1 or previous_hash != current_hash:
-            raise IntegrityError("external checkpoint compare-and-append failed")
-        body = {"kind": "HEAD", "sequence": sequence, "custodian_id": self.custodian_id,
-                "manifest_digest": self.manifest_digest, "previous_hash": previous_hash,
-                "event_hash": event_hash, "recorded_ns": time.time_ns()}
-        body["checkpoint_hash"] = sha(canonical(body))
-        body["signature"] = self._sign(body)
-        with open(self.path, "a", encoding="utf-8", newline="\n") as f:
-            f.write(canonical(body) + "\n")
-            f.flush()
-            os.fsync(f.fileno())
+        if self._pre_lock_hook is not None:
+            self._pre_lock_hook(sequence, event_hash, previous_hash)
+        with self._serialized():
+            current_sequence, current_hash = self._head_unlocked()
+            if sequence != current_sequence + 1 or previous_hash != current_hash:
+                raise IntegrityError("external checkpoint compare-and-append failed")
+            body = {"kind": "HEAD", "sequence": sequence, "custodian_id": self.custodian_id,
+                    "manifest_digest": self.manifest_digest, "previous_hash": previous_hash,
+                    "event_hash": event_hash, "recorded_ns": time.time_ns()}
+            body["checkpoint_hash"] = sha(canonical(body))
+            body["signature"] = self._sign(body)
+            with open(self.path, "a", encoding="utf-8", newline="\n") as f:
+                f.write(canonical(body) + "\n")
+                f.flush()
+                os.fsync(f.fileno())
 
 
 class ReceiptSigner:

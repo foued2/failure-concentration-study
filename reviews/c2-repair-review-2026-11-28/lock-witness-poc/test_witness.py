@@ -69,6 +69,27 @@ def racing_process(local_path, db_path, external_path, target, barrier, queue):
         queue.put((target, f"rejected:{type(exc).__name__}"))
 
 
+def independent_checkpoint_writer(db_path, local_path, external_path, authority_path,
+                                  target, barrier, queue, observed_heads):
+    try:
+        authority = PolicyAuthority(ROOT_KEY, {"LC518-R2-C2": "LC518-R2-C2"}, authority_path)
+        manifest = authority.issue(POLICY)
+        def pre_lock(sequence, _event_hash, previous_hash):
+            observed_heads.put((sequence, previous_hash))
+            barrier.wait(timeout=20)
+        external = ExternalCheckpoint(external_path, POLICY["custodian_id"],
+                                      manifest.digest, CUSTODIAN_KEY,
+                                      pre_lock_hook=pre_lock)
+        verifier = ReceiptVerifier(ROLE_KEYS)
+        store = CheckpointStore(db_path, external, manifest, authority, CUSTODIAN_KEY, verifier)
+        witness = Witness(local_path, store, manifest, authority, verifier)
+        witness.intent(make_request(target=target))
+        queue.put((db_path, "accepted", ""))
+        witness.db.close(); store.db.close()
+    except Exception as exc:
+        queue.put((db_path, "rejected", type(exc).__name__))
+
+
 class WitnessTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -122,6 +143,20 @@ class WitnessTests(unittest.TestCase):
         with self.assertRaises(PolicyError): reconstructed_authority.issue(alternate)
         # No second manifest means no independently initialized second custodian.
         self.assertEqual(self.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+
+    def test_separate_policy_authority_state_paths_can_fork_same_root(self):
+        root = Path(self.tmp.name)
+        authority_a = PolicyAuthority(ROOT_KEY, {"LC518-R2-C2": "LC518-R2-C2"},
+                                      str(root / "authority-a.jsonl"))
+        authority_b = PolicyAuthority(ROOT_KEY, {"LC518-R2-C2": "LC518-R2-C2"},
+                                      str(root / "authority-b.jsonl"))
+        manifest_a = authority_a.issue(POLICY)
+        alternate = {**POLICY, "experiment_id": "FORKED-EXPERIMENT",
+                     "registry_digest": "f" * 64, "custodian_id": "FORKED-CUSTODIAN"}
+        manifest_b = authority_b.issue(alternate)
+        self.assertNotEqual(manifest_a.digest, manifest_b.digest)
+        # This demonstrates a trust-model boundary: each local log enforces one lineage,
+        # but two copies of the trusted root with separate state are not globally unique.
 
     def test_new_empty_or_different_custodian_checkpoint_fails_closed(self):
         empty_external_path = str(Path(self.tmp.name) / "empty-checkpoint.jsonl")
@@ -195,6 +230,42 @@ class WitnessTests(unittest.TestCase):
             self.assertEqual(process.exitcode, 0)
         self.assertEqual(sum(result == "accepted" for _, result in outcomes), 1)
         self.assertEqual(sum(result.startswith("rejected") for _, result in outcomes), 1)
+
+    def test_external_compare_append_serializes_independent_checkpoint_databases(self):
+        ctx = multiprocessing.get_context("spawn")
+        barrier, queue = ctx.Barrier(2), ctx.Queue()
+        observed_heads = ctx.Queue()
+        root = Path(self.tmp.name)
+        authority_path = str(root / "policy-authority.jsonl")
+        specs = []
+        for name, target in (("writer-a", "3" * 40), ("writer-b", "4" * 40)):
+            checkpoint_db = str(root / f"{name}-checkpoint.db")
+            local_db = str(root / f"{name}-local.db")
+            dst = sqlite3.connect(checkpoint_db)
+            self.store.db.backup(dst)  # both independent DBs start at identical trusted genesis
+            dst.close()
+            specs.append((checkpoint_db, local_db, target))
+        processes = [ctx.Process(target=independent_checkpoint_writer,
+            args=(db, local, self.external_path, authority_path, target, barrier, queue, observed_heads))
+            for db, local, target in specs]
+        for proc in processes: proc.start()
+        submitted_heads = [observed_heads.get(timeout=25) for _ in processes]
+        self.assertEqual(submitted_heads[0], submitted_heads[1])  # both prepared against the same head
+        results = [queue.get(timeout=25) for _ in processes]
+        for proc in processes:
+            proc.join(25)
+            self.assertEqual(proc.exitcode, 0)
+        accepted = [row for row in results if row[1] == "accepted"]
+        rejected = [row for row in results if row[1] == "rejected"]
+        self.assertEqual(len(accepted), 1, results)
+        self.assertEqual(len(rejected), 1, results)
+        # The shared external chain remains valid and contains exactly one new head.
+        self.assertEqual(len(self.external.records()), 2)  # genesis + one publication
+        winner_db = accepted[0][0]
+        winner_store = CheckpointStore(winner_db, self.external, self.manifest,
+                                       self.authority, CUSTODIAN_KEY, ReceiptVerifier(ROLE_KEYS))
+        self.assertEqual(len(winner_store.verify()), 1)
+        winner_store.db.close()
 
     def test_exact_duplicate_and_changed_target(self):
         req = make_request()
