@@ -1,8 +1,7 @@
-"""Local model of a policy-bound witness backed by a separate checkpoint custodian.
+"""Policy-bound lock witness backed by an independently pinned checkpoint model.
 
-This is a proof of concept: SQLite files and an HMAC key do not provide production
-independence. Production would replace CheckpointStore with a separately operated,
-linearizable append-only service and asymmetric signatures.
+The external checkpoint and receipt credentials here are test stand-ins. They are
+not independent production services or GitHub-authenticated evidence.
 """
 import hashlib
 import hmac
@@ -11,16 +10,10 @@ import sqlite3
 import time
 from types import MappingProxyType
 
+from trust import IntegrityError, PolicyError, canonical, sha
+
 
 class Conflict(Exception):
-    pass
-
-
-class IntegrityError(Exception):
-    pass
-
-
-class PolicyError(Exception):
     pass
 
 
@@ -33,14 +26,45 @@ ALLOWED_TRANSITIONS = {
 }
 
 
+def validate_request(request, policy):
+    required = {"experiment_id", "registry_digest", "oac_sha256", "base_commit", "target_commit"}
+    if not isinstance(request, dict) or set(request) != required:
+        raise PolicyError("request fields must exactly match pinned schema")
+    if request["experiment_id"] != policy["experiment_id"] or request["registry_digest"] != policy["registry_digest"]:
+        raise PolicyError("experiment/registry identity differs from signed policy")
+    if len(request["oac_sha256"]) != 64 or any(c not in "0123456789abcdef" for c in request["oac_sha256"].lower()):
+        raise PolicyError("invalid OAC SHA-256")
+    for field in ("base_commit", "target_commit"):
+        if len(request[field]) not in (40, 64) or any(c not in "0123456789abcdef" for c in request[field].lower()):
+            raise PolicyError(f"invalid {field}")
+    return sha(canonical(request))
+
+
 class CheckpointStore:
-    """Separate custodian model: signed append-only event log and unique purpose claim."""
-    def __init__(self, path, signing_key):
+    """SQLite mirror checked against an append-only checkpoint file outside SQLite."""
+    def __setattr__(self, name, value):
+        if getattr(self, "_sealed", False):
+            raise AttributeError("CheckpointStore policy and dependencies are immutable after construction")
+        object.__setattr__(self, name, value)
+
+    def __init__(self, path, external_checkpoint, manifest, policy_authority, signing_key, receipt_verifier):
+        object.__setattr__(self, "_sealed", False)
+        self.external = external_checkpoint
+        self.manifest = manifest
+        self.authority = policy_authority
         self.key = signing_key
+        self.receipt_verifier = receipt_verifier
+        self.policy = MappingProxyType(self.authority.verify(manifest))
+        if (self.external.custodian_id != self.policy["custodian_id"] or
+                self.external.manifest_digest != manifest.digest):
+            raise PolicyError("checkpoint identity is not pinned by policy manifest")
         self.db = sqlite3.connect(path, timeout=10, isolation_level=None)
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("PRAGMA synchronous=FULL")
         self.db.executescript("""
+          CREATE TABLE IF NOT EXISTS metadata(
+            singleton INTEGER PRIMARY KEY CHECK(singleton=1), custodian_id TEXT NOT NULL,
+            manifest_digest TEXT NOT NULL, genesis_hash TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS events(
             sequence INTEGER PRIMARY KEY, scope TEXT NOT NULL, experiment_id TEXT NOT NULL,
             request_hash TEXT NOT NULL, state TEXT NOT NULL, previous_hash TEXT NOT NULL,
@@ -55,30 +79,50 @@ class CheckpointStore:
           CREATE TRIGGER IF NOT EXISTS claims_no_delete BEFORE DELETE ON claims
             BEGIN SELECT RAISE(ABORT, 'claims cannot be deleted'); END;
         """)
+        object.__setattr__(self, "_sealed", True)
+
+    def initialize(self, authorization):
+        """Explicit one-time bootstrap; never called implicitly by construction."""
+        if self.db.execute("SELECT 1 FROM metadata").fetchone():
+            raise PolicyError("checkpoint database already initialized")
+        self.external.initialize(self.authority, self.manifest, authorization)
+        genesis_hash = self.external.head()[1]
+        self.db.execute("INSERT INTO metadata VALUES(1,?,?,?)",
+                        (self.policy["custodian_id"], self.manifest.digest, genesis_hash))
+        self.db.execute("PRAGMA wal_checkpoint(FULL)")
 
     @staticmethod
-    def _canonical(value):
-        return json.dumps(value, sort_keys=True, separators=(",", ":"))
-
-    @staticmethod
-    def _sha(value):
-        return hashlib.sha256(value.encode()).hexdigest()
+    def _event_body(seq, scope, exp, req_hash, state, prev, recorded_ns):
+        return canonical({"sequence": seq, "scope": scope, "experiment_id": exp,
+                          "request_hash": req_hash, "state": state,
+                          "previous_hash": prev, "recorded_ns": recorded_ns})
 
     def verify(self):
-        previous = "0" * 64
-        latest = {}
         rows = self.db.execute("SELECT sequence,scope,experiment_id,request_hash,state,previous_hash,event_hash,signature,recorded_ns FROM events ORDER BY sequence").fetchall()
+        metadata = self.db.execute("SELECT custodian_id,manifest_digest,genesis_hash FROM metadata WHERE singleton=1").fetchone()
+        if metadata is None:
+            raise IntegrityError("checkpoint database lacks explicitly authorized genesis")
+        external_records = self.external.records()  # missing/empty/unidentified pin fails closed
+        if metadata[:2] != (self.policy["custodian_id"], self.manifest.digest):
+            raise IntegrityError("checkpoint database custodian or policy identity mismatch")
+        genesis = external_records[0]["checkpoint_hash"]
+        if metadata[2] != genesis or len(external_records) != len(rows) + 1:
+            raise IntegrityError("database reset, stale head, or missing checkpoint event")
+        previous = genesis
+        latest = {}
         for expected, row in enumerate(rows, 1):
-            seq, scope, exp, request_hash, state, prev, event_hash, signature, recorded_ns = row
-            payload = self._canonical({"sequence": seq, "scope": scope, "experiment_id": exp,
-                                       "request_hash": request_hash, "state": state,
-                                       "previous_hash": prev, "recorded_ns": recorded_ns})
-            calculated = self._sha(payload)
+            seq, scope, exp, req_hash, state, prev, event_hash, signature, recorded_ns = row
+            payload = self._event_body(seq, scope, exp, req_hash, state, prev, recorded_ns)
+            calculated = sha(payload)
             signed = hmac.new(self.key, calculated.encode(), hashlib.sha256).hexdigest()
-            if seq != expected or prev != previous or calculated != event_hash or not hmac.compare_digest(signature, signed):
-                raise IntegrityError("checkpoint chain/signature invalid or incomplete")
+            ext = external_records[expected]
+            if (seq != expected or scope != self.policy["purpose_key"] or
+                exp != self.policy["experiment_id"] or prev != previous or calculated != event_hash or
+                not hmac.compare_digest(signature, signed) or
+                ext.get("sequence") != seq or ext.get("event_hash") != event_hash):
+                raise IntegrityError("checkpoint chain, signature, policy scope, or external pin mismatch")
             previous = event_hash
-            latest[scope] = (exp, request_hash, state, seq)
+            latest[scope] = (exp, req_hash, state, seq)
         claims = {row[0]: row[1:] for row in self.db.execute(
             "SELECT scope,experiment_id,request_hash,state,sequence FROM claims")}
         if claims != latest:
@@ -86,9 +130,10 @@ class CheckpointStore:
         return rows
 
     def _append(self, scope, experiment_id, request_hash, state):
+        if scope != self.policy["purpose_key"] or experiment_id != self.policy["experiment_id"]:
+            raise PolicyError("custodian rejects noncanonical purpose or experiment identity")
         self.db.execute("BEGIN IMMEDIATE")
         try:
-            # Verify under the same write lock before deciding the next transition.
             rows = self.verify()
             existing = self.db.execute("SELECT experiment_id,request_hash,state,sequence FROM claims WHERE scope=?", (scope,)).fetchone()
             if state == "INTENT_RECORDED":
@@ -104,18 +149,16 @@ class CheckpointStore:
                 if existing[0] != experiment_id or existing[1] != request_hash:
                     raise Conflict("transition does not match the claimed intent")
                 current_state = existing[2]
-                if state == current_state and state == "PENDING_RECONCILIATION":
+                if state == current_state == "PENDING_RECONCILIATION":
                     self.db.execute("COMMIT")
                     return existing[3], "duplicate"
             if state not in ALLOWED_TRANSITIONS[current_state]:
                 raise Conflict(f"transition {current_state} -> {state} is forbidden")
             seq = len(rows) + 1
-            prev = rows[-1][6] if rows else "0" * 64
+            prev = rows[-1][6] if rows else self.external.head()[1]
             recorded_ns = time.time_ns()
-            payload = self._canonical({"sequence": seq, "scope": scope, "experiment_id": experiment_id,
-                                       "request_hash": request_hash, "state": state,
-                                       "previous_hash": prev, "recorded_ns": recorded_ns})
-            event_hash = self._sha(payload)
+            payload = self._event_body(seq, scope, experiment_id, request_hash, state, prev, recorded_ns)
+            event_hash = sha(payload)
             signature = hmac.new(self.key, event_hash.encode(), hashlib.sha256).hexdigest()
             self.db.execute("INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?)",
                             (seq, scope, experiment_id, request_hash, state, prev, event_hash, signature, recorded_ns))
@@ -123,17 +166,41 @@ class CheckpointStore:
                             "experiment_id=excluded.experiment_id,request_hash=excluded.request_hash,"
                             "state=excluded.state,sequence=excluded.sequence",
                             (scope, experiment_id, request_hash, state, seq))
+            # The external checkpoint append is outside SQLite. It is published before
+            # acceptance returns; if it fails, the local DB is ahead and all later
+            # acceptance fails closed until operator recovery of this exact event.
+            checkpoint_previous = self.external.head()[1]
+            self.external.publish(seq, event_hash, checkpoint_previous)
             self.db.execute("COMMIT")
             return seq, "accepted"
         except Exception:
             self.db.execute("ROLLBACK")
             raise
 
-    def append_intent(self, scope, experiment_id, request_hash):
-        return self._append(scope, experiment_id, request_hash, "INTENT_RECORDED")
+    def accept_intent(self, request):
+        request_hash = validate_request(request, self.policy)
+        return self._append(self.policy["purpose_key"], self.policy["experiment_id"],
+                            request_hash, "INTENT_RECORDED")
 
-    def transition(self, scope, experiment_id, request_hash, state):
-        return self._append(scope, experiment_id, request_hash, state)
+    def record_receipt(self, request, receipt):
+        request_hash = validate_request(request, self.policy)
+        role, payload = self.receipt_verifier.verify(receipt)
+        expected = {"purpose_key": self.policy["purpose_key"],
+                    "experiment_id": self.policy["experiment_id"],
+                    "request_hash": request_hash, "repository": self.policy["repository"],
+                    "lock_ref": self.policy["lock_ref"], "app_id": self.policy["app_id"]}
+        if any(payload.get(k) != v for k, v in expected.items()):
+            raise IntegrityError("receipt is not bound to the pinned purpose and request")
+        outcome = payload.get("outcome")
+        allowed_role = {"GITHUB_APPLIED": "github_adapter",
+                        "PENDING_RECONCILIATION": "witness_worker",
+                        "BREACH": "independent_reconciler"}
+        if allowed_role.get(outcome) != role:
+            raise IntegrityError("receipt role is not authorized for this state")
+        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha") != request["target_commit"]:
+            raise IntegrityError("adapter receipt does not attest the intended target")
+        return self._append(self.policy["purpose_key"], self.policy["experiment_id"],
+                            request_hash, outcome)
 
     def state(self, scope):
         row = self.db.execute("SELECT state FROM claims WHERE scope=?", (scope,)).fetchone()
@@ -141,75 +208,90 @@ class CheckpointStore:
 
 
 class Witness:
-    """Policy-bound intent endpoint and local mirror of the external checkpoint."""
-    def __init__(self, local_path, checkpoint_store, policy):
-        self.anchor = checkpoint_store
-        if set(policy) != {"purpose_key", "experiment_id", "registry_digest"}:
-            raise PolicyError("policy must pin purpose, experiment ID, and registry digest")
-        self.policy = MappingProxyType(dict(policy))
-        self.db = sqlite3.connect(local_path, timeout=10, isolation_level=None)
-        self.db.execute("PRAGMA journal_mode=WAL")
-        self.db.execute("PRAGMA synchronous=FULL")
-        self.db.execute("CREATE TABLE IF NOT EXISTS mirror(sequence INTEGER PRIMARY KEY,event_hash TEXT NOT NULL)")
+    """Immutable policy binding, intent acceptance, and signed adapter-evidence gate."""
+    __slots__ = ("_anchor", "_manifest", "_policy", "_authority", "_receipt_verifier", "_db", "_sealed")
+
+    def __init__(self, local_path, checkpoint_store, manifest, policy_authority, receipt_verifier):
+        object.__setattr__(self, "_sealed", False)
+        policy = policy_authority.verify(manifest)
+        if checkpoint_store.manifest.digest != manifest.digest:
+            raise PolicyError("witness policy differs from genesis-pinned custodian policy")
+        object.__setattr__(self, "_anchor", checkpoint_store)
+        object.__setattr__(self, "_manifest", manifest)
+        object.__setattr__(self, "_policy", MappingProxyType(dict(policy)))
+        object.__setattr__(self, "_authority", policy_authority)
+        object.__setattr__(self, "_receipt_verifier", receipt_verifier)
+        db = sqlite3.connect(local_path, timeout=10, isolation_level=None)
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("PRAGMA synchronous=FULL")
+        db.execute("CREATE TABLE IF NOT EXISTS mirror(sequence INTEGER PRIMARY KEY,event_hash TEXT NOT NULL)")
+        object.__setattr__(self, "_db", db)
+        object.__setattr__(self, "_sealed", True)
+
+    def __setattr__(self, name, value):
+        if getattr(self, "_sealed", False):
+            raise AttributeError("Witness policy and dependencies are immutable after construction")
+        object.__setattr__(self, name, value)
 
     @property
-    def scope(self):
-        return self.policy["purpose_key"]
-
+    def policy(self): return self._policy
     @property
-    def experiment_id(self):
-        return self.policy["experiment_id"]
-
+    def scope(self): return self._policy["purpose_key"]
     @property
-    def registry_digest(self):
-        return self.policy["registry_digest"]
+    def experiment_id(self): return self._policy["experiment_id"]
+    @property
+    def registry_digest(self): return self._policy["registry_digest"]
+    @property
+    def db(self): return self._db
 
     def _request_hash(self, request):
-        required = {"experiment_id", "registry_digest", "oac_sha256", "base_commit", "target_commit"}
-        if set(request) != required:
-            raise PolicyError("request fields must exactly match the pinned schema")
-        if request["experiment_id"] != self.experiment_id or request["registry_digest"] != self.registry_digest:
-            raise PolicyError("experiment/registry identity differs from pinned policy")
-        for field in ("oac_sha256",):
-            if len(request[field]) != 64 or any(c not in "0123456789abcdef" for c in request[field].lower()):
-                raise PolicyError(f"invalid {field}")
-        for field in ("base_commit", "target_commit"):
-            if len(request[field]) not in (40, 64) or any(c not in "0123456789abcdef" for c in request[field].lower()):
-                raise PolicyError(f"invalid {field}")
-        return CheckpointStore._sha(CheckpointStore._canonical(request))
+        return validate_request(request, self._policy)
 
     def _sync_and_verify(self):
-        anchored = self.anchor.verify()  # missing/corrupt checkpoint raises before accepting anything
-        local = self.db.execute("SELECT sequence,event_hash FROM mirror ORDER BY sequence").fetchall()
+        anchored = self._anchor.verify()  # signed manifest, genesis, external pin and DB chain
+        local = self._db.execute("SELECT sequence,event_hash FROM mirror ORDER BY sequence").fetchall()
         if len(local) > len(anchored):
             raise IntegrityError("external checkpoint is stale or rolled back")
         for seq, digest in local:
             if seq < 1 or anchored[seq - 1][6] != digest:
                 raise IntegrityError("local mirror and external checkpoint diverge")
-        # Recover a crash after external append but before local mirror update.
-        self.db.execute("BEGIN IMMEDIATE")
+        self._db.execute("BEGIN IMMEDIATE")
         try:
             for row in anchored[len(local):]:
-                self.db.execute("INSERT INTO mirror VALUES(?,?)", (row[0], row[6]))
-            self.db.execute("COMMIT")
+                self._db.execute("INSERT INTO mirror VALUES(?,?)", (row[0], row[6]))
+            self._db.execute("COMMIT")
         except Exception:
-            self.db.execute("ROLLBACK")
+            self._db.execute("ROLLBACK")
             raise
 
     def intent(self, request):
         request_hash = self._request_hash(request)
         self._sync_and_verify()
-        result = self.anchor.append_intent(self.scope, self.experiment_id, request_hash)
+        result = self._anchor.accept_intent(request)
         self._sync_and_verify()
         return result
 
-    def transition(self, request, state):
+    def record_adapter_evidence(self, request, receipt):
         request_hash = self._request_hash(request)
+        role, payload = self._receipt_verifier.verify(receipt)
+        expected = {"purpose_key": self.scope, "experiment_id": self.experiment_id,
+                    "request_hash": request_hash, "repository": self._policy["repository"],
+                    "lock_ref": self._policy["lock_ref"], "app_id": self._policy["app_id"]}
+        if any(payload.get(k) != v for k, v in expected.items()):
+            raise IntegrityError("adapter evidence is for a different policy/intent")
+        outcome = payload.get("outcome")
+        allowed_role = {"GITHUB_APPLIED": "github_adapter",
+                        "PENDING_RECONCILIATION": "witness_worker",
+                        "BREACH": "independent_reconciler"}
+        if allowed_role.get(outcome) != role:
+            raise IntegrityError("receipt signer is not authorized for this state transition")
+        if outcome == "GITHUB_APPLIED" and payload.get("observed_sha") != request["target_commit"]:
+            raise IntegrityError("adapter receipt does not attest the intended target")
         self._sync_and_verify()
-        result = self.anchor.transition(self.scope, self.experiment_id, request_hash, state)
+        result = self._anchor.record_receipt(request, receipt)
         self._sync_and_verify()
         return result
 
     def state(self):
         self._sync_and_verify()
-        return self.anchor.state(self.scope)
+        return self._anchor.state(self.scope)

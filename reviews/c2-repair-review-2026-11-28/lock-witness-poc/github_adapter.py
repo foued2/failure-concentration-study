@@ -1,49 +1,74 @@
-"""GitHub adapter boundary plus explicit fake used only by local tests."""
+"""Adapter contract and fake GitHub implementation used only by local tests."""
+from trust import canonical, sha
 
 
 class FakeGitHub:
-    """Models a ref and a complete event journal; it is not GitHub integration."""
-    def __init__(self, ref=None):
-        self.ref = ref
+    """Models GitHub ref calls and complete event history; not a GitHub integration."""
+    def __init__(self, policy, app_signer):
+        self.policy = dict(policy)
+        self.app_signer = app_signer
+        self.ref = None
         self.events = []
         self.app_allowed = True
 
-    def apply_intent(self, base, target):
+    def _receipt(self, request, outcome, observed_sha=None):
+        payload = {"purpose_key": self.policy["purpose_key"],
+                   "experiment_id": self.policy["experiment_id"],
+                   "request_hash": sha(canonical(request)),
+                   "repository": self.policy["repository"], "lock_ref": self.policy["lock_ref"],
+                   "app_id": self.policy["app_id"], "outcome": outcome,
+                   "observed_sha": observed_sha, "event_count": len(self.events)}
+        return self.app_signer.sign(payload)
+
+    def apply_intent(self, request):
         if not self.app_allowed:
             raise PermissionError("modeled ruleset rejects the App")
+        base, target = request["base_commit"], request["target_commit"]
         if self.ref is None:
             self.ref = base
             self.events.append(("create", None, base, "app"))
         if self.ref == base:
             self.ref = target
             self.events.append(("update", base, target, "app"))
-            return
-        if self.ref == target:
-            return  # idempotent exact retry after ambiguous response
-        raise RuntimeError("ref is neither expected base nor intended target")
+        elif self.ref != target:
+            raise RuntimeError("ref is neither expected base nor intended target")
+        return self._receipt(request, "GITHUB_APPLIED", self.ref)
 
     def delete(self, actor="admin"):
         before, self.ref = self.ref, None
         self.events.append(("delete", before, None, actor))
 
-    def recreate(self, sha, actor="admin"):
-        before, self.ref = self.ref, sha
-        self.events.append(("create", before, sha, actor))
+    def recreate(self, sha_value, actor="admin"):
+        before, self.ref = self.ref, sha_value
+        self.events.append(("create", before, sha_value, actor))
 
-    def force_update(self, sha, actor="admin"):
-        before, self.ref = self.ref, sha
-        self.events.append(("force_update", before, sha, actor))
+    def force_update(self, sha_value, actor="admin"):
+        before, self.ref = self.ref, sha_value
+        self.events.append(("force_update", before, sha_value, actor))
 
     def read_ref(self):
         return self.ref
 
+    def attest_applied(self, request):
+        return self._receipt(request, "GITHUB_APPLIED", self.ref)
+
 
 class Reconciler:
-    """Reconcile against adapter ref and its event history; journal completeness is assumed."""
-    def __init__(self, witness, request, adapter):
+    """Worker that validates observed adapter state and submits signed evidence."""
+    def __init__(self, witness, request, adapter, worker_signer, reconciler_signer):
         self.witness = witness
         self.request = request
         self.adapter = adapter
+        self.worker_signer = worker_signer
+        self.reconciler_signer = reconciler_signer
+
+    def _worker_receipt(self):
+        return self.worker_signer.sign(self.adapter._receipt(
+            self.request, "PENDING_RECONCILIATION", self.adapter.read_ref())["payload"])
+
+    def _breach_receipt(self):
+        payload = self.adapter._receipt(self.request, "BREACH", self.adapter.read_ref())["payload"]
+        return self.reconciler_signer.sign(payload)
 
     def reconcile(self):
         state = self.witness.state()
@@ -52,45 +77,39 @@ class Reconciler:
         if state == "BREACH":
             return state
         base, target = self.request["base_commit"], self.request["target_commit"]
-        events = self.adapter.events
         expected = [("create", None, base, "app"), ("update", base, target, "app")]
-        if self.adapter.read_ref() == target and events == expected:
-            if state != "GITHUB_APPLIED":
-                self.witness.transition(self.request, "GITHUB_APPLIED")
-            return "GITHUB_APPLIED"
-        # Exact partial prefix is retryable; every deletion/recreation/force or unknown
-        # event is a breach in this adapter model.
-        if self.adapter.read_ref() == base and events == expected[:1]:
-            if state == "INTENT_RECORDED":
-                self.witness.transition(self.request, "PENDING_RECONCILIATION")
-            return "PENDING_RECONCILIATION"
-        if self.adapter.read_ref() is None and not events:
-            if state == "INTENT_RECORDED":
-                self.witness.transition(self.request, "PENDING_RECONCILIATION")
-            return "PENDING_RECONCILIATION"  # no GitHub mutation; exact intent can resume
-        self.witness.transition(self.request, "BREACH")
-        return "BREACH"
+        if self.adapter.read_ref() == target and self.adapter.events == expected:
+            if state == "GITHUB_APPLIED":
+                return state
+            receipt = self.adapter.attest_applied(self.request)
+            self.witness.record_adapter_evidence(self.request, receipt)
+            return self.witness.state()
+        if self.adapter.read_ref() == base and self.adapter.events == expected[:1]:
+            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
+            return self.witness.state()
+        if self.adapter.read_ref() is None and not self.adapter.events:
+            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
+            return self.witness.state()
+        self.witness.record_adapter_evidence(self.request, self._breach_receipt())
+        return self.witness.state()
 
-    def apply_once(self, lose_response=False):
+    def apply_once(self):
         state = self.witness.state()
         if state == "UNCLAIMED":
             self.witness.intent(self.request)
         elif state in ("GITHUB_APPLIED", "BREACH"):
             return state
         try:
-            self.adapter.apply_intent(self.request["base_commit"], self.request["target_commit"])
+            receipt = self.adapter.apply_intent(self.request)
         except Exception:
-            if self.witness.state() == "INTENT_RECORDED":
-                self.witness.transition(self.request, "PENDING_RECONCILIATION")
+            self.witness.record_adapter_evidence(self.request, self._worker_receipt())
             return self.reconcile()
-        if lose_response:
-            self.witness.transition(self.request, "PENDING_RECONCILIATION")
-            return self.reconcile()
-        return self.reconcile()
+        self.witness.record_adapter_evidence(self.request, receipt)
+        return self.witness.state()
 
 
 class WebhookInbox:
-    """Delivery simulator; webhook order is retained only as arrival history."""
+    """Delivery simulator: deduplicates IDs but records arrival, never event order."""
     def __init__(self):
         self.seen = set()
         self.arrivals = []
